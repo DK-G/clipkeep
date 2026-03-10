@@ -1,4 +1,4 @@
-﻿# 外部準備リスト（広告・サーバ・運用基盤）
+# 外部準備リスト（広告・サーバ・運用基盤）
 
 ## 1. ドメイン・DNS
 - [ ] 本番ドメイン取得（例: `clipkeep.com`）
@@ -8,15 +8,15 @@
 
 ## 2. 配信・サーバ基盤
 - [x] Cloudflareアカウント（本番運用用）
-- [ ] Cloudflare Pages プロジェクト作成
-- [ ] Cloudflare D1 本番DB作成
+- [x] Cloudflare Pages プロジェクト作成
+- [x] Cloudflare D1 本番DB作成
 - [x] Durable Objects 有効化
-- [ ] Wrangler本番環境のシークレット設定
+- [x] Wrangler本番環境のシークレット設定 (Cloudflare Pages Dashboard)
 - [ ] 監視用ログ保持方針（Cloudflare Logs / 外部連携）
 
 ## 3. CI/CD
-- [ ] Gitリポジトリ（main/prod運用ブランチ）確定
-- [ ] 自動デプロイ設定（push -> preview/prod）
+- [x] Gitリポジトリ（main/prod運用ブランチ）確定
+- [x] 自動デプロイ設定（push -> preview/prod）
 - [ ] 本番デプロイ承認フロー（手動承認有無）
 - [ ] ロールバック手順の明文化
 

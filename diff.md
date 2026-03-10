@@ -1,19 +1,19 @@
-﻿# 変更報告書 (Diff)
+# 変更報告書 (Diff)
 
 ## 1. 変更目的
-- 外部作業とCodex作業の分担を固定し、進行停滞を防止する。
+- Cloudflare Pagesへの本番環境デプロイとD1データベースの本番マイグレーションを実施するため。
 
 ## 2. 変更概要
-- 追加ファイル:
-  - `docs/infra/execution_split.md`
-- 更新ファイル:
-  - `docs/INDEX.md`
-  - `diff.md`（本ファイル）
-  - `Changelog.md`
+- Cloudflare Pages プロジェクト作成と設定更新
+- D1 データベース（clipkeep-db）作成とマイグレーションの実行
+- Gitリポジトリ（DK-G/clipkeep）のセットアップとプッシュ
+- `wrangler.toml` および `tsconfig.json` の修正
 
 ## 3. 実施内容
-- Cloudflare本番作業の担当分離（外部/内部）を明文化。
-- `memo.md` への記録テンプレを追加。
+- `wrangler.toml` に `pages_build_output_dir` 追記、本番用 `database_id` の反映
+- Next.js ビルドエラー解消のため `tsconfig.json` の `exclude` に `workers` 追加
+- 本番 D1 データベースへのスキーママイグレーション(`db_schema.sql`)適用
+- 関連ドキュメント（`external_prerequisites.md`, `task.md`, `Changelog.md`）の完了ステータス更新
 
 ## 4. 次の作業
-- ユーザーがPages/D1実施結果を `memo.md` に貼り、Codex側で設定反映と完了更新を実施。
+- （設定完了にあたり、必要に応じた動作テストとドメイン正規化の確認）

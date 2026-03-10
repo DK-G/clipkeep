@@ -1,12 +1,13 @@
-﻿# 作業タスクリスト: ClipKeep
+# 作業タスクリスト: ClipKeep
 
 ## 作業中 (In Progress)
-- [ ] 外部コンソール作業: Cloudflare Pages作成 / D1本番作成 / Secrets投入
 
 ## 未着手 (To Do)
 - [ ] Phase4 TikTokバックログのP1項目から着手
 
 ## 完了 (Done)
+- [x] 外部コンソール作業: Cloudflare Pages作成 / D1本番作成 / Secrets投入
+- [x] Cloudflare D1 本番マイグレーション実行
 - [x] Phase 1設計確定
 - [x] P2-01 API基盤セットアップ
 - [x] 計画修正: FactItems不要 / SNS優先順 Telegram -> X -> TikTok後回し
