@@ -1,0 +1,20 @@
+﻿export type Platform = "telegram" | "twitter" | "tiktok";
+export type JobStatus = "queued" | "processing" | "completed" | "failed";
+
+export type ExtractJob = {
+  id: string;
+  platform: Platform;
+  sourceUrl: string;
+  status: JobStatus;
+  progress: number;
+  media: Array<{
+    mediaId: string;
+    type: "video" | "audio" | "image";
+    quality: string;
+    downloadUrl: string;
+    expiresAt: string;
+  }>;
+  warnings: string[];
+  createdAt: string;
+  updatedAt: string;
+};

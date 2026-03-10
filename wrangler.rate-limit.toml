@@ -1,0 +1,14 @@
+name = "clipkeep-rate-limit"
+main = "workers/rate-limit-do/src/index.ts"
+compatibility_date = "2026-03-08"
+
+[observability]
+enabled = true
+
+[[durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "RateLimiterDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiterDO"]

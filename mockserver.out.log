@@ -1,0 +1,8 @@
+[15:31:30] » [CLI] ...  awaiting  Starting Prism…
+[15:31:30] » [CLI] i  info      POST       http://127.0.0.1:4010/extract/prepare
+[15:31:30] » [CLI] i  info      GET        http://127.0.0.1:4010/extract/jobs/iusto
+[15:31:30] » [CLI] i  info      GET        http://127.0.0.1:4010/solution-pages/quod
+[15:31:30] » [CLI] i  info      GET        http://127.0.0.1:4010/facts/ducimus/nemo
+[15:31:30] » [CLI] i  info      POST       http://127.0.0.1:4010/votes
+[15:31:30] » [CLI] i  info      GET        http://127.0.0.1:4010/health
+[15:31:30] » [CLI] ►  start     Prism is listening on http://127.0.0.1:4010

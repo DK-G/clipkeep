@@ -1,0 +1,8 @@
+name = "clipkeep"
+compatibility_date = "2026-03-08"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "clipkeep-db"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+migrations_dir = "migrations"
