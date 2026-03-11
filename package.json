@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && npx @cloudflare/next-on-pages",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
@@ -17,12 +17,13 @@
     "react-dom": "19.0.0"
   },
   "devDependencies": {
-    "typescript": "5.7.2",
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@types/node": "22.10.1",
     "@types/react": "19.0.2",
     "@types/react-dom": "19.0.2",
     "eslint": "9.19.0",
     "eslint-config-next": "15.2.1",
+    "typescript": "5.7.2",
     "wrangler": "4.34.0"
   }
 }
