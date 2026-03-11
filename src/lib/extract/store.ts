@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import { setActiveJobs } from "@/lib/degraded/state";
 import type { ExtractJob, Platform } from "@/lib/extract/types";
 
@@ -15,7 +14,7 @@ function syncActiveJobs(): void {
 
 export function createJob(platform: Platform, sourceUrl: string): ExtractJob {
   const now = nowIso();
-  const id = `job_${randomUUID()}`;
+  const id = `job_${crypto.randomUUID()}`;
 
   const job: ExtractJob = {
     id,
@@ -41,7 +40,7 @@ export function createJob(platform: Platform, sourceUrl: string): ExtractJob {
       progress: 100,
       media: [
         {
-          mediaId: `m_${randomUUID()}`,
+          mediaId: `m_${crypto.randomUUID()}`,
           type: "video",
           quality: "720p",
           downloadUrl: `https://cdn.clipkeep.local/${id}.mp4`,
