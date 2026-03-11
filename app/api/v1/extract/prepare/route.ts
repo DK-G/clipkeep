@@ -1,4 +1,5 @@
 export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 import { evaluateDegraded } from "@/lib/degraded/evaluator";
 import { recordExtractAttempt } from "@/lib/degraded/state";
@@ -139,4 +140,3 @@ export async function POST(request: Request) {
     },
   });
 }
-

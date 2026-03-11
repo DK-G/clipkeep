@@ -1,140 +1,107 @@
-export const runtime = 'edge';
-
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
-import { localeDir, normalizeLocale, solutionText } from '@/lib/i18n/ui';
-import { trackEvent } from '@/lib/analytics/gtag';
+export const runtime = 'edge';
 
-type Locale = 'en' | 'ar';
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { solutionPageText } from '@/lib/i18n/ui';
 
-type SolutionResponse = {
-  requestId: string;
-  locale: Locale;
-  data: {
-    slug: string;
-    locale: Locale;
-    title: string;
-    sections: Array<{
-      id: string;
-      heading: string;
-      body: string;
-    }>;
-    cta: {
-      label: string;
-      href: string;
-    };
-  };
+type Section = {
+  title: string;
+  content: string;
 };
 
-type ApiError = {
-  requestId: string;
-  error: {
-    code: string;
-    message: string;
+type PageData = {
+  slug: string;
+  locale: string;
+  title: string;
+  sections: Section[];
+  cta: {
+    text: string;
+    url: string;
   };
 };
 
 export default function SolutionPage() {
-  const params = useParams<{ slug: string }>();
-  const search = useSearchParams();
-  const locale = normalizeLocale(search.get('locale'));
-  const l = solutionText[locale];
-  const dir = localeDir(locale);
-  const slug = params.slug;
-
-  const [loading, setLoading] = useState(true);
+  const params = useParams();
+  const slug = params.slug as string;
+  const router = useRouter();
+  const [data, setData] = useState<PageData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState<SolutionResponse['data'] | null>(null);
 
-  const ctaHref = useMemo(() => {
-    if (!page) return '#';
-    if (page.cta.href.startsWith('/ar/') || page.cta.href.startsWith('/api/')) return page.cta.href;
-    if (locale === 'ar' && page.cta.href.startsWith('/')) return `/ar${page.cta.href}`;
-    return page.cta.href;
-  }, [locale, page]);
+  const locale = 'en';
+  const t = solutionPageText[locale as keyof typeof solutionPageText] || solutionPageText.en;
 
   useEffect(() => {
-    trackEvent('solution_view', { slug, locale });
-  }, [slug, locale]);
+    if (!slug) return;
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const load = async () => {
+    const fetchPage = async () => {
       try {
-        const res = await fetch(`/api/v1/solution-pages/${slug}?locale=${locale}`, { method: 'GET' });
-        const payload = (await res.json()) as SolutionResponse | ApiError;
+        const res = await fetch(`/api/v1/solution-pages/${slug}?locale=${locale}`);
+        const result = await res.json();
 
-        if (!res.ok || !('data' in payload)) {
-          if (!cancelled) setError(l.notFound);
-          return;
+        if (result.success) {
+          setData(result.data);
+        } else {
+          setError(result.error?.message || 'Page not found');
         }
-
-        if (!cancelled) setPage(payload.data);
-      } catch {
-        if (!cancelled) setError(l.networkError);
-      } finally {
-        if (!cancelled) setLoading(false);
+      } catch (err) {
+        setError('Connection error');
       }
     };
 
-    load();
+    fetchPage();
+  }, [slug]);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [l.networkError, l.notFound, locale, slug]);
+  if (error) {
+    return (
+      <div className="p-8 text-center">
+        <h1 className="text-2xl font-bold text-red-600 mb-4">{t.errorTitle}</h1>
+        <p className="text-gray-600 mb-8">{error}</p>
+        <button onClick={() => router.push('/')} className="text-blue-600 hover:underline">
+          {t.backToHome}
+        </button>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="p-8 text-center animate-pulse">
+        <p className="text-gray-500">{t.loading}</p>
+      </div>
+    );
+  }
 
   return (
-    <main dir={dir} style={{ maxWidth: 860, margin: '0 auto', padding: 24, fontFamily: 'system-ui, sans-serif' }}>
-      {loading && <p>{l.loading}</p>}
+    <div className="max-w-4xl mx-auto p-4 sm:p-8">
+      <header className="mb-12 text-center">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-4">{data.title}</h1>
+        <button onClick={() => router.push('/')} className="text-blue-600 hover:underline">
+          {t.backToHome}
+        </button>
+      </header>
 
-      {!loading && error && (
-        <section style={{ border: '1px solid #f0c0c0', borderRadius: 10, padding: 16, background: '#fff8f8' }}>
-          <h1 style={{ marginTop: 0 }}>{l.title}</h1>
-          <p>{error}</p>
-        </section>
-      )}
-
-      {!loading && page && (
-        <>
-          <section style={{ border: '1px solid #ddd', borderRadius: 10, padding: 16, background: '#fafafa' }}>
-            <h1 style={{ marginTop: 0, marginBottom: 8 }}>{page.title}</h1>
-            <p style={{ margin: 0, color: '#444' }}>{l.heroSubtitle}</p>
+      <main className="space-y-12">
+        {data.sections.map((section, idx) => (
+          <section key={idx} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">{section.title}</h2>
+            <div className="prose prose-blue max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap">
+              {section.content}
+            </div>
           </section>
+        ))}
 
-          <section style={{ marginTop: 16, border: '1px solid #eee', borderRadius: 10, padding: 16 }}>
-            <h2 style={{ marginTop: 0 }}>{l.quickAnswer}</h2>
-            <p>{page.sections[0]?.body ?? l.quickFallback}</p>
-          </section>
-
-          <section style={{ marginTop: 16, border: '1px solid #eee', borderRadius: 10, padding: 16 }}>
-            <h2 style={{ marginTop: 0 }}>{l.stepByStep}</h2>
-            <ol>
-              {page.sections.map((section) => (
-                <li key={section.id} style={{ marginBottom: 10 }}>
-                  <strong>{section.heading}</strong>
-                  <div>{section.body}</div>
-                </li>
-              ))}
-            </ol>
-          </section>
-
-          <section style={{ marginTop: 16, border: '1px solid #eee', borderRadius: 10, padding: 16 }}>
-            <h2 style={{ marginTop: 0 }}>{l.trustSafety}</h2>
-            <p>{l.trustBody}</p>
-          </section>
-
-          <section style={{ marginTop: 16, border: '1px solid #eee', borderRadius: 10, padding: 16 }}>
-            <h2 style={{ marginTop: 0 }}>{l.internalLinks}</h2>
-            <p>
-              <a href={ctaHref}>{page.cta.label}</a>
-            </p>
-          </section>
-        </>
-      )}
-    </main>
+        <div className="bg-blue-900 rounded-3xl p-10 text-center text-white">
+          <h3 className="text-2xl font-bold mb-6">{data.cta.text}</h3>
+          <button 
+            onClick={() => router.push(data.cta.url)}
+            className="px-10 py-4 bg-white text-blue-900 rounded-2xl font-bold text-lg hover:bg-gray-100 transition shadow-xl"
+          >
+            {t.getStarted}
+          </button>
+        </div>
+      </main>
+    </div>
   );
 }

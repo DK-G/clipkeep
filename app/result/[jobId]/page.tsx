@@ -1,204 +1,151 @@
-export const runtime = 'edge';
-
 'use client';
 
+export const runtime = 'edge';
+
 import { useEffect, useMemo, useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
-import { localeDir, normalizeLocale, resultText } from '@/lib/i18n/ui';
-import { DegradedBanner } from '@/components/degraded-banner';
-import { trackEvent } from '@/lib/analytics/gtag';
+import { useRouter, useParams } from 'next/navigation';
+import { homeText, resultPageText } from '@/lib/i18n/ui';
 
 type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
-type DegradedReason = 'manual' | 'error_ratio' | 'queue_wait' | 'active_jobs' | 'recovered' | 'none';
 
-type JobQueuedResponse = {
-  requestId: string;
-  data: {
-    jobId: string;
-    status: 'queued' | 'processing';
-    progress: number;
-  };
-};
-
-type JobCompletedResponse = {
-  requestId: string;
-  data: {
-    jobId: string;
-    status: 'completed';
-    media: Array<{
-      mediaId: string;
-      type: 'video' | 'audio' | 'image';
-      quality: string;
-      downloadUrl: string;
-      expiresAt: string;
-    }>;
-    warnings: string[];
-  };
-};
-
-type ApiError = {
-  requestId: string;
-  error: {
-    code: string;
-    message: string;
-    details?: {
-      jobId?: string;
-    };
-  };
-};
-
-type HealthResponse = {
-  degraded: boolean;
-  data: {
-    degradedReason: DegradedReason;
-  };
+type JobData = {
+  jobId: string;
+  status: JobStatus;
+  progress?: number;
+  media?: Array<{
+    mediaId: string;
+    type: string;
+    quality: string;
+    downloadUrl: string;
+    expiresAt: string;
+  }>;
+  warnings?: string[];
 };
 
 export default function ResultPage() {
-  const params = useParams<{ jobId: string }>();
-  const search = useSearchParams();
-  const locale = normalizeLocale(search.get('locale'));
-  const l = resultText[locale];
-  const dir = localeDir(locale);
-  const jobId = params.jobId;
+  const params = useParams();
+  const jobId = params.jobId as string;
+  const router = useRouter();
+  const [data, setData] = useState<JobData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const [status, setStatus] = useState<JobStatus>('queued');
-  const [progress, setProgress] = useState<number>(0);
-  const [message, setMessage] = useState(l.loading);
-  const [downloads, setDownloads] = useState<JobCompletedResponse['data']['media']>([]);
-  const [warnings, setWarnings] = useState<string[]>([]);
-  const [degraded, setDegraded] = useState<{ isDegraded: boolean; reason: DegradedReason }>({ isDegraded: false, reason: 'none' });
-
-  const retrySolutionSlug = useMemo(() => 'telegram-video-downloader-not-working', []);
+  const locale = 'en'; // Simple default for now
+  const t = resultPageText[locale as keyof typeof resultPageText] || resultPageText.en;
 
   useEffect(() => {
-    trackEvent('result_view', { locale, jobId });
-  }, [jobId, locale]);
+    if (!jobId) return;
 
-  useEffect(() => {
-    let cancelled = false;
-    const loadHealth = async () => {
-      try {
-        const res = await fetch('/api/v1/health', { method: 'GET' });
-        const payload = (await res.json()) as HealthResponse;
-        if (!cancelled && res.ok) {
-          setDegraded({ isDegraded: payload.degraded, reason: payload.data.degradedReason });
-        }
-      } catch {
-        // no-op
-      }
-    };
-    loadHealth();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    setMessage(l.loading);
-  }, [l.loading]);
-
-  useEffect(() => {
-    let cancelled = false;
-    let timer: number | null = null;
+    let timer: NodeJS.Timeout;
 
     const poll = async () => {
       try {
-        const res = await fetch(`/api/v1/extract/jobs/${jobId}`, { method: 'GET' });
-        const payload = (await res.json()) as JobQueuedResponse | JobCompletedResponse | ApiError;
+        const res = await fetch(`/api/v1/extract/jobs/${jobId}`);
+        const result = await res.json();
 
-        if (!res.ok || !('data' in payload)) {
-          if (!cancelled) {
-            setStatus('failed');
-            setMessage(l.failedToLoad);
+        if (result.success) {
+          setData(result.data);
+          if (result.data.status !== 'completed' && result.data.status !== 'failed') {
+            timer = setTimeout(poll, 2000);
           }
-          return;
+        } else {
+          setError(result.error?.message || 'Failed to fetch job');
         }
-
-        if (payload.data.status === 'completed') {
-          if (!cancelled) {
-            setStatus('completed');
-            setDownloads(payload.data.media);
-            setWarnings(payload.data.warnings);
-            setMessage(l.completed);
-            trackEvent('extract_completed', { locale, jobId, mediaCount: payload.data.media.length });
-          }
-          return;
-        }
-
-        if (!cancelled) {
-          setStatus(payload.data.status);
-          setProgress(payload.data.progress);
-          setMessage(l.polling(payload.data.status));
-          timer = window.setTimeout(poll, 1200);
-        }
-      } catch {
-        if (!cancelled) {
-          setStatus('failed');
-          setMessage(l.networkError);
-        }
+      } catch (err) {
+        setError('Connection error');
       }
     };
 
     poll();
+    return () => clearTimeout(timer);
+  }, [jobId]);
 
-    return () => {
-      cancelled = true;
-      if (timer !== null) window.clearTimeout(timer);
-    };
-  }, [jobId, l, locale]);
+  if (error) {
+    return (
+      <div className="p-8 text-center">
+        <h1 className="text-2xl font-bold text-red-600 mb-4">{t.errorTitle}</h1>
+        <p className="text-gray-600 mb-8">{error}</p>
+        <button 
+          onClick={() => router.push('/')}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        >
+          {t.backToHome}
+        </button>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="p-8 text-center animate-pulse">
+        <p className="text-gray-500">{t.loading}</p>
+      </div>
+    );
+  }
 
   return (
-    <main dir={dir} style={{ maxWidth: 860, margin: '0 auto', padding: 24, fontFamily: 'system-ui, sans-serif' }}>
-      {degraded.isDegraded && <DegradedBanner locale={locale} reason={degraded.reason} />}
+    <div className="max-w-4xl mx-auto p-4 sm:p-8">
+      <header className="mb-8 flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-blue-900">ClipKeep</h1>
+        <button onClick={() => router.push('/')} className="text-blue-600 hover:underline">
+          {t.backToHome}
+        </button>
+      </header>
 
-      <h1 style={{ marginBottom: 8 }}>{l.title}</h1>
-      <p style={{ marginTop: 0, color: '#444' }}>{l.jobIdLabel}: {jobId}</p>
+      <main className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-10">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xl font-semibold text-gray-800">{t.statusTitle}</h2>
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+              data.status === 'completed' ? 'bg-green-100 text-green-700' :
+              data.status === 'failed' ? 'bg-red-100 text-red-700' :
+              'bg-blue-100 text-blue-700'
+            }`}>
+              {t.states[data.status as keyof typeof t.states] || data.status}
+            </span>
+          </div>
+          {data.status !== 'completed' && data.status !== 'failed' && (
+            <div className="w-full bg-gray-100 rounded-full h-2.5">
+              <div 
+                className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" 
+                style={{ width: `${data.progress || 10}%` }}
+              ></div>
+            </div>
+          )}
+        </div>
 
-      <section style={{ border: '1px solid #ddd', borderRadius: 10, padding: 16, background: '#fafafa' }}>
-        <h2 style={{ marginTop: 0 }}>{l.statusLabel}</h2>
-        <p>{message}</p>
-        <ul>
-          <li>{l.stateLabel}: {status}</li>
-          <li>{l.progressLabel}: {progress}%</li>
-        </ul>
-      </section>
-
-      {status === 'completed' && (
-        <section style={{ marginTop: 16, border: '1px solid #eee', borderRadius: 10, padding: 16 }}>
-          <h2 style={{ marginTop: 0 }}>{l.downloads}</h2>
-          {downloads.length === 0 ? (
-            <p>{l.noMedia}</p>
-          ) : (
-            <ul>
-              {downloads.map((m) => (
-                <li key={m.mediaId}>
-                  {m.type} / {m.quality}: <a href={m.downloadUrl}>{m.downloadUrl}</a>
-                </li>
+        {data.status === 'completed' && data.media && data.media.length > 0 && (
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-gray-700">{t.mediaTitle}</h3>
+            <div className="grid gap-4">
+              {data.media.map((item) => (
+                <div key={item.mediaId} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <div>
+                    <p className="font-medium text-gray-900 capitalize">{item.type}</p>
+                    <p className="text-sm text-gray-500">{item.quality}</p>
+                  </div>
+                  <a 
+                    href={item.downloadUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+                  >
+                    {t.download}
+                  </a>
+                </div>
               ))}
-            </ul>
-          )}
-          {warnings.length > 0 && (
-            <>
-              <h3>{l.warnings}</h3>
-              <ul>
-                {warnings.map((w) => (
-                  <li key={w}>{w}</li>
-                ))}
-              </ul>
-            </>
-          )}
-        </section>
-      )}
+            </div>
+          </div>
+        )}
 
-      {status === 'failed' && (
-        <section style={{ marginTop: 16, border: '1px solid #f0c0c0', borderRadius: 10, padding: 16, background: '#fff8f8' }}>
-          <h2 style={{ marginTop: 0 }}>{l.needHelp}</h2>
-          <p>
-            {l.checkSolution}: <a href={`/solution/${retrySolutionSlug}?locale=${locale}`}>/solution/{retrySolutionSlug}</a>
-          </p>
-        </section>
-      )}
-    </main>
+        {data.status === 'completed' && data.warnings && data.warnings.length > 0 && (
+          <div className="mt-8 p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+            <p className="text-sm text-yellow-800 font-medium mb-1">Notice</p>
+            <ul className="list-disc list-inside text-xs text-yellow-700 space-y-1">
+              {data.warnings.map((w, i) => <li key={i}>{w}</li>)}
+            </ul>
+          </div>
+        )}
+      </main>
+    </div>
   );
 }
