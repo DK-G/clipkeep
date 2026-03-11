@@ -43,6 +43,12 @@ type ResultDict = {
   warnings: string;
   needHelp: string;
   checkSolution: string;
+  errorTitle: string;
+  backToHome: string;
+  statusTitle: string;
+  states: Record<string, string>;
+  mediaTitle: string;
+  download: string;
 };
 
 type SolutionDict = {
@@ -57,6 +63,9 @@ type SolutionDict = {
   trustSafety: string;
   trustBody: string;
   internalLinks: string;
+  errorTitle: string;
+  backToHome: string;
+  getStarted: string;
 };
 
 type DegradedDict = {
@@ -124,6 +133,17 @@ export const resultText: Record<Locale, ResultDict> = {
     warnings: "Warnings",
     needHelp: "Need help?",
     checkSolution: "Check solution guidance",
+    errorTitle: "Something went wrong",
+    backToHome: "Back to Home",
+    statusTitle: "Status",
+    states: {
+      queued: "Queued",
+      processing: "Processing",
+      completed: "Completed",
+      failed: "Failed",
+    },
+    mediaTitle: "Media Ready",
+    download: "Download",
   },
   ar: {
     title: "نتيجة الاستخراج",
@@ -141,6 +161,17 @@ export const resultText: Record<Locale, ResultDict> = {
     warnings: "تنبيهات",
     needHelp: "هل تحتاج مساعدة؟",
     checkSolution: "راجع إرشادات الحل",
+    errorTitle: "حدث خطأ ما",
+    backToHome: "العودة للرئيسية",
+    statusTitle: "الحالة",
+    states: {
+      queued: "في الانتظار",
+      processing: "جار المعالجة",
+      completed: "مكتمل",
+      failed: "فشل",
+    },
+    mediaTitle: "الملفات جاهزة",
+    download: "تحميل",
   },
 };
 
@@ -157,6 +188,9 @@ export const solutionText: Record<Locale, SolutionDict> = {
     trustSafety: "Trust / Safety",
     trustBody: "Use only public links and avoid sharing private account credentials.",
     internalLinks: "Internal Links",
+    errorTitle: "Page Not Found",
+    backToHome: "Back to Home",
+    getStarted: "Get Started",
   },
   ar: {
     loading: "جارٍ تحميل صفحة الحل...",
@@ -170,6 +204,9 @@ export const solutionText: Record<Locale, SolutionDict> = {
     trustSafety: "الثقة / الأمان",
     trustBody: "استخدم الروابط العامة فقط وتجنب مشاركة بيانات الدخول الخاصة.",
     internalLinks: "روابط داخلية",
+    errorTitle: "الصفحة غير موجودة",
+    backToHome: "العودة للرئيسية",
+    getStarted: "ابدأ الآن",
   },
 };
 

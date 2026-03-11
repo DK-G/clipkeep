@@ -1,6 +1,3 @@
-export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
-
 import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
 import { findSolutionPage } from "@/lib/solution-pages/store";
