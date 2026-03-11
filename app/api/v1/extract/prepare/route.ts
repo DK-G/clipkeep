@@ -1,4 +1,6 @@
-﻿import { evaluateDegraded } from "@/lib/degraded/evaluator";
+export const runtime = 'edge';
+
+import { evaluateDegraded } from "@/lib/degraded/evaluator";
 import { recordExtractAttempt } from "@/lib/degraded/state";
 import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
