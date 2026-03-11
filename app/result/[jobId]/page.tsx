@@ -1,8 +1,8 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { homeText, resultText } from '@/lib/i18n/ui';
+import { resultText } from '@/lib/i18n/ui';
 
 type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
 
@@ -48,7 +48,7 @@ export default function ResultPage() {
         } else {
           setError(result.error?.message || 'Failed to fetch job');
         }
-      } catch (err) {
+      } catch {
         setError('Connection error');
       }
     };
@@ -147,3 +147,4 @@ export default function ResultPage() {
     </div>
   );
 }
+

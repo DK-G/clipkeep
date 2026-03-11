@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -43,7 +43,7 @@ export default function SolutionPage() {
         } else {
           setError(result.error?.message || 'Page not found');
         }
-      } catch (err) {
+      } catch {
         setError('Connection error');
       }
     };
@@ -103,3 +103,4 @@ export default function SolutionPage() {
     </div>
   );
 }
+
