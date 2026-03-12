@@ -71,3 +71,21 @@ At C:\dev\portfolio\web\clipkeep\scripts\e2e_flow_check.ps1:27 char:96
 - 解釈:
   - レート制限自体は動作。
   - ただし、最新コード（details.source等）を含むデプロイが未反映。
+
+## 2026-03-12 429最適化の最終確認
+- `npm run cf:deploy` 実施（Version ID: `88097e46-a90a-4628-ae52-40ac69f3ea88`）
+- `rate_limit_probe.ps1` 結果:
+  - 429 observed on attempt=31
+  - source=fallback / limit=30 / windowMs=60000
+- `api_integration_tests.ps1`（本番URL）結果:
+  - PASS=11 / FAIL=0 / SKIP=0
+
+### 評価
+- 40リクエスト以内の429到達要件は満たした。
+- DO endpoint自体は応答可能だが、現時点の判定sourceはfallbackのまま。
+
+## 2026-03-12 AdSense運用適用メモ
+- `adsense_ban_prevention.md` を基準に運用導線を実装。
+- フッターに法務リンクを追加（Terms/Privacy/Cookies/DMCA/Contact/Status）。
+- Privacyポリシーに広告/Cookie/同意制御を追記。
+- `docs/ops/adsense_go_live_checklist.md` を追加。

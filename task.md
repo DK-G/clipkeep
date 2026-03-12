@@ -1,8 +1,6 @@
 ﻿# 作業タスクリスト: ClipKeep
 
 ## 作業中 (In Progress)
-- [ ] 429しきい値の本番最適化（RateLimitテスト再設計含む）
-- [ ] AdSense運用ルール適用
 - [ ] 広告実装（軽量配置 + CWV確認）
 - [ ] AR UI最終仕上げ（RTL/文言/SEO）
 
@@ -38,3 +36,5 @@
 - [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
 - [x] P2-26: Post-deploy実行計画と広告/AR運用文書化
 - [x] P2-27: 本番URLでのE2E/法務到達確認
+- [x] P2-28: 429しきい値調整と本番再検証（PASS=11）
+- [x] P2-29: AdSense運用ルール適用（フッター法務導線 + Privacy更新 + 運用チェックシート）
