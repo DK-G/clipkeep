@@ -48,6 +48,9 @@
 - `docs/ops/agent.md`
 - `docs/ops/Gemini.md`
 - `docs/ops/weekly_review_playbook.md`
+- `docs/ops/post_deploy_execution_plan.md`
+- `docs/ops/adsense_ban_prevention.md`
+- `docs/ops/arabic_ui_checklist.md`
 
 ## docs/archive
 - `docs/archive/ANTIGRAVITY.md`

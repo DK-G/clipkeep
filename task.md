@@ -1,13 +1,15 @@
-# 作業タスクリスト: ClipKeep
+﻿# 作業タスクリスト: ClipKeep
 
 ## 作業中 (In Progress)
+- [ ] 429しきい値の本番最適化（RateLimitテスト再設計含む）
+- [ ] AdSense運用ルール適用
+- [ ] 広告実装（軽量配置 + CWV確認）
+- [ ] AR UI最終仕上げ（RTL/文言/SEO）
 
 ## 未着手 (To Do)
 - [ ] Phase4 TikTokバックログのP1項目から着手
 
 ## 完了 (Done)
-- [x] 外部コンソール作業: Cloudflare Pages作成 / D1本番作成 / Secrets投入
-- [x] Cloudflare D1 本番マイグレーション実行
 - [x] Phase 1設計確定
 - [x] P2-01 API基盤セットアップ
 - [x] 計画修正: FactItems不要 / SNS優先順 Telegram -> X -> TikTok後回し
@@ -33,3 +35,6 @@
 - [x] P2-22: E2E 500不具合修正（`solution` / `result` ページ復元）
 - [x] P2-23: 運用Runbook追加（WAF/Bot, D1復旧, 週次レビュー, SNS規約チェック）
 - [x] P2-24: Cloudflare本番セットアップ手順書追加
+- [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
+- [x] P2-26: Post-deploy実行計画と広告/AR運用文書化
+- [x] P2-27: 本番URLでのE2E/法務到達確認

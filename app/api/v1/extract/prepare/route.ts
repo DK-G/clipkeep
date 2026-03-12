@@ -1,4 +1,4 @@
-import { evaluateDegraded } from "@/lib/degraded/evaluator";
+﻿import { evaluateDegraded } from "@/lib/degraded/evaluator";
 import { recordExtractAttempt } from "@/lib/degraded/state";
 import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   const clientKey = getClientKey(request);
   const rate = await checkExtractRateLimit(clientKey);
   if (rate.limited) {
-    return failure({
+    const res = failure({
       status: 429,
       requestId,
       error: {
@@ -42,9 +42,16 @@ export async function POST(request: Request) {
         message: "Too many requests. Please retry later.",
         details: {
           retryAfterSec: rate.retryAfterSec,
+          source: rate.source,
+          limit: rate.limit,
+          windowMs: rate.windowMs,
         },
       },
     });
+    res.headers.set("x-rate-limit-source", rate.source);
+    res.headers.set("x-rate-limit-limit", String(rate.limit));
+    res.headers.set("x-rate-limit-window-ms", String(rate.windowMs));
+    return res;
   }
 
   const degraded = evaluateDegraded();
@@ -137,3 +144,4 @@ export async function POST(request: Request) {
     },
   });
 }
+

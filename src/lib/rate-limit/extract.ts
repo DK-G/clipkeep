@@ -1,5 +1,5 @@
-﻿const WINDOW_MS = 60_000;
-const LIMIT_PER_WINDOW = 30;
+﻿const WINDOW_MS = parseInt(process.env.RATE_LIMIT_WINDOW_MS ?? "60000", 10);
+const LIMIT_PER_WINDOW = parseInt(process.env.RATE_LIMIT_LIMIT ?? "30", 10);
 
 type Bucket = {
   timestamps: number[];
@@ -46,14 +46,25 @@ async function checkViaEndpoint(endpoint: string, key: string): Promise<{ limite
   }
 }
 
-export async function checkExtractRateLimit(key: string): Promise<{ limited: boolean; retryAfterSec: number }> {
+export type RateLimitResult = {
+  limited: boolean;
+  retryAfterSec: number;
+  source: 'do' | 'fallback';
+  limit: number;
+  windowMs: number;
+};
+
+export async function checkExtractRateLimit(key: string): Promise<RateLimitResult> {
   const endpoint = process.env.RATE_LIMIT_DO_ENDPOINT?.trim();
   if (endpoint) {
     const fromDo = await checkViaEndpoint(endpoint, key);
-    if (fromDo) return fromDo;
+    if (fromDo) {
+      return { ...fromDo, source: 'do', limit: LIMIT_PER_WINDOW, windowMs: WINDOW_MS };
+    }
   }
 
-  return checkInMemory(key);
+  const local = checkInMemory(key);
+  return { ...local, source: 'fallback', limit: LIMIT_PER_WINDOW, windowMs: WINDOW_MS };
 }
 
 export function getClientKey(request: Request): string {

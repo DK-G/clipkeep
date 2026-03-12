@@ -1,19 +1,22 @@
-# 変更報告書 (Diff)
+﻿# 変更報告書 (Diff)
 
 ## 1. 変更目的
-- Cloudflare Pagesへの本番環境デプロイとD1データベースの本番マイグレーションを実施するため。
+- 本番で429しきい値を調整可能にし、DO連携有無を可視化する。
 
 ## 2. 変更概要
-- Cloudflare Pages プロジェクト作成と設定更新
-- D1 データベース（clipkeep-db）作成とマイグレーションの実行
-- Gitリポジトリ（DK-G/clipkeep）のセットアップとプッシュ
-- `wrangler.toml` および `tsconfig.json` の修正
+- 更新ファイル:
+  - `src/lib/rate-limit/extract.ts`
+  - `app/api/v1/extract/prepare/route.ts`
+  - `.env.example`
+  - `docs/infra/rate_limit_do_setup.md`
+  - `diff.md`（本ファイル）
+  - `Changelog.md`
 
 ## 3. 実施内容
-- `wrangler.toml` に `pages_build_output_dir` 追記、本番用 `database_id` の反映
-- Next.js ビルドエラー解消のため `tsconfig.json` の `exclude` に `workers` 追加
-- 本番 D1 データベースへのスキーママイグレーション(`db_schema.sql`)適用
-- 関連ドキュメント（`external_prerequisites.md`, `task.md`, `Changelog.md`）の完了ステータス更新
+- レート制限の `limit/windowMs` を環境変数化。
+- 429レスポンスに `source/do|fallback` と `limit/windowMs` を追加。
+- 運用手順書に調整パラメータと検証観点を追加。
 
 ## 4. 次の作業
-- （設定完了にあたり、必要に応じた動作テストとドメイン正規化の確認）
+- 本番環境変数に `RATE_LIMIT_LIMIT` / `RATE_LIMIT_WINDOW_MS` を設定して再デプロイ。
+- 本番テストで `error.details.source=do` を確認し、429到達を再検証。
