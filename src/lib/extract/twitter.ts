@@ -4,73 +4,76 @@ export type TwitterMedia = {
   thumbUrl?: string;
 };
 
+/**
+ * Extracts Twitter/X media by scraping metadata from "fixer" services (fxtwitter/vxtwitter).
+ * This approach uses a crawler-like User-Agent to retrieve the same direct media links
+ * used for social media link unfurling.
+ */
 export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]> {
   try {
-    // Normalize URL for vxtwitter API
-    // Expected: https://api.vxtwitter.com/status/123... or https://api.vxtwitter.com/user/status/123...
-    // The API documentation suggests https://api.vxtwitter.com/Twitter/status/1278747479005319169
-    
     const url = new URL(sourceUrl);
     const pathParts = url.pathname.split("/").filter(Boolean);
     
-    // Path should be like [user, "status", id] or just ["status", id]
+    // Extract status ID from URL
     let statusId = "";
     if (pathParts.includes("status")) {
       statusId = pathParts[pathParts.indexOf("status") + 1];
+    } else if (pathParts.length === 1 && /^\d+$/.test(pathParts[0])) {
+      // Direct ID
+      statusId = pathParts[0];
     }
 
     if (!statusId) {
       throw new Error("Invalid Twitter status URL");
     }
 
-    // Use vxtwitter API for extraction. Username is required by some fixers, using 'Twitter' as placeholder.
-    const apiUrl = `https://api.vxtwitter.com/Twitter/status/${statusId}`;
+    // Use fxtwitter.com for scraping. It is generally very robust with metadata.
+    // Use TelegramBot User-Agent to trigger SSR of meta tags.
+    const scrapeUrl = `https://fxtwitter.com/i/status/${statusId}`;
     
-    const res = await fetch(apiUrl, {
+    console.log(`Scraping Twitter metadata from: ${scrapeUrl}`);
+    
+    const res = await fetch(scrapeUrl, {
       headers: {
-        "User-Agent": "ClipKeepBot/1.0",
-        "Accept": "application/json",
+        "User-Agent": "TelegramBot (like TwitterBot)",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       },
     });
 
     if (!res.ok) {
-      throw new Error(`vxtwitter API failed with status ${res.status}`);
+      throw new Error(`Twitter fixer service failed with status ${res.status}`);
     }
 
-    interface VxTwitterResponse {
-      media_extended?: Array<{
-        type: "video" | "image" | "gif";
-        url: string;
-        thumbnail_url?: string;
-      }>;
-    }
-
-    const data = await res.json() as VxTwitterResponse;
+    const html = await res.text();
     const results: TwitterMedia[] = [];
 
-    if (data.media_extended && Array.isArray(data.media_extended)) {
-      for (const m of data.media_extended) {
-        if (m.type === "video") {
-          results.push({
-            type: "video",
-            url: m.url,
-            thumbUrl: m.thumbnail_url,
-          });
-        } else if (m.type === "image") {
-          results.push({
-            type: "image",
-            url: m.url,
-          });
-        } else if (m.type === "gif") {
-          results.push({
-            type: "video", // GIFs are often returned as MP4s
-            url: m.url,
-            thumbUrl: m.thumbnail_url,
-          });
-        }
-      }
+    // Helper to find meta tags
+    const findMeta = (property: string) => {
+      const regex = new RegExp(`<meta\\s+(?:property|name)="${property}"\\s+content="([^"]+)"`, "i") ||
+                    new RegExp(`<meta\\s+content="([^"]+)"\\s+(?:property|name)="${property}"`, "i");
+      const match = html.match(regex);
+      return match ? match[1] : null;
+    };
+
+    // Extract Video
+    const videoUrl = findMeta("og:video") || findMeta("og:video:url") || findMeta("twitter:player:stream");
+    const thumbUrl = findMeta("og:image") || findMeta("twitter:image");
+
+    if (videoUrl) {
+      results.push({
+        type: "video",
+        url: videoUrl,
+        thumbUrl: thumbUrl || undefined,
+      });
+    } else if (thumbUrl) {
+      // Fallback to image if no video found
+      results.push({
+        type: "image",
+        url: thumbUrl,
+      });
     }
 
+    console.log(`Extracted ${results.length} media items from Twitter.`);
     return results;
   } catch (error) {
     console.error("Twitter extraction error:", error);
