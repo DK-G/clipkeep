@@ -21,49 +21,58 @@ function TelegramDownloaderContent() {
   };
 
   return (
-    <main dir={dir} style={{ maxWidth: 860, margin: '0 auto', padding: '40px 24px', fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1a1a1a', lineHeight: 1.6 }}>
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', letterSpacing: '-0.02em' }}>{t.title}</h1>
-      <p style={{ fontSize: '1.2rem', color: '#444', marginBottom: '2rem' }}>
-        {t.subtitle}
-      </p>
+    <main dir={dir} className="max-w-4xl mx-auto px-6 py-12">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">{t.title}</h1>
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          {t.subtitle}
+        </p>
+      </div>
 
-      <div style={{ marginBottom: '3rem' }}>
-        <ExtractorForm platform="telegram" onStatusChange={handleStatusChange} />
+      <div className="mb-16">
+        <ExtractorForm platform="telegram" locale={locale} onStatusChange={handleStatusChange} />
         
         <AdsterraNative />
 
-        <div style={{ marginTop: '12px', padding: '12px', borderRadius: '8px', backgroundColor: '#f9f9f9', fontSize: '0.9rem' }}>
-          <strong>{t.statusLabel}:</strong> {message}
-          {helpSlug && <span style={{ marginLeft: 8 }}>| View Guide: <a href={`/solution/${helpSlug}`}>/solution/{helpSlug}</a></span>}
+        <div className="mt-6 p-4 rounded-xl bg-gray-50 border border-gray-100 text-sm text-gray-600">
+          <span className="font-bold mr-2">{t.statusLabel}:</span>
+          <span>{message}</span>
+          {helpSlug && (
+            <span className="mx-2">
+              | {t.helpPage}: <a href={`/solution/${helpSlug}?locale=${locale}`} className="text-blue-600 hover:underline">/solution/{helpSlug}</a>
+            </span>
+          )}
         </div>
       </div>
 
-      <section style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '1.8rem', borderBottom: '2px solid #f0f0f0', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>{t.howToTitle}</h2>
-        <ol style={{ paddingLeft: '20px', paddingRight: dir === 'rtl' ? '20px' : '0' }}>
-          {t.howToSteps.map((step, i) => (
-            <li key={i} style={{ marginBottom: '12px' }}>{step}</li>
-          ))}
-        </ol>
-      </section>
+      <div className="grid md:grid-cols-2 gap-12 text-gray-700">
+        <section className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+          <h2 className="text-2xl font-bold mb-6 pb-2 border-b-2 border-blue-50">{t.howToTitle}</h2>
+          <ol className="space-y-4 list-decimal pl-5">
+            {t.howToSteps.map((step, i) => (
+              <li key={i} className="leading-relaxed">{step}</li>
+            ))}
+          </ol>
+        </section>
 
-      <section style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '1.8rem', borderBottom: '2px solid #f0f0f0', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>{t.whyTitle}</h2>
-        <p>{t.whyBody}</p>
-        <ul style={{ paddingLeft: '20px', paddingRight: dir === 'rtl' ? '20px' : '0' }}>
-          {t.whyPoints.map((point, i) => (
-            <li key={i} style={{ marginBottom: '8px' }}>{point}</li>
-          ))}
-        </ul>
-      </section>
+        <section className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+          <h2 className="text-2xl font-bold mb-6 pb-2 border-b-2 border-blue-50">{t.whyTitle}</h2>
+          <p className="mb-4 text-gray-600">{t.whyBody}</p>
+          <ul className="space-y-3 list-disc pl-5">
+            {t.whyPoints.map((point, i) => (
+              <li key={i} className="leading-relaxed">{point}</li>
+            ))}
+          </ul>
+        </section>
+      </div>
 
-      <section>
-        <h2 style={{ fontSize: '1.8rem', borderBottom: '2px solid #f0f0f0', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>{t.faqTitle}</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <section className="mt-16 bg-gray-50 p-8 rounded-3xl">
+        <h2 className="text-2xl font-bold mb-8 text-center">{t.faqTitle}</h2>
+        <div className="grid md:grid-cols-2 gap-8">
           {t.faqItems.map((item, i) => (
-            <div key={i}>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '4px' }}>{item.q}</h3>
-              <p style={{ margin: 0, color: '#555' }}>{item.a}</p>
+            <div key={i} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <h3 className="text-lg font-bold mb-3 text-gray-900">{item.q}</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">{item.a}</p>
             </div>
           ))}
         </div>

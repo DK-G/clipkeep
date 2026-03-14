@@ -114,6 +114,7 @@ type PlatformPageDict = {
   title: string;
   subtitle: string;
   statusLabel: string;
+  helpPage: string;
   howToTitle: string;
   howToSteps: string[];
   whyTitle: string;
@@ -211,6 +212,7 @@ export const telegramText: Record<Locale, PlatformPageDict> = {
     title: "Telegram Video Downloader",
     subtitle: "Download videos, files, and media from Telegram channels and groups quickly and securely.",
     statusLabel: "Status",
+    helpPage: "Help Page",
     howToTitle: "How to Download Telegram Videos",
     howToSteps: [
       "Copy the Telegram Link: Open Telegram, right-click (or long-press) on the video or post, and select \"Copy Post Link\".",
@@ -235,6 +237,7 @@ export const telegramText: Record<Locale, PlatformPageDict> = {
     title: "محمل فيديوهات تيليجرام",
     subtitle: "قم بتنزيل مقاطع الفيديو والملفات والوسائط من قنوات ومجموعات تيليجرام بسرعة وأمان.",
     statusLabel: "الحالة",
+    helpPage: "صفحة المساعدة",
     howToTitle: "كيفية تنزيل فيديوهات تيليجرام",
     howToSteps: [
       "انسخ رابط تيليجرام: افتح تيليجرام، انقر بزر الماوس الأيمن (أو اضغط مطولًا) على الفيديو أو المنشور، واختر \"نسخ رابط المنشور\".",
@@ -259,6 +262,7 @@ export const telegramText: Record<Locale, PlatformPageDict> = {
     title: "Telegram 動画ダウンローダー",
     subtitle: "Telegramの動画やメディアを、素早く安全にデバイスへ保存します。",
     statusLabel: "ステータス",
+    helpPage: "ヘルプページ",
     howToTitle: "Telegram動画の保存方法",
     howToSteps: [
       "リンクをコピー: Telegramで動画や投稿を長押し（または右クリック）し、「投稿リンクをコピー」を選択します。",
@@ -286,6 +290,7 @@ export const twitterText: Record<Locale, PlatformPageDict> = {
     title: "Twitter (X) Video Downloader",
     subtitle: "The fastest way to archive videos and GIFs from X/Twitter directly to your device.",
     statusLabel: "Status",
+    helpPage: "Help Page",
     howToTitle: "How to Save Twitter Videos",
     howToSteps: [
       "Find the Post: Navigate to the X/Twitter post containing the video or GIF.",
@@ -310,6 +315,7 @@ export const twitterText: Record<Locale, PlatformPageDict> = {
     title: "محمل فيديوهات تويتر (X)",
     subtitle: "أسرع طريقة لأرشفة مقاطع الفيديو والصور المتحركة (GIF) من X/تويتر مباشرة إلى جهازك.",
     statusLabel: "الحالة",
+    helpPage: "صفحة المساعدة",
     howToTitle: "كيفية حفظ فيديوهات تويتر",
     howToSteps: [
       "ابحث عن المنشور: انتقل إلى منشور X/تويتر الذي يحتوي على الفيديو أو الصورة المتحركة.",
@@ -334,6 +340,7 @@ export const twitterText: Record<Locale, PlatformPageDict> = {
     title: "Twitter (X) 動画ダウンローダー",
     subtitle: "X/Twitterの動画やGIFを最速でデバイスにアーカイブします。",
     statusLabel: "ステータス",
+    helpPage: "ヘルプページ",
     howToTitle: "Twitter動画の保存方法",
     howToSteps: [
       "投稿を探す: 動画やGIFが含まれるX/Twitterの投稿に移動します。",
@@ -361,6 +368,7 @@ export const tiktokText: Record<Locale, PlatformPageDict> = {
     title: "TikTok Media Downloader",
     subtitle: "Efficiently archive your favorite TikTok moments for offline viewing and content curation.",
     statusLabel: "Status",
+    helpPage: "Help Page",
     note: "Note: Early Access",
     noteBody: "TikTok extraction is currently in limited early access. Some features may be restricted.",
     howToTitle: "How to Download TikTok Content",
@@ -382,6 +390,7 @@ export const tiktokText: Record<Locale, PlatformPageDict> = {
     title: "محمل وسائط تيك توك",
     subtitle: "أرشفة لحظات تيك توك المفضلة لديك بكفاءة للمشاهدة دون اتصال بالإنترنت وتنسيق المحتوى.",
     statusLabel: "الحالة",
+    helpPage: "صفحة المساعدة",
     note: "ملاحظة: وصول مبكر",
     noteBody: "استخراج تيك توك حاليًا في مرحلة الوصول المبكر المحدود. قد تكون بعض الميزات مقيدة.",
     howToTitle: "كيفية تنزيل محتوى تيك توك",
@@ -403,6 +412,7 @@ export const tiktokText: Record<Locale, PlatformPageDict> = {
     title: "TikTok メディアダウンローダー",
     subtitle: "オフライン視聴やコンテンツ制作のために、お気に入りのTikTokを効率的に保存。",
     statusLabel: "ステータス",
+    helpPage: "ヘルプページ",
     note: "注意: 早期アクセス",
     noteBody: "TikTok抽出機能は現在テスト運用中です。一部の機能が制限される場合があります。",
     howToTitle: "TikTokのダウンロード方法",
