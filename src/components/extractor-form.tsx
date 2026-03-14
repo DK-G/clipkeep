@@ -2,7 +2,7 @@
 
 import { FormEvent, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { homeText } from '@/lib/i18n/ui';
+import { homeText, Locale } from '@/lib/i18n/ui';
 import { trackEvent } from '@/lib/analytics/gtag';
 
 export type Platform = 'telegram' | 'twitter' | 'tiktok';
@@ -31,7 +31,7 @@ type ApiError = {
 
 interface ExtractorFormProps {
   platform?: Platform;
-  locale?: 'en' | 'ar';
+  locale?: Locale;
   onStatusChange?: (message: string, helpSlug: string | null, retryAfterSec: number | undefined) => void;
 }
 

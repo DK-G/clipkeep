@@ -1,7 +1,9 @@
-export type Locale = "en" | "ar";
+export type Locale = "en" | "ar" | "ja";
 
 export function normalizeLocale(value: string | null | undefined): Locale {
-  return value === "ar" ? "ar" : "en";
+  if (value === "ja") return "ja";
+  if (value === "ar") return "ar";
+  return "en";
 }
 
 export function localeDir(locale: Locale): "ltr" | "rtl" {
@@ -16,6 +18,7 @@ type HomeDict = {
   localeLabel: string;
   localeEn: string;
   localeAr: string;
+  localeJa: string;
   submit: string;
   submitting: string;
   status: string;
@@ -131,6 +134,7 @@ export const homeText: Record<Locale, HomeDict> = {
     localeLabel: "Locale",
     localeEn: "English",
     localeAr: "Arabic (RTL)",
+    localeJa: "Japanese",
     submit: "Start Extract",
     submitting: "Submitting...",
     status: "Status",
@@ -156,6 +160,7 @@ export const homeText: Record<Locale, HomeDict> = {
     localeLabel: "اللغة",
     localeEn: "الإنجليزية",
     localeAr: "العربية (RTL)",
+    localeJa: "اليابانية",
     submit: "ابدأ الاستخراج",
     submitting: "جارٍ الإرسال...",
     status: "الحالة",
@@ -172,6 +177,32 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterDesc: "أرشف الفيديوهات والصور المتحركة من منشورات X/تويتر فوراً.",
     tiktokTitle: "محمل فيديوهات تيك توك",
     tiktokDesc: "قم بتنزيل فيديوهات وصور تيك توك للأرشفة في وضع عدم الاتصال."
+  },
+  ja: {
+    title: "ClipKeep 多機能ダウンローダー",
+    subtitle: "TelegramとX/Twitterの動画を簡単に保存。TikTokも対応予定。",
+    platformLabel: "プラットフォーム",
+    sourceUrlLabel: "動画URL",
+    localeLabel: "言語",
+    localeEn: "英語",
+    localeAr: "アラビア語",
+    localeJa: "日本語",
+    submit: "抽出を開始",
+    submitting: "送信中...",
+    status: "ステータス",
+    initialMessage: "TelegramまたはXの投稿URLを貼り付けて開始してください。",
+    creatingJob: "抽出ジョブを作成中...",
+    degradedMessage: "現在抽出機能が制限されています。解決ガイドを確認してください。",
+    invalidRequest: "リクエストに失敗しました。URLとプラットフォームを確認してください。",
+    networkError: "ネットワークエラーが発生しました。",
+    helpPage: "ヘルプページ",
+    supportedTools: "対応ツール",
+    telegramTitle: "Telegram ダウンローダー",
+    telegramDesc: "Telegramのチャンネルやグループから動画やメディアを保存します。",
+    twitterTitle: "Twitter (X) ダウンローダー",
+    twitterDesc: "X/Twitterの投稿から動画やGIFを瞬時にアーカイブします。",
+    tiktokTitle: "TikTok ダウンローダー",
+    tiktokDesc: "オフライン保存用にTikTokの動画や画像をダウンロードします。"
   },
 };
 
@@ -222,6 +253,30 @@ export const telegramText: Record<Locale, PlatformPageDict> = {
     faqItems: [
       { q: "هل يمكنني التنزيل من القنوات الخاصة؟", a: "يدعم ClipKeep الروابط العامة فقط. الوصول للمحتوى الخاص محمي بسياسات توثيق تيليجرام." },
       { q: "هل هناك حد لحجم الملفات؟", a: "ندعم معظم الأحجام الشائعة. الملفات الضخمة جدًا (أكثر من 2 جيجابايت) قد تواجه مهلة زمنية." }
+    ]
+  },
+  ja: {
+    title: "Telegram 動画ダウンローダー",
+    subtitle: "Telegramの動画やメディアを、素早く安全にデバイスへ保存します。",
+    statusLabel: "ステータス",
+    howToTitle: "Telegram動画の保存方法",
+    howToSteps: [
+      "リンクをコピー: Telegramで動画や投稿を長押し（または右クリック）し、「投稿リンクをコピー」を選択します。",
+      "リンクを貼り付け: コピーしたURLを上記の入力フィールドに貼り付けます。",
+      "抽出を開始: 「抽出を開始」ボタンをクリックすると、ClipKeepが処理を開始します。",
+      "保存して完了: 抽出完了後、ダウンロードボタンからメディアを保存します。"
+    ],
+    whyTitle: "なぜClipKeepを選ぶのか？",
+    whyBody: "Telegramの動画保存は公式アプリでは時間がかかることがありますが、ClipKeepは高速かつ安定した接続を提供します。",
+    whyPoints: [
+      "プライバシー重視: ユーザーのダウンロード履歴は一切記録しません。",
+      "会員登録不要: アカウント作成なしで、今すぐダウンロードを開始できます。",
+      "マルチデバイス対応: Windows、Mac、Android、iOSの全てで動作します。"
+    ],
+    faqTitle: "よくある質問",
+    faqItems: [
+      { q: "プライベートチャネルからダウンロードできますか？", a: "ClipKeepは公開リンクのみ対応しています。鍵付きのチャネルは対応外です。" },
+      { q: "ファイルサイズに制限はありますか？", a: "一般的なサイズに対応していますが、2GBを超えるファイルはタイムアウトの可能性があります。" }
     ]
   }
 };
@@ -274,6 +329,30 @@ export const twitterText: Record<Locale, PlatformPageDict> = {
       { q: "هل يمكنني تنزيل التغريدات الخاصة؟", a: "لا. يدعم ClipKeep استخراج الوسائط العامة فقط." },
       { q: "ما هي جودة الفيديو؟", a: "يستخرِج ClipKeep أعلى معدل بث متاح توفره المنصة." }
     ]
+  },
+  ja: {
+    title: "Twitter (X) 動画ダウンローダー",
+    subtitle: "X/Twitterの動画やGIFを最速でデバイスにアーカイブします。",
+    statusLabel: "ステータス",
+    howToTitle: "Twitter動画の保存方法",
+    howToSteps: [
+      "投稿を探す: 動画やGIFが含まれるX/Twitterの投稿に移動します。",
+      "リンクをコピー: 共有アイコンをクリックし、「リンクをコピー」を選択します。",
+      "ClipKeepで抽出: 上記のフォームにURLを貼り付け、「抽出を開始」をクリックします。",
+      "ダウンロード: 処理が完了したら、ダウンロードボタンから保存します。"
+    ],
+    whyTitle: "ClipKeepを使うメリット",
+    whyBody: "Xのメディア保存はクリエイターやジャーナリストにとって重要です。ClipKeepはスピードに特化したクリーンな体験を提供します。",
+    whyPoints: [
+      "動画とGIFに対応: Xに投稿されたあらゆるメディア形式を抽出可能です。",
+      "高速な処理: Cloudflareを活用したバックエンドにより、遅延を最小限に抑えます。",
+      "安全な接続: アカウント情報やパスワードの入力は一切不要です。"
+    ],
+    faqTitle: "よくある質問",
+    faqItems: [
+      { q: "鍵垢（非公開投稿）からダウンロードできますか？", a: "いいえ。ClipKeepは公開されているメディアのみ対応しています。" },
+      { q: "動画の画質はどうなりますか？", a: "ClipKeepはプラットフォームが提供する最高画質のリンクを抽出します。" }
+    ]
   }
 };
 
@@ -319,6 +398,27 @@ export const tiktokText: Record<Locale, PlatformPageDict> = {
       { q: "هل يتم إزالة العلامة المائية؟", a: "نهدف لتوفير المسار الأكثر مباشرة، مما يعني غالبًا عدم وجود إضافات." },
       { q: "هل يمكنني تنزيل عروض شرائح تيك توك؟", a: "دعم عروض الشرائح محدود حاليًا." }
     ]
+  },
+  ja: {
+    title: "TikTok メディアダウンローダー",
+    subtitle: "オフライン視聴やコンテンツ制作のために、お気に入りのTikTokを効率的に保存。",
+    statusLabel: "ステータス",
+    note: "注意: 早期アクセス",
+    noteBody: "TikTok抽出機能は現在テスト運用中です。一部の機能が制限される場合があります。",
+    howToTitle: "TikTokのダウンロード方法",
+    howToSteps: [
+      "動画ページへ移動: TikTokアプリまたはサイトで、保存したい動画の「リンクをコピー」をクリックします。",
+      "ClipKeepに貼り付け: 上記のフォームにURLを貼り付けます。",
+      "保存して完了: 処理が完了すると、動画の保存リンクが表示されます。"
+    ],
+    whyTitle: "プロフェッショナルな保存環境",
+    whyBody: "マーケターやクリエイターにとって、トレンドをアーカイブすることは重要です。ClipKeepはそれをシンプルにします。",
+    whyPoints: [],
+    faqTitle: "よくある質問",
+    faqItems: [
+      { q: "透かし（ロゴ）は除去されますか？", a: "可能な限りオリジナルの動画を取得するため、多くの場合ロゴなしでの保存が可能です。" },
+      { q: "スライドショーはダウンロードできますか？", a: "スライドショー形式は現在一部制限があります。" }
+    ]
   }
 };
 
@@ -344,6 +444,17 @@ export const footerText: Record<Locale, FooterDict> = {
     contact: "اتصل بنا",
     status: "الحالة",
     adsDisclaimer: "الإعلانات، عند تمكينها، يتم تصنيفها كمحتوى ممول."
+  },
+  ja: {
+    about: "このサイトについて",
+    faq: "よくある質問",
+    terms: "利用規約",
+    privacy: "プライバシーポリシー",
+    cookies: "Cookie設定",
+    dmca: "著作権報告",
+    contact: "お問い合わせ",
+    status: "サービス状況",
+    adsDisclaimer: "広告が表示される場合は、スポンサーコンテンツとして識別されます。"
   }
 };
 
@@ -390,6 +501,28 @@ export const statusText: Record<Locale, StatusDict> = {
       title: "عطل كبير",
       body: "نواجه حالياً عطلاً كبيراً يؤثر على وظائف الاستخراج الأساسية. فريقنا يحقق في الأمر وإجراءات الاستعادة جارية.",
       nextUpdate: "التحديث القادم: خلال 15 دقيقة."
+    }
+  },
+  ja: {
+    title: "稼働状況",
+    liveHealth: "APIの正常性",
+    currentTitle: "現在",
+    currentBody: "全ての主要サービスは正常に動作しています。",
+    incidentTitle: "過去のインシデント",
+    partialDegradation: {
+      title: "一部機能制限",
+      body: "現在、メディアの抽出リクエストで断続的なエラーが発生しています。エンジニアが調査および修正を行っています。",
+      nextUpdate: "次回の更新：30分以内"
+    },
+    scheduledMaintenance: {
+      title: "定期メンテナンス",
+      body: "現在サービス向上のため定期メンテナンスを行っています。一部の機能に影響が出る場合があります。",
+      window: "予定時間：00:00-01:00 UTC"
+    },
+    majorOutage: {
+      title: "重大な障害",
+      body: "現在システム全体に及ぶ重大な障害が発生しています。復旧に向けて全力で作業中です。",
+      nextUpdate: "次回の更新：15分以内"
     }
   }
 };
@@ -451,6 +584,34 @@ export const resultText: Record<Locale, ResultDict> = {
     mediaTitle: "الملفات جاهزة",
     download: "تحميل",
   },
+  ja: {
+    title: "抽出結果",
+    jobIdLabel: "ジョブID",
+    statusLabel: "ステータス",
+    stateLabel: "状態",
+    progressLabel: "進捗",
+    loading: "読み込み中...",
+    failedToLoad: "読み込みに失敗しました。",
+    completed: "抽出が完了しました。",
+    polling: (status) => `${status}中...`,
+    networkError: "ステータス確認中にエラーが発生しました。",
+    downloads: "保存リンク",
+    noMedia: "メディアが見つかりませんでした。",
+    warnings: "警告",
+    needHelp: "お困りですか？",
+    checkSolution: "解決ガイドを確認",
+    errorTitle: "エラーが発生しました",
+    backToHome: "ホームへ戻る",
+    statusTitle: "状況",
+    states: {
+      queued: "待機中",
+      processing: "処理中",
+      completed: "完了",
+      failed: "失敗",
+    },
+    mediaTitle: "保存準備完了",
+    download: "ダウンロード",
+  }
 };
 
 export const solutionText: Record<Locale, SolutionDict> = {
@@ -486,6 +647,22 @@ export const solutionText: Record<Locale, SolutionDict> = {
     backToHome: "العودة للرئيسية",
     getStarted: "ابدأ الآن",
   },
+  ja: {
+    loading: "読み込み中...",
+    title: "解決ガイド",
+    notFound: "ページが見つかりませんでした。",
+    networkError: "接続エラーが発生しました。",
+    heroSubtitle: "抽出エラーの具体的な対処方法です。",
+    quickAnswer: "クイックアンサー",
+    quickFallback: "以下の手順に従って解決をお試しください。",
+    stepByStep: "ステップガイド",
+    trustSafety: "安全性について",
+    trustBody: "ClipKeepでは公開URLのみを使用し、アカウントのPW等を求めることはありません。",
+    internalLinks: "関連リンク",
+    errorTitle: "404 Not Found",
+    backToHome: "ホームへ戻る",
+    getStarted: "今すぐ試す",
+  }
 };
 
 export const degradedText: Record<Locale, DegradedDict> = {
@@ -517,6 +694,21 @@ export const degradedText: Record<Locale, DegradedDict> = {
       active_jobs: 'عدد المهام النشطة مرتفع',
       recovered: 'تمت الاستعادة',
       none: 'تحت المراقبة',
+    },
+  },
+  ja: {
+    title: 'サービス制限モード',
+    body: '現在一部のリクエストが制限されています。',
+    reasonLabel: '理由',
+    retryAfter: '推奨される再試行時間',
+    openGuide: 'リカバリーガイドを開く',
+    reasons: {
+      manual: '手動オーバーライド',
+      error_ratio: 'エラー率の上昇',
+      queue_wait: '待機時間の超過',
+      active_jobs: '同時処理数の上限',
+      recovered: '復旧済み',
+      none: '監視中',
     },
   },
 };

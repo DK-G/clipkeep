@@ -48,6 +48,7 @@ const organizationJsonLd = {
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { Footer } from '@/components/footer';
 import { AdsterraAds } from '@/components/ads/adsterra';
+import { LocaleUpdater } from '@/components/locale-updater';
 
 export default function RootLayout({
   children,
@@ -55,8 +56,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html>
       <body style={{ margin: 0, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+        <Suspense fallback={null}>
+          <LocaleUpdater />
+        </Suspense>
         <AdsterraAds />
         {gaId && (
           <>

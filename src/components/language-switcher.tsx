@@ -38,6 +38,16 @@ export function LanguageSwitcher() {
       >
         العربية
       </button>
+      <button
+        onClick={() => toggleLocale('ja')}
+        className={`px-3 py-1 text-sm font-medium rounded-md transition ${
+          currentLocale === 'ja' 
+            ? 'bg-black text-white' 
+            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+        }`}
+      >
+        日本語
+      </button>
     </div>
   );
 }
