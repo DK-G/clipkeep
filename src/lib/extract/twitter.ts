@@ -37,7 +37,15 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
       throw new Error(`vxtwitter API failed with status ${res.status}`);
     }
 
-    const data = await res.json() as any;
+    interface VxTwitterResponse {
+      media_extended?: Array<{
+        type: "video" | "image" | "gif";
+        url: string;
+        thumbnail_url?: string;
+      }>;
+    }
+
+    const data = await res.json() as VxTwitterResponse;
     const results: TwitterMedia[] = [];
 
     if (data.media_extended && Array.isArray(data.media_extended)) {
