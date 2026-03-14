@@ -1,4 +1,5 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 
@@ -44,6 +45,10 @@ const organizationJsonLd = {
   url: siteUrl,
 };
 
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { Footer } from '@/components/footer';
+import { AdsterraAds } from '@/components/ads/adsterra';
+
 export default function RootLayout({
   children,
 }: {
@@ -51,7 +56,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body style={{ margin: 0, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+        <AdsterraAds />
         {gaId && (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
@@ -62,18 +68,20 @@ export default function RootLayout({
         )}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+        
+        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+          <div style={{ maxWidth: 980, margin: '0 auto', padding: '12px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Link href="/" style={{ fontSize: 20, fontWeight: 'bold', textDecoration: 'none', color: '#000' }}>
+              ClipKeep
+            </Link>
+            <Suspense fallback={<div className="w-20 h-8 bg-gray-50 animate-pulse rounded-md" />}>
+              <LanguageSwitcher />
+            </Suspense>
+          </div>
+        </header>
+
         {children}
-        <footer style={{ maxWidth: 980, margin: '32px auto 24px', padding: '0 24px', fontSize: 13, color: '#555' }}>
-          <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 8 }}>
-            <Link href="/legal/terms">Terms</Link>
-            <Link href="/legal/privacy">Privacy</Link>
-            <Link href="/legal/cookies">Cookies</Link>
-            <Link href="/legal/dmca">DMCA</Link>
-            <Link href="/contact">Contact</Link>
-            <Link href="/status">Status</Link>
-          </nav>
-          <p style={{ margin: 0 }}>Ads, when enabled, are labeled as sponsored content.</p>
-        </footer>
+        <Footer />
       </body>
     </html>
   );

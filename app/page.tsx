@@ -1,35 +1,13 @@
-﻿'use client';
+'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { homeText, localeDir, normalizeLocale } from '@/lib/i18n/ui';
 import { DegradedBanner } from '@/components/degraded-banner';
-import { trackEvent } from '@/lib/analytics/gtag';
+import { ExtractorForm } from '@/components/extractor-form';
+import Link from 'next/link';
 
-type Platform = 'telegram' | 'twitter' | 'tiktok';
 type DegradedReason = 'manual' | 'error_ratio' | 'queue_wait' | 'active_jobs' | 'recovered' | 'none';
-
-type PrepareSuccess = {
-  requestId: string;
-  data: {
-    jobId: string;
-    status: 'queued' | 'processing' | 'completed' | 'failed';
-    pollAfterMs: number;
-  };
-};
-
-type ApiError = {
-  requestId: string;
-  error: {
-    code: string;
-    message: string;
-    details?: {
-      retryAfterSec?: number;
-      helpPageSlug?: string;
-      reason?: DegradedReason;
-    };
-  };
-};
 
 type HealthResponse = {
   degraded: boolean;
@@ -38,19 +16,12 @@ type HealthResponse = {
   };
 };
 
-const PLATFORM_OPTIONS: Array<{ value: Platform; label: string; labelAr: string; disabled?: boolean }> = [
-  { value: 'telegram', label: 'Telegram (Priority)', labelAr: 'تيليجرام (الأولوية)', disabled: false },
-  { value: 'twitter', label: 'X / Twitter (Next)', labelAr: 'X / تويتر (التالي)', disabled: false },
-  { value: 'tiktok', label: 'TikTok (Later)', labelAr: 'تيك توك (لاحقًا)', disabled: true },
-];
+import { AdsterraNative } from '@/components/ads/native-banner';
 
-export default function HomePage() {
-  const router = useRouter();
-  const [sourceUrl, setSourceUrl] = useState('');
-  const [platform, setPlatform] = useState<Platform>('telegram');
-  const [locale, setLocale] = useState<'en' | 'ar'>('en');
-  const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState(homeText.en.initialMessage);
+function HomePageContent() {
+  const searchParams = useSearchParams();
+  const locale = normalizeLocale(searchParams.get('locale'));
+  const [message, setMessage] = useState(homeText[locale].initialMessage);
   const [helpSlug, setHelpSlug] = useState<string | null>(null);
   const [retryAfterSec, setRetryAfterSec] = useState<number | undefined>(undefined);
   const [degraded, setDegraded] = useState<{ isDegraded: boolean; reason: DegradedReason }>({ isDegraded: false, reason: 'none' });
@@ -58,9 +29,9 @@ export default function HomePage() {
   const l = homeText[locale];
   const dir = localeDir(locale);
 
-  const canSubmit = useMemo(() => {
-    return sourceUrl.trim().length > 0 && (platform === 'telegram' || platform === 'twitter') && !submitting;
-  }, [platform, sourceUrl, submitting]);
+  useEffect(() => {
+    setMessage(homeText[locale].initialMessage);
+  }, [locale]);
 
   useEffect(() => {
     let cancelled = false;
@@ -81,99 +52,63 @@ export default function HomePage() {
     };
   }, []);
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubmitting(true);
-    setMessage(l.creatingJob);
-    setHelpSlug(null);
-    setRetryAfterSec(undefined);
-
-    trackEvent('extract_submit', { platform, locale });
-
-    try {
-      const res = await fetch('/api/v1/extract/prepare', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ url: sourceUrl, platform, locale }),
-      });
-
-      const payload = (await res.json()) as PrepareSuccess | ApiError;
-
-      if (!res.ok || !('data' in payload)) {
-        if ('error' in payload && payload.error.code === 'SERVICE_DEGRADED') {
-          setMessage(l.degradedMessage);
-          setHelpSlug(payload.error.details?.helpPageSlug ?? 'extractor-temporary-limited');
-          setRetryAfterSec(payload.error.details?.retryAfterSec);
-          setDegraded({ isDegraded: true, reason: payload.error.details?.reason ?? 'none' });
-          trackEvent('extract_submit_degraded', { platform, locale });
-          return;
-        }
-
-        setMessage(l.invalidRequest);
-        return;
-      }
-
-      router.push(`/result/${payload.data.jobId}?locale=${locale}`);
-    } catch {
-      setMessage(l.networkError);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const onLocaleChange = (value: string) => {
-    const next = normalizeLocale(value);
-    setLocale(next);
-    setMessage(homeText[next].initialMessage);
+  const handleStatusChange = (msg: string, slug: string | null, retry: number | undefined) => {
+    setMessage(msg);
+    setHelpSlug(slug);
+    setRetryAfterSec(retry);
+    if (slug) setDegraded((prev) => ({ ...prev, isDegraded: true }));
   };
 
   return (
-    <main dir={dir} style={{ maxWidth: 860, margin: '0 auto', padding: 24, fontFamily: 'system-ui, sans-serif' }}>
+    <main dir={dir} style={{ maxWidth: 860, margin: '0 auto', padding: '40px 24px' }}>
       {degraded.isDegraded && <DegradedBanner locale={locale} reason={degraded.reason} helpSlug={helpSlug ?? 'extractor-temporary-limited'} retryAfterSec={retryAfterSec} />}
 
-      <h1 style={{ marginBottom: 8 }}>{l.title}</h1>
-      <p style={{ marginTop: 0, color: '#444' }}>{l.subtitle}</p>
+      <div className="mb-12 text-center">
+        <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 mb-4">{l.title}</h1>
+        <p className="text-lg text-gray-500 max-w-2xl mx-auto">{l.subtitle}</p>
+      </div>
 
-      <form onSubmit={onSubmit} style={{ border: '1px solid #ddd', borderRadius: 10, padding: 16, background: '#fafafa' }}>
-        <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>{l.platformLabel}</label>
-        <select value={platform} onChange={(e) => setPlatform(e.target.value as Platform)} style={{ width: '100%', padding: 10, marginBottom: 12 }}>
-          {PLATFORM_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value} disabled={opt.disabled}>
-              {locale === 'ar' ? opt.labelAr : opt.label}
-            </option>
-          ))}
-        </select>
-
-        <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>{l.sourceUrlLabel}</label>
-        <input
-          type="url"
-          required
-          value={sourceUrl}
-          onChange={(e) => setSourceUrl(e.target.value)}
-          placeholder={platform === 'telegram' ? 'https://t.me/...' : 'https://x.com/...'}
-          style={{ width: '100%', padding: 10, marginBottom: 12 }}
-        />
-
-        <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>{l.localeLabel}</label>
-        <select value={locale} onChange={(e) => onLocaleChange(e.target.value)} style={{ width: '100%', padding: 10, marginBottom: 12 }}>
-          <option value="en">{l.localeEn}</option>
-          <option value="ar">{l.localeAr}</option>
-        </select>
-
-        <button type="submit" disabled={!canSubmit} style={{ padding: '10px 14px' }}>
-          {submitting ? l.submitting : l.submit}
-        </button>
-      </form>
+      <div className="max-w-2xl mx-auto mb-16">
+        <ExtractorForm platform="telegram" locale={locale} onStatusChange={handleStatusChange} />
+        
+        <AdsterraNative />
+      </div>
 
       <section style={{ marginTop: 16, border: '1px solid #eee', borderRadius: 10, padding: 16 }}>
         <h2 style={{ marginTop: 0 }}>{l.status}</h2>
         <p>{message}</p>
         {helpSlug && (
           <p>
-            {l.helpPage}: <a href={`/solution/${helpSlug}?locale=${locale}`}>/solution/{helpSlug}</a>
+            {l.helpPage}: <Link href={`/solution/${helpSlug}?locale=${locale}`}>/solution/{helpSlug}</Link>
           </p>
         )}
       </section>
+
+      <section style={{ marginTop: 32, padding: '24px 0', borderTop: '1px solid #f0f0f0' }}>
+        <h2>{l.supportedTools}</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+          <Link href={`/download-telegram-video?locale=${locale}`} style={{ padding: 16, border: '1px solid #eee', borderRadius: 12, textDecoration: 'none', color: 'inherit' }}>
+            <h3 style={{ margin: '0 0 8px' }}>{l.telegramTitle}</h3>
+            <p style={{ margin: 0, fontSize: 14, color: '#666' }}>{l.telegramDesc}</p>
+          </Link>
+          <Link href={`/download-twitter-video?locale=${locale}`} style={{ padding: 16, border: '1px solid #eee', borderRadius: 12, textDecoration: 'none', color: 'inherit' }}>
+            <h3 style={{ margin: '0 0 8px' }}>{l.twitterTitle}</h3>
+            <p style={{ margin: 0, fontSize: 14, color: '#666' }}>{l.twitterDesc}</p>
+          </Link>
+          <Link href={`/download-tiktok-video?locale=${locale}`} style={{ padding: 16, border: '1px solid #eee', borderRadius: 12, textDecoration: 'none', color: 'inherit' }}>
+            <h3 style={{ margin: '0 0 8px' }}>{l.tiktokTitle}</h3>
+            <p style={{ margin: 0, fontSize: 14, color: '#666' }}>{l.tiktokDesc}</p>
+          </Link>
+        </div>
+      </section>
     </main>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div style={{ padding: 80, textAlign: 'center', color: '#666' }}>Loading...</div>}>
+      <HomePageContent />
+    </Suspense>
   );
 }

@@ -10,7 +10,7 @@ export async function GET(_request: Request, context: Context) {
   const requestId = await getRequestId();
   const { jobId } = await context.params;
 
-  const job = getJob(jobId);
+  const job = await getJob(jobId);
   if (!job) {
     return failure({
       status: 404,

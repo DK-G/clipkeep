@@ -1,0 +1,50 @@
+﻿
+> clipkeep@0.1.0 build
+> node --max-old-space-size=4096 ./node_modules/next/dist/bin/next build
+
+   ▲ Next.js 15.2.9
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/19) ...
+   Generating static pages (4/19) 
+   Generating static pages (9/19) 
+   Generating static pages (14/19) 
+ ✓ Generating static pages (19/19)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    4.61 kB         105 kB
+├ ○ /_not-found                            977 B         102 kB
+├ ○ /about                                 169 B         101 kB
+├ ƒ /api/v1/extract/jobs/[jobId]           169 B         101 kB
+├ ƒ /api/v1/extract/prepare                169 B         101 kB
+├ ƒ /api/v1/health                         169 B         101 kB
+├ ƒ /api/v1/solution-pages/[slug]          169 B         101 kB
+├ ○ /contact                               169 B         101 kB
+├ ○ /download-telegram-video             5.03 kB         106 kB
+├ ○ /download-tiktok-video               4.88 kB         105 kB
+├ ○ /download-twitter-video              4.91 kB         106 kB
+├ ○ /faq                                   169 B         101 kB
+├ ○ /legal/cookies                         169 B         101 kB
+├ ○ /legal/dmca                            169 B         101 kB
+├ ○ /legal/privacy                         169 B         101 kB
+├ ○ /legal/terms                           169 B         101 kB
+├ ƒ /result/[jobId]                      3.68 kB         104 kB
+├ ○ /robots.txt                            169 B         101 kB
+├ ○ /sitemap.xml                           169 B         101 kB
+├ ƒ /solution/[slug]                     3.24 kB         104 kB
+└ ○ /status                                169 B         101 kB
++ First Load JS shared by all             101 kB
+  ├ chunks/4bd1b696-7eaee204a5c142bf.js  53.3 kB
+  ├ chunks/684-b918123259f0fb78.js       45.4 kB
+  └ other shared chunks (total)          1.96 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

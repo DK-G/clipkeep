@@ -1,4 +1,4 @@
-﻿param(
+param(
   [string]$BaseUrl = "https://clipkeep-web.liminality-3110.workers.dev/api/v1",
   [int]$MaxAttempts = 80,
   [string]$Platform = "telegram"
@@ -37,9 +37,10 @@ for ($i = 1; $i -le $MaxAttempts; $i++) {
     if ($r.Body -and $r.Body.error -and $r.Body.error.details) { $details = $r.Body.error.details }
     Write-Host "429 observed on attempt=$i"
     if ($details) {
-      Write-Host "source=$($details.source) limit=$($details.limit) windowMs=$($details.windowMs) retryAfterSec=$($details.retryAfterSec)"
+      $detailsJson = $details | ConvertTo-Json -Compress
+      Write-Host "429 Details: $detailsJson"
     } else {
-      Write-Host "No details payload. raw=$($r.Raw)"
+      Write-Host "No details payload. status=$($r.Status) raw=$($r.Raw)"
     }
     exit 0
   }

@@ -25,6 +25,13 @@ type HomeDict = {
   invalidRequest: string;
   networkError: string;
   helpPage: string;
+  supportedTools: string;
+  telegramTitle: string;
+  telegramDesc: string;
+  twitterTitle: string;
+  twitterDesc: string;
+  tiktokTitle: string;
+  tiktokDesc: string;
 };
 
 type ResultDict = {
@@ -77,6 +84,44 @@ type DegradedDict = {
   reasons: Record<string, string>;
 };
 
+type StatusDict = {
+  title: string;
+  liveHealth: string;
+  currentTitle: string;
+  currentBody: string;
+  incidentTitle: string;
+  partialDegradation: { title: string; body: string; nextUpdate: string };
+  scheduledMaintenance: { title: string; body: string; window: string };
+  majorOutage: { title: string; body: string; nextUpdate: string };
+};
+
+type FooterDict = {
+  about: string;
+  faq: string;
+  terms: string;
+  privacy: string;
+  cookies: string;
+  dmca: string;
+  contact: string;
+  status: string;
+  adsDisclaimer: string;
+};
+
+type PlatformPageDict = {
+  title: string;
+  subtitle: string;
+  statusLabel: string;
+  howToTitle: string;
+  howToSteps: string[];
+  whyTitle: string;
+  whyBody: string;
+  whyPoints: string[];
+  faqTitle: string;
+  faqItems: Array<{ q: string; a: string }>;
+  note?: string;
+  noteBody?: string;
+};
+
 export const homeText: Record<Locale, HomeDict> = {
   en: {
     title: "ClipKeep Extractor",
@@ -95,6 +140,13 @@ export const homeText: Record<Locale, HomeDict> = {
     invalidRequest: "Request failed. Check URL/platform and try again.",
     networkError: "Network error while creating job.",
     helpPage: "Help page",
+    supportedTools: "Supported Tools",
+    telegramTitle: "Telegram Downloader",
+    telegramDesc: "Save videos and media from Telegram channels and groups.",
+    twitterTitle: "Twitter (X) Downloader",
+    twitterDesc: "Archive videos and GIFs from X/Twitter posts instantly.",
+    tiktokTitle: "TikTok Downloader",
+    tiktokDesc: "Download TikTok videos and images for offline archiving."
   },
   ar: {
     title: "أداة ClipKeep",
@@ -113,7 +165,233 @@ export const homeText: Record<Locale, HomeDict> = {
     invalidRequest: "فشل الطلب. تحقق من الرابط/المنصة ثم أعد المحاولة.",
     networkError: "خطأ شبكة أثناء إنشاء المهمة.",
     helpPage: "صفحة المساعدة",
+    supportedTools: "الأدوات المدعومة",
+    telegramTitle: "محمل فيديوهات تيليجرام",
+    telegramDesc: "احفظ الفيديوهات والوسائط من قنوات ومجموعات تيليجرام.",
+    twitterTitle: "محمل فيديوهات تويتر (X)",
+    twitterDesc: "أرشف الفيديوهات والصور المتحركة من منشورات X/تويتر فوراً.",
+    tiktokTitle: "محمل فيديوهات تيك توك",
+    tiktokDesc: "قم بتنزيل فيديوهات وصور تيك توك للأرشفة في وضع عدم الاتصال."
   },
+};
+
+export const telegramText: Record<Locale, PlatformPageDict> = {
+  en: {
+    title: "Telegram Video Downloader",
+    subtitle: "Download videos, files, and media from Telegram channels and groups quickly and securely.",
+    statusLabel: "Status",
+    howToTitle: "How to Download Telegram Videos",
+    howToSteps: [
+      "Copy the Telegram Link: Open Telegram, right-click (or long-press) on the video or post, and select \"Copy Post Link\".",
+      "Paste the Link: Paste the copied URL into the input field above.",
+      "Start Extraction: Click the \"Submit\" button. ClipKeep will process the Telegram link.",
+      "Save to Device: Click the resulting download button to save the media."
+    ],
+    whyTitle: "Why use ClipKeep for Telegram?",
+    whyBody: "Telegram is a powerful platform for sharing media, but downloading directly can sometimes be slow. ClipKeep bridges the connection for stable extraction.",
+    whyPoints: [
+      "Privacy Minded: We do not log your download history.",
+      "No Registration Required: Start downloading immediately.",
+      "Platform Compatibility: Works on Windows, macOS, Android, and iOS."
+    ],
+    faqTitle: "Frequently Asked Questions",
+    faqItems: [
+      { q: "Can I download from private channels?", a: "ClipKeep supports public links. Private content is restricted by Telegram's auth policies." },
+      { q: "Is there a file size limit?", a: "We support common sizes. 2GB+ files may experience timeouts." }
+    ]
+  },
+  ar: {
+    title: "محمل فيديوهات تيليجرام",
+    subtitle: "قم بتنزيل مقاطع الفيديو والملفات والوسائط من قنوات ومجموعات تيليجرام بسرعة وأمان.",
+    statusLabel: "الحالة",
+    howToTitle: "كيفية تنزيل فيديوهات تيليجرام",
+    howToSteps: [
+      "انسخ رابط تيليجرام: افتح تيليجرام، انقر بزر الماوس الأيمن (أو اضغط مطولًا) على الفيديو أو المنشور، واختر \"نسخ رابط المنشور\".",
+      "الصق الرابط: الصق الرابط المنسوخ في حقل الإدخال أعلاه.",
+      "ابدأ الاستخراج: انقر على زر \"إرسال\". سيقوم ClipKeep بمعالجة الرابط.",
+      "احفظ في الجهاز: انقر على زر التنزيل الناتج لحفظ الوسائط."
+    ],
+    whyTitle: "لماذا تستخدم ClipKeep لتيليجرام؟",
+    whyBody: "تيليجرام منصة قوية لمشاركة الوسائط، لكن التنزيل المباشر قد يكون بطيئًا أحيانًا. يوفر ClipKeep جسرًا لاتصال مستقر لاستخراج الوسائط.",
+    whyPoints: [
+      "الخصوصية أولًا: نحن لا نسجل تاريخ تنزيلاتك.",
+      "لا يلزم التسجيل: ابدأ التنزيل فوراً دون الحاجة لإنشاء حساب.",
+      "توافق المنصات: يعمل على ويندوز، ماك، أندرويد، وiOS."
+    ],
+    faqTitle: "الأسئلة الشائعة",
+    faqItems: [
+      { q: "هل يمكنني التنزيل من القنوات الخاصة؟", a: "يدعم ClipKeep الروابط العامة فقط. الوصول للمحتوى الخاص محمي بسياسات توثيق تيليجرام." },
+      { q: "هل هناك حد لحجم الملفات؟", a: "ندعم معظم الأحجام الشائعة. الملفات الضخمة جدًا (أكثر من 2 جيجابايت) قد تواجه مهلة زمنية." }
+    ]
+  }
+};
+
+export const twitterText: Record<Locale, PlatformPageDict> = {
+  en: {
+    title: "Twitter (X) Video Downloader",
+    subtitle: "The fastest way to archive videos and GIFs from X/Twitter directly to your device.",
+    statusLabel: "Status",
+    howToTitle: "How to Save Twitter Videos",
+    howToSteps: [
+      "Find the Post: Navigate to the X/Twitter post containing the video or GIF.",
+      "Copy the Link: Click the share icon and select \"Copy Link\".",
+      "Extract with ClipKeep: Paste the URL above and click \"Submit\".",
+      "Download: Once processed, click the download button."
+    ],
+    whyTitle: "Benefits of using ClipKeep for X",
+    whyBody: "Archiving media from X (formerly Twitter) is essential for curators and journalists. ClipKeep provides a clean experience focused on speed.",
+    whyPoints: [
+      "Support for GIFs & Videos: Extract any media type hosted on X posts.",
+      "Fast Handshake: Cloudflare-powered backend ensures minimal latency.",
+      "Secure Extraction: We do not require account access or cookies."
+    ],
+    faqTitle: "Common Questions",
+    faqItems: [
+      { q: "Can I download private tweets?", a: "No. ClipKeep only supports public media extraction." },
+      { q: "What quality will the video be?", a: "ClipKeep extracts the highest available bitrate provided by the platform." }
+    ]
+  },
+  ar: {
+    title: "محمل فيديوهات تويتر (X)",
+    subtitle: "أسرع طريقة لأرشفة مقاطع الفيديو والصور المتحركة (GIF) من X/تويتر مباشرة إلى جهازك.",
+    statusLabel: "الحالة",
+    howToTitle: "كيفية حفظ فيديوهات تويتر",
+    howToSteps: [
+      "ابحث عن المنشور: انتقل إلى منشور X/تويتر الذي يحتوي على الفيديو أو الصورة المتحركة.",
+      "انسخ الرابط: انقر على أيقونة المشاركة واختر \"نسخ الرابط\".",
+      "استخرج مع ClipKeep: الصق الرابط أعلاه وانقر على \"إرسال\".",
+      "التنزيل: بمجرد المعالجة، انقر على زر التنزيل."
+    ],
+    whyTitle: "فوائد استخدام ClipKeep لـ X",
+    whyBody: "أرشفة الوسائط من X (تويتر سابقًا) ضرورية للمنسقين والصحفيين. يوفر ClipKeep تجربة نظيفة تركز على السرعة.",
+    whyPoints: [
+      "دعم الصور المتحركة والفيديو: استخرج أي نوع وسائط مستضاف على منشورات X.",
+      "استجابة سريعة: تضمن الواجهة الخلفية المدعومة بـ Cloudflare أقل تأخير ممكن.",
+      "استخراج آمن: نحن لا نطلب الوصول إلى الحساب أو ملفات تعريف الارتباط."
+    ],
+    faqTitle: "الأسئلة الشائعة",
+    faqItems: [
+      { q: "هل يمكنني تنزيل التغريدات الخاصة؟", a: "لا. يدعم ClipKeep استخراج الوسائط العامة فقط." },
+      { q: "ما هي جودة الفيديو؟", a: "يستخرِج ClipKeep أعلى معدل بث متاح توفره المنصة." }
+    ]
+  }
+};
+
+export const tiktokText: Record<Locale, PlatformPageDict> = {
+  en: {
+    title: "TikTok Media Downloader",
+    subtitle: "Efficiently archive your favorite TikTok moments for offline viewing and content curation.",
+    statusLabel: "Status",
+    note: "Note: Early Access",
+    noteBody: "TikTok extraction is currently in limited early access. Some features may be restricted.",
+    howToTitle: "How to Download TikTok Content",
+    howToSteps: [
+      "Get the TikTok URL: Open TikTok, find the video, and click 'Copy Link'.",
+      "Paste into ClipKeep: Use the form above to paste your link.",
+      "Process & Save: Our system will provide a direct media path for saving."
+    ],
+    whyTitle: "Professional Media Archiving",
+    whyBody: "For digital marketers, maintaining an archive of trending TikTok content is vital. ClipKeep offers a streamlined workflow.",
+    whyPoints: [],
+    faqTitle: "TikTok FAQ",
+    faqItems: [
+      { q: "Is watermarking removed?", a: "We aim for the most direct path, which often means no overlays." },
+      { q: "Can I download TikTok slideshows?", a: "Slideshow support is currently limited." }
+    ]
+  },
+  ar: {
+    title: "محمل وسائط تيك توك",
+    subtitle: "أرشفة لحظات تيك توك المفضلة لديك بكفاءة للمشاهدة دون اتصال بالإنترنت وتنسيق المحتوى.",
+    statusLabel: "الحالة",
+    note: "ملاحظة: وصول مبكر",
+    noteBody: "استخراج تيك توك حاليًا في مرحلة الوصول المبكر المحدود. قد تكون بعض الميزات مقيدة.",
+    howToTitle: "كيفية تنزيل محتوى تيك توك",
+    howToSteps: [
+      "احصل على رابط تيك توك: افتح تطبيق أو موقع تيك توك، ابحث عن الفيديو، وانقر على 'نسخ الرابط'.",
+      "الصق في ClipKeep: استخدم النموذج أعلاه للصق الرابط الخاص بك.",
+      "المعالجة والحفظ: سيوفر نظامنا مسارًا مباشرًا للوسائط لحفظها."
+    ],
+    whyTitle: "أرشفة الوسائط الاحترافية",
+    whyBody: "للمسوقين الرقميين، الحفاظ على أرشيف لمحتوى تيك توك الرائج أمر حيوي. يوفر ClipKeep سير عمل مبسطاً.",
+    whyPoints: [],
+    faqTitle: "الأسئلة الشائعة حول تيك توك",
+    faqItems: [
+      { q: "هل يتم إزالة العلامة المائية؟", a: "نهدف لتوفير المسار الأكثر مباشرة، مما يعني غالبًا عدم وجود إضافات." },
+      { q: "هل يمكنني تنزيل عروض شرائح تيك توك؟", a: "دعم عروض الشرائح محدود حاليًا." }
+    ]
+  }
+};
+
+export const footerText: Record<Locale, FooterDict> = {
+  en: {
+    about: "About",
+    faq: "FAQ",
+    terms: "Terms",
+    privacy: "Privacy",
+    cookies: "Cookies",
+    dmca: "DMCA",
+    contact: "Contact",
+    status: "Status",
+    adsDisclaimer: "Ads, when enabled, are labeled as sponsored content."
+  },
+  ar: {
+    about: "من نحن",
+    faq: "الأسئلة الشائعة",
+    terms: "الشروط",
+    privacy: "الخصوصية",
+    cookies: "ملفات التعريف",
+    dmca: "حقوق النشر",
+    contact: "اتصل بنا",
+    status: "الحالة",
+    adsDisclaimer: "الإعلانات، عند تمكينها، يتم تصنيفها كمحتوى ممول."
+  }
+};
+
+export const statusText: Record<Locale, StatusDict> = {
+  en: {
+    title: "Service Status",
+    liveHealth: "Live API health",
+    currentTitle: "Current",
+    currentBody: "All core services are operating normally.",
+    incidentTitle: "Incident Templates",
+    partialDegradation: {
+      title: "Partial Degradation",
+      body: "We are experiencing elevated failures in extraction requests. Some requests may return temporary limits. We are actively mitigating this issue.",
+      nextUpdate: "Next update: within 30 minutes."
+    },
+    scheduledMaintenance: {
+      title: "Scheduled Maintenance",
+      body: "Scheduled maintenance is in progress. Extraction and API response times may be temporarily affected.",
+      window: "Planned window: 00:00-01:00 UTC."
+    },
+    majorOutage: {
+      title: "Major Outage",
+      body: "We are currently experiencing a major outage affecting core extraction functionality. Our team is investigating and recovery actions are underway.",
+      nextUpdate: "Next update: within 15 minutes."
+    }
+  },
+  ar: {
+    title: "حالة الخدمة",
+    liveHealth: "حالة الـ API المباشرة",
+    currentTitle: "الحالي",
+    currentBody: "جميع الخدمات الأساسية تعمل بشكل طبيعي.",
+    incidentTitle: "نماذج الحوادث",
+    partialDegradation: {
+      title: "تدهور جزئي",
+      body: "نواجه حالات فشل متزايدة في طلبات الاستخراج. قد ترجع بعض الطلبات حدوداً مؤقتة. نحن نعمل بنشاط على معالجة هذه المشكلة.",
+      nextUpdate: "التحديث القادم: خلال 30 دقيقة."
+    },
+    scheduledMaintenance: {
+      title: "صيانة مجدولة",
+      body: "هناك صيانة مجدولة قيد التنفيذ. قد تتأثر أوقات الاستجابة والاستخراج مؤقتاً.",
+      window: "النافذة المخطط لها: 00:00-01:00 بالتوقيت العالمي."
+    },
+    majorOutage: {
+      title: "عطل كبير",
+      body: "نواجه حالياً عطلاً كبيراً يؤثر على وظائف الاستخراج الأساسية. فريقنا يحقق في الأمر وإجراءات الاستعادة جارية.",
+      nextUpdate: "التحديث القادم: خلال 15 دقيقة."
+    }
+  }
 };
 
 export const resultText: Record<Locale, ResultDict> = {

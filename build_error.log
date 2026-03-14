@@ -1,0 +1,75 @@
+﻿
+> clipkeep@0.1.0 build
+> node --max-old-space-size=4096 ./node_modules/next/dist/bin/next build
+
+   ▲ Next.js 15.2.9
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+npm : 
+At line:1 char:1
++ npm run build > build_error.log 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String)  
+   [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Failed to compile.
+
+./app/about/page.tsx
+24:65  Error: `'` can be escaped with `&apos;`, `&lsquo
+;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+40:49  Error: `'` can be escaped with `&apos;`, `&lsquo
+;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+40:173  Error: `'` can be escaped with `&apos;`, `&lsqu
+o;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./app/contact/page.tsx
+10:60  Error: `'` can be escaped with `&apos;`, `&lsquo
+;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./app/download-telegram-video/page.tsx
+33:165  Error: `"` can be escaped with `&quot;`, `&ldqu
+o;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+33:180  Error: `"` can be escaped with `&quot;`, `&ldqu
+o;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+35:93  Error: `"` can be escaped with `&quot;`, `&ldquo
+;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+35:100  Error: `"` can be escaped with `&quot;`, `&ldqu
+o;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+57:166  Error: `'` can be escaped with `&apos;`, `&lsqu
+o;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./app/download-tiktok-video/page.tsx
+38:143  Error: `'` can be escaped with `&apos;`, `&lsqu
+o;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+38:153  Error: `'` can be escaped with `&apos;`, `&lsqu
+o;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./app/download-twitter-video/page.tsx
+34:112  Error: `"` can be escaped with `&quot;`, `&ldqu
+o;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+34:122  Error: `"` can be escaped with `&quot;`, `&ldqu
+o;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+35:139  Error: `"` can be escaped with `&quot;`, `&ldqu
+o;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+35:146  Error: `"` can be escaped with `&quot;`, `&ldqu
+o;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+
+./app/faq/page.tsx
+51:51  Error: `'` can be escaped with `&apos;`, `&lsquo
+;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./app/page.tsx
+18:18  Error: 'setLocale' is assigned a value but never
+ used.  @typescript-eslint/no-unused-vars
+
+./src/components/extractor-form.tsx
+27:16  Error: Unexpected any. Specify a different type.
+  @typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more h
+ere: https://nextjs.org/docs/app/api-reference/config/e
+slint#disabling-rules

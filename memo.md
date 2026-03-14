@@ -1,42 +1,20 @@
-PS C:\dev\portfolio\web\clipkeep> npm run dev
+clipkeep.net ad tags
+NativeBanner
+By default, Native Banners are set to 4 images in a row. To customize yours, go to the Websites page, find the Native Banner, and click EDIT next to it
+NativeBanner_1
+NATIVE ASYNC
+<script async="async" data-cfasync="false" src="https://pl28916543.effectivegatecpm.com/f17b1c25b3e406196dcf4a0ac7fd392b/invoke.js"></script>
+<div id="container-f17b1c25b3e406196dcf4a0ac7fd392b"></div>
 
-> clipkeep@0.1.0 dev
-> next dev
+Popunder
+Popunder_1
+JS SYNC (NO ADBLOCK BYPASS)
+<script src="https://pl28915034.effectivegatecpm.com/e3/85/b8/e385b8653df6d49480f4caab7d312227.js"></script>
 
-   ▲ Next.js 15.2.1
-   - Local:        http://localhost:3000
-   - Network:      http://172.26.9.154:3000
-
- ✓ Starting...
- ✓ Ready in 2.4s
- ○ Compiling /api/v1/health ...
- ✓ Compiled /api/v1/health in 2.3s (376 modules)
- GET /api/v1/health 200 in 2590ms
- ⚠ Your page app/page.tsx did not have a root layout. We created app\layout.tsx for you.
- ○ Compiling / ...
- ✓ Compiled / in 1078ms (684 modules)
- GET / 200 in 1226ms
- PS C:\dev\portfolio\web\clipkeep> powershell -ExecutionPolicy Bypass -File .\scripts\api_integration_tests.ps1
-if : The term 'if' is not recognized as the name of a cmdlet, function, script file,
- or operable program. Check the spelling of the name, or if a path was included, ver
-ify that the path is correct and try again.
-At C:\dev\portfolio\web\clipkeep\scripts\api_integration_tests.ps1:40 char:15
-+       Body = (if ($resp.Content) { $resp.Content | ConvertFrom-Json } ...
-+               ~~
-    + CategoryInfo          : ObjectNotFound: (if:String) [], ParentContainsErrorRe
-   cordException
-    + FullyQualifiedErrorId : CommandNotFoundException
-
-PS C:\dev\portfolio\web\clipkeep> powershell -ExecutionPolicy Bypass -File .\scripts\e2e_flow_check.ps1
-if : The term 'if' is not recognized as the name of a cmdlet, function, script file,
- or operable program. Check the spelling of the name, or if a path was included, ver
-ify that the path is correct and try again.
-At C:\dev\portfolio\web\clipkeep\scripts\e2e_flow_check.ps1:27 char:96
-+ ... Code = [int]$resp.StatusCode; Raw = $resp.Content; Body = (if ($resp. ...
-+                                                                ~~
-    + CategoryInfo          : ObjectNotFound: (if:String) [], ParentContainsErrorRe
-   cordException
-    + FullyQualifiedErrorId : CommandNotFoundException
+SocialBar
+SocialBar_1
+JS SYNC (NO ADBLOCK BYPASS)
+<script src="https://pl28916536.effectivegatecpm.com/93/a3/05/93a305874ff7aa9542dff8f824db8e76.js"></script>
 ## 2026-03-12 Post-Deploy実行ログ（Codex実行）
 
 ### 1) 本番API統合テスト

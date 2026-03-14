@@ -1,5 +1,5 @@
-﻿const WINDOW_MS = parseInt(process.env.RATE_LIMIT_WINDOW_MS ?? "60000", 10);
-const LIMIT_PER_WINDOW = parseInt(process.env.RATE_LIMIT_LIMIT ?? "30", 10);
+const DEFAULT_WINDOW_MS = 60000;
+const DEFAULT_LIMIT = 30;
 
 type Bucket = {
   timestamps: number[];
@@ -7,18 +7,18 @@ type Bucket = {
 
 const buckets = new Map<string, Bucket>();
 
-function trim(bucket: Bucket, now: number): void {
-  const threshold = now - WINDOW_MS;
-  bucket.timestamps = bucket.timestamps.filter((t) => t > threshold);
+function trim(bucket: Bucket, now: number, windowMs: number): void {
+  const threshold = now - windowMs;
+  bucket.timestamps = bucket.timestamps.filter((t: number) => t > threshold);
 }
 
-function checkInMemory(key: string, now = Date.now()): { limited: boolean; retryAfterSec: number } {
+function checkInMemory(key: string, now: number, windowMs: number, limit: number): { limited: boolean; retryAfterSec: number } {
   const bucket = buckets.get(key) ?? { timestamps: [] };
-  trim(bucket, now);
+  trim(bucket, now, windowMs);
 
-  if (bucket.timestamps.length >= LIMIT_PER_WINDOW) {
+  if (bucket.timestamps.length >= limit) {
     const oldest = bucket.timestamps[0];
-    const retryAfterMs = Math.max(0, oldest + WINDOW_MS - now);
+    const retryAfterMs = Math.max(0, oldest + windowMs - now);
     buckets.set(key, bucket);
     return { limited: true, retryAfterSec: Math.ceil(retryAfterMs / 1000) };
   }
@@ -28,13 +28,14 @@ function checkInMemory(key: string, now = Date.now()): { limited: boolean; retry
   return { limited: false, retryAfterSec: 0 };
 }
 
-async function checkViaEndpoint(endpoint: string, key: string): Promise<{ limited: boolean; retryAfterSec: number } | null> {
+async function checkViaEndpoint(endpoint: string, key: string, windowMs: number, limit: number): Promise<{ limited: boolean; retryAfterSec: number } | null> {
   try {
     const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ key, windowMs: WINDOW_MS, limit: LIMIT_PER_WINDOW }),
+      body: JSON.stringify({ key, windowMs, limit }),
       cache: 'no-store',
+      signal: AbortSignal.timeout(5000),
     });
 
     if (!res.ok) return null;
@@ -55,16 +56,20 @@ export type RateLimitResult = {
 };
 
 export async function checkExtractRateLimit(key: string): Promise<RateLimitResult> {
+  const windowMs = parseInt(process.env.RATE_LIMIT_WINDOW_MS ?? String(DEFAULT_WINDOW_MS), 10);
+  const limit = parseInt(process.env.RATE_LIMIT_LIMIT ?? String(DEFAULT_LIMIT), 10);
   const endpoint = process.env.RATE_LIMIT_DO_ENDPOINT?.trim();
+  const now = Date.now();
+
   if (endpoint) {
-    const fromDo = await checkViaEndpoint(endpoint, key);
+    const fromDo = await checkViaEndpoint(endpoint, key, windowMs, limit);
     if (fromDo) {
-      return { ...fromDo, source: 'do', limit: LIMIT_PER_WINDOW, windowMs: WINDOW_MS };
+      return { ...fromDo, source: 'do', limit, windowMs };
     }
   }
 
-  const local = checkInMemory(key);
-  return { ...local, source: 'fallback', limit: LIMIT_PER_WINDOW, windowMs: WINDOW_MS };
+  const local = checkInMemory(key, now, windowMs, limit);
+  return { ...local, source: 'fallback', limit, windowMs };
 }
 
 export function getClientKey(request: Request): string {
