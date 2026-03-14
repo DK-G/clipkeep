@@ -1,5 +1,6 @@
 import type { ExtractJob, Platform } from "@/lib/extract/types";
 import { extractTelegram, type TelegramMedia } from "@/lib/extract/telegram";
+import { extractTwitter, type TwitterMedia } from "@/lib/extract/twitter";
 import { getDb } from "@/lib/db/d1";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
@@ -65,9 +66,11 @@ export async function createJob(platform: Platform, sourceUrl: string): Promise<
         const processingJob = { ...job, status: "processing" as const, progress: 10, updatedAt: nowIso() };
         await saveJobToDb(processingJob);
 
-        let results: TelegramMedia[] = [];
+        let results: Array<TelegramMedia | TwitterMedia> = [];
         if (platform === "telegram") {
           results = await extractTelegram(sourceUrl);
+        } else if (platform === "twitter") {
+          results = await extractTwitter(sourceUrl);
         }
 
         if (results && results.length > 0) {
