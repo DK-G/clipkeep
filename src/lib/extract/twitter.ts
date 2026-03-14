@@ -23,8 +23,8 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
       throw new Error("Invalid Twitter status URL");
     }
 
-    // We can use any username, "i" or the original one
-    const apiUrl = `https://api.vxtwitter.com/i/status/${statusId}`;
+    // Use vxtwitter API for extraction. Username is required by some fixers, using 'Twitter' as placeholder.
+    const apiUrl = `https://api.vxtwitter.com/Twitter/status/${statusId}`;
     
     const res = await fetch(apiUrl, {
       headers: {
