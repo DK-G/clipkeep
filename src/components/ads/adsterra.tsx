@@ -23,7 +23,7 @@ export function AdsterraAds({ showPopunder = false }: { showPopunder?: boolean }
       {/* SocialBar - Global */}
       <Script 
         src="https://pl28916536.effectivegatecpm.com/93/a3/05/93a305874ff7aa9542dff8f824db8e76.js" 
-        strategy="lazyOnload"
+        strategy="afterInteractive"
       />
 
       {/* Popunder - Loaded conditionally or globally depending on preference. 
