@@ -28,6 +28,7 @@ export async function GET(_request: Request, context: Context) {
       requestId,
       data: {
         jobId: job.id,
+        platform: job.platform,
         status: job.status,
         media: job.media,
         warnings: job.warnings,
@@ -39,6 +40,7 @@ export async function GET(_request: Request, context: Context) {
     requestId,
     data: {
       jobId: job.id,
+      platform: job.platform,
       status: job.status,
       progress: job.progress,
     },
