@@ -32,7 +32,7 @@
 - `docs/infra/durable_rate_limit_migration.md`
 - `docs/infra/rate_limit_do_setup.md`
 - `docs/infra/external_prerequisites.md`
-- `docs/infra/analytics_search_console_setup.md`
+- `docs/infra/analytics_search_console_setup.md`\r\n- `docs/infra/ga4_key_events_setup.md`
 - `docs/infra/kpi_dashboard_definition.md`
 - `docs/infra/waf_bot_policy.md`
 - `docs/infra/d1_backup_recovery_runbook.md`
@@ -48,7 +48,7 @@
 ## docs/ops
 - `docs/ops/agent.md`
 - `docs/ops/Gemini.md`
-- `docs/ops/weekly_review_playbook.md`
+- `docs/ops/weekly_review_playbook.md`\r\n- `docs/ops/ga4_weekly_review_template.md`
 - `docs/ops/post_deploy_execution_plan.md`
 - `docs/ops/adsense_ban_prevention.md`
 - `docs/ops/adsense_go_live_checklist.md`
@@ -56,3 +56,4 @@
 
 ## docs/archive
 - `docs/archive/ANTIGRAVITY.md`
+
