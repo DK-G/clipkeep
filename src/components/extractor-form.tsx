@@ -54,11 +54,6 @@ export function ExtractorForm({ platform = 'telegram', locale = 'en', onStatusCh
     trackEvent('extract_submit', { platform, locale });
 
     try {
-      // Trigger Popunder injection on click
-      const popScript = document.createElement('script');
-      popScript.src = 'https://pl28915034.effectivegatecpm.com/e3/85/b8/e385b8653df6d49480f4caab7d312227.js';
-      document.body.appendChild(popScript);
-
       const res = await fetch('/api/v1/extract/prepare', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -103,7 +98,7 @@ export function ExtractorForm({ platform = 'telegram', locale = 'en', onStatusCh
             value={sourceUrl}
             onChange={(e) => setSourceUrl(e.target.value)}
             placeholder={platform === 'telegram' ? 'https://t.me/...' : 'https://x.com/...'}
-            className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-50/50 transition duration-200 outline-none"
+            className="w-full px-6 py-5 bg-gray-50 border border-gray-100 rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-8 focus:ring-blue-50/30 transition duration-200 outline-none text-lg"
           />
         </div>
       </div>
@@ -111,9 +106,9 @@ export function ExtractorForm({ platform = 'telegram', locale = 'en', onStatusCh
       <button 
         type="submit" 
         disabled={!canSubmit} 
-        className={`w-full py-4 rounded-xl font-bold text-lg transition duration-200 transform active:scale-95 shadow-lg ${
+        className={`w-full py-5 rounded-2xl font-extrabold text-xl transition duration-200 transform active:scale-95 shadow-xl ${
           canSubmit 
-            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200' 
+            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-100' 
             : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
         }`}
       >

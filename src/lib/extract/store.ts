@@ -18,13 +18,22 @@ async function saveJobToDb(job: ExtractJob): Promise<void> {
     warnings: job.warnings,
   });
 
+  // Extract first thumbnail URL for easier access in gallery lists
+  const firstThumb = job.media.find(m => m.thumbUrl)?.thumbUrl || null;
+
+  // Telegram bundle jobs should not be public by default if they have media.
+  // We want only individual "accessed" media to appear.
+  const isPublic = job.platform === 'telegram' ? 0 : 1;
+
   await db.prepare(
-    `INSERT INTO extractor_jobs (id, platform, source_url, status, progress, result_payload, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `INSERT INTO extractor_jobs (id, platform, source_url, status, progress, result_payload, thumbnail_url, is_public, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON CONFLICT(id) DO UPDATE SET
        status = excluded.status,
        progress = excluded.progress,
        result_payload = excluded.result_payload,
+       thumbnail_url = coalesce(excluded.thumbnail_url, extractor_jobs.thumbnail_url),
+       is_public = excluded.is_public,
        updated_at = excluded.updated_at`
   ).bind(
     job.id,
@@ -33,6 +42,8 @@ async function saveJobToDb(job: ExtractJob): Promise<void> {
     job.status,
     job.progress,
     resultPayload,
+    firstThumb,
+    isPublic,
     job.createdAt,
     job.updatedAt
   ).run();
@@ -142,5 +153,58 @@ export async function getJob(jobId: string): Promise<ExtractJob | undefined> {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+/**
+ * Increments the access count for a job and updates its visibility window.
+ * For Telegram, it creates a specific "gallery entry" job if a media index is provided.
+ */
+export async function recordAccess(jobId: string, mediaIndex?: number): Promise<void> {
+  const db = await getDb();
+  const now = nowIso();
+  
+  // Base access record
+  await db.prepare(
+    `UPDATE extractor_jobs 
+     SET access_count = access_count + 1, 
+         last_accessed_at = ?
+     WHERE id = ?`
+  ).bind(now, jobId).run();
+
+  // Telegram specialized gallery logic: 
+  // If a media index is specified, we ensure a "public" entry exists for this specific media.
+  if (mediaIndex !== undefined) {
+    const original = await getJob(jobId);
+    if (original && original.platform === 'telegram' && original.media[mediaIndex]) {
+      const media = original.media[mediaIndex];
+      const galleryId = `gal_${jobId}_${mediaIndex}`;
+      
+      // We use a separate ID to allow multiple media from one job to appear independently
+      // We copy the payload but focus it on this media for the gallery
+      const payload = JSON.stringify({
+        media: [media],
+        warnings: [],
+        sourceJobId: jobId
+      });
+
+      await db.prepare(
+        `INSERT INTO extractor_jobs (id, platform, source_url, status, progress, result_payload, thumbnail_url, is_public, access_count, created_at, updated_at, last_accessed_at)
+         VALUES (?, ?, ?, 'completed', 100, ?, ?, 1, 1, ?, ?, ?)
+         ON CONFLICT(id) DO UPDATE SET
+           access_count = extractor_jobs.access_count + 1,
+           last_accessed_at = excluded.last_accessed_at,
+           updated_at = excluded.updated_at`
+      ).bind(
+        galleryId,
+        original.platform,
+        original.sourceUrl,
+        payload,
+        media.thumbUrl,
+        original.createdAt,
+        now,
+        now
+      ).run();
+    }
+  }
 }
 

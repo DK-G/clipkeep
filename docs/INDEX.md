@@ -13,6 +13,7 @@
 - `docs/core/RoadMap.md`
 - `docs/core/ui_flow.md`
 - `docs/core/solution_page_template.md`
+- `docs/core/next_phase_roadmap.md`
 
 ## docs/api
 - `docs/api/api_contract.md`

@@ -3,8 +3,9 @@
 import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ExtractorForm } from '@/components/extractor-form';
-import { AdsterraNative } from '@/components/ads/native-banner';
 import { tiktokText, normalizeLocale, localeDir } from '@/lib/i18n/ui';
+import { AdsterraNative } from '@/components/ads/native-banner';
+import { GallerySection } from '@/components/gallery-section';
 
 function TikTokDownloaderContent() {
   const searchParams = useSearchParams();
@@ -27,8 +28,11 @@ function TikTokDownloaderContent() {
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
           {t.subtitle}
         </p>
+        <AdsterraNative />
       </div>
 
+
+      {/* Structured Content for SEO */}
       {t.note && (
         <div className="mb-12 p-6 bg-amber-50 border border-amber-100 rounded-2xl">
           <p className="font-bold text-amber-800 mb-2 flex items-center gap-2">
@@ -75,17 +79,25 @@ function TikTokDownloaderContent() {
         </section>
       </div>
 
-      <section className="mt-16 bg-gray-50 p-8 rounded-3xl">
-        <h2 className="text-2xl font-bold mb-8 text-center">{t.faqTitle}</h2>
-        <div className="grid md:grid-cols-2 gap-8">
-          {t.faqItems.map((item, i) => (
-            <div key={i} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <h3 className="text-lg font-bold mb-3 text-gray-900">{item.q}</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{item.a}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {t.trendingTitle && (
+        <GallerySection id="trending" platform="tiktok" locale={locale} title={t.trendingTitle} />
+      )}
+
+      <AdsterraNative />
+
+      <GallerySection id="recent" platform="tiktok" locale={locale} title={t.galleryTitle} />
+
+      {/* Detailed SEO Content Section */}
+      {t.seoContent && (
+        <section className="mt-16 prose prose-blue max-w-none bg-white p-8 md:p-12 rounded-3xl border border-gray-100 shadow-sm">
+          <h2 className="text-3xl font-extrabold mb-8 text-gray-900 border-b pb-4">
+            {t.galleryTitle.replace('Recent', 'About').replace('最近の', 'について')}
+          </h2>
+          <div className="text-gray-700 leading-relaxed space-y-6 text-lg whitespace-pre-line">
+            {t.seoContent}
+          </div>
+        </section>
+      )}
     </main>
   );
 }

@@ -1,55 +1,73 @@
-import Link from 'next/link';
+'use client';
 
-export default function AboutPage() {
-  const lastUpdated = '2026-03-12';
+import { useSearchParams } from 'next/navigation';
+import { normalizeLocale, localeDir } from '@/lib/i18n/ui';
+import { Suspense } from 'react';
+
+function AboutContent() {
+  const searchParams = useSearchParams();
+  const locale = normalizeLocale(searchParams.get('locale'));
+  const dir = localeDir(locale);
+
+  const texts = {
+    en: {
+      title: "About ClipKeep",
+      body: "ClipKeep is a leading-edge media extraction hub designed to help users archive high-quality video content from platforms like Twitter (X), Telegram, and TikTok. Our mission is to provide a fast, secure, and privacy-focused solution for digital curators and researchers around the world.",
+      visionTitle: "Our Vision",
+      visionBody: "We believe in a free and open internet where users have the right to keep their favorite digital moments offline. ClipKeep aims to bridge the gap between dynamic social streams and permanent personal archives.",
+      whyUsTitle: "Why ClipKeep?",
+      whyUsBody: "Unlike other tools that require account access or invasive cookies, ClipKeep operates purely on public links. Powered by Cloudflare, our infrastructure ensures low latency and high stability for every extraction job.",
+    },
+    ja: {
+      title: "ClipKeep について",
+      body: "ClipKeepは、Twitter (X)、Telegram、TikTokなどの主要プラットフォームから高品質なメディアをアーカイブするための最先端の抽出ハブです。私たちの使命は、世界中のデジタルクリエイターやリサーチャーに、高速かつ安全でプライバシーを重視したソリューションを提供することです。",
+      visionTitle: "私たちのビジョン",
+      visionBody: "ユーザーがお気に入りのデジタルコンテンツをオフラインで保管する権利を持つべきだと考えています。ClipKeepは、流動的なSNSストリームと、永続的な個人アーカイブとの架け橋となることを目指しています。",
+      whyUsTitle: "なぜ ClipKeep なのか？",
+      whyUsBody: "アカウントへのアクセスやCookieを要求する他のツールとは異なり、ClipKeepは公開リンクのみで動作します。Cloudflareを活用したインフラにより、あらゆる抽出リクエストに対して低遅延と高い安定性を保証します。",
+    }
+  };
+
+  const t = texts[locale as keyof typeof texts] || texts.en;
 
   return (
-    <main style={{ maxWidth: 860, margin: '0 auto', padding: '40px 24px', fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1a1a1a', lineHeight: 1.6 }}>
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', letterSpacing: '-0.02em' }}>About ClipKeep</h1>
-      <p style={{ fontSize: '1.1rem', color: '#666', marginBottom: '2rem' }}>Last updated: {lastUpdated}</p>
-
-      <section style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '1.8rem', borderBottom: '2px solid #f0f0f0', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Our Mission</h2>
-        <p>
-          ClipKeep was founded with a simple yet powerful goal: <strong>Helping users preserve digital memories safely and efficiently.</strong> In an era of ephemeral content and evolving privacy landscapes, we believe that individuals should have the tools to archive media from social platforms for educational, archival, and personal use.
+    <main dir={dir} className="max-w-4xl mx-auto px-6 py-12">
+      <div className="text-center mb-16">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-6">{t.title}</h1>
+        <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+          {t.body}
         </p>
-        <p>
-          We focus on building high-performance, privacy-centric utility tools that simplify the process of media extraction without compromising on security or user experience.
-        </p>
-      </section>
+      </div>
 
-      <section style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '1.8rem', borderBottom: '2px solid #f0f0f0', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>The ClipKeep Philosophy</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
-          <div style={{ padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '12px' }}>
-            <h3 style={{ marginTop: 0 }}>Privacy First</h3>
-            <p style={{ margin: 0, fontSize: '0.95rem' }}>We don{"'"}t track your downloads or store sensitive metadata. Your activity remains your own.</p>
-          </div>
-          <div style={{ padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '12px' }}>
-            <h3 style={{ marginTop: 0 }}>Performance</h3>
-            <p style={{ margin: 0, fontSize: '0.95rem' }}>Powered by Cloudflare Workers and Durable Objects to ensure fast, low-latency processing.</p>
-          </div>
-          <div style={{ padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '12px' }}>
-            <h3 style={{ marginTop: 0 }}>Transparency</h3>
-            <p style={{ margin: 0, fontSize: '0.95rem' }}>Clear status updates, open communication regarding service degradation, and honest policies.</p>
-          </div>
-        </div>
-      </section>
+      <div className="grid md:grid-cols-2 gap-12">
+        <section className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+          <h2 className="text-2xl font-bold text-blue-900 mb-6">{t.visionTitle}</h2>
+          <p className="text-gray-700 leading-relaxed text-lg">
+            {t.visionBody}
+          </p>
+        </section>
 
-      <section style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '1.8rem', borderBottom: '2px solid #f0f0f0', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Why We Do This</h2>
-        <p>
-          Digital content is fragile. Whether it{"'"}s a tutorial on Telegram, a creative thread on X, or a memorable moment on TikTok, the platforms that host our content aren{"'"}t always permanent. ClipKeep empowers creators, researchers, and casual users to take control of their digital footprint.
-        </p>
-        <p>
-          We are committed to maintaining a service that respects the intellectual property rights of creators while providing a necessary bridge for media preservation.
-        </p>
-      </section>
+        <section className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+          <h2 className="text-2xl font-bold text-blue-900 mb-6">{t.whyUsTitle}</h2>
+          <p className="text-gray-700 leading-relaxed text-lg">
+            {t.whyUsBody}
+          </p>
+        </section>
+      </div>
 
-      <div style={{ marginTop: '4rem', padding: '30px', backgroundColor: '#fff', border: '1px solid #eee', borderRadius: '16px', textAlign: 'center' }}>
-        <p style={{ margin: 0, fontWeight: 600 }}>Need help or have questions?</p>
-        <Link href="/contact" style={{ display: 'inline-block', marginTop: '12px', padding: '10px 24px', backgroundColor: '#000', color: '#fff', textDecoration: 'none', borderRadius: '30px', fontWeight: 500 }}>Visit our Contact Page</Link>
+      <div className="mt-16 bg-blue-50 p-8 rounded-3xl text-center border border-blue-100">
+        <p className="text-blue-800 font-medium">
+          ClipKeep is a project committed to utility and transparency.
+        </p>
       </div>
     </main>
+  );
+}
+
+export default function AboutPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-gray-400">Loading...</div>}>
+      <AboutContent />
+    </Suspense>
   );
 }

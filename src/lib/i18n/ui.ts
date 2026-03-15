@@ -1,8 +1,16 @@
-export type Locale = "en" | "ar" | "ja";
+export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
 
 export function normalizeLocale(value: string | null | undefined): Locale {
-  if (value === "ja") return "ja";
-  if (value === "ar") return "ar";
+  const v = value?.toLowerCase();
+  if (v === "ja") return "ja";
+  if (v === "ar") return "ar";
+  if (v === "es") return "es";
+  if (v === "pt") return "pt";
+  if (v === "fr") return "fr";
+  if (v === "id") return "id";
+  if (v === "hi") return "hi";
+  if (v === "de") return "de";
+  if (v === "tr") return "tr";
   return "en";
 }
 
@@ -110,6 +118,22 @@ type FooterDict = {
   adsDisclaimer: string;
 };
 
+type MenuDict = {
+  downloads: string;
+  rankings: string;
+  latest: string;
+  language: string;
+  more: string;
+  twitter: string;
+  tiktok: string;
+  telegram: string;
+  instagram: string;
+  about: string;
+  faq: string;
+  privacy: string;
+  contact: string;
+};
+
 type PlatformPageDict = {
   title: string;
   subtitle: string;
@@ -122,14 +146,24 @@ type PlatformPageDict = {
   whyPoints: string[];
   faqTitle: string;
   faqItems: Array<{ q: string; a: string }>;
+  galleryTitle: string;
+  trendingTitle?: string;
   note?: string;
   noteBody?: string;
+  seoContent?: string;
+};
+
+export type GalleryPageDict = {
+  title: string;
+  subtitle: string;
+  description: string;
+  seoContent?: string;
 };
 
 export const homeText: Record<Locale, HomeDict> = {
   en: {
-    title: "ClipKeep Extractor",
-    subtitle: "MVP: Telegram first, then X/Twitter. TikTok is planned later.",
+    title: "Video Downloader & Extractor",
+    subtitle: "Download videos from Twitter (X), Telegram, and TikTok instantly.",
     platformLabel: "Platform",
     sourceUrlLabel: "Source URL",
     localeLabel: "Locale",
@@ -180,8 +214,8 @@ export const homeText: Record<Locale, HomeDict> = {
     tiktokDesc: "قم بتنزيل فيديوهات وصور تيك توك للأرشفة في وضع عدم الاتصال."
   },
   ja: {
-    title: "ClipKeep 多機能ダウンローダー",
-    subtitle: "TelegramとX/Twitterの動画を簡単に保存。TikTokも対応予定。",
+    title: "SNS動画ダウンローダー",
+    subtitle: "X (Twitter)、Telegram、TikTokの動画を今すぐ保存。素早く安定したデータ抽出を提供。",
     platformLabel: "プラットフォーム",
     sourceUrlLabel: "動画URL",
     localeLabel: "言語",
@@ -205,6 +239,188 @@ export const homeText: Record<Locale, HomeDict> = {
     tiktokTitle: "TikTok ダウンローダー",
     tiktokDesc: "オフライン保存用にTikTokの動画や画像をダウンロードします。"
   },
+  es: {
+    title: "ClipKeep Extractor",
+    subtitle: "MVP: Telegram primero, luego X/Twitter. TikTok planeado próximamente.",
+    platformLabel: "Plataforma",
+    sourceUrlLabel: "URL de origen",
+    localeLabel: "Idioma",
+    localeEn: "Inglés",
+    localeAr: "Árabe",
+    localeJa: "Japonés",
+    submit: "Iniciar extracción",
+    submitting: "Enviando...",
+    status: "Estado",
+    initialMessage: "Pegue una URL de Telegram/X e inicie la extracción.",
+    creatingJob: "Creando tarea de extracción...",
+    degradedMessage: "El extractor está limitado temporalmente. Consulte la guía.",
+    invalidRequest: "Error. Verifique la URL/plataforma e intente de nuevo.",
+    networkError: "Error de red al crear la tarea.",
+    helpPage: "Ayuda",
+    supportedTools: "Herramientas soportadas",
+    telegramTitle: "Descargador de Telegram",
+    telegramDesc: "Guarde videos y archivos de canales y grupos de Telegram.",
+    twitterTitle: "Descargador de Twitter (X)",
+    twitterDesc: "Archive videos y GIFs de X/Twitter al instante.",
+    tiktokTitle: "Descargador de TikTok",
+    tiktokDesc: "Descargue videos de TikTok para verlos sin conexión."
+  },
+  pt: {
+    title: "ClipKeep Extractor",
+    subtitle: "MVP: Telegram primeiro, depois X/Twitter. TikTok planejado.",
+    platformLabel: "Plataforma",
+    sourceUrlLabel: "URL de origem",
+    localeLabel: "Idioma",
+    localeEn: "Inglês",
+    localeAr: "Árabe",
+    localeJa: "Japonês",
+    submit: "Iniciar extração",
+    submitting: "Enviando...",
+    status: "Status",
+    initialMessage: "Cole uma URL do Telegram/X e inicie a extração.",
+    creatingJob: "Criando tarefa de extração...",
+    degradedMessage: "Extrator temporariamente limitado. Verifique a solução.",
+    invalidRequest: "Falha na solicitação. Verifique URL/plataforma.",
+    networkError: "Erro de rede ao criar tarefa.",
+    helpPage: "Ajuda",
+    supportedTools: "Ferramentas suportadas",
+    telegramTitle: "Downloader do Telegram",
+    telegramDesc: "Salve vídeos e mídia de canais e grupos do Telegram.",
+    twitterTitle: "Downloader do Twitter (X)",
+    twitterDesc: "Arquive vídeos e GIFs do X/Twitter instantaneamente.",
+    tiktokTitle: "Downloader do TikTok",
+    tiktokDesc: "Baixe vídeos do TikTok para visualização offline."
+  },
+  fr: {
+    title: "ClipKeep Extractor",
+    subtitle: "MVP : Telegram d'abord, puis X/Twitter. TikTok prévu plus tard.",
+    platformLabel: "Plateforme",
+    sourceUrlLabel: "URL source",
+    localeLabel: "Langue",
+    localeEn: "Anglais",
+    localeAr: "Arabe",
+    localeJa: "Japonais",
+    submit: "Démarrer l'extraction",
+    submitting: "Envoi...",
+    status: "État",
+    initialMessage: "Collez une URL Telegram/X et démarrez l'extraction.",
+    creatingJob: "Création de la tâche d'extraction...",
+    degradedMessage: "L'extracteur est temporairement limité. Consultez l'aide.",
+    invalidRequest: "Échec. Vérifiez l'URL/plateforme et réessayez.",
+    networkError: "Erreur réseau lors de la création de la tâche.",
+    helpPage: "Aide",
+    supportedTools: "Outils pris en charge",
+    telegramTitle: "Téléchargeur Telegram",
+    telegramDesc: "Enregistrez des vidéos de canaux et groupes Telegram.",
+    twitterTitle: "Téléchargeur Twitter (X)",
+    twitterDesc: "Archivez instantanément des vidéos et GIFs de X/Twitter.",
+    tiktokTitle: "Téléchargeur TikTok",
+    tiktokDesc: "Téléchargez des vidéos TikTok pour une lecture hors ligne."
+  },
+  id: {
+    title: "ClipKeep Extractor",
+    subtitle: "MVP: Telegram dulu, lalu X/Twitter. TikTok direncanakan nanti.",
+    platformLabel: "Platform",
+    sourceUrlLabel: "URL Sumber",
+    localeLabel: "Bahasa",
+    localeEn: "Inggris",
+    localeAr: "Arab",
+    localeJa: "Jepang",
+    submit: "Mulai Ekstrak",
+    submitting: "Mengirim...",
+    status: "Status",
+    initialMessage: "Tempel URL Telegram/X dan mulai ekstraksi.",
+    creatingJob: "Membuat tugas ekstraksi...",
+    degradedMessage: "Ekstraktor terbatas sementara. Periksa panduan solusi.",
+    invalidRequest: "Permintaan gagal. Periksa URL/platform.",
+    networkError: "Kesalahan jaringan saat membuat tugas.",
+    helpPage: "Bantuan",
+    supportedTools: "Alat yang didukung",
+    telegramTitle: "Pengunduh Telegram",
+    telegramDesc: "Simpan video dan media dari saluran dan grup Telegram.",
+    twitterTitle: "Pengunduh Twitter (X)",
+    twitterDesc: "Arsip video dan GIF dari postingan X/Twitter secara instan.",
+    tiktokTitle: "Pengunduh TikTok",
+    tiktokDesc: "Unduh video TikTok untuk arsip offline."
+  },
+  hi: {
+    title: "ClipKeep एक्सट्रैक्टर",
+    subtitle: "MVP: पहले टेलीग्राम, फिर X/ट्विटर। टिकटॉक बाद में।",
+    platformLabel: "प्लेटफॉर्म",
+    sourceUrlLabel: "स्रोत URL",
+    localeLabel: "भाषा",
+    localeEn: "अंग्रेज़ी",
+    localeAr: "अरबी",
+    localeJa: "जापानी",
+    submit: "एक्सट्रैक्शन शुरू करें",
+    submitting: "सबमिट हो रहा है...",
+    status: "स्थिति",
+    initialMessage: "टेलीग्राम/X पोस्ट URL पेस्ट करें और एक्सट्रैक्शन शुरू करें।",
+    creatingJob: "एक्सट्रैक्शन कार्य बनाया जा रहा है...",
+    degradedMessage: "एक्सट्रैक्टर अस्थायी रूप से सीमित है। समाधान मार्गदर्शिका देखें।",
+    invalidRequest: "अनुरोध विफल। URL/प्लेटफॉर्म की जांच करें।",
+    networkError: "कार्य बनाते समय नेटवर्क त्रुटि।",
+    helpPage: "सहायता",
+    supportedTools: "समर्थित उपकरण",
+    telegramTitle: "टेलीग्राम डाउनलोडर",
+    telegramDesc: "टेलीग्राम चैनलों और समूहों से वीडियो और मीडिया सहेजें।",
+    twitterTitle: "ट्विटर (X) डाउनलोडर",
+    twitterDesc: "X/ट्विटर पोस्ट से वीडियो और GIF तुरंत आर्काइव करें।",
+    tiktokTitle: "टिकटॉक डाउनलोडर",
+    tiktokDesc: "ऑफलाइन आर्काइविंग के लिए टिकटॉक वीडियो डाउनलोड करें।"
+  },
+  de: {
+    title: "ClipKeep Extractor",
+    subtitle: "MVP: Zuerst Telegram, dann X/Twitter. TikTok folgt später.",
+    platformLabel: "Plattform",
+    sourceUrlLabel: "Quell-URL",
+    localeLabel: "Sprache",
+    localeEn: "Englisch",
+    localeAr: "Arabisch",
+    localeJa: "Japanisch",
+    submit: "Extraktion starten",
+    submitting: "Senden...",
+    status: "Status",
+    initialMessage: "Telegram/X URL einfügen und Extraktion starten.",
+    creatingJob: "Aufgabe wird erstellt...",
+    degradedMessage: "Eingeschränkt. Bitte Lösungshinweise prüfen.",
+    invalidRequest: "Fehlgeschlagen. URL/Plattform prüfen.",
+    networkError: "Netzwerkfehler beim Erstellen der Aufgabe.",
+    helpPage: "Hilfe",
+    supportedTools: "Unterstützte Tools",
+    telegramTitle: "Telegram Downloader",
+    telegramDesc: "Speichern Sie Videos von Telegram-Kanälen.",
+    twitterTitle: "Twitter (X) Downloader",
+    twitterDesc: "Archivieren Sie Videos von X/Twitter sofort.",
+    tiktokTitle: "TikTok Downloader",
+    tiktokDesc: "Videos für die Offline-Ansicht herunterladen."
+  },
+  tr: {
+    title: "ClipKeep Ayıklayıcı",
+    subtitle: "MVP: Önce Telegram, sonra X/Twitter. TikTok yakında.",
+    platformLabel: "Platform",
+    sourceUrlLabel: "Kaynak URL",
+    localeLabel: "Dil",
+    localeEn: "İngilizce",
+    localeAr: "Arapça",
+    localeJa: "Japonca",
+    submit: "Ayıklamayı Başlat",
+    submitting: "Gönderiliyor...",
+    status: "Durum",
+    initialMessage: "Telegram/X URL yapıştırın ve ayıklayıcıyı başlatın.",
+    creatingJob: "Ayıklama görevi oluşturuluyor...",
+    degradedMessage: "Ayıklayıcı geçici olarak sınırlı. Kılavuza bakın.",
+    invalidRequest: "İstek başarısız. URL/platformu kontrol edin.",
+    networkError: "Görev oluşturulurken ağ hatası oluştu.",
+    helpPage: "Yardım",
+    supportedTools: "Desteklenen Araçlar",
+    telegramTitle: "Telegram İndirici",
+    telegramDesc: "Telegram kanallarından videoları kaydedin.",
+    twitterTitle: "Twitter (X) İndirici",
+    twitterDesc: "Postlardan videoları anında arşivleyin.",
+    tiktokTitle: "TikTok İndirici",
+    tiktokDesc: "TikTok videolarını çevrimdışı arşivleyin."
+  }
 };
 
 export const telegramText: Record<Locale, PlatformPageDict> = {
@@ -231,7 +447,10 @@ export const telegramText: Record<Locale, PlatformPageDict> = {
     faqItems: [
       { q: "Can I download from private channels?", a: "ClipKeep supports public links. Private content is restricted by Telegram's auth policies." },
       { q: "Is there a file size limit?", a: "We support common sizes. 2GB+ files may experience timeouts." }
-    ]
+    ],
+    galleryTitle: "Recently Processed Telegram Videos",
+    trendingTitle: "Trending Telegram Videos (Weekly)",
+    seoContent: "ClipKeep's Telegram Video Downloader is the ultimate tool for archiving media from one of the world's most popular messaging platforms. As Telegram channels and groups become secondary news hubs and content repositories, the need for a reliable extraction tool has never been greater. Our service allows you to save videos, documentaries, and large media files directly from public Telegram posts with just a single click.\n\nTelegram's architecture can sometimes make direct downloads slow or interrupted. ClipKeep solves this by acting as a high-speed bridge, ensuring that you get the most stable connection possible. We support various formats and aim to preserve the original quality of the file. Whether you are following a niche educational channel or a tech community group, ClipKeep ensures that the knowledge and entertainment shared there are always accessible to you, even without an internet connection.\n\nSecurity and privacy are at our core. Unlike many other tools, ClipKeep does not require you to link your Telegram account or provide any personal data. We operate purely on public links, respecting the native privacy settings of the platform. Combine this with our lightning-fast processing and mobile-first design, and you have the most practical solution for Telegram media management available today."
   },
   ar: {
     title: "محمل فيديوهات تيليجرام",
@@ -256,7 +475,9 @@ export const telegramText: Record<Locale, PlatformPageDict> = {
     faqItems: [
       { q: "هل يمكنني التنزيل من القنوات الخاصة؟", a: "يدعم ClipKeep الروابط العامة فقط. الوصول للمحتوى الخاص محمي بسياسات توثيق تيليجرام." },
       { q: "هل هناك حد لحجم الملفات؟", a: "ندعم معظم الأحجام الشائعة. الملفات الضخمة جدًا (أكثر من 2 جيجابايت) قد تواجه مهلة زمنية." }
-    ]
+    ],
+    galleryTitle: "فيديوهات تيليجرام التي تمت معالجتها مؤخراً",
+    trendingTitle: "فيديوهات تيليجرام الرائجة (أسبوعياً)"
   },
   ja: {
     title: "Telegram 動画ダウンローダー",
@@ -281,7 +502,199 @@ export const telegramText: Record<Locale, PlatformPageDict> = {
     faqItems: [
       { q: "プライベートチャネルからダウンロードできますか？", a: "ClipKeepは公開リンクのみ対応しています。鍵付きのチャネルは対応外です。" },
       { q: "ファイルサイズに制限はありますか？", a: "一般的なサイズに対応していますが、2GBを超えるファイルはタイムアウトの可能性があります。" }
-    ]
+    ],
+    galleryTitle: "最近抽出されたTelegram動画",
+    trendingTitle: "週間トレンド・Telegram動画",
+    seoContent: "ClipKeepのTelegram動画ダウンロードツールは、世界で最も人気のあるメッセージングプラットフォームの一つであるTelegramからメディアをアーカイブするための究極のツールです。Telegramのチャンネルやグループがニュース配信やコンテンツの保管場所として機能する中、信頼できる抽出ツールの重要性はかつてないほど高まっています。当サイトでは、公開されているTelegramの投稿から動画、ドキュメンタリー、そして大容量のメディアファイルを、ワンクリックで直接保存することが可能です。\n\nTelegramの構造上、直接のダウンロードが遅くなったり中断されたりすることがありますが、ClipKeepは高速なブリッジとして機能し、可能な限り安定した接続を確保します。私たちは様々なフォーマットをサポートし、ファイルの元の品質を維持することを目指しています。教育的なチャンネルから技術コミュニティのグループまで、ClipKeepを使えば、そこで共有される知識やエンターテインメントを、インターネット接続がない環境でもいつでも楽しむことができます。\n\nセキュリティとプライバシーは、当サイトの核となる価値観です。他の多くのツールとは異なり、ClipKeepはユーザーにTelegramアカウントの連携や個人情報の提供を求めることはありません。公開リンクのみで動作し、プラットフォームのネイティブなプライバシー設定を尊重します。この安全性と、モバイルファーストの設計、そして超高速な処理能力を組み合わせることで、Telegramメディア管理における最も実用的なソリューションを提供します。"
+  },
+  es: {
+    title: "Descargador de Telegram",
+    subtitle: "Descargue videos y archivos de Telegram de forma rápida y segura.",
+    statusLabel: "Estado",
+    helpPage: "Ayuda",
+    howToTitle: "Cómo descargar videos de Telegram",
+    howToSteps: [
+      "Copie el enlace: En Telegram, copie el enlace del post del video.",
+      "Pegue el enlace: Pegue la URL en el campo arriba.",
+      "Extraer: Haga clic en 'Iniciar extracción'.",
+      "Guardar: Haga clic en el botón de descarga resultante."
+    ],
+    whyTitle: "¿Por qué usar ClipKeep?",
+    whyBody: "ClipKeep ofrece una conexión estable para extraer medios de Telegram sin complicaciones.",
+    whyPoints: [
+      "Privacidad: No registramos su historial.",
+      "Sin registro: Descargue inmediatamente.",
+      "Compatibilidad total: PC, Mac, Android e iOS."
+    ],
+    faqTitle: "Preguntas frecuentes",
+    faqItems: [
+      { q: "¿Soportan canales privados?", a: "Solo soportamos enlaces públicos por políticas de Telegram." },
+      { q: "¿Hay límite de tamaño?", a: "Soportamos tamaños comunes; archivos de +2GB pueden fallar." }
+    ],
+    galleryTitle: "Videos de Telegram recientes",
+    trendingTitle: "Tendencias semanales de Telegram"
+  },
+  pt: {
+    title: "Downloader do Telegram",
+    subtitle: "Baixe vídeos e arquivos do Telegram de forma rápida e segura.",
+    statusLabel: "Status",
+    helpPage: "Ajuda",
+    howToTitle: "Como baixar vídeos do Telegram",
+    howToSteps: [
+      "Copie o link: No Telegram, copie o link da postagem.",
+      "Cole o link: Cole na caixa de entrada acima.",
+      "Extrair: Clique em 'Iniciar extração'.",
+      "Salvar: Clique no botão de download."
+    ],
+    whyTitle: "Por que usar o ClipKeep?",
+    whyBody: "O ClipKeep garante uma extração estável e rápida para mídias do Telegram.",
+    whyPoints: [
+      "Privacidade total: Não salvamos seu histórico.",
+      "Sem cadastro: Baixe agora mesmo.",
+      "Multiplataforma: Funciona em todos os dispositivos."
+    ],
+    faqTitle: "Perguntas Frequentes",
+    faqItems: [
+      { q: "Canais privados são suportados?", a: "Apenas links públicos são suportados no momento." },
+      { q: "Existe limite de tamanho?", a: "Arquivos muito grandes (+2GB) podem sofrer timeout." }
+    ],
+    galleryTitle: "Vídeos do Telegram recentes",
+    trendingTitle: "Tendências da semana - Telegram"
+  },
+  fr: {
+    title: "Téléchargeur Telegram",
+    subtitle: "Téléchargez des vidéos et fichiers Telegram rapidement et en toute sécurité.",
+    statusLabel: "État",
+    helpPage: "Aide",
+    howToTitle: "Comment télécharger ?",
+    howToSteps: [
+      "Copiez le lien : Sur Telegram, copiez le lien du post.",
+      "Collez le lien : Collez l'URL dans le champ ci-dessus.",
+      "Extraire : Cliquez sur 'Démarrer l'extraction'.",
+      "Enregistrer : Cliquez sur le bouton de téléchargement."
+    ],
+    whyTitle: "Pourquoi ClipKeep ?",
+    whyBody: "ClipKeep permet une extraction stable là où le téléchargement direct peut être lent.",
+    whyPoints: [
+      "Confidentialité : Aucun historique n'est conservé.",
+      "Sans inscription : Téléchargez instantanément.",
+      "Compatible : Windows, Mac, iOS, Android."
+    ],
+    faqTitle: "FAQ",
+    faqItems: [
+      { q: "Canaux privés ?", a: "Seuls les liens publics sont accessibles." },
+      { q: "Limite de taille ?", a: "Les fichiers de plus de 2 Go peuvent échouer." }
+    ],
+    galleryTitle: "Vidéos Telegram récentes",
+    trendingTitle: "Tendances Telegram de la semaine"
+  },
+  id: {
+    title: "Pengunduh Video Telegram",
+    subtitle: "Unduh video dan media dari saluran Telegram dengan cepat dan aman.",
+    statusLabel: "Status",
+    helpPage: "Bantuan",
+    howToTitle: "Cara Mengunduh",
+    howToSteps: [
+      "Salin Link: Salin tautan postingan dari Telegram.",
+      "Tempel Link: Tempel ke kolom di atas.",
+      "Ekstrak: Klik tombol 'Mulai Ekstrak'.",
+      "Simpan: Klik tombol unduh yang muncul."
+    ],
+    whyTitle: "Mengapa ClipKeep?",
+    whyBody: "ClipKeep menyediakan koneksi stabil untuk ekstraksi media Telegram.",
+    whyPoints: [
+      "Privasi: Kami tidak mencatat riwayat Anda.",
+      "Tanpa Daftar: Langsung unduh sekarang.",
+      "Semua Perangkat: PC, Android, iOS."
+    ],
+    faqTitle: "Pertanyaan Umum",
+    faqItems: [
+      { q: "Bisa unduh dari grup privat?", a: "Hanya link publik yang didukung." },
+      { q: "Ada batas ukuran?", a: "File di atas 2GB mungkin gagal." }
+    ],
+    galleryTitle: "Video Telegram Terbaru",
+    trendingTitle: "Tren Mingguan Telegram"
+  },
+  hi: {
+    title: "टेलीग्राम वीडियो डाउनलोडर",
+    subtitle: "टेलीग्राम चैनलों और समूहों से वीडियो और मीडिया जल्दी और सुरक्षित रूप से डाउनलोड करें।",
+    statusLabel: "स्थिति",
+    helpPage: "सहायता",
+    howToTitle: "टेलीग्राम वीडियो कैसे डाउनलोड करें",
+    howToSteps: [
+      "लिंक कॉपी करें: टेलीग्राम में पोस्ट लिंक कॉपी करें।",
+      "लिंक पेस्ट करें: ऊपर दिए गए इनपुट में URL पेस्ट करें।",
+      "एक्सट्रैक्शन शुरू करें: 'एक्सट्रैक्शन शुरू करें' पर क्लिक करें।",
+      "सहेजें: डाउनलोड बटन पर क्लिक करें।"
+    ],
+    whyTitle: "ClipKeep का उपयोग क्यों करें?",
+    whyBody: "ClipKeep टेलीग्राम मीडिया के लिए स्थिर और तेज़ एक्सट्रैक्शन प्रदान करता है।",
+    whyPoints: [
+      "गोपनीयता: हम आपका इतिहास रिकॉर्ड नहीं करते हैं।",
+      "कोई पंजीकरण नहीं: तुरंत डाउनलोड करना शुरू करें।",
+      "सभी डिवाइस: Windows, Android, iOS पर काम करता है।"
+    ],
+    faqTitle: "अक्सर पूछे जाने वाले प्रश्न",
+    faqItems: [
+      { q: "क्या मैं प्राइवेट चैनल से डाउनलोड कर सकता हूँ?", a: "ClipKeep केवल सार्वजनिक लिंक का समर्थन करता है।" },
+      { q: "क्या कोई फ़ाइल आकार सीमा है?", a: "हम सामान्य आकार का समर्थन करते हैं। 2GB+ फ़ाइलें विफल हो सकती हैं।" }
+    ],
+    galleryTitle: "हाल ही में एक्सट्रैक्ट किए गए टेलीग्राम वीडियो",
+    trendingTitle: "साप्ताहिक ट्रेंडिंग टेलीग्राम वीडियो"
+  },
+  de: {
+    title: "Telegram Downloader",
+    subtitle: "Videos von Telegram-Kanälen schnell und sicher speichern.",
+    statusLabel: "Status",
+    helpPage: "Hilfe",
+    howToTitle: "Anleitung",
+    howToSteps: [
+      "Link kopieren: Telegram-Post-Link kopieren.",
+      "Einfügen: URL oben einfügen.",
+      "Extrahieren: Start klicken.",
+      "Speichern: Download-Button nutzen."
+    ],
+    whyTitle: "Vorteile",
+    whyBody: "ClipKeep ermöglicht stabile Downloads von Telegram-Medien.",
+    whyPoints: [
+      "Privatsphäre: Kein Verlauf.",
+      "Ohne Anmeldung: Direkt starten.",
+      "Überall: Windows, Android, iOS."
+    ],
+    faqTitle: "FAQ",
+    faqItems: [
+      { q: "Private Kanäle?", a: "Nur öffentliche Links werden unterstützt." },
+      { q: "Größenbeschränkung?", a: "Über 2GB kann es zu Timeouts kommen." }
+    ],
+    galleryTitle: "Neueste Telegram Videos",
+    trendingTitle: "Wochentrends Telegram"
+  },
+  tr: {
+    title: "Telegram İndirici",
+    subtitle: "Telegram kanallarından videoları güvenle ve hızla indirin.",
+    statusLabel: "Durum",
+    helpPage: "Yardım",
+    howToTitle: "Nasıl İndirilir?",
+    howToSteps: [
+      "Linki Kopyalayın: Telegram post linkini kopyalayın.",
+      "Yapıştırın: URL'yi yukarıdaki alana yapıştırın.",
+      "Ayıklayın: 'Başlat' butonuna tıklayın.",
+      "Kaydedin: İndir butonuna tıklayın."
+    ],
+    whyTitle: "Neden ClipKeep?",
+    whyBody: "ClipKeep, Telegram videoları için en hızlı ayıklama çözümüdür.",
+    whyPoints: [
+      "Gizlilik: Kayıt tutmuyoruz.",
+      "Üyeliksiz: Hemen kullanın.",
+      "Uyumluluk: Her cihazda çalışır."
+    ],
+    faqTitle: "Sık Sorulan Sorular",
+    faqItems: [
+      { q: "Gizli kanallar?", a: "Yalnızca herkese açık linkler desteklenir." },
+      { q: "Boyut sınırı?", a: "2GB üzerindeki dosyalarda sorun çıkabilir." }
+    ],
+    galleryTitle: "Son Telegram Videoları",
+    trendingTitle: "Haftalık Popüler - Telegram"
   }
 };
 
@@ -309,7 +722,10 @@ export const twitterText: Record<Locale, PlatformPageDict> = {
     faqItems: [
       { q: "Can I download private tweets?", a: "No. ClipKeep only supports public media extraction." },
       { q: "What quality will the video be?", a: "ClipKeep extracts the highest available bitrate provided by the platform." }
-    ]
+    ],
+    galleryTitle: "Recent X/Twitter Archives",
+    trendingTitle: "Trending X/Twitter Videos (Weekly)",
+    seoContent: "ClipKeep for Twitter (X) is a premium media extraction solution designed for curators, journalists, and everyday users who need to archive high-quality video content from the X platform. In an era where digital content can vanish in an instant, having a reliable way to save important news clips, educational threads, and viral moments is more critical than ever.\n\nOur Twitter downloader is optimized for speed and clarity. We bypass the complexities of traditional downloading methods, providing you with a direct path to the highest-quality MP4 or GIF versions of any public tweet. Powered by an advanced Cloudflare-based infrastructure, ClipKeep handles high traffic with ease, ensuring that you never have to wait for your media to be processed. Whether it's a short 15-second clip or a multi-minute documentary posted on X, our engine extracts the best available bitrate for your viewing pleasure.\n\nUsing ClipKeep is simple: just copy the post URL, paste it into our prominent extractor field, and click download. We've designed our interface to be clean and tool-focused, removing unnecessary distractions so you can get what you need and get back to your day. Our commitment to privacy means no tracking of your history and no account requirements. Experience the future of SNS media archiving with ClipKeep."
   },
   ar: {
     title: "محمل فيديوهات تويتر (X)",
@@ -334,7 +750,9 @@ export const twitterText: Record<Locale, PlatformPageDict> = {
     faqItems: [
       { q: "هل يمكنني تنزيل التغريدات الخاصة؟", a: "لا. يدعم ClipKeep استخراج الوسائط العامة فقط." },
       { q: "ما هي جودة الفيديو؟", a: "يستخرِج ClipKeep أعلى معدل بث متاح توفره المنصة." }
-    ]
+    ],
+    galleryTitle: "أرشيفات X/تويتر الأخيرة",
+    trendingTitle: "فيديوهات X/تويتر الرائجة (أسبوعياً)"
   },
   ja: {
     title: "Twitter (X) 動画ダウンローダー",
@@ -359,7 +777,199 @@ export const twitterText: Record<Locale, PlatformPageDict> = {
     faqItems: [
       { q: "鍵垢（非公開投稿）からダウンロードできますか？", a: "いいえ。ClipKeepは公開されているメディアのみ対応しています。" },
       { q: "動画の画質はどうなりますか？", a: "ClipKeepはプラットフォームが提供する最高画質のリンクを抽出します。" }
-    ]
+    ],
+    galleryTitle: "最近のX/Twitterアーカイブ",
+    trendingTitle: "週間トレンド・X/Twitter動画",
+    seoContent: "ClipKeepのTwitter (X) 動画ダウンロードツールは、ジャーナリスト、クリエイター、そしてソーシャルメディア上の貴重なコンテンツを保存したい全てのユーザーのために設計された、プレミアムなデータ抽出ソリューションです。デジタルコンテンツが瞬時に消え去る可能性がある現代において、重要なニュース、教育的なスレッド、そして話題の瞬間を確実に保存しておくことは、これまで以上に重要になっています。\n\n当サイトのTwitterダウンローダーは、スピードと画質の両立を追求しています。従来の複雑なダウンロード手順を排除し、公開されているツイートから最高品質のMP4やGIFへのダイレクトなパスを提供します。Cloudflareを活用した高度なインフラストラクチャにより、アクセスが集中する時間帯でも安定したパフォーマンスを発揮し、メディアの処理を待たされることはありません。15秒の短いクリップから、Xに投稿された数分にわたるドキュメンタリーまで、当社のエンジンは利用可能な最高のビットレートを抽出し、快適な視聴体験を実現します。\n\nClipKeepの使用方法は非常にシンプルです。投稿のURLをコピーし、当サイトの目立つ入力フィールドに貼り付けてダウンロードをクリックするだけ。ツールとしての機能性を最優先。プライバシーへの取り組みとして、履歴の追跡やアカウントの登録は一切不要です。ClipKeepで、次世代のSNSメディアアーカイブを体験してください。"
+  },
+  es: {
+    title: "Descargador de Twitter (X)",
+    subtitle: "Archive videos y GIFs de X/Twitter directamente en su dispositivo.",
+    statusLabel: "Estado",
+    helpPage: "Ayuda",
+    howToTitle: "Cómo guardar videos de Twitter",
+    howToSteps: [
+      "Busque el post: Vaya al post de X que contiene el video.",
+      "Copie el enlace: Haga clic en compartir y copie el enlace.",
+      "ClipKeep: Pegue la URL arriba y haga clic en 'Enviar'.",
+      "Descargar: Guarde el archivo generado."
+    ],
+    whyTitle: "Beneficios",
+    whyBody: "Archivar contenido de X es vital para creadores. ClipKeep se enfoca en la velocidad.",
+    whyPoints: [
+      "Videos y GIFs: Soporte completo.",
+      "Baja latencia: Potenciado por Cloudflare.",
+      "Sin cookies: No pedimos sus credenciales."
+    ],
+    faqTitle: "Dudas comunes",
+    faqItems: [
+      { q: "¿Tweets privados?", a: "No. Solo contenido público." },
+      { q: "¿Qué calidad?", a: "La máxima disponible en la plataforma." }
+    ],
+    galleryTitle: "Archivos de X recientes",
+    trendingTitle: "Tendencias de X (Semanal)"
+  },
+  pt: {
+    title: "Downloader do Twitter (X)",
+    subtitle: "A maneira mais rápida de arquivar vídeos e GIFs do X/Twitter.",
+    statusLabel: "Status",
+    helpPage: "Ajuda",
+    howToTitle: "Como salvar vídeos do Twitter",
+    howToSteps: [
+      "Encontre o post: Vá até o post do X com o vídeo.",
+      "Copie o link: Use o ícone de compartilhar.",
+      "ClipKeep: Cole acima e clique em 'Enviar'.",
+      "Download: Salve no seu dispositivo."
+    ],
+    whyTitle: "Vantagens",
+    whyBody: "ClipKeep foca em uma experiência rápida e segura para usuários do X.",
+    whyPoints: [
+      "GIFs e Vídeos: Suporte total.",
+      "Processamento rápido: Backend otimizado.",
+      "Seguro: Não pedimos acesso à sua conta."
+    ],
+    faqTitle: "Dúvidas",
+    faqItems: [
+      { q: "Tweets privados funcionam?", a: "Não. Apenas conteúdo público pode ser extraído." },
+      { q: "Qual a qualidade?", a: "Extraímos a melhor qualidade oferecida pelo X." }
+    ],
+    galleryTitle: "Arquivos do X recentes",
+    trendingTitle: "Tendências do X (Semanal)"
+  },
+  fr: {
+    title: "Téléchargeur Twitter (X)",
+    subtitle: "Le moyen le plus rapide d'archiver des vidéos de X/Twitter.",
+    statusLabel: "État",
+    helpPage: "Aide",
+    howToTitle: "Comment faire ?",
+    howToSteps: [
+      "Trouvez le post : Allez sur le post X contenant la vidéo.",
+      "Copiez le lien : Utilisez l'icône de partage.",
+      "ClipKeep : Collez et cliquez sur 'Démarrer'.",
+      "Télécharger : Enregistrez le fichier."
+    ],
+    whyTitle: "Pourquoi ClipKeep ?",
+    whyBody: "ClipKeep offre une expérience propre axée sur la performance pour X.",
+    whyPoints: [
+      "GIFs et Vidéos : Support intégral.",
+      "Vitesse : Optimisé par Cloudflare.",
+      "Sécurité : Aucune connexion requise."
+    ],
+    faqTitle: "Questions",
+    faqItems: [
+      { q: "Tweets privés ?", a: "Impossible. Uniquement contenu public." },
+      { q: "Qualité ?", a: "La plus haute disponible." }
+    ],
+    galleryTitle: "Archives X récentes",
+    trendingTitle: "Tendances X de la semaine"
+  },
+  id: {
+    title: "Pengunduh Video Twitter (X)",
+    subtitle: "Cara tercepat mengarsipkan video dan GIF dari X/Twitter ke HP Anda.",
+    statusLabel: "Status",
+    helpPage: "Bantuan",
+    howToTitle: "Cara Simpan Video",
+    howToSteps: [
+      "Cari Postingan: Buka postingan X yang berisi video.",
+      "Salin Link: Klik ikon share dan salin tautan.",
+      "ClipKeep: Tempel URL dan klik 'Kirim'.",
+      "Download: Simpan media setelah diproses."
+    ],
+    whyTitle: "Keuntungan ClipKeep",
+    whyBody: "ClipKeep menyediakan akses cepat untuk konten X tanpa ribet.",
+    whyPoints: [
+      "Dukung GIF: Ekstrak semua jenis media di X.",
+      "Cepat: Latensi minimal dengan Cloudflare.",
+      "Aman: Tanpa perlu login akun X."
+    ],
+    faqTitle: "FAQ X",
+    faqItems: [
+      { q: "Bisa tweet gembok?", a: "Tidak. Hanya konten publik." },
+      { q: "Gimana kualitasnya?", a: "Kualitas tertinggi yang tersedia di server X." }
+    ],
+    galleryTitle: "Arsip X Terbaru",
+    trendingTitle: "Tren Mingguan X"
+  },
+  hi: {
+    title: "ट्विटर (X) वीडियो डाउनलोडर",
+    subtitle: "X/ट्विटर से सीधे अपने डिवाइस पर वीडियो और GIF आर्काइव करने का सबसे तेज़ तरीका।",
+    statusLabel: "स्थिति",
+    helpPage: "सहायता",
+    howToTitle: "ट्विटर वीडियो कैसे सहेजें",
+    howToSteps: [
+      "पोस्ट खोजें: वीडियो वाले X/ट्विटर पोस्ट पर जाएं।",
+      "लिंक कॉपी करें: शेयर आइकन पर क्लिक करें और 'कॉपी लिंक' चुनें।",
+      "ClipKeep के साथ एक्सट्रैक्ट करें: ऊपर URL पेस्ट करें और 'सबमिट' पर क्लिक करें।",
+      "डाउनलोड करें: प्रक्रिया पूरी होने के बाद डाउनलोड बटन पर क्लिक करें।"
+    ],
+    whyTitle: "X के लिए ClipKeep के लाभ",
+    whyBody: "ClipKeep गति और शुद्धता पर केंद्रित एक स्वच्छ अनुभव प्रदान करता है।",
+    whyPoints: [
+      "GIF और वीडियो समर्थन: X पोस्ट पर मौजूद किसी भी मीडिया को एक्सट्रैक्ट करें।",
+      "तेज़ रिस्पॉन्स: Cloudflare द्वारा समर्थित बैकएंड न्यूनतम विलंबता सुनिश्चित करता है।",
+      "सुरक्षित: हमें खाता पहुंच या कुकीज़ की आवश्यकता नहीं है।"
+    ],
+    faqTitle: "सामान्य प्रश्न",
+    faqItems: [
+      { q: "क्या मैं प्राइवेट ट्वीट डाउनलोड कर सकता हूँ?", a: "नहीं। ClipKeep केवल सार्वजनिक मीडिया का समर्थन करता है।" },
+      { q: "वीडियो की गुणवत्ता क्या होगी?", a: "ClipKeep उच्चतम उपलब्ध बिटरेट एक्सट्रैक्ट करता है।" }
+    ],
+    galleryTitle: "हालिया X/ट्विटर आर्काइव",
+    trendingTitle: "साप्ताहिक ट्रेंडिंग X/ट्विटर वीडियो"
+  },
+  de: {
+    title: "Twitter (X) Downloader",
+    subtitle: "Der schnellste Weg, Videos von X zu speichern.",
+    statusLabel: "Status",
+    helpPage: "Hilfe",
+    howToTitle: "Anleitung",
+    howToSteps: [
+      "Post finden: X-Post mit Video aufrufen.",
+      "Link kopieren: Über Teilen-Icon den Link kopieren.",
+      "ClipKeep: URL einfügen und 'Senden'.",
+      "Download: Datei speichern."
+    ],
+    whyTitle: "Vorteile",
+    whyBody: "Schnelle und saubere Archivierung von X-Medien.",
+    whyPoints: [
+      "GIF & Video: Volle Unterstützung.",
+      "Speed: Cloudflare optimiert.",
+      "Sicher: Kein Login nötig."
+    ],
+    faqTitle: "Häufige Fragen",
+    faqItems: [
+      { q: "Private Tweets?", a: "Nein, nur öffentliche Inhalte." },
+      { q: "Bildqualität?", a: "Höchste verfügbare Qualität." }
+    ],
+    galleryTitle: "Neueste X-Archive",
+    trendingTitle: "Trends auf X"
+  },
+  tr: {
+    title: "Twitter (X) İndirici",
+    subtitle: "X/Twitter'daki videoları cihazınıza kaydetmenin en hızlı yolu.",
+    statusLabel: "Durum",
+    helpPage: "Yardım",
+    howToTitle: "Nasıl Kaydedilir?",
+    howToSteps: [
+      "Postu Bulun: Videonun olduğu X postuna gidin.",
+      "Linki Kopyalayın: Paylaş ikonundan linki kopyalayın.",
+      "ClipKeep: URL'yi yapıştırın ve 'Gönder'e basın.",
+      "İndirin: İşlem bitince dosyanızı indirin."
+    ],
+    whyTitle: "Neden ClipKeep?",
+    whyBody: "X medyalarını saklamak için hız odaklı temiz bir deneyim sunuyoruz.",
+    whyPoints: [
+      "GIF Desteği: X postlarındaki tüm medyaları indirin.",
+      "Düşük Gecikme: Cloudflare destekli altyapı.",
+      "Güvenli: Hesap erişimi gerekmez."
+    ],
+    faqTitle: "Sık Sorulanlar",
+    faqItems: [
+      { q: "Gizli tweetler?", a: "Hayır. Sadece herkese açık içerikler." },
+      { q: "Video kalitesi?", a: "Platformda bulunan en yüksek kalite." }
+    ],
+    galleryTitle: "Son X Arşivleri",
+    trendingTitle: "Haftalık Popüler - X"
   }
 };
 
@@ -384,7 +994,10 @@ export const tiktokText: Record<Locale, PlatformPageDict> = {
     faqItems: [
       { q: "Is watermarking removed?", a: "We aim for the most direct path, which often means no overlays." },
       { q: "Can I download TikTok slideshows?", a: "Slideshow support is currently limited." }
-    ]
+    ],
+    galleryTitle: "Recent TikTok Discoveries",
+    trendingTitle: "Trending TikTok Videos (Weekly)",
+    seoContent: "ClipKeep's TikTok Downloader is a high-performance solution for anyone looking to save and archive viral content from the world's fastest-growing social video platform. TikTok has revolutionized how we consume short-form media, making it essential for creators, researchers, and digital curators to have a reliable way to keep these fleeting moments for future reference.\n\nOur tool focuses on speed and quality. We provide a direct bridge to TikTok's media servers, allowing for high-definition extractions that preserve the integrity of the original upload. Whether you are building a personal archive of your favorite creators, conducting market research on trending hashtags, or simply wanting to enjoy videos offline where internet access is limited, ClipKeep delivers a seamless experience.\n\nWe prioritize user privacy and simplicity. No account linking or personal data is required to use our service. We also aim to provide the most direct media path possible, often enabling downloads without intrusive watermarks or additional branding. Combined with our global infrastructure, ClipKeep ensures that you can extraction TikTok media from anywhere in the world, on any device, with professional-grade stability."
   },
   ar: {
     title: "محمل وسائط تيك توك",
@@ -406,7 +1019,9 @@ export const tiktokText: Record<Locale, PlatformPageDict> = {
     faqItems: [
       { q: "هل يتم إزالة العلامة المائية؟", a: "نهدف لتوفير المسار الأكثر مباشرة، مما يعني غالبًا عدم وجود إضافات." },
       { q: "هل يمكنني تنزيل عروض شرائح تيك توك؟", a: "دعم عروض الشرائح محدود حاليًا." }
-    ]
+    ],
+    galleryTitle: "اكتشافات تيك توك الأخيرة",
+    trendingTitle: "فيديوهات تيك توك الرائجة (أسبوعياً)"
   },
   ja: {
     title: "TikTok メディアダウンローダー",
@@ -428,7 +1043,178 @@ export const tiktokText: Record<Locale, PlatformPageDict> = {
     faqItems: [
       { q: "透かし（ロゴ）は除去されますか？", a: "可能な限りオリジナルの動画を取得するため、多くの場合ロゴなしでの保存が可能です。" },
       { q: "スライドショーはダウンロードできますか？", a: "スライドショー形式は現在一部制限があります。" }
-    ]
+    ],
+    galleryTitle: "最近のTikTok動画",
+    trendingTitle: "週間トレンド・TikTok動画",
+    seoContent: "ClipKeepのTikTok動画ダウンロードツールは、世界で最も急速に成長しているソーシャルビデオプラットフォームからバイラルコンテンツを保存・アーカイブしようとする全ての人のための高性能なソリューションです。TikTokは短尺メディアの消費方法に革命をもたらしました。クリエイター、リサーチャー、デジタルキュレーターにとって、これらの刹那的な瞬間を将来の参照用に保管するための信頼できる手段を持つことは今や不可欠です。\n\n当サイトのツールは、スピードと品質に重点を置いています。TikTokのメディアサーバーへの直接的なブリッジを提供することで、元のアップロードの鮮明さを維持したまま、高画質な抽出を可能にします。お気に入りのクリエイターの個人アーカイブを作成する場合でも、トレンドのハッシュタグに関する市場調査を行う場合でも、あるいは単にインターネットアクセスが制限されている場所で動画をオフラインで楽しみたい場合でも、ClipKeepはシームレスな体験を提供します。\n\n私たちはユーザーのプライバシーとシンプルさを最優先しています。サービスを利用するためにアカウントの連携や個人データの提供は一切不要です。また、可能な限り直接的なメディアパスを提供することを目指しており、多くの場合、邪魔なロゴ（透かし）のない状態での保存が可能です。世界規模のインフラと組み合わせることで、ClipKeepは世界中のどこからでも、どんなデバイスからでも、プロフェッショナル級の安定性でTikTokメディアの抽出を保証します。"
+  },
+  es: {
+    title: "Descargador de TikTok",
+    subtitle: "Archive sus momentos favoritos de TikTok para ver sin conexión.",
+    statusLabel: "Estado",
+    helpPage: "Ayuda",
+    note: "Nota: Acceso temprano",
+    noteBody: "La extracción de TikTok está en acceso temprano limitado.",
+    howToTitle: "Cómo descargar contenido",
+    howToSteps: [
+      "Obtenga la URL: En TikTok, copie el enlace del video.",
+      "Pegue en ClipKeep: Use el formulario arriba.",
+      "Procesar y Guardar: Obtendrá una ruta directa al medio."
+    ],
+    whyTitle: "Archivado Profesional",
+    whyBody: "ClipKeep ofrece un flujo de trabajo optimizado para curadores de contenido.",
+    whyPoints: [],
+    faqTitle: "FAQ TikTok",
+    faqItems: [
+      { q: "¿Se elimina la marca de agua?", a: "Buscamos la ruta más directa, a menudo sin logo." },
+      { q: "¿Soportan presentaciones?", a: "El soporte para diapositivas es limitado por ahora." }
+    ],
+    galleryTitle: "Descubrimientos recientes",
+    trendingTitle: "Tendencias de TikTok (Semanal)"
+  },
+  pt: {
+    title: "Downloader do TikTok",
+    subtitle: "Arquive seus momentos favoritos do TikTok para ver offline.",
+    statusLabel: "Status",
+    helpPage: "Ajuda",
+    note: "Nota: Acesso Antecipado",
+    noteBody: "Extração do TikTok em acesso antecipado limitado.",
+    howToTitle: "Como baixar conteúdo",
+    howToSteps: [
+      "Obtenha a URL: Copie o link do vídeo no TikTok.",
+      "Cole no ClipKeep: Use a caixa acima.",
+      "Processar e Salvar: Nosso sistema fornecerá o caminho direto."
+    ],
+    whyTitle: "Arquivamento Profissional",
+    whyBody: "Para criadores, manter um histórico é vital. ClipKeep simplifica isso.",
+    whyPoints: [],
+    faqTitle: "FAQ TikTok",
+    faqItems: [
+      { q: "A marca d'água é removida?", a: "Sim, buscamos o link direto sem logo sempre que possível." },
+      { q: "Slideshow é suportado?", a: "Suporte para apresentações ainda é limitado." }
+    ],
+    galleryTitle: "Descobertas recentes",
+    trendingTitle: "Tendências do TikTok (Semanal)"
+  },
+  fr: {
+    title: "Téléchargeur TikTok",
+    subtitle: "Archivez vos moments TikTok favoris pour une lecture hors ligne.",
+    statusLabel: "État",
+    helpPage: "Aide",
+    note: "Note : Accès anticipé",
+    noteBody: "L'extraction TikTok est en accès anticipé limité.",
+    howToTitle: "Comment télécharger ?",
+    howToSteps: [
+      "Obtenir l'URL : Copiez le lien de la vidéo TikTok.",
+      "Collez dans ClipKeep : Utilisez le champ ci-dessus.",
+      "Traiter & Enregistrer : Récupérez le fichier directement."
+    ],
+    whyTitle: "Archivage professionnel",
+    whyBody: "ClipKeep offre un flux de travail simplifié pour vos archives.",
+    whyPoints: [],
+    faqTitle: "FAQ TikTok",
+    faqItems: [
+      { q: "Filigrane supprimé ?", a: "Nous visons le fichier original, souvent sans logo." },
+      { q: "Diaporamas ?", a: "Le support des diaporamas est limité." }
+    ],
+    galleryTitle: "Découvertes récentes",
+    trendingTitle: "Tendances TikTok de la semaine"
+  },
+  id: {
+    title: "Pengunduh Media TikTok",
+    subtitle: "Arsip momen TikTok favorit Anda untuk dilihat offline.",
+    statusLabel: "Status",
+    helpPage: "Bantuan",
+    note: "Catatan: Akses Awal",
+    noteBody: "Ekstraksi TikTok sedang dalam akses awal terbatas.",
+    howToTitle: "Cara Mengunduh",
+    howToSteps: [
+      "Salin URL: Cari video di TikTok dan salin tautannya.",
+      "Tempel: Gunakan formulir di atas.",
+      "Simpan: Kami akan memproses file untuk Anda."
+    ],
+    whyTitle: "Pengarsipan Media Profesional",
+    whyBody: "Penting bagi kreator untuk menyimpan konten populer.",
+    whyPoints: [],
+    faqTitle: "FAQ TikTok",
+    faqItems: [
+      { q: "Watermark dihapus?", a: "Kami mengambil file langsung, biasanya tanpa logo." },
+      { q: "Bisa unduh slideshow?", a: "Dukungan slideshow masih terbatas." }
+    ],
+    galleryTitle: "Temuan TikTok Terbaru",
+    trendingTitle: "Tren Mingguan TikTok"
+  },
+  hi: {
+    title: "टिकटॉक मीडिया डाउनलोडर",
+    subtitle: "ऑफलाइन देखने के लिए अपने पसंदीदा टिकटॉक पलों को आर्काइव करें।",
+    statusLabel: "स्थिति",
+    helpPage: "सहायता",
+    note: "नोट: अर्ली एक्सेस",
+    noteBody: "टिकटॉक एक्सट्रैक्शन वर्तमान में सीमित अर्ली एक्सेस में है।",
+    howToTitle: "कंटेंट कैसे डाउनलोड करें",
+    howToSteps: [
+      "टिकटॉक URL प्राप्त करें: 'कॉपी लिंक' पर क्लिक करें।",
+      "ClipKeep में पेस्ट करें: ऊपर दिए गए फॉर्म का उपयोग करें।",
+      "प्रक्रिया और सहेजें: हमारी प्रणाली एक सीधा मीडिया पथ प्रदान करेगी।"
+    ],
+    whyTitle: "प्रोफेसनल मीडिया आर्काइविंग",
+    whyBody: "ट्रेंडिंग टिकटॉक कंटेंट का आर्काइव रखना डिजिटल मार्केटर्स के लिए महत्वपूर्ण है।",
+    whyPoints: [],
+    faqTitle: "टिकटॉक FAQ",
+    faqItems: [
+      { q: "क्या वॉटरमार्किंग हटा दी गई है?", a: "हम सीधा पथ प्रदान करते हैं, जिसमें अक्सर कोई वॉटरमार्क नहीं होता।" },
+      { q: "क्या मैं टिकटॉक स्लाइडशो डाउनलोड कर सकता हूँ?", a: "स्लाइडशो समर्थन अभी सीमित है।" }
+    ],
+    galleryTitle: "हालिया टिकटॉक खोजें",
+    trendingTitle: "साप्ताहिक ट्रेंडिंग टिकटॉक वीडियो"
+  },
+  de: {
+    title: "TikTok Media Downloader",
+    subtitle: "Speichern Sie Ihre TikTok-Favoriten offline.",
+    statusLabel: "Status",
+    helpPage: "Hilfe",
+    note: "Hinweis: Early Access",
+    noteBody: "TikTok-Extraktion ist derzeit im frühen Zugriff.",
+    howToTitle: "Anleitung",
+    howToSteps: [
+      "Link holen: TikTok-Video-Link kopieren.",
+      "Einfügen: Oben im Formular einfügen.",
+      "Speichern: Link zum Download nutzen."
+    ],
+    whyTitle: "Professionelle Archivierung",
+    whyBody: "Schneller Workflow für Content-Ersteller.",
+    whyPoints: [],
+    faqTitle: "TikTok FAQ",
+    faqItems: [
+      { q: "Ohne Wasserzeichen?", a: "Wir laden die Originaldatei ohne Overlays." },
+      { q: "Slideshows?", a: "Derzeit eingeschränkt unterstützt." }
+    ],
+    galleryTitle: "Neueste TikTok-Funde",
+    trendingTitle: "Trends auf TikTok"
+  },
+  tr: {
+    title: "TikTok Medya İndirici",
+    subtitle: "TikTok videolarını çevrimdışı izlemek üzere kaydedin.",
+    statusLabel: "Durum",
+    helpPage: "Yardım",
+    note: "Not: Erken Erişim",
+    noteBody: "TikTok ayıklama erişimi henüz kısıtlıdır.",
+    howToTitle: "Nasıl İndirilir?",
+    howToSteps: [
+      "Linki Alın: TikTok videosunun linkini kopyalayın.",
+      "Yapıştırın: Formu kullanarak linki buraya ekleyin.",
+      "Kaydedin: Sistem doğrudan indirme yolu sunacaktır."
+    ],
+    whyTitle: "Profesyonel Arşivleme",
+    whyBody: "İçerik küratörleri için optimize edilmiş iş akışı.",
+    whyPoints: [],
+    faqTitle: "TikTok SSS",
+    faqItems: [
+      { q: "Logo kaldırılır mı?", a: "Genellikle logosuz orijinal dosyaya ulaşırız." },
+      { q: "Slayt gösterileri?", a: "Şu an için destek sınırlıdır." }
+    ],
+    galleryTitle: "Son TikTok Keşifleri",
+    trendingTitle: "Haftalık Popüler - TikTok"
   }
 };
 
@@ -465,6 +1251,83 @@ export const footerText: Record<Locale, FooterDict> = {
     contact: "お問い合わせ",
     status: "サービス状況",
     adsDisclaimer: "広告が表示される場合は、スポンサーコンテンツとして識別されます。"
+  },
+  es: {
+    about: "Nosotros",
+    faq: "FAQ",
+    terms: "Términos",
+    privacy: "Privacidad",
+    cookies: "Cookies",
+    dmca: "DMCA",
+    contact: "Contacto",
+    status: "Estado",
+    adsDisclaimer: "Los anuncios se etiquetan como contenido patrocinado."
+  },
+  pt: {
+    about: "Sobre",
+    faq: "FAQ",
+    terms: "Termos",
+    privacy: "Privacidade",
+    cookies: "Cookies",
+    dmca: "DMCA",
+    contact: "Contato",
+    status: "Status",
+    adsDisclaimer: "Anúncios são marcados como conteúdo patrocinado."
+  },
+  fr: {
+    about: "À propos",
+    faq: "FAQ",
+    terms: "Conditions",
+    privacy: "Confidentialité",
+    cookies: "Cookies",
+    dmca: "DMCA",
+    contact: "Contact",
+    status: "État",
+    adsDisclaimer: "Les publicités sont étiquetées comme contenu sponsorisé."
+  },
+  id: {
+    about: "Tentang Kami",
+    faq: "FAQ",
+    terms: "Ketentuan",
+    privacy: "Privasi",
+    cookies: "Cookie",
+    dmca: "DMCA",
+    contact: "Kontak",
+    status: "Status",
+    adsDisclaimer: "Iklan ditandai sebagai konten bersponsor."
+  },
+  hi: {
+    about: "बारे में",
+    faq: "FAQ",
+    terms: "शर्तें",
+    privacy: "गोपनीयता",
+    cookies: "कुकीज़",
+    dmca: "DMCA",
+    contact: "संपर्क",
+    status: "स्थिति",
+    adsDisclaimer: "विज्ञापनों को प्रायोजित सामग्री के रूप में लेबल किया गया है।"
+  },
+  de: {
+    about: "Über uns",
+    faq: "FAQ",
+    terms: "AGB",
+    privacy: "Datenschutz",
+    cookies: "Cookies",
+    dmca: "DMCA",
+    contact: "Kontakt",
+    status: "Status",
+    adsDisclaimer: "Anzeigen sind als gesponserte Inhalte gekennzeichnet."
+  },
+  tr: {
+    about: "Hakkında",
+    faq: "SSS",
+    terms: "Şartlar",
+    privacy: "Gizlilik",
+    cookies: "Çerezler",
+    dmca: "DMCA",
+    contact: "İletişim",
+    status: "Durum",
+    adsDisclaimer: "Reklamlar sponsorlu içerik olarak işaretlenmiştir."
   }
 };
 
@@ -533,6 +1396,160 @@ export const statusText: Record<Locale, StatusDict> = {
       title: "重大な障害",
       body: "現在システム全体に及ぶ重大な障害が発生しています。復旧に向けて全力で作業中です。",
       nextUpdate: "次回の更新：15分以内"
+    }
+  },
+  es: {
+    title: "Estado del servicio",
+    liveHealth: "Salud de la API",
+    currentTitle: "Actual",
+    currentBody: "Servicios operando correctamente.",
+    incidentTitle: "Incidentes",
+    partialDegradation: {
+      title: "Degradación parcial",
+      body: "Elevados errores en la extracción. Estamos mitigando el problema.",
+      nextUpdate: "Próxima actualización: en 30 min."
+    },
+    scheduledMaintenance: {
+      title: "Mantenimiento programado",
+      body: "Mantenimiento en curso. Tiempos de respuesta afectados.",
+      window: "Ventana: 00:00-01:00 UTC."
+    },
+    majorOutage: {
+      title: "Corte mayor",
+      body: "Experimentamos un corte importante. Recovery en curso.",
+      nextUpdate: "Próxima actualización: en 15 min."
+    }
+  },
+  pt: {
+    title: "Status do Serviço",
+    liveHealth: "Saúde da API",
+    currentTitle: "Atual",
+    currentBody: "Todos os serviços operando normalmente.",
+    incidentTitle: "Incidentes",
+    partialDegradation: {
+      title: "Degradação Parcial",
+      body: "Falhas elevadas em requisições. Estamos mitigando.",
+      nextUpdate: "Novo status: em 30 min."
+    },
+    scheduledMaintenance: {
+      title: "Manutenção Agendada",
+      body: "Em progresso. Extrações podem ser lentas.",
+      window: "Horário: 00:00-01:00 UTC."
+    },
+    majorOutage: {
+      title: "Instabilidade Crítica",
+      body: "Falha geral nas funções de extração. Equipe investigando.",
+      nextUpdate: "Novo status: em 15 min."
+    }
+  },
+  fr: {
+    title: "État des services",
+    liveHealth: "Santé de l'API",
+    currentTitle: "Actuel",
+    currentBody: "Les services fonctionnent normalement.",
+    incidentTitle: "Incidents",
+    partialDegradation: {
+      title: "Dégradation partielle",
+      body: "Erreurs élevées sur les extractions. En cours de résolution.",
+      nextUpdate: "Prochaine mise à jour : 30 min."
+    },
+    scheduledMaintenance: {
+      title: "Maintenance programmée",
+      body: "Maintenance en cours. Performances réduites.",
+      window: "Fenêtre : 00:00-01:00 UTC."
+    },
+    majorOutage: {
+      title: "Interruption majeure",
+      body: "Panne générale de l'extracteur. Nos équipes sont mobilisées.",
+      nextUpdate: "Prochaine mise à jour : 15 min."
+    }
+  },
+  id: {
+    title: "Status Layanan",
+    liveHealth: "Kesehatan API",
+    currentTitle: "Sekarang",
+    currentBody: "Semua layanan inti beroperasi normal.",
+    incidentTitle: "Template Insiden",
+    partialDegradation: {
+      title: "Degradasi Parsial",
+      body: "Terjadi kesalahan pada ekstraksi. Kami sedang menanganinya.",
+      nextUpdate: "Update: dalam 30 menit."
+    },
+    scheduledMaintenance: {
+      title: "Pemeliharaan Terjadwal",
+      body: "Pemeliharaan sistem sedang berlangsung.",
+      window: "Rencana: 00:00-01:00 UTC."
+    },
+    majorOutage: {
+      title: "Gangguan Utama",
+      body: "Terjadi pemadaman sistem utama. Tim sedang memulihkan.",
+      nextUpdate: "Update: dalam 15 menit."
+    }
+  },
+  hi: {
+    title: "सेवा स्थिति",
+    liveHealth: "लाइव API स्वास्थ्य",
+    currentTitle: "वर्तमान",
+    currentBody: "सभी मुख्य सेवाएं सामान्य रूप से काम कर रही हैं।",
+    incidentTitle: "इंसिडेंट",
+    partialDegradation: {
+      title: "आंशिक गिरावट",
+      body: "एक्सट्रैक्शन अनुरोधों में विफलताएं आ रही हैं। हम इसे कम करने की कोशिश कर रहे हैं।",
+      nextUpdate: "अगला अपडेट: 30 मिनट के भीतर।"
+    },
+    scheduledMaintenance: {
+      title: "अनुसूचित रखरखाव",
+      body: "अनुरक्षण कार्य प्रगति पर है। रिस्पॉन्स टाइम प्रभावित हो सकता है।",
+      window: "योजना: 00:00-01:00 UTC."
+    },
+    majorOutage: {
+      title: "मेजर आउटेज",
+      body: "वर्तमान में मुख्य एक्सट्रैक्शन कार्यक्षमता प्रभावित है। टीम जांच कर रही है।",
+      nextUpdate: "अगला अपडेट: 15 मिनट के भीतर।"
+    }
+  },
+  de: {
+    title: "Systemstatus",
+    liveHealth: "API-Status",
+    currentTitle: "Aktuell",
+    currentBody: "Alle Dienste laufen normal.",
+    incidentTitle: "Vorfälle",
+    partialDegradation: {
+      title: "Teileinschränkung",
+      body: "Erhöhte Fehlerzahlen. Wir arbeiten an einer Lösung.",
+      nextUpdate: "Update in 30 Min."
+    },
+    scheduledMaintenance: {
+      title: "Wartung",
+      body: "Wartungsarbeiten werden durchgeführt.",
+      window: "Zeitfenster: 00:00-01:00 UTC."
+    },
+    majorOutage: {
+      title: "Schwere Störung",
+      body: "Hauptfunktionen sind offline. Team ist informiert.",
+      nextUpdate: "Update in 15 Min."
+    }
+  },
+  tr: {
+    title: "Hizmet Durumu",
+    liveHealth: "API Sağlığı",
+    currentTitle: "Güncel",
+    currentBody: "Tüm servisler normal çalışıyor.",
+    incidentTitle: "Olaylar",
+    partialDegradation: {
+      title: "Kısmi Yavaşlama",
+      body: "Ayıklama hataları artmış durumda. Müdahale ediliyor.",
+      nextUpdate: "Sonraki güncelleme: 30 dk içinde."
+    },
+    scheduledMaintenance: {
+      title: "Planlı Bakım",
+      body: "Bakım çalışması sürüyor. Hız etkilenebilir.",
+      window: "Zaman dilimi: 00:00-01:00 UTC."
+    },
+    majorOutage: {
+      title: "Büyük Kesinti",
+      body: "Ana ayıklama motoru devre dışı. Kurtarma işlemi sürüyor.",
+      nextUpdate: "Sonraki güncelleme: 15 dk içinde."
     }
   }
 };
@@ -621,6 +1638,202 @@ export const resultText: Record<Locale, ResultDict> = {
     },
     mediaTitle: "保存準備完了",
     download: "ダウンロード",
+  },
+  es: {
+    title: "Resultado de ClipKeep",
+    jobIdLabel: "ID de trabajo",
+    statusLabel: "Estado de extracción",
+    stateLabel: "Estado actual",
+    progressLabel: "Progreso",
+    loading: "Cargando datos...",
+    failedToLoad: "Error al cargar el resultado.",
+    completed: "¡Extracción completada!",
+    polling: (status) => `Esperando... (${status})`,
+    networkError: "Error de red al consultar.",
+    downloads: "Descargas",
+    noMedia: "No se encontraron medios.",
+    warnings: "Advertencias",
+    needHelp: "¿Ayuda?",
+    checkSolution: "Ver guía",
+    errorTitle: "Algo salió mal",
+    backToHome: "Inicio",
+    statusTitle: "Estado",
+    states: {
+      queued: "En cola",
+      processing: "Procesando",
+      completed: "Completado",
+      failed: "Error",
+    },
+    mediaTitle: "Media Lista",
+    download: "Descargar"
+  },
+  pt: {
+    title: "Resultado do ClipKeep",
+    jobIdLabel: "ID da Tarefa",
+    statusLabel: "Status da Extração",
+    stateLabel: "Estado Atual",
+    progressLabel: "Progresso",
+    loading: "Carregando dados...",
+    failedToLoad: "Falha ao carregar.",
+    completed: "Extração concluída!",
+    polling: (status) => `Verificando... (${status})`,
+    networkError: "Erro de rede.",
+    downloads: "Downloads",
+    noMedia: "Nenhum arquivo encontrado.",
+    warnings: "Avisos",
+    needHelp: "Ajuda?",
+    checkSolution: "Ver guia",
+    errorTitle: "Erro",
+    backToHome: "Início",
+    statusTitle: "Status",
+    states: {
+      queued: "Na fila",
+      processing: "Processando",
+      completed: "Concluído",
+      failed: "Falha",
+    },
+    mediaTitle: "Mídia Pronta",
+    download: "Baixar"
+  },
+  fr: {
+    title: "Résultat ClipKeep",
+    jobIdLabel: "ID de tâche",
+    statusLabel: "État de l'extraction",
+    stateLabel: "État actuel",
+    progressLabel: "Progression",
+    loading: "Chargement...",
+    failedToLoad: "Échec du chargement.",
+    completed: "Extraction terminée !",
+    polling: (status) => `Consultation... (${status})`,
+    networkError: "Erreur réseau.",
+    downloads: "Téléchargements",
+    noMedia: "Aucun média trouvé.",
+    warnings: "Alertes",
+    needHelp: "Aide ?",
+    checkSolution: "Voir le guide",
+    errorTitle: "Erreur",
+    backToHome: "Accueil",
+    statusTitle: "État",
+    states: {
+      queued: "En file",
+      processing: "Traitement",
+      completed: "Terminé",
+      failed: "Échec",
+    },
+    mediaTitle: "Médias prêts",
+    download: "Télécharger"
+  },
+  id: {
+    title: "Hasil ClipKeep",
+    jobIdLabel: "ID Tugas",
+    statusLabel: "Status Ekstraksi",
+    stateLabel: "Kondisi Saat Ini",
+    progressLabel: "Kemajuan",
+    loading: "Memuat data...",
+    failedToLoad: "Gagal memuat hasil.",
+    completed: "Ekstraksi selesai!",
+    polling: (status) => `Memeriksa... (${status})`,
+    networkError: "Kesalahan jaringan.",
+    downloads: "Unduhan",
+    noMedia: "Media tidak ditemukan.",
+    warnings: "Peringatan",
+    needHelp: "Bantuan?",
+    checkSolution: "Lihat panduan",
+    errorTitle: "Terjadi kesalahan",
+    backToHome: "Kembali",
+    statusTitle: "Status",
+    states: {
+      queued: "Antre",
+      processing: "Memproses",
+      completed: "Selesai",
+      failed: "Gagal",
+    },
+    mediaTitle: "Media Siap",
+    download: "Unduh"
+  },
+  hi: {
+    title: "ClipKeep परिणाम",
+    jobIdLabel: "कार्य ID",
+    statusLabel: "एक्सट्रैक्शन स्थिति",
+    stateLabel: "वर्तमान स्थिति",
+    progressLabel: "प्रगति",
+    loading: "लोड हो रहा है...",
+    failedToLoad: "परिणाम लोड करने में विफल।",
+    completed: "एक्सट्रैक्शन पूर्ण!",
+    polling: (status) => `प्रतीक्षा करें... (${status})`,
+    networkError: "नेटवर्क त्रुटि।",
+    downloads: "डाउनलोड",
+    noMedia: "कोई मीडिया नहीं मिला।",
+    warnings: "चेतावनी",
+    needHelp: "सहायता?",
+    checkSolution: "गाइड देखें",
+    errorTitle: "त्रुटि हुई",
+    backToHome: "होम",
+    statusTitle: "स्थिति",
+    states: {
+      queued: "कतार में",
+      processing: "प्रोसेसिंग",
+      completed: "पूर्ण",
+      failed: "विफल",
+    },
+    mediaTitle: "मीडिया तैयार",
+    download: "डाउनलोड"
+  },
+  de: {
+    title: "ClipKeep Ergebnis",
+    jobIdLabel: "Job ID",
+    statusLabel: "Status",
+    stateLabel: "Zustand",
+    progressLabel: "Fortschritt",
+    loading: "Lade Daten...",
+    failedToLoad: "Fehler beim Laden.",
+    completed: "Extraktion fertig!",
+    polling: (status) => `Abfrage... (${status})`,
+    networkError: "Netzwerkfehler.",
+    downloads: "Downloads",
+    noMedia: "Keine Medien gefunden.",
+    warnings: "Warnungen",
+    needHelp: "Hilfe?",
+    checkSolution: "Anleitung lesen",
+    errorTitle: "Fehler",
+    backToHome: "Home",
+    statusTitle: "Status",
+    states: {
+      queued: "Warteschlange",
+      processing: "Verarbeitung",
+      completed: "Fertig",
+      failed: "Fehlgeschlagen",
+    },
+    mediaTitle: "Medien bereit",
+    download: "Download"
+  },
+  tr: {
+    title: "ClipKeep Sonucu",
+    jobIdLabel: "Görev ID",
+    statusLabel: "Durum",
+    stateLabel: "Mevcut Durum",
+    progressLabel: "İlerleme",
+    loading: "Yükleniyor...",
+    failedToLoad: "Yükleme başarısız.",
+    completed: "Ayıklama bitti!",
+    polling: (status) => `Sorgulanıyor... (${status})`,
+    networkError: "Ağ hatası.",
+    downloads: "İndirmeler",
+    noMedia: "Medya bulunamadı.",
+    warnings: "Uyarılar",
+    needHelp: "Destek?",
+    checkSolution: "Rehbere bak",
+    errorTitle: "Hata oluştu",
+    backToHome: "Anasayfa",
+    statusTitle: "Durum",
+    states: {
+      queued: "Sırada",
+      processing: "İşleniyor",
+      completed: "Tamamlandı",
+      failed: "Hata",
+    },
+    mediaTitle: "Dosyalar Hazır",
+    download: "İndir"
   }
 };
 
@@ -672,6 +1885,118 @@ export const solutionText: Record<Locale, SolutionDict> = {
     errorTitle: "404 Not Found",
     backToHome: "ホームへ戻る",
     getStarted: "今すぐ試す",
+  },
+  es: {
+    loading: "Cargando soluciones...",
+    title: "Guía de soluciones",
+    notFound: "No encontrado.",
+    networkError: "Error de red.",
+    heroSubtitle: "Instrucciones de recuperación.",
+    quickAnswer: "Respuesta rápida",
+    quickFallback: "Siga estos pasos.",
+    stepByStep: "Paso a paso",
+    trustSafety: "Seguridad",
+    trustBody: "ClipKeep es seguro y privado.",
+    internalLinks: "Vínculos",
+    errorTitle: "Error 404",
+    backToHome: "Inicio",
+    getStarted: "Empezar"
+  },
+  pt: {
+    loading: "Carregando...",
+    title: "Guia",
+    notFound: "Não encontrado.",
+    networkError: "Erro.",
+    heroSubtitle: "Passos de recuperação.",
+    quickAnswer: "Resposta Rápida",
+    quickFallback: "Siga os passos.",
+    stepByStep: "Passo a passo",
+    trustSafety: "Segurança",
+    trustBody: "Privacidade garantida.",
+    internalLinks: "Links",
+    errorTitle: "Erro",
+    backToHome: "Início",
+    getStarted: "Começar"
+  },
+  fr: {
+    loading: "Chargement...",
+    title: "Guide",
+    notFound: "Non trouvé.",
+    networkError: "Erreur.",
+    heroSubtitle: "Étapes de récupération.",
+    quickAnswer: "Réponse rapide",
+    quickFallback: "Suivez les étapes.",
+    stepByStep: "Étape par étape",
+    trustSafety: "Sécurité",
+    trustBody: "ClipKeep est sûr.",
+    internalLinks: "Liens",
+    errorTitle: "Erreur",
+    backToHome: "Accueil",
+    getStarted: "Démarrer"
+  },
+  id: {
+    loading: "Memuat...",
+    title: "Panduan",
+    notFound: "Tidak ditemukan.",
+    networkError: "Error.",
+    heroSubtitle: "Langkah pemulihan.",
+    quickAnswer: "Jawaban Cepat",
+    quickFallback: "Ikuti langkah.",
+    stepByStep: "Langkah demi langkah",
+    trustSafety: "Keamanan",
+    trustBody: "ClipKeep aman.",
+    internalLinks: "Tautan",
+    errorTitle: "Error",
+    backToHome: "Beranda",
+    getStarted: "Mulai"
+  },
+  hi: {
+    loading: "लोड हो रहा है...",
+    title: "गाइड",
+    notFound: "नहीं मिला।",
+    networkError: "त्रुटि।",
+    heroSubtitle: "रिकवरी चरण।",
+    quickAnswer: "त्वरित उत्तर",
+    quickFallback: "चरणों का पालन करें।",
+    stepByStep: "चरण-दर-चरण",
+    trustSafety: "सुरक्षा",
+    trustBody: "ClipKeep सुरक्षित है।",
+    internalLinks: "लिंक",
+    errorTitle: "त्रुटि",
+    backToHome: "होम",
+    getStarted: "शुरू करें"
+  },
+  de: {
+    loading: "Lade...",
+    title: "Hilfe",
+    notFound: "Nicht gefunden.",
+    networkError: "Fehler.",
+    heroSubtitle: "Wiederherstellungsschritte.",
+    quickAnswer: "Schnellantwort",
+    quickFallback: "Schritte folgen.",
+    stepByStep: "Vorgehensweise",
+    trustSafety: "Sicherheit",
+    trustBody: "Sicher und privat.",
+    internalLinks: "Links",
+    errorTitle: "Fehler",
+    backToHome: "Home",
+    getStarted: "Starten"
+  },
+  tr: {
+    loading: "Yükleniyor...",
+    title: "Rehber",
+    notFound: "Bulunamadı.",
+    networkError: "Hata.",
+    heroSubtitle: "Kurtarma adımları.",
+    quickAnswer: "Hızlı Cevap",
+    quickFallback: "Adımları izleyin.",
+    stepByStep: "Adım Adım",
+    trustSafety: "Güvenlik",
+    trustBody: "Güvenli ve gizli.",
+    internalLinks: "Bağlantılar",
+    errorTitle: "Hata",
+    backToHome: "Anasayfa",
+    getStarted: "Başlat"
   }
 };
 
@@ -721,4 +2046,349 @@ export const degradedText: Record<Locale, DegradedDict> = {
       none: '監視中',
     },
   },
+  es: {
+    title: 'Servicio limitado',
+    body: 'Tráfico elevado detectado.',
+    reasonLabel: 'Motivo',
+    retryAfter: 'Reintentar después',
+    openGuide: 'Abrir guía',
+    reasons: {
+      manual: 'Manual',
+      error_ratio: 'Error',
+      queue_wait: 'Cola',
+      active_jobs: 'Tareas',
+      recovered: 'Recuperado',
+      none: 'Ninguno',
+    },
+  },
+  pt: {
+    title: 'Serviço Limitado',
+    body: 'Alta demanda detectada.',
+    reasonLabel: 'Motivo',
+    retryAfter: 'Tentar após',
+    openGuide: 'Abrir guia',
+    reasons: {
+      manual: 'Manual',
+      error_ratio: 'Erro',
+      queue_wait: 'Fila',
+      active_jobs: 'Jobs',
+      recovered: 'Recuperado',
+      none: 'Nada',
+    },
+  },
+  fr: {
+    title: 'Service limité',
+    body: 'Trafic important.',
+    reasonLabel: 'Motif',
+    retryAfter: 'Réessayer après',
+    openGuide: 'Ouvrir le guide',
+    reasons: {
+      manual: 'Manuel',
+      error_ratio: 'Erreur',
+      queue_wait: 'Attente',
+      active_jobs: 'Actifs',
+      recovered: 'Récupéré',
+      none: 'Aucun',
+    },
+  },
+  id: {
+    title: 'Layanan Terbatas',
+    body: 'Lalu lintas tinggi.',
+    reasonLabel: 'Alasan',
+    retryAfter: 'Coba lagi setelah',
+    openGuide: 'Buka panduan',
+    reasons: {
+      manual: 'Manual',
+      error_ratio: 'Error',
+      queue_wait: 'Antrean',
+      active_jobs: 'Tugas',
+      recovered: 'Pulih',
+      none: 'Tidak ada',
+    },
+  },
+  hi: {
+    title: 'सीमित सेवा',
+    body: 'उच्च ट्रैफिक।',
+    reasonLabel: 'कारण',
+    retryAfter: 'फिर से प्रयास करें',
+    openGuide: 'गाइड खोलें',
+    reasons: {
+      manual: 'मैनुअल',
+      error_ratio: 'त्रुटि',
+      queue_wait: 'कतार',
+      active_jobs: 'सक्रिय',
+      recovered: 'सुधार',
+      none: 'कोई नहीं',
+    },
+  },
+  de: {
+    title: 'Eingeschränkt',
+    body: 'Hohe Last.',
+    reasonLabel: 'Grund',
+    retryAfter: 'Warten',
+    openGuide: 'Anleitung',
+    reasons: {
+      manual: 'Manuell',
+      error_ratio: 'Fehler',
+      queue_wait: 'Warten',
+      active_jobs: 'Jobs',
+      recovered: 'Erholt',
+      none: 'Keiner',
+    },
+  },
+  tr: {
+    title: 'Sınırlı',
+    body: 'Yüksek trafik.',
+    reasonLabel: 'Neden',
+    retryAfter: 'Warten',
+    openGuide: 'Rehber',
+    reasons: {
+      manual: 'Manuel',
+      error_ratio: 'Hata',
+      queue_wait: 'Sıra',
+      active_jobs: 'Görevler',
+      recovered: 'Düzeldi',
+      none: 'Yok',
+    },
+  },
+};
+
+export const menuText: Record<Locale, MenuDict> = {
+  en: {
+    downloads: "DOWNLOAD",
+    rankings: "Weekly Ranking",
+    latest: "Latest Downloads",
+    language: "LANGUAGE",
+    more: "MORE",
+    twitter: "Twitter (X) Downloader",
+    tiktok: "TikTok Downloader",
+    telegram: "Telegram Downloader",
+    instagram: "Instagram Downloader",
+    about: "About",
+    faq: "FAQ",
+    privacy: "Privacy Policy",
+    contact: "Contact Support",
+  },
+  ar: {
+    downloads: "تنزيل",
+    rankings: "الترتيب الأسبوعي",
+    latest: "آخر التنزيلات",
+    language: "اللغة",
+    more: "المزيد",
+    twitter: "تويتر",
+    tiktok: "تيك توك",
+    telegram: "تيليجرام",
+    instagram: "محمل إنستغرام",
+    about: "من نحن",
+    faq: "الأسئلة الشائعة",
+    privacy: "سياسة الخصوصية",
+    contact: "اتصل بنا",
+  },
+  ja: {
+    downloads: "ダウンロード",
+    rankings: "週間ランキング",
+    latest: "最近のダウンロード",
+    language: "言語切り替え",
+    more: "その他",
+    twitter: "Twitter 保存",
+    tiktok: "TikTok 保存",
+    telegram: "Telegram 保存",
+    instagram: "Instagram 保存",
+    about: "サイトについて",
+    faq: "よくある質問",
+    privacy: "プライバシーポリシー",
+    contact: "お問い合わせ",
+  },
+  es: {
+    downloads: "DESCARGAS",
+    rankings: "Ranking semanal",
+    latest: "Recientes",
+    language: "IDIOMA",
+    more: "MÁS",
+    twitter: "Downloader de Twitter",
+    tiktok: "Downloader de TikTok",
+    telegram: "Downloader de Telegram",
+    instagram: "Downloader de Instagram",
+    about: "Sobre nosotros",
+    faq: "FAQ",
+    privacy: "Privacidad",
+    contact: "Contacto"
+  },
+  pt: {
+    downloads: "DOWNLOADS",
+    rankings: "Ranking Semanal",
+    latest: "Recentes",
+    language: "IDIOMA",
+    more: "MAIS",
+    twitter: "Downloader do Twitter",
+    tiktok: "Downloader do TikTok",
+    telegram: "Downloader do Telegram",
+    instagram: "Downloader do Instagram",
+    about: "Sobre",
+    faq: "FAQ",
+    privacy: "Privacidade",
+    contact: "Contato"
+  },
+  fr: {
+    downloads: "TÉLÉCHARGEMENTS",
+    rankings: "Classement hebdomadaire",
+    latest: "Récents",
+    language: "LANGUE",
+    more: "PLUS",
+    twitter: "Téléchargeur Twitter",
+    tiktok: "Téléchargeur TikTok",
+    telegram: "Téléchargeur Telegram",
+    instagram: "Téléchargeur Instagram",
+    about: "À propos",
+    faq: "FAQ",
+    privacy: "Confidentialité",
+    contact: "Contact"
+  },
+  id: {
+    downloads: "UNDUHAN",
+    rankings: "Peringkat Mingguan",
+    latest: "Terbaru",
+    language: "BAHASA",
+    more: "LAINNYA",
+    twitter: "Pengunduh Twitter",
+    tiktok: "Pengunduh TikTok",
+    telegram: "Pengunduh Telegram",
+    instagram: "Pengunduh Instagram",
+    about: "Tentang",
+    faq: "FAQ",
+    privacy: "Privasi",
+    contact: "Kontak"
+  },
+  hi: {
+    downloads: "डाउनलोड",
+    rankings: "साप्ताहिक रैंकिंग",
+    latest: "नवीनतम डाउनलोड",
+    language: "भाषा",
+    more: "अधिक",
+    twitter: "ट्विटर डाउनलोडर",
+    tiktok: "टिकटॉक डाउनलोडर",
+    telegram: "टेलीग्राम डाउनलोडर",
+    instagram: "इंस्टाग्राम डाउनलोडer",
+    about: "बारे में",
+    faq: "FAQ",
+    privacy: "गोपनीयता नीति",
+    contact: "संपर्क"
+  },
+  de: {
+    downloads: "DOWNLOADS",
+    rankings: "Wochen-Ranking",
+    latest: "Neueste",
+    language: "SPRACHE",
+    more: "MEHR",
+    twitter: "Twitter Downloader",
+    tiktok: "TikTok Downloader",
+    telegram: "Telegram Downloader",
+    instagram: "Instagram Downloader",
+    about: "Über uns",
+    faq: "FAQ",
+    privacy: "Datenschutz",
+    contact: "Kontakt"
+  },
+  tr: {
+    downloads: "İNDİRMELER",
+    rankings: "Haftalık Sıralama",
+    latest: "Son Aramalar",
+    language: "DİL",
+    more: "DAHA FAZLA",
+    twitter: "Twitter İndirici",
+    tiktok: "TikTok İndirici",
+    telegram: "Telegram İndirici",
+    instagram: "Instagram İndirici",
+    about: "Hakkında",
+    faq: "SSS",
+    privacy: "Gizlilik",
+    contact: "İletişim"
+  }
+};
+
+export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
+  en: {
+    trendingTwitter: {
+      title: "Trending Twitter (X) Videos",
+      subtitle: "Watch the most popular videos on Twitter today.",
+      description: "Discover viral clips, trending news media, and popular Twitter (X) videos. Download them instantly for offline viewing.",
+      seoContent: "## Why Twitter videos go viral\nTwitter (X) is the global town square where news breaks and viral moments happen in real-time. Our Trending Twitter Videos page curates the most accessed and engaged content shared across the platform. From breaking news clips to viral memes and high-impact sports highlights, stay up to date with what the world is watching.\n\n## How to download Twitter videos\nClipKeep provides a seamless way not only to discover this content but also to extraction and save it directly to your device. Whether you are a content creator looking for inspiration, a journalist tracking a story, or just looking for entertainment, our real-time ranking ensures you never miss a beat.\n\n## Why use ClipKeep\nOur service is built for speed and reliability. If you want to save these trending videos for offline use or safe keeping, try our [Twitter (X) Downloader](/download-twitter-video?locale=en) directly."
+    },
+    trendingTiktok: {
+      title: "Trending TikTok Videos",
+      subtitle: "Viral clips and trending TikToks from around the world.",
+      description: "Stay in the loop with the most popular TikTok videos. High-speed extraction for your favorite viral moments.",
+      seoContent: "## The Pulse of Modern Culture\nTikTok is the epicenter of modern internet culture, where trends are born and go viral in seconds. Our Trending TikTok Videos section identifies the most popular short-form media currently being extracted by our global user base. Discover high-energy dance challenges and hilarious comedy skits capturing everyone's attention.\n\n## Secure and Fast Archiving\nClipKeep allows you to archive these trending moments in high quality, ensuring that the best of TikTok is always available at your fingertips. For specific video saves, use our [TikTok Downloader](/download-tiktok-video?locale=en) for the most direct media extraction."
+    },
+    trendingTelegram: {
+      title: "Trending Telegram Media",
+      subtitle: "Popular videos and files from Telegram channels.",
+      description: "Explore the most downloaded media from Telegram's global channels and groups.",
+      seoContent: "## Content Discovery in Communities\nTelegram has become a major hub for news, documentaries, and niche community content. The Trending Telegram Media page showcases the most sought-after files and videos being processed from public Telegram channels. Because Telegram content can sometimes be difficult to find directly, ClipKeep acts as a powerful bridge.\n\n## Reliable Telegram Extraction\nOur real-time rankings help you discover valuable digital assets shared by communities across the globe. To save any specific Telegram media you find interesting, head over to our [Telegram Downloader](/download-telegram-video?locale=en)."
+    },
+    latestTwitter: {
+      title: "Latest Twitter (X) Downloads",
+      subtitle: "Recently extracted videos from Twitter (X).",
+      description: "See what others are downloading from Twitter right now. Explore the latest media being archived on ClipKeep.",
+      seoContent: "## The Live Stream of Discovery\nClipKeep's Latest Twitter Downloads gallery shows a real-time feed of public media being processed by our community. This live stream offers a unique window into the diverse range of content currently trending or being discovered across the X (Twitter) ecosystem.\n\n## Build Your Media Archive\nBy seeing what other users are archiving, you can find niche content, new creators, and trending topics you might have otherwise missed. Ready to archive your own found clips? Our [Twitter Video Downloader](/download-twitter-video?locale=en) is ready to help."
+    },
+    latestTiktok: {
+      title: "Latest TikTok Downloads",
+      subtitle: "Fresh TikTok content processed by ClipKeep users.",
+      description: "A real-time look at the newest TikTok videos being saved for offline use.",
+      seoContent: "## Catching the Newest Trends\nThe Latest TikTok Downloads section provides an up-to-the-minute perspective on the videos our community is finding most valuable. As TikTok moves at a lightning pace, our latest feed helps you track new trends as they emerge.\n\n## Efficient Extraction with ClipKeep\nThis gallery acts as a discovery engine, helping you find fresh content from global creators. Once you find a video you need to keep, [ClipKeep's TikTok Extractor](/download-tiktok-video?locale=en) ensures it's indexed and ready for your next viewing session."
+    },
+    latestTelegram: {
+      title: "Latest Telegram Downloads",
+      subtitle: "Recent media extracted from Telegram channels.",
+      description: "Discover the newest videos and files being archived by Telegram users on ClipKeep.",
+      seoContent: "## Live Telegram Media Discovery\nExplore the most recent media files being processed from public Telegram channels. Our real-time gallery provides insights into what information and entertainment is being archived globally.\n\n## High-Quality Archiving\nClipKeep makes it easy to save media that matters. Browse the latest downloads and use our [Telegram Downloader](/download-telegram-video?locale=en) to secure your own copies of viral Telegram content."
+    }
+  },
+  ja: {
+    trendingTwitter: {
+      title: "Twitter (X) トレンド動画",
+      subtitle: "現在、Twitterで最も人気のある動画をチェック。",
+      description: "バズっている動画、話題のニュース、人気のTwitter (X) 動画を今すぐ発見。オフライン視聴用に瞬時に保存できます。",
+      seoContent: "## Twitterの動画がバズる理由\nTwitter (X) は世界中のニュースやバイラルな瞬間がリアルタイムで発生する場所です。ClipKeepのトレンドTwitter動画ページでは、プラットフォーム上で最もアクセスされ、注目を集めているコンテンツを厳選しています。最新のニュースクリップからトレンドのミーム、迫力あるスポーツのハイライトまで、世界が今何を見ているかを常に把握できます。\n\n## Twitter動画の保存方法\nClipKeepはこれらのコンテンツを発見するだけでなく、直接デバイスに保存するためのシームレスな手段を提供します。インスピレーションを探しているクリエイター、ニュースを追っているジャーナリスト、あるいは単にエンターテインメントを探している方にとって、当サイトのリアルタイムランキングは欠かせないツールとなります。\n\n## ClipKeepを利用するメリット\n高速で安定した抽出を提供します。気に入った動画をオフラインで楽しみたい、あるいは個人の記録として残したい場合は、当サイトの [Twitter動画ダウンローダー](/download-twitter-video?locale=ja) を直接ご利用ください。"
+    },
+    trendingTiktok: {
+      title: "TikTok トレンド動画",
+      subtitle: "世界中でバズっている最新のTikTok動画。",
+      description: "人気のTikTok動画を今すぐチェック。話題の瞬間を高品質でダウンロードできます。",
+      seoContent: "## 現代文化の鼓動をキャッチ\nTikTokは現代のインターネット文化の中心地であり、トレンドが秒単位で生まれ、拡散される場所です。トレンドTikTok動画セクションでは、ClipKeepのユーザーベースによって現在最も多く抽出されているショート動画を特定しています。今みんなが注目しているビデオを発見してください。\n\n## 安全かつ高速なアーカイブ\nClipKeepを使用すれば、これらのトレンドの瞬間を高品質でアーカイブでき、インターネット接続がなくても常に最高のTikTokコンテンツを楽しむことができます。特定の動画を保存するには、[TikTokダウンローダー](/download-tiktok-video?locale=ja) を使用するのが最も確実です。"
+    },
+    trendingTelegram: {
+      title: "Telegram トレンドメディア",
+      subtitle: "Telegramチャンネルで人気の動画やファイル。",
+      description: "Telegramのグローバルなチャンネルやグループで、最もダウンロードされているメディアを探索しましょう。",
+      seoContent: "## コミュニティ内のコンテンツ発見\nTelegramは、ニュース、ドキュメンタリー、そしてニッチなコミュニティコンテンツの主要な拠点となっています。トレンドTelegramメディアページでは、公開チャネルから処理されている最も人気の高いファイルや動画を紹介しています。ClipKeepは、見つけにくいメディアへの強力なブリッジとして機能します。\n\n## 信頼できる抽出機能\nリアルタイムランキングを通じて、世界中のコミュニティで共有されている価値あるデジタル資産を発見してください。気になるメディアがあれば、[Telegramダウンローダー](/download-telegram-video?locale=ja) で保存できます。"
+    },
+    latestTwitter: {
+      title: "Twitter (X) 最近のダウンロード",
+      subtitle: "ClipKeepで最近抽出されたTwitter (X) 動画。",
+      description: "他のユーザーが今何をダウンロードしているかを確認。ClipKeepでアーカイブされている最新メディアを探索しましょう。",
+      seoContent: "## リアルタイムの発見フィード\n最新のTwitterダウンロードギャラリーは、ClipKeepのコミュニティによって処理されている公開メディアのリアルタイムフィードを表示します。このライブストリームは、X (Twitter) のエコシステム全体で新たに発見されている多様なコンテンツへの窓口となります。\n\n## 自分だけのメディアアーカイブを構築\n他のユーザーが何をアーカイブしているかを見ることで、新しいトレンドトピックを見つけることができます。自分で見つけた動画を保存する準備はいいですか？当サイトの [Twitter動画ダウンローダー](/download-twitter-video?locale=ja) がお手伝いします。"
+    },
+    latestTiktok: {
+      title: "TikTok 最近のダウンロード",
+      subtitle: "ClipKeepユーザーによって抽出された最新のTikTokコンテンツ。",
+      description: "オフライン保存用に新しく保存されたTikTok動画をリアルタイムで表示。",
+      seoContent: "## 最新トレンドを逃さない\n最新のTikTokダウンロードセクションは、コミュニティが今最も価値を感じている動画をリアルタイムで提供します。TikTokの変化は速いため、このフィードは新しいトレンドを捉えるのに役立ちます。\n\n## ClipKeepによる効率的な抽出\nこのギャラリーは、新鮮なコンテンツやクリエイティブなアイデアを見つける発見エンジンです。保存したい動画が見つかったら、[TikTok抽出ツール](/download-tiktok-video?locale=ja) で保存してください。"
+    },
+    latestTelegram: {
+      title: "Telegram 最近のダウンロード",
+      subtitle: "最近抽出されたTelegramメディア。",
+      description: "ClipKeepユーザーがTelegramチャンネルから新しく保存した動画やファイルを探索しましょう。",
+      seoContent: "## Telegramメディアの最新発見\n公開チャネルから処理されている最新のメディアファイルを探索。世界中でどのような情報やエンターテインメントがアーカイブされているかをリアルタイムで把握できます。\n\n## 高品質なメディア保存\nClipKeepは重要なメディアの保存を容易にします。最新のダウンロードをチェックし、[Telegramダウンローダー](/download-telegram-video?locale=ja) を使用して話題のTelegramコンテンツを自分のものにしましょう。"
+    }
+  },
+  ar: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
+  es: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
+  pt: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
+  fr: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
+  id: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
+  hi: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
+  de: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
+  tr: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } }
 };

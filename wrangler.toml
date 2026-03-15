@@ -2,10 +2,11 @@ name = "clipkeep-web"
 main = ".open-next/worker.js"
 compatibility_date = "2026-03-08"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+# pages_build_output_dir = ".open-next"
 
 [assets]
 directory = ".open-next/assets"
-binding = "ASSETS"
+binding = "STATIC_ASSETS"
 
 [[d1_databases]]
 binding = "clipkeep_db"

@@ -1,7 +1,9 @@
-import Link from 'next/link';
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import Script from 'next/script';
+import { HeaderShell } from '@/components/header-shell';
+import { Footer } from '@/components/footer';
+import { LocaleUpdater } from '@/components/locale-updater';
 
 const siteUrl = 'https://clipkeep.com';
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
@@ -45,11 +47,6 @@ const organizationJsonLd = {
   url: siteUrl,
 };
 
-import { LanguageSwitcher } from '@/components/language-switcher';
-import { Footer } from '@/components/footer';
-import { AdsterraAds } from '@/components/ads/adsterra';
-import { LocaleUpdater } from '@/components/locale-updater';
-
 export default function RootLayout({
   children,
 }: {
@@ -61,7 +58,6 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <LocaleUpdater />
         </Suspense>
-        <AdsterraAds />
         {gaId && (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
@@ -73,16 +69,9 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         
-        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-          <div style={{ maxWidth: 980, margin: '0 auto', padding: '12px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Link href="/" style={{ fontSize: 20, fontWeight: 'bold', textDecoration: 'none', color: '#000' }}>
-              ClipKeep
-            </Link>
-            <Suspense fallback={<div className="w-20 h-8 bg-gray-50 animate-pulse rounded-md" />}>
-              <LanguageSwitcher />
-            </Suspense>
-          </div>
-        </header>
+        <Suspense fallback={<header className="h-16 border-b border-gray-100" />}>
+          <HeaderShell />
+        </Suspense>
 
         {children}
         <Footer />

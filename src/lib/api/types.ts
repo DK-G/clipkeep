@@ -1,4 +1,4 @@
-﻿export type ApiMeta = {
+export type ApiMeta = {
   requestId: string;
   locale: "en" | "ar";
   degraded: boolean;
@@ -20,7 +20,11 @@ export type ApiErrorBody = {
     | "JOB_NOT_FOUND"
     | "UPSTREAM_FAILED"
     | "SERVICE_DEGRADED"
-    | "INTERNAL_ERROR";
+    | "INTERNAL_ERROR"
+    | "DB_ERROR"
+    | "MISSING_PLATFORM"
+    | "MISSING_JOB_ID"
+    | "TRACKING_ERROR";
   message: string;
   details: Record<string, unknown>;
 };

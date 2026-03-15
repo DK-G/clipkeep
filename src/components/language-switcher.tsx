@@ -17,37 +17,31 @@ export function LanguageSwitcher() {
   };
 
   return (
-    <div className="flex items-center gap-3">
-      <button
-        onClick={() => toggleLocale('en')}
-        className={`px-3 py-1 text-sm font-medium rounded-md transition ${
-          currentLocale === 'en' 
-            ? 'bg-black text-white' 
-            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-        }`}
-      >
-        EN
-      </button>
-      <button
-        onClick={() => toggleLocale('ar')}
-        className={`px-3 py-1 text-sm font-medium rounded-md transition ${
-          currentLocale === 'ar' 
-            ? 'bg-black text-white' 
-            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-        }`}
-      >
-        العربية
-      </button>
-      <button
-        onClick={() => toggleLocale('ja')}
-        className={`px-3 py-1 text-sm font-medium rounded-md transition ${
-          currentLocale === 'ja' 
-            ? 'bg-black text-white' 
-            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-        }`}
-      >
-        日本語
-      </button>
+    <div className="flex flex-wrap items-center gap-2">
+      {[
+        { code: 'en', label: 'EN' },
+        { code: 'ar', label: 'العربية' },
+        { code: 'ja', label: '日本語' },
+        { code: 'es', label: 'ES' },
+        { code: 'pt', label: 'PT' },
+        { code: 'fr', label: 'FR' },
+        { code: 'id', label: 'ID' },
+        { code: 'hi', label: 'हिंदी' },
+        { code: 'de', label: 'DE' },
+        { code: 'tr', label: 'TR' },
+      ].map((lang) => (
+        <button
+          key={lang.code}
+          onClick={() => toggleLocale(lang.code as Locale)}
+          className={`px-3 py-1 text-sm font-medium rounded-md transition ${
+            currentLocale === lang.code 
+              ? 'bg-black text-white' 
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
+        >
+          {lang.label}
+        </button>
+      ))}
     </div>
   );
 }
