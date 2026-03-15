@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useEffect, useState, Suspense } from 'react';
@@ -6,6 +6,7 @@ import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { resultText, normalizeLocale, localeDir } from '@/lib/i18n/ui';
 import type { ApiSuccess, ApiFailure } from '@/lib/api/types';
 import { AdsterraNative } from '@/components/ads/native-banner';
+import { trackEvent } from '@/lib/analytics/gtag';
 
 type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
 
@@ -173,6 +174,16 @@ function ResultContent() {
                       <div className="flex justify-end mt-2">
                         <a
                           href={`/api/v1/extract/proxy?url=${encodeURIComponent(item.downloadUrl)}`}
+                          onClick={() =>
+                            trackEvent('download_click', {
+                              platform: data.platform,
+                              locale,
+                              job_id: data.jobId,
+                              media_id: item.mediaId,
+                              media_type: item.type,
+                              quality: item.quality,
+                            })
+                          }
                           download
                           target="_blank"
                           rel="noopener noreferrer"
@@ -194,7 +205,19 @@ function ResultContent() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">You may also like</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {similar.map((item) => (
-                <Link key={item.id} href={`/result/${item.id}?locale=${locale}`} className="block rounded-xl overflow-hidden border border-gray-200 bg-white hover:shadow-md transition">
+                <Link
+                  key={item.id}
+                  href={`/result/${item.id}?locale=${locale}`}
+                  onClick={() =>
+                    trackEvent('similar_click', {
+                      platform: data.platform,
+                      locale,
+                      from_job_id: data.jobId,
+                      to_job_id: item.id,
+                    })
+                  }
+                  className="block rounded-xl overflow-hidden border border-gray-200 bg-white hover:shadow-md transition"
+                >
                   <div className="aspect-video bg-gray-100 overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={item.thumbnail_url} alt="Related video" className="w-full h-full object-cover" loading="lazy" />

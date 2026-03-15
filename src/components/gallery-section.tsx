@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Platform } from '@/lib/extract/types';
 import { Locale } from '@/lib/i18n/ui';
+import { trackEvent } from '@/lib/analytics/gtag';
 
 export interface GalleryItem {
   id: string;
@@ -73,16 +74,26 @@ export function GallerySection({ platform, locale, title, id = 'recent' }: Galle
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {items.map((item) => {
           const resultHref = `/result/${item.id}?locale=${locale}`;
+          const onCardClick = () => {
+            trackEvent('gallery_card_click', {
+              platform,
+              locale,
+              gallery_section: id,
+              job_id: item.id,
+              source_host: new URL(item.source_url).hostname.replace('www.', ''),
+            });
+            router.push(resultHref);
+          };
           return (
             <div
               key={item.id}
               role="link"
               tabIndex={0}
-              onClick={() => router.push(resultHref)}
+              onClick={onCardClick}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  router.push(resultHref);
+                  onCardClick();
                 }
               }}
               className="group relative bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
@@ -124,7 +135,7 @@ export function GallerySection({ platform, locale, title, id = 'recent' }: Galle
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(resultHref);
+                    onCardClick();
                   }}
                   className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-blue-600 transition-colors duration-200"
                 >
@@ -141,3 +152,4 @@ export function GallerySection({ platform, locale, title, id = 'recent' }: Galle
     </section>
   );
 }
+
