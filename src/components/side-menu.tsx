@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -13,17 +13,30 @@ interface SideMenuProps {
   dir: 'ltr' | 'rtl';
 }
 
+const sideMenuUi = {
+  en: { menu: 'MENU', close: 'Close Menu', footer: 'EST. 2025 • CLIPKEEP' },
+  ar: { menu: 'القائمة', close: 'إغلاق القائمة', footer: 'منذ 2025 • CLIPKEEP' },
+  ja: { menu: 'メニュー', close: 'メニューを閉じる', footer: 'EST. 2025 • CLIPKEEP' },
+  es: { menu: 'MENÚ', close: 'Cerrar menú', footer: 'EST. 2025 • CLIPKEEP' },
+  pt: { menu: 'MENU', close: 'Fechar menu', footer: 'EST. 2025 • CLIPKEEP' },
+  fr: { menu: 'MENU', close: 'Fermer le menu', footer: 'EST. 2025 • CLIPKEEP' },
+  id: { menu: 'MENU', close: 'Tutup menu', footer: 'EST. 2025 • CLIPKEEP' },
+  hi: { menu: 'मेनू', close: 'मेनू बंद करें', footer: 'EST. 2025 • CLIPKEEP' },
+  de: { menu: 'MENÜ', close: 'Menü schließen', footer: 'EST. 2025 • CLIPKEEP' },
+  tr: { menu: 'MENÜ', close: 'Menüyü kapat', footer: 'EST. 2025 • CLIPKEEP' },
+} as const;
+
 export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuProps) {
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const [expandedSections, setExpandedSections] = useState<Record<number, boolean>>({});
   const t = menuText[locale];
+  const ui = sideMenuUi[locale];
 
-  // Logic to determine active state
   const isActive = (href: string, activeHash?: string) => {
     const url = new URL(href, 'https://clipkeep.net');
     const pathMatch = pathname === url.pathname;
-    
+
     if (activeHash) {
       if (typeof window !== 'undefined') {
         const currentHash = window.location.hash;
@@ -31,23 +44,22 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
       }
       return false;
     }
-    
+
     return pathMatch;
   };
 
   const toggleSection = (idx: number) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [idx]: !prev[idx]
+      [idx]: !prev[idx],
     }));
   };
 
-  // Accessibility: Focus Management
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       setTimeout(() => {
-        const closeBtn = menuRef.current?.querySelector('button[aria-label="Close Menu"]') as HTMLElement;
+        const closeBtn = menuRef.current?.querySelector('button[aria-label]') as HTMLElement;
         closeBtn?.focus();
       }, 100);
     } else {
@@ -56,16 +68,15 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
     }
   }, [isOpen, triggerRef]);
 
-  // Accessibility: Keyboard Support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
       if (e.key === 'Escape') onClose();
-      
+
       if (e.key === 'Tab') {
         const focusableElements = menuRef.current?.querySelectorAll('a, button');
         if (!focusableElements) return;
-        
+
         const first = focusableElements[0] as HTMLElement;
         const last = focusableElements[focusableElements.length - 1] as HTMLElement;
 
@@ -74,11 +85,9 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
             last.focus();
             e.preventDefault();
           }
-        } else {
-          if (document.activeElement === last) {
-            first.focus();
-            e.preventDefault();
-          }
+        } else if (document.activeElement === last) {
+          first.focus();
+          e.preventDefault();
         }
       }
     };
@@ -96,25 +105,25 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
         { label: t.tiktok, href: `/download-tiktok-video?locale=${locale}` },
         { label: t.telegram, href: `/download-telegram-video?locale=${locale}` },
         { label: t.instagram, href: `/download-instagram-video?locale=${locale}` },
-      ]
+      ],
     },
     {
       id: 'rankings',
       title: t.rankings,
       items: [
-        { label: 'Twitter', href: `/twitter-trending-videos?locale=${locale}` },
-        { label: 'TikTok', href: `/tiktok-trending-videos?locale=${locale}` },
-        { label: 'Telegram', href: `/telegram-trending-videos?locale=${locale}` },
-      ]
+        { label: t.twitter, href: `/twitter-trending-videos?locale=${locale}` },
+        { label: t.tiktok, href: `/tiktok-trending-videos?locale=${locale}` },
+        { label: t.telegram, href: `/telegram-trending-videos?locale=${locale}` },
+      ],
     },
     {
       id: 'latest',
       title: t.latest,
       items: [
-        { label: 'Twitter', href: `/twitter-latest-videos?locale=${locale}` },
-        { label: 'TikTok', href: `/tiktok-latest-videos?locale=${locale}` },
-        { label: 'Telegram', href: `/telegram-latest-videos?locale=${locale}` },
-      ]
+        { label: t.twitter, href: `/twitter-latest-videos?locale=${locale}` },
+        { label: t.tiktok, href: `/tiktok-latest-videos?locale=${locale}` },
+        { label: t.telegram, href: `/telegram-latest-videos?locale=${locale}` },
+      ],
     },
     {
       id: 'language',
@@ -130,7 +139,7 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
         { label: 'हिंदी', href: `${pathname}?locale=hi` },
         { label: 'Deutsch', href: `${pathname}?locale=de` },
         { label: 'Türkçe', href: `${pathname}?locale=tr` },
-      ]
+      ],
     },
     {
       id: 'more',
@@ -139,9 +148,9 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
         { label: t.about, href: `/about?locale=${locale}` },
         { label: t.faq, href: `/faq?locale=${locale}` },
         { label: t.privacy, href: `/legal/privacy?locale=${locale}` },
-        { label: menuText[locale].instagram.replace(' Downloader', '').replace(' 保存', '').includes('Contact') ? t.contact : t.contact, href: `/contact?locale=${locale}` },
-      ]
-    }
+        { label: t.contact, href: `/contact?locale=${locale}` },
+      ],
+    },
   ];
 
   const drawerStyles: React.CSSProperties = {
@@ -155,7 +164,7 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
     zIndex: 80,
     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
     transition: 'transform 0.3s ease-in-out',
-    transform: isOpen ? 'translateX(0)' : (dir === 'ltr' ? 'translateX(100%)' : 'translateX(-100%)'),
+    transform: isOpen ? 'translateX(0)' : dir === 'ltr' ? 'translateX(100%)' : 'translateX(-100%)',
     display: 'flex',
     flexDirection: 'column',
     textAlign: dir === 'ltr' ? 'left' : 'right',
@@ -163,8 +172,7 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
 
   return (
     <>
-      {/* Backdrop */}
-      <div 
+      <div
         onClick={onClose}
         style={{
           position: 'fixed',
@@ -178,15 +186,10 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
         }}
       />
 
-      {/* Drawer */}
-      <div style={drawerStyles}>
+      <div ref={menuRef} style={drawerStyles}>
         <div style={{ padding: '24px', borderBottom: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9fafb' }}>
-          <span style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.025em', color: '#111827' }}>MENU</span>
-          <button 
-            onClick={onClose}
-            aria-label="Close Menu"
-            style={{ border: 'none', background: 'none', padding: '8px', cursor: 'pointer', borderRadius: '50%' }}
-          >
+          <span style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.025em', color: '#111827' }}>{ui.menu}</span>
+          <button onClick={onClose} aria-label={ui.close} style={{ border: 'none', background: 'none', padding: '8px', cursor: 'pointer', borderRadius: '50%' }}>
             <svg style={{ width: '24px', height: '24px', color: '#6b7280' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -214,51 +217,25 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
                       textAlign: dir === 'ltr' ? 'left' : 'right',
                     }}
                   >
-                    <span style={{ 
-                      fontSize: '0.875rem', 
-                      fontWeight: 'bold', 
-                      letterSpacing: '0.1em', 
-                      textTransform: 'uppercase', 
-                      color: isExpanded ? '#2563eb' : '#9ca3af',
-                      transition: 'color 0.2s'
-                    }}>
+                    <span style={{ fontSize: '0.875rem', fontWeight: 'bold', letterSpacing: '0.1em', textTransform: 'uppercase', color: isExpanded ? '#2563eb' : '#9ca3af', transition: 'color 0.2s' }}>
                       {group.title}
                     </span>
-                    <svg 
-                      style={{ 
-                        width: '16px', 
-                        height: '16px', 
-                        color: isExpanded ? '#60a5fa' : '#d1d5db', 
-                        transition: 'transform 0.3s', 
-                        transform: isExpanded ? 'rotate(180deg)' : 'none' 
-                      }} 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
+                    <svg style={{ width: '16px', height: '16px', color: isExpanded ? '#60a5fa' : '#d1d5db', transition: 'transform 0.3s', transform: isExpanded ? 'rotate(180deg)' : 'none' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  
-                  <div 
-                    style={{ 
-                      maxHeight: isExpanded ? '500px' : '0',
-                      opacity: isExpanded ? 1 : 0,
-                      overflow: 'hidden',
-                      transition: 'all 0.3s ease-in-out',
-                      backgroundColor: '#fff',
-                    }}
-                  >
+
+                  <div style={{ maxHeight: isExpanded ? '500px' : '0', opacity: isExpanded ? 1 : 0, overflow: 'hidden', transition: 'all 0.3s ease-in-out', backgroundColor: '#fff' }}>
                     <div style={{ padding: '0 24px 24px 24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                       {group.items.map((item, iIdx) => {
-                        const active = isActive(item.href, ('hash' in item) ? (item as { hash?: string }).hash : undefined);
+                        const active = isActive(item.href, ('hash' in item ? (item as { hash?: string }).hash : undefined));
                         return (
                           <Link
                             key={iIdx}
                             href={item.href}
-                            style={{ 
+                            style={{
                               display: 'block',
-                              fontSize: '0.875rem', 
+                              fontSize: '0.875rem',
                               textDecoration: 'none',
                               color: active ? '#2563eb' : '#4b5563',
                               fontWeight: active ? 'bold' : '500',
@@ -269,18 +246,18 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
                           >
                             {item.label}
                           </Link>
-                        )
+                        );
                       })}
                     </div>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
 
         <div style={{ padding: '32px', borderTop: '1px solid #f3f4f6', backgroundColor: 'rgba(249, 250, 251, 0.3)', fontSize: '10px', color: '#9ca3af', textAlign: 'center', letterSpacing: '0.1em' }}>
-          EST. 2025 • CLIPKEEP
+          {ui.footer}
         </div>
       </div>
     </>

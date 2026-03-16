@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -6,6 +6,19 @@ import { useSearchParams, usePathname } from 'next/navigation';
 import { normalizeLocale, localeDir } from '@/lib/i18n/ui';
 import { LanguageSwitcher } from './language-switcher';
 import { SideMenu } from './side-menu';
+
+const headerLabels = {
+  en: { toggleMenu: 'Toggle Menu' },
+  ar: { toggleMenu: 'تبديل القائمة' },
+  ja: { toggleMenu: 'メニューを切り替え' },
+  es: { toggleMenu: 'Alternar menú' },
+  pt: { toggleMenu: 'Alternar menu' },
+  fr: { toggleMenu: 'Basculer le menu' },
+  id: { toggleMenu: 'Buka/tutup menu' },
+  hi: { toggleMenu: 'मेनू टॉगल करें' },
+  de: { toggleMenu: 'Menü umschalten' },
+  tr: { toggleMenu: 'Menüyü aç/kapat' },
+} as const;
 
 export function HeaderShell() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,7 +28,6 @@ export function HeaderShell() {
   const dir = localeDir(locale);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname, searchParams]);
@@ -29,7 +41,7 @@ export function HeaderShell() {
           <Link href={`/?locale=${locale}`} style={{ fontSize: 20, fontWeight: 'bold', textDecoration: 'none', color: '#000' }}>
             ClipKeep
           </Link>
-          
+
           <div className="flex items-center gap-4" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <div className="hidden sm:block">
               <LanguageSwitcher />
@@ -38,11 +50,10 @@ export function HeaderShell() {
         </div>
       </header>
 
-      {/* Floating Menu Trigger Button - Using inline styles for cross-environment reliability */}
       <button
         ref={menuButtonRef}
         onClick={toggleMenu}
-        aria-label="Toggle Menu"
+        aria-label={headerLabels[locale].toggleMenu}
         aria-expanded={isMenuOpen}
         style={{
           position: 'fixed',
@@ -67,33 +78,15 @@ export function HeaderShell() {
         }}
       >
         <div style={{ width: '24px', height: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ 
-            width: '100%', 
-            height: '2px', 
-            backgroundColor: 'currentColor', 
-            transition: 'all 0.3s',
-            transform: isMenuOpen ? 'rotate(45deg) translateY(10px)' : 'none'
-          }} />
-          <span style={{ 
-            width: '100%', 
-            height: '2px', 
-            backgroundColor: 'currentColor', 
-            transition: 'opacity 0.3s',
-            opacity: isMenuOpen ? 0 : 1
-          }} />
-          <span style={{ 
-            width: '100%', 
-            height: '2px', 
-            backgroundColor: 'currentColor', 
-            transition: 'all 0.3s',
-            transform: isMenuOpen ? 'rotate(-45deg) translateY(-10px)' : 'none'
-          }} />
+          <span style={{ width: '100%', height: '2px', backgroundColor: 'currentColor', transition: 'all 0.3s', transform: isMenuOpen ? 'rotate(45deg) translateY(10px)' : 'none' }} />
+          <span style={{ width: '100%', height: '2px', backgroundColor: 'currentColor', transition: 'opacity 0.3s', opacity: isMenuOpen ? 0 : 1 }} />
+          <span style={{ width: '100%', height: '2px', backgroundColor: 'currentColor', transition: 'all 0.3s', transform: isMenuOpen ? 'rotate(-45deg) translateY(-10px)' : 'none' }} />
         </div>
       </button>
 
-      <SideMenu 
-        isOpen={isMenuOpen} 
-        onClose={() => setIsMenuOpen(false)} 
+      <SideMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
         triggerRef={menuButtonRef}
         locale={locale}
         dir={dir}
@@ -101,3 +94,4 @@ export function HeaderShell() {
     </>
   );
 }
+
