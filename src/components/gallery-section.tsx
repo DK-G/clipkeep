@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -30,11 +30,6 @@ function formatDuration(sec?: number): string {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-function badgeColor(p: Platform): string {
-  if (p === 'twitter') return 'bg-sky-100 text-sky-800';
-  if (p === 'telegram') return 'bg-cyan-100 text-cyan-800';
-  return 'bg-fuchsia-100 text-fuchsia-800';
-}
 
 export function GallerySection({ platform, locale, title, id = 'recent' }: GallerySectionProps) {
   const router = useRouter();
@@ -96,54 +91,63 @@ export function GallerySection({ platform, locale, title, id = 'recent' }: Galle
                   onCardClick();
                 }
               }}
-              className="group relative bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+              className="group relative bg-[#0f1419]/[0.03] dark:bg-white/[0.03] rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
             >
-              <div className="aspect-video relative overflow-hidden bg-gray-50">
+              <div className="aspect-video relative overflow-hidden bg-gray-100">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.thumbnail_url}
                   alt="Video Thumbnail"
-                  className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+                  className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
                   loading="lazy"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = '/placeholder-video.png';
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className={`absolute top-2 left-2 px-2 py-1 text-[10px] font-bold rounded-lg shadow-sm ${badgeColor(platform)}`}>
-                  {platform.toUpperCase()}
+                
+                {/* Platform Icon Badge */}
+                <div className="absolute bottom-2 right-2 flex items-center gap-1">
+                   {platform === 'twitter' && (
+                     <div className="bg-black/80 rounded px-1.5 py-0.5 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white fill-current" viewBox="0 0 24 24">
+                           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                        </svg>
+                     </div>
+                   )}
+                   {platform === 'instagram' && (
+                     <div className="bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888] rounded px-1.5 py-0.5 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                           <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                           <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                     </div>
+                   )}
+                   {platform === 'tiktok' && (
+                     <div className="bg-black rounded px-1.5 py-0.5 flex items-center justify-center border border-white/20">
+                        <svg className="w-3 h-3 text-white fill-current" viewBox="0 0 24 24">
+                           <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"></path>
+                        </svg>
+                     </div>
+                   )}
+                   {platform === 'telegram' && (
+                     <div className="bg-[#229ED9] rounded px-1.5 py-0.5 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white fill-current" viewBox="0 0 24 24">
+                           <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path>
+                        </svg>
+                     </div>
+                   )}
+                   <div className="bg-black/60 text-white text-[10px] font-bold px-1 rounded">
+                      {formatDuration(item.duration_sec)}
+                   </div>
                 </div>
-              </div>
 
-              <div className="p-4">
-                <div className="flex items-center justify-between gap-2 mb-2 text-[11px]">
-                  <span className="px-2 py-1 rounded-md bg-gray-100 text-gray-700 font-semibold">
-                    {item.access_count.toLocaleString()} downloads
-                  </span>
-                  <span className="px-2 py-1 rounded-md bg-gray-100 text-gray-700 font-mono">
-                    {formatDuration(item.duration_sec)}
-                  </span>
+                <div className="absolute top-2 left-2">
+                   <div className="bg-white/90 backdrop-blur-sm dark:bg-black/90 px-1.5 py-0.5 rounded text-[10px] font-bold shadow-sm flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                      {item.access_count > 1000 ? `${(item.access_count / 1000).toFixed(1)}k` : item.access_count}
+                   </div>
                 </div>
-
-                <div className="flex items-center justify-between gap-3 mb-1">
-                  <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider truncate">
-                    {new URL(item.source_url).hostname.replace('www.', '')}
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onCardClick();
-                  }}
-                  className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-blue-600 transition-colors duration-200"
-                >
-                  <span>Download Now</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                </button>
               </div>
             </div>
           );

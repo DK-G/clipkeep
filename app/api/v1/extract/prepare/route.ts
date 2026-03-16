@@ -15,7 +15,7 @@ type PrepareBody = {
 function normalizePlatform(raw: string): Platform | null {
   const value = raw.toLowerCase();
   if (value === "x") return "twitter";
-  if (value === "twitter" || value === "telegram" || value === "tiktok") return value;
+  if (value === "twitter" || value === "telegram" || value === "tiktok" || value === "instagram") return value;
   return null;
 }
 
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
       locale: body.locale,
       error: {
         code: "UNSUPPORTED_PLATFORM",
-        message: "Supported platforms are telegram, twitter, tiktok",
+        message: "Supported platforms are telegram, twitter, tiktok, instagram",
         details: { platform: platformRaw },
       },
     });

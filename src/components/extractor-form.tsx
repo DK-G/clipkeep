@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { homeText, Locale } from '@/lib/i18n/ui';
 import { trackEvent } from '@/lib/analytics/gtag';
 
-export type Platform = 'telegram' | 'twitter' | 'tiktok';
+export type Platform = 'telegram' | 'twitter' | 'tiktok' | 'instagram';
 
 type PrepareSuccess = {
   requestId: string;
@@ -43,8 +43,8 @@ export function ExtractorForm({ platform = 'telegram', locale = 'en', onStatusCh
   const l = homeText[locale];
 
   const canSubmit = useMemo(() => {
-    return sourceUrl.trim().length > 0 && (platform === 'telegram' || platform === 'twitter') && !submitting;
-  }, [platform, sourceUrl, submitting]);
+    return sourceUrl.trim().length > 0 && !submitting;
+  }, [sourceUrl, submitting]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -97,7 +97,12 @@ export function ExtractorForm({ platform = 'telegram', locale = 'en', onStatusCh
             required
             value={sourceUrl}
             onChange={(e) => setSourceUrl(e.target.value)}
-            placeholder={platform === 'telegram' ? 'https://t.me/...' : 'https://x.com/...'}
+            placeholder={
+              platform === 'telegram' ? 'https://t.me/...' : 
+              platform === 'twitter' ? 'https://x.com/...' :
+              platform === 'instagram' ? 'https://instagram.com/...' :
+              'https://tiktok.com/...'
+            }
             className="w-full px-6 py-5 bg-gray-50 border border-gray-100 rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-8 focus:ring-blue-50/30 transition duration-200 outline-none text-lg"
           />
         </div>

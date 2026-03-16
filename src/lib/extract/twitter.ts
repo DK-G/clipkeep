@@ -1,4 +1,4 @@
-﻿export type TwitterMedia = {
+export type TwitterMedia = {
   type: "video" | "audio" | "image";
   url: string;
   thumbUrl?: string;
@@ -62,14 +62,54 @@ async function scrapeFixer(url: string): Promise<TwitterMedia[]> {
   return [];
 }
 
+interface FXTwitterResponse {
+  tweet?: {
+    media?: {
+      all?: Array<{
+        type: string;
+        url: string;
+        thumbnail_url?: string;
+      }>;
+    };
+  };
+}
+
 /**
- * Extract Twitter/X media via multiple fixer services.
- * Fallback order improves resilience when one mirror is blocked.
+ * extractTwitter via multiple strategies: API, Direct, and Fixer.
  */
 export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]> {
   const statusId = extractStatusId(sourceUrl);
   if (!statusId) return [];
 
+  // Strategy 1: api.fxtwitter.com (JSON API)
+  try {
+    const apiRes = await fetch(`https://api.fxtwitter.com/i/status/${statusId}`);
+    if (apiRes.ok) {
+      const data = await apiRes.json() as FXTwitterResponse;
+      if (data.tweet?.media?.all && data.tweet.media.all.length > 0) {
+        return data.tweet.media.all.map((m) => ({
+          type: m.type === 'video' || m.type === 'gif' ? 'video' : 'image',
+          url: m.url,
+          thumbUrl: m.thumbnail_url || undefined
+        }));
+      }
+    }
+  } catch (e) {
+    console.error("FXTwitter API Error:", e);
+  }
+
+  // Strategy 2: d.fxtwitter.com (Direct Redirect)
+  try {
+    const directUrl = `https://d.fxtwitter.com/i/status/${statusId}`;
+    const directRes = await fetch(directUrl, { method: 'HEAD', redirect: 'follow' });
+    if (directRes.ok && directRes.url.includes('twimg.com')) {
+      return [{ type: 'video', url: directRes.url }];
+    }
+  } catch (e) {
+    console.error("FXTwitter Direct Error:", e);
+  }
+
+  // Strategy 3: HTML Scraper Fallback
   const candidates = [
     `https://fxtwitter.com/i/status/${statusId}`,
     `https://vxtwitter.com/i/status/${statusId}`,

@@ -28,9 +28,7 @@ function TikTokDownloaderContent() {
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
           {t.subtitle}
         </p>
-        <AdsterraNative />
       </div>
-
 
       {/* Structured Content for SEO */}
       {t.note && (
@@ -79,13 +77,19 @@ function TikTokDownloaderContent() {
         </section>
       </div>
 
+      <GallerySection id="realtime" platform="tiktok" locale={locale} title="Real-time / リアルタイム" />
+
+      <div className="my-12">
+        <AdsterraNative />
+      </div>
+
       {t.trendingTitle && (
         <GallerySection id="trending" platform="tiktok" locale={locale} title={t.trendingTitle} />
       )}
 
-      <AdsterraNative />
-
-      <GallerySection id="recent" platform="tiktok" locale={locale} title={t.galleryTitle} />
+      <div className="my-12">
+        <AdsterraNative />
+      </div>
 
       {/* Detailed SEO Content Section */}
       {t.seoContent && (
@@ -104,7 +108,7 @@ function TikTokDownloaderContent() {
 
 export default function TikTokDownloaderPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-gray-400">Loading...</div>}>
       <TikTokDownloaderContent />
     </Suspense>
   );

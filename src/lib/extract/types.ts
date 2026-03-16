@@ -1,4 +1,4 @@
-export type Platform = "telegram" | "twitter" | "tiktok";
+export type Platform = "telegram" | "twitter" | "tiktok" | "instagram";
 export type JobStatus = "queued" | "processing" | "completed" | "failed";
 
 export type ExtractJob = {

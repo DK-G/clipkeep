@@ -1,0 +1,47 @@
+﻿Status ID: 1860099499839959325
+Testing API: https://api.fxtwitter.com/SpaceX/status/1860099499839959325...
+API failed (https://api.fxtwitter.com/SpaceX/status/1860099499839959325): 404
+Testing API: https://api.fxtwitter.com/status/1860099499839959325...
+API failed (https://api.fxtwitter.com/status/1860099499839959325): 404
+Testing API: https://api.fxtwitter.com/i/status/1860099499839959325...
+API failed (https://api.fxtwitter.com/i/status/1860099499839959325): 404
+Testing Direct Redirect: https://d.fxtwitter.com/i/status/1860099499839959325...
+Direct Redirect result: 200, final URL: https://d.fxtwitter.com/i/status/1860099499839959325
+Scraping https://fxtwitter.com/i/status/1860099499839959325...
+HTML length: 1431
+Response snippet: <!DOCTYPE html><html ><!--
+
+   █████            ███████                 ███                        ███
+ ███               ███                      ███                        ███
+███                ███                      ███                        ███
+███      ███  ███  ███        ▐█████████▌   ███████     ██████     ███████ 
+███████▌  ▐█▌▐█▌   ███████   ▐██▌ ███ ▐██▌  ███   ███  ▐█▌  ▐█▌  ███   ███ 
+███        ▐██▌    ███       ███  ███  ███  ███    ███ ████████ ███    ███
+███       ▐█▌▐█▌   █
+Media for https://fxtwitter.com/i/status/1860099499839959325: []
+Scraping https://vxtwitter.com/i/status/1860099499839959325...
+HTML length: 764
+Response snippet: <!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>vxTwitter / fixvx</title>
+    <meta content="vxTwitter / fixvx" property="og:title" />
+    <meta content="Failed to scan your link! This may be due to an incorrect link, private/suspended account, deleted tweet, or recent changes to Twitter&#39;s API (Thanks, Elon!)." property="og:description" />
+    <meta content="https://github.com/dylanpdx/BetterTwitFix" property="og:url" />
+    <meta content="#1DA1F2"  name="theme-color" />
+    <meta ht
+Media for https://vxtwitter.com/i/status/1860099499839959325: []
+Scraping https://fixupx.com/i/status/1860099499839959325...
+HTML length: 1428
+Response snippet: <!DOCTYPE html><html ><!--
+
+   █████            ███████                 ███                        ███
+ ███               ███                      ███                        ███
+███                ███                      ███                        ███
+███      ███  ███  ███        ▐█████████▌   ███████     ██████     ███████ 
+███████▌  ▐█▌▐█▌   ███████   ▐██▌ ███ ▐██▌  ███   ███  ▐█▌  ▐█▌  ███   ███ 
+███        ▐██▌    ███       ███  ███  ███  ███    ███ ████████ ███    ███
+███       ▐█▌▐█▌   █
+Media for https://fixupx.com/i/status/1860099499839959325: []
+FAILED

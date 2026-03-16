@@ -68,13 +68,19 @@ function TwitterDownloaderContent() {
         </section>
       </div>
 
+      <GallerySection id="realtime" platform="twitter" locale={locale} title="Real-time / リアルタイム" />
+
+      <div className="my-12">
+        <AdsterraNative />
+      </div>
+
       {t.trendingTitle && (
         <GallerySection id="trending" platform="twitter" locale={locale} title={t.trendingTitle} />
       )}
 
-      <AdsterraNative />
-
-      <GallerySection id="recent" platform="twitter" locale={locale} title={t.galleryTitle} />
+      <div className="my-12">
+        <AdsterraNative />
+      </div>
 
       {/* Detailed SEO Content Section */}
       {t.seoContent && (

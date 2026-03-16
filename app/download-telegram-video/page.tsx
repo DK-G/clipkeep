@@ -64,11 +64,22 @@ function TelegramDownloaderContent() {
               <li key={i} className="leading-relaxed">{point}</li>
             ))}
           </ul>
-          <AdsterraNative />
         </section>
       </div>
 
-      <GallerySection platform="telegram" locale={locale} title={t.galleryTitle} />
+      <GallerySection id="realtime" platform="telegram" locale={locale} title="Real-time / リアルタイム" />
+
+      <div className="my-12">
+        <AdsterraNative />
+      </div>
+
+      {t.trendingTitle && (
+        <GallerySection id="trending" platform="telegram" locale={locale} title={t.trendingTitle} />
+      )}
+
+      <div className="my-12">
+        <AdsterraNative />
+      </div>
 
       {/* Detailed SEO Content Section */}
       {t.seoContent && (
@@ -87,7 +98,7 @@ function TelegramDownloaderContent() {
 
 export default function TelegramDownloaderPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-gray-400">Loading...</div>}>
       <TelegramDownloaderContent />
     </Suspense>
   );

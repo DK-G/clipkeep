@@ -2000,6 +2000,71 @@ export const solutionText: Record<Locale, SolutionDict> = {
   }
 };
 
+export const instagramText: Record<Locale, PlatformPageDict> = {
+  en: {
+    title: "Instagram Video Downloader",
+    subtitle: "Save Reels, Stories, and photos from Instagram in high quality.",
+    statusLabel: "Status",
+    helpPage: "Help Page",
+    howToTitle: "How to Save Instagram Videos",
+    howToSteps: [
+      "Open Instagram: Find the post, Reel, or Story you want to save.",
+      "Copy Link: Click the share button and select 'Copy Link'.",
+      "Paste in ClipKeep: Paste the URL into the input field above and click 'Submit'.",
+      "Download: Save the media to your device once processing is complete."
+    ],
+    whyTitle: "Why ClipKeep for Instagram?",
+    whyBody: "Instagram often restricts direct downloads. ClipKeep allows you to archive your favorite memories and viral Reels safely.",
+    whyPoints: [
+      "High Quality: Preserves original resolution.",
+      "Works with Reels: Supported dedicated Reel extraction.",
+      "No Personal Data: We don't ask for your password."
+    ],
+    faqTitle: "Instagram FAQ",
+    faqItems: [
+      { q: "Can I save Stories?", a: "Yes, public Stories can be extracted by pasting their link." },
+      { q: "Is it anonymous?", a: "Yes, ClipKeep does not notify users when you download their public content." }
+    ],
+    galleryTitle: "Recent Instagram Saves",
+    trendingTitle: "Trending Instagram Reels"
+  },
+  ja: {
+    title: "Instagram 動画保存",
+    subtitle: "Instagramのリール、ストーリー、写真を高品質で保存します。",
+    statusLabel: "ステータス",
+    helpPage: "ヘルプページ",
+    howToTitle: "Instagram動画の保存方法",
+    howToSteps: [
+      "URLをコピー: 保存したい投稿やリール、ストーリーの「リンクをコピー」をクリックします。",
+      " ClipKeepに貼り付け: 上記の入力欄にリンクを貼り付け、「抽出を開始」をクリックします。",
+      "保存: 抽出完了後、ダウンロードボタンから保存します。"
+    ],
+    whyTitle: "ClipKeepが選ばれる理由",
+    whyBody: "Instagramの動画を簡単に、かつ安全にアーカイブ。高品質な状態での保存に対応しています。",
+    whyPoints: [
+      "最高画質: 元の解像度を維持して保存します。",
+      "リール対応: 人気のリール動画もスムーズに抽出可能です。",
+      "安全・安心: ログイン情報は一切必要ありません。"
+    ],
+    faqTitle: "よくある質問",
+    faqItems: [
+      { q: "ストーリーは保存できますか？", a: "はい、公開されているストーリーであればURLから保存可能です。" },
+      { q: "相手に通知されますか？", a: "いいえ、当サービスを利用してダウンロードしたことが相手に伝わることはありません。" }
+    ],
+    galleryTitle: "最近のInstagram保存",
+    trendingTitle: "トレンドのリール動画"
+  },
+  ar: { title: "محمل إنستغرام", subtitle: "احفظ الريلز والقصص من إنستغرام", statusLabel: "الحالة", helpPage: "مساعدة", howToTitle: "كيفية التحميل", howToSteps: [], whyTitle: "لماذا ClipKeep", whyBody: "", whyPoints: [], faqTitle: "الأسئلة", faqItems: [], galleryTitle: "آخر التنزيلات", trendingTitle: "الرائجة" },
+  es: { title: "Instagram Downloader", subtitle: "Descarga Reels y fotos", statusLabel: "Estado", helpPage: "Ayuda", howToTitle: "Cómo descargar", howToSteps: [], whyTitle: "Ventajas", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "Recientes", trendingTitle: "Tendencias" },
+  pt: { title: "Instagram Downloader", subtitle: "Baixe Reels e fotos", statusLabel: "Status", helpPage: "Ayuda", howToTitle: "Como baixar", howToSteps: [], whyTitle: "Vantagens", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "Recientes", trendingTitle: "Tendências" },
+  fr: { title: "Instagram Downloader", subtitle: "Téléchargez Reels et photos", statusLabel: "État", helpPage: "Aide", howToTitle: "Comment télécharger", howToSteps: [], whyTitle: "Pourquoi ClipKeep", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "Récents", trendingTitle: "Tendances" },
+  id: { title: "Instagram Downloader", subtitle: "Unduh Reel dan foto", statusLabel: "Status", helpPage: "Bantuan", howToTitle: "Cara unduh", howToSteps: [], whyTitle: "Kelebihan", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "Terbaru", trendingTitle: "Tren" },
+  hi: { title: "Instagram Downloader", subtitle: "रील्स और फोटो डाउनलोड करें", statusLabel: "स्थिति", helpPage: "सहायता", howToTitle: "डाउनलोड कैसे करें", howToSteps: [], whyTitle: "फायदे", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "नवीनतम", trendingTitle: "ट्रेंडिंग" },
+  de: { title: "Instagram Downloader", subtitle: "Speichere Reels und Fotos", statusLabel: "Status", helpPage: "Hilfe", howToTitle: "Anleitung", howToSteps: [], whyTitle: "Vorteile", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "Neueste", trendingTitle: "Trends" },
+  tr: { title: "Instagram İndirici", subtitle: "YouTube Reels ve fotoğraf indir", statusLabel: "Durum", helpPage: "Yardım", howToTitle: "Nasıl indirilir", howToSteps: [], whyTitle: "Avantajlar", whyBody: "", whyPoints: [], faqTitle: "SSS", faqItems: [], galleryTitle: "Son", trendingTitle: "Popüler" }
+};
+
+
 export const degradedText: Record<Locale, DegradedDict> = {
   en: {
     title: 'Extractor is in degraded mode',
