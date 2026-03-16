@@ -184,12 +184,12 @@ function ResultContent() {
                               quality: item.quality,
                             })
                           }
-                          download
+                          download={data.platform === 'telegram'}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="w-full sm:w-auto text-center px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-bold shadow-lg shadow-blue-200 active:transform active:scale-95"
                         >
-                          {t.download}
+                          {data.platform === 'twitter' ? 'Play' : t.download}
                         </a>
                       </div>
                     </div>
@@ -255,3 +255,5 @@ export default function ResultPage() {
     </Suspense>
   );
 }
+
+
