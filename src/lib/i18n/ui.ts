@@ -2054,14 +2054,190 @@ export const instagramText: Record<Locale, PlatformPageDict> = {
     galleryTitle: "最近のInstagram保存",
     trendingTitle: "トレンドのリール動画"
   },
-  ar: { title: "محمل إنستغرام", subtitle: "احفظ الريلز والقصص من إنستغرام", statusLabel: "الحالة", helpPage: "مساعدة", howToTitle: "كيفية التحميل", howToSteps: [], whyTitle: "لماذا ClipKeep", whyBody: "", whyPoints: [], faqTitle: "الأسئلة", faqItems: [], galleryTitle: "آخر التنزيلات", trendingTitle: "الرائجة" },
-  es: { title: "Instagram Downloader", subtitle: "Descarga Reels y fotos", statusLabel: "Estado", helpPage: "Ayuda", howToTitle: "Cómo descargar", howToSteps: [], whyTitle: "Ventajas", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "Recientes", trendingTitle: "Tendencias" },
-  pt: { title: "Instagram Downloader", subtitle: "Baixe Reels e fotos", statusLabel: "Status", helpPage: "Ayuda", howToTitle: "Como baixar", howToSteps: [], whyTitle: "Vantagens", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "Recientes", trendingTitle: "Tendências" },
-  fr: { title: "Instagram Downloader", subtitle: "Téléchargez Reels et photos", statusLabel: "État", helpPage: "Aide", howToTitle: "Comment télécharger", howToSteps: [], whyTitle: "Pourquoi ClipKeep", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "Récents", trendingTitle: "Tendances" },
-  id: { title: "Instagram Downloader", subtitle: "Unduh Reel dan foto", statusLabel: "Status", helpPage: "Bantuan", howToTitle: "Cara unduh", howToSteps: [], whyTitle: "Kelebihan", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "Terbaru", trendingTitle: "Tren" },
-  hi: { title: "Instagram Downloader", subtitle: "रील्स और फोटो डाउनलोड करें", statusLabel: "स्थिति", helpPage: "सहायता", howToTitle: "डाउनलोड कैसे करें", howToSteps: [], whyTitle: "फायदे", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "नवीनतम", trendingTitle: "ट्रेंडिंग" },
-  de: { title: "Instagram Downloader", subtitle: "Speichere Reels und Fotos", statusLabel: "Status", helpPage: "Hilfe", howToTitle: "Anleitung", howToSteps: [], whyTitle: "Vorteile", whyBody: "", whyPoints: [], faqTitle: "FAQ", faqItems: [], galleryTitle: "Neueste", trendingTitle: "Trends" },
-  tr: { title: "Instagram İndirici", subtitle: "YouTube Reels ve fotoğraf indir", statusLabel: "Durum", helpPage: "Yardım", howToTitle: "Nasıl indirilir", howToSteps: [], whyTitle: "Avantajlar", whyBody: "", whyPoints: [], faqTitle: "SSS", faqItems: [], galleryTitle: "Son", trendingTitle: "Popüler" }
+  ar: { 
+    title: "محمل فيديوهات إنستغرام", 
+    subtitle: "احفظ الريلز، القصص، والصور من إنستغرام بجودة عالية.", 
+    statusLabel: "الحالة", 
+    helpPage: "مساعدة", 
+    howToTitle: "كيفية التحميل", 
+    howToSteps: [
+      "افتح إنستغرام: ابحث عن المنشور أو الريل أو القصة التي تريد حفظها.",
+      "انسخ الرابط: انقر على زر المشاركة واختر 'نسخ الرابط'.",
+      "الصق في ClipKeep: الصق الرابط في حقل الإدخال أعلاه وانقر على 'إرسال'.",
+      "التنزيل: احفظ الوسائط على جهازك بمجرد اكتمال المعالجة."
+    ], 
+    whyTitle: "لماذا نستخدم ClipKeep لإنستغرام؟", 
+    whyBody: "غالباً ما يقيد إنستغرام التنزيلات المباشرة. يسمح لك ClipKeep بأرشفة ذكرياتك المفضلة والريلز الرائجة بأمان.", 
+    whyPoints: ["جودة عالية", "دعم الريلز", "بدون بيانات شخصية"], 
+    faqTitle: "الأسئلة", 
+    faqItems: [
+      { q: "هل يمكنني حفظ القصص؟", a: "نعم، يمكن استخراج القصص العامة عن طريق لصق رابطها." },
+      { q: "هل هو مجهول الهوية؟", a: "نعم، لا يقوم ClipKeep بإخطار المستخدمين عند تنزيل محتواهم العام." }
+    ], 
+    galleryTitle: "آخر التنزيلات", 
+    trendingTitle: "الرائجة" 
+  },
+  es: { 
+    title: "Descargador de Instagram", 
+    subtitle: "Guarda Reels, Historias y fotos de Instagram en alta calidad.", 
+    statusLabel: "Estado", 
+    helpPage: "Ayuda", 
+    howToTitle: "Cómo descargar", 
+    howToSteps: [
+      "Abre Instagram: Busca la publicación, Reel o Historia que quieras guardar.",
+      "Copia el enlace: Haz clic en el botón de compartir y selecciona 'Copiar enlace'.",
+      "Pega en ClipKeep: Pega la URL en el campo de arriba y haz clic en 'Enviar'.",
+      "Descargar: Guarda el archivo en tu dispositivo una vez finalizado el proceso."
+    ], 
+    whyTitle: "¿Why ClipKeep?", 
+    whyBody: "Instagram suele restringir las descargas directas. ClipKeep te permite archivar tus recuerdos favoritos de forma segura.", 
+    whyPoints: ["Alta calidad", "Soporte para Reels", "Sin datos personales"], 
+    faqTitle: "FAQ", 
+    faqItems: [
+      { q: "¿Historias públicas?", a: "Sí, las Historias públicas se pueden extraer pegando su enlace." },
+      { q: "¿Es anónimo?", a: "Sí, ClipKeep no notifica a los usuarios cuando descargas su contenido público." }
+    ], 
+    galleryTitle: "Recientes", 
+    trendingTitle: "Tendencias" 
+  },
+  pt: { 
+    title: "Downloader do Instagram", 
+    subtitle: "Salve Reels, Stories e fotos do Instagram em alta qualidade.", 
+    statusLabel: "Status", 
+    helpPage: "Ajuda", 
+    howToTitle: "Como baixar", 
+    howToSteps: [
+      "Abra o Instagram: Encontre o post, Reel ou Story que deseja salvar.",
+      "Copie o link: Clique no botão de compartilhar e selecione 'Copiar link'.",
+      "Cole no ClipKeep: Cole a URL no campo acima e clique em 'Enviar'.",
+      "Download: Salve a mídia no seu dispositivo após o processamento."
+    ], 
+    whyTitle: "Vantagens", 
+    whyBody: "O Instagram geralmente restringe downloads diretos. O ClipKeep permite que você arquive suas memórias favoritas com segurança.", 
+    whyPoints: ["Alta qualidade", "Focado em Reels", "Seguro e Simples"], 
+    faqTitle: "FAQ", 
+    faqItems: [
+      { q: "Stories públicos?", a: "Sim, Stories públicos podem ser extraídos colando o link." },
+      { q: "É anônimo?", a: "Sim, o ClipKeep não notifica os usuários quando você baixa conteúdo público." }
+    ], 
+    galleryTitle: "Recientes", 
+    trendingTitle: "Tendências" 
+  },
+  fr: { 
+    title: "Téléchargeur Instagram", 
+    subtitle: "Enregistrez Reels, Stories et photos d'Instagram en haute qualité.", 
+    statusLabel: "État", 
+    helpPage: "Aide", 
+    howToTitle: "Comment télécharger", 
+    howToSteps: [
+      "Ouvrez Instagram : Trouvez la publication, le Reel ou la Story à enregistrer.",
+      "Copiez le lien : Cliquez sur le bouton de partage et sélectionnez 'Copier le lien'.",
+      "Collez dans ClipKeep : Collez l'URL dans le champ ci-dessus et cliquez sur 'Envoyer'.",
+      "Télécharger : Enregistrez le fichier sur votre appareil une fois le traitement terminé."
+    ], 
+    whyTitle: "Pourquoi ClipKeep", 
+    whyBody: "Instagram restreint souvent les téléchargements directs. ClipKeep vous permet d'archiver vos souvenirs préférés en toute sécurité.", 
+    whyPoints: ["Haute qualité", "Support Reels", "Anonyme"], 
+    faqTitle: "FAQ", 
+    faqItems: [
+      { q: "Sauver des Stories ?", a: "Oui, les Stories publiques peuvent être extraites en collant leur lien." },
+      { q: "Est-ce anonyme ?", a: "Oui, ClipKeep ne notifie pas les utilisateurs lorsque vous téléchargez leur contenu public." }
+    ], 
+    galleryTitle: "Récents", 
+    trendingTitle: "Tendances" 
+  },
+  id: { 
+    title: "Instagram Downloader", 
+    subtitle: "Simpan Reel, Story, dan foto dari Instagram dengan kualitas tinggi.", 
+    statusLabel: "Status", 
+    helpPage: "Bantuan", 
+    howToTitle: "Cara unduh", 
+    howToSteps: [
+      "Buka Instagram: Cari postingan, Reel, atau Story yang ingin Anda simpan.",
+      "Salin Tautan: Klik tombol bagikan dan pilih 'Salin Tautan'.",
+      "Tempel di ClipKeep: Tempel URL ke kolom di atas dan klik 'Kirim'.",
+      "Unduh: Simpan media ke perangkat Anda setelah proses selesai."
+    ], 
+    whyTitle: "Kelebihan", 
+    whyBody: "Instagram sering membatasi unduhan langsung. ClipKeep memungkinkan Anda mengarsipkan kenangan favorit dengan aman.", 
+    whyPoints: ["Kualitas Tinggi", "Mendukung Reels", "Tanpa Login"], 
+    faqTitle: "FAQ", 
+    faqItems: [
+      { q: "Simpan Story?", a: "Ya, Story publik dapat diekstrak dengan menempelkan tautannya." },
+      { q: "Apakah anonim?", a: "Ya, ClipKeep tidak memberi tahu pengguna saat Anda mengunduh konten publik mereka." }
+    ], 
+    galleryTitle: "Terbaru", 
+    trendingTitle: "Tren" 
+  },
+  hi: { 
+    title: "इंस्टाग्राम डाउनलोडर", 
+    subtitle: "रील्स और फोटो को हाई क्वालिटी में डाउनलोड करें", 
+    statusLabel: "स्थिति", 
+    helpPage: "सहायता", 
+    howToTitle: "डाउनलोड कैसे करें", 
+    howToSteps: [
+      "इंस्टाग्राम खोलें: वह पोस्ट ढूंढें जिसे आप सेव करना चाहते हैं।",
+      "लिंक कॉपी करें: 'लिंक कॉपी करें' चुनें।",
+      "ClipKeep में पेस्ट करें: ऊपर दिए गए फ़ील्ड में URL पेस्ट करें और 'सबमिट' पर क्लिक करें।",
+      "डाउनलोड करें: मीडिया को अपने डिवाइस पर सेव करें।"
+    ], 
+    whyTitle: "फायदे", 
+    whyBody: "इंस्टाग्राम अक्सर डायरेक्ट डाउनलोड को रोकता है। ClipKeep आपको अपनी यादों को सुरक्षित रूप से सहेजने में मदद करता है।", 
+    whyPoints: ["हाई क्वालिटी", "रील्स सपोर्ट", "सुरक्षित"], 
+    faqTitle: "FAQ", 
+    faqItems: [
+      { q: "स्टोरीज सेव करें?", a: "हाँ, सार्वजनिक स्टोरीज को उनके लिंक द्वारा निकाला जा सकता है।" },
+      { q: "क्या यह गुमनाम है?", a: "हाँ, उपयोगकर्ताओं को कोई सूचना नहीं भेजी जाती है।" }
+    ], 
+    galleryTitle: "नवीनतम", 
+    trendingTitle: "ट्रेंडिंग" 
+  },
+  de: { 
+    title: "Instagram Downloader", 
+    subtitle: "Speichere Reels und Fotos in hoher Qualität", 
+    statusLabel: "Status", 
+    helpPage: "Hilfe", 
+    howToTitle: "Anleitung", 
+    howToSteps: [
+      "Instagram öffnen: Suche den Post, das Reel oder die Story.",
+      "Link kopieren: Wähle 'Link kopieren'.",
+      "In ClipKeep einfügen: URL oben einfügen und 'Senden' klicken.",
+      "Download: Speichere die Datei auf deinem Gerät."
+    ], 
+    whyTitle: "Vorteile", 
+    whyBody: "Instagram schränkt Downloads oft ein. ClipKeep ermöglicht eine sichere Archivierung.", 
+    whyPoints: ["Hohe Qualität", "Reels Unterstützung", "Sicher"], 
+    faqTitle: "FAQ", 
+    faqItems: [
+      { q: "Stories speichern?", a: "Ja, öffentliche Stories können extrahiert werden." },
+      { q: "Ist es anonym?", a: "Ja, es erfolgt keine Benachrichtigung an den Urheber." }
+    ], 
+    galleryTitle: "Neueste", 
+    trendingTitle: "Trends" 
+  },
+  tr: { 
+    title: "Instagram İndirici", 
+    subtitle: "Instagram Reels ve fotoğraflarını indir", 
+    statusLabel: "Durum", 
+    helpPage: "Yardım", 
+    howToTitle: "Nasıl indirilir", 
+    howToSteps: [
+      "Instagram'ı Açın: Kaydetmek istediğiniz gönderiyi bulun.",
+      "Bağlantıyı Kopyalayın: 'Bağlantıyı Kopyala'yı seçin.",
+      "ClipKeep'e Yapıştırın: URL'yi yukarıdaki alana yapıştırın ve 'Gönder'e tıklayın.",
+      "İndir: Medyayı cihazınıza kaydedin."
+    ], 
+    whyTitle: "Avantajlar", 
+    whyBody: "Instagram genellikle doğrudan indirmeleri kısıtlar. ClipKeep güvenli bir arşivleme sunar.", 
+    whyPoints: ["Yüksek Kalite", "Reels Desteği", "Güvenli"], 
+    faqTitle: "SSS", 
+    faqItems: [
+      { q: "Hikayeler?", a: "Evet, kamuya açık hikayeler indirilebilir." },
+      { q: "Anonim mi?", a: "Evet, karşı tarafa bildirim gitmez." }
+    ], 
+    galleryTitle: "Son", 
+    trendingTitle: "Popüler" 
+  }
 };
 
 
@@ -2448,12 +2624,68 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
       seoContent: "## Telegramメディアの最新発見\n公開チャネルから処理されている最新のメディアファイルを探索。世界中でどのような情報やエンターテインメントがアーカイブされているかをリアルタイムで把握できます。\n\n## 高品質なメディア保存\nClipKeepは重要なメディアの保存を容易にします。最新のダウンロードをチェックし、[Telegramダウンローダー](/download-telegram-video?locale=ja) を使用して話題のTelegramコンテンツを自分のものにしましょう。"
     }
   },
-  ar: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
-  es: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
-  pt: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
-  fr: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
-  id: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
-  hi: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
-  de: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } },
-  tr: { trendingTwitter: { title: "", subtitle: "", description: "" }, trendingTiktok: { title: "", subtitle: "", description: "" }, trendingTelegram: { title: "", subtitle: "", description: "" }, latestTwitter: { title: "", subtitle: "", description: "" }, latestTiktok: { title: "", subtitle: "", description: "" } }
+  ar: {
+    trendingTwitter: { title: "فيديوهات تويتر (X) الرائجة", subtitle: "شاهد أشهر فيديوهات تويتر اليوم.", description: "اكتشف المقاطع المنتشرة وأخبار تويتر." },
+    trendingTiktok: { title: "فيديوهات تيك توك الرائجة", subtitle: "أشهر مقاطع تيك توك من حول العالم.", description: "تابع أحدث صيحات تيك توك." },
+    trendingTelegram: { title: "وسائط تيليجرام الرائجة", subtitle: "الفيديوهات والملفات الشهيرة من قنوات تيليجرام.", description: "استكشف الوسائط الأكثر تحميلاً." },
+    latestTwitter: { title: "آخر تنزيلات تويتر (X)", subtitle: "فيديوهات تويتر التي تم استخراجها مؤخراً.", description: "شاهد ما يتم تحميله الآن." },
+    latestTiktok: { title: "آخر تنزيلات تيك توك", subtitle: "أحدث مقاطع تيك توك المعالجة.", description: "اكتشف المحتوى الجديد." },
+    latestTelegram: { title: "آخر تنزيلات تيليجرام", subtitle: "وسائط تيليجرام التي تم استخراجها مؤخراً.", description: "أحدث ملفات قنوات تيليجرام." }
+  },
+  es: {
+    trendingTwitter: { title: "Tendencias de Twitter (X)", subtitle: "Mira los videos más populares de Twitter hoy.", description: "Descubre clips virales y noticias de Twitter (X)." },
+    trendingTiktok: { title: "Tendencias de TikTok", subtitle: "Clips virales de TikTok de todo el mundo.", description: "Mantente al día con lo más popular." },
+    trendingTelegram: { title: "Tendencias de Telegram", subtitle: "Videos y archivos populares de canales de Telegram.", description: "Explora los archivos más descargados." },
+    latestTwitter: { title: "Últimas descargas de Twitter (X)", subtitle: "Videos de Twitter extraídos recientemente.", description: "Mira lo que otros están descargando." },
+    latestTiktok: { title: "Últimas descargas de TikTok", subtitle: "Video de TikTok procesados recientemente.", description: "Mira el contenido más nuevo." },
+    latestTelegram: { title: "Últimas descargas de Telegram", subtitle: "Media de Telegram extraída recientemente.", description: "Descubre los archivos más nuevos." }
+  },
+  pt: {
+    trendingTwitter: { title: "Tendências do Twitter (X)", subtitle: "Veja os vídeos mais populares do Twitter hoje.", description: "Descubra clipes virais e notícias do Twitter (X)." },
+    trendingTiktok: { title: "Tendências do TikTok", subtitle: "Clipes virais do TikTok de todo o mundo.", description: "Fique por dentro do que é popular." },
+    trendingTelegram: { title: "Tendências do Telegram", subtitle: "Vídeos e arquivos populares de canais do Telegram.", description: "Explore as mídias mais baixadas." },
+    latestTwitter: { title: "Últimos downloads do Twitter (X)", subtitle: "Vídeos do Twitter extraídos recentemente.", description: "Veja o que outros estão baixando." },
+    latestTiktok: { title: "Últimos downloads do TikTok", subtitle: "Conteúdo do TikTok processado recentemente.", description: "Veja o conteúdo mais novo." },
+    latestTelegram: { title: "Últimos downloads do Telegram", subtitle: "Mídia do Telegram extraída recentemente.", description: "Descubra os arquivos novos." }
+  },
+  fr: {
+    trendingTwitter: { title: "Tendances Twitter (X)", subtitle: "Regardez les vidéos Twitter les plus populaires.", description: "Découvrez les clips viraux et l'actualité de Twitter (X)." },
+    trendingTiktok: { title: "Tendances TikTok", subtitle: "Clips viraux TikTok du monde entier.", description: "Restez au courant des nouveautés." },
+    trendingTelegram: { title: "Tendances Telegram", subtitle: "Vidéos et fichiers populaires des canaux Telegram.", description: "Explorez les médias les plus téléchargés." },
+    latestTwitter: { title: "Derniers téléchargements Twitter (X)", subtitle: "Vidéos Twitter extraites récemment.", description: "Voyez ce que les autres téléchargent." },
+    latestTiktok: { title: "Derniers téléchargements TikTok", subtitle: "Contenu TikTok traité récemment.", description: "Regardez les nouveaux contenus." },
+    latestTelegram: { title: "Derniers téléchargements Telegram", subtitle: "Médias Telegram extraits récemment.", description: "Découvrez les fichiers récents." }
+  },
+  id: {
+    trendingTwitter: { title: "Tren Video Twitter (X)", subtitle: "Tonton video Twitter paling populer hari ini.", description: "Temukan klip viral dan berita Twitter (X)." },
+    trendingTiktok: { title: "Tren Video TikTok", subtitle: "Klip viral TikTok dari seluruh dunia.", description: "Tetap update dengan tren terbaru." },
+    trendingTelegram: { title: "Tren Media Telegram", subtitle: "Video dan file populer dari saluran Telegram.", description: "Jelajahi media yang paling banyak diunduh." },
+    latestTwitter: { title: "Unduhan Twitter (X) Terbaru", subtitle: "Video Twitter yang baru saja diekstrak.", description: "Lihat apa yang diunduh orang lain." },
+    latestTiktok: { title: "Unduhan TikTok Terbaru", subtitle: "Konten TikTok yang baru saja diproses.", description: "Lihat konten TikTok terbaru." },
+    latestTelegram: { title: "Unduhan Telegram Terbaru", subtitle: "Media Telegram yang baru saja diekstrak.", description: "Temukan file Telegram terbaru." }
+  },
+  hi: {
+    trendingTwitter: { title: "ट्रेंडिंग ट्विटर (X) वीडियो", subtitle: "आज ट्विटर पर सबसे लोकप्रिय वीडियो देखें।", description: "वायरल क्लिप और ट्विटर समाचार खोजें।" },
+    trendingTiktok: { title: "ट्रेंडिंग टिकटॉक वीडियो", subtitle: "दुनिया भर के वायरल टिकटॉक क्लिप।", description: "नवीनतम टिकटॉक ट्रेंड्स के साथ बने रहें।" },
+    trendingTelegram: { title: "ट्रेंडिंग टेलीग्राम मीडिया", subtitle: "टेलीग्राम चैनलों से लोकप्रिय वीडियो और फाइलें।", description: "सबसे अधिक डाउनलोड किए गए मीडिया को एक्सप्लोर करें।" },
+    latestTwitter: { title: "नवीनतम ट्विटर (X) डाउनलोड", subtitle: "हाल ही में ट्विटर से एक्सट्रैक्ट किए गए वीडियो।", description: "देखें कि दूसरे क्या डाउनलोड कर रहे हैं।" },
+    latestTiktok: { title: "नवीनतम टिकटॉक डाउनलोड", subtitle: "अभी संसाधित किए गए नए टिकटॉक वीडियो।", description: "नवीनतम टिकटॉक कंटेंट देखें।" },
+    latestTelegram: { title: "नवीनतम टेलीग्राम डाउनलोड", subtitle: "हाल ही में टेलीग्राम से निकाले गए मीडिया।", description: "नई टेलीग्राम फाइलें खोजें।" }
+  },
+  de: {
+    trendingTwitter: { title: "Trending Twitter (X) Videos", subtitle: "Die beliebtesten Twitter-Videos von heute.", description: "Entdecke virale Clips und Twitter-News." },
+    trendingTiktok: { title: "Trending TikTok Videos", subtitle: "Virale TikTok-Clips aus aller Welt.", description: "Bleib über aktuelle Trends informiert." },
+    trendingTelegram: { title: "Trending Telegram Medien", subtitle: "Beliebte Videos von Telegram-Kanälen.", description: "Entdecke die meistgeladenen Dateien." },
+    latestTwitter: { title: "Neueste Twitter (X) Downloads", subtitle: "Kürzlich extrahierte Twitter-Videos.", description: "Sieh dir an, was andere gerade laden." },
+    latestTiktok: { title: "Neueste TikTok Downloads", subtitle: "Frisch verarbeitete TikTok-Clips.", description: "Entdecke den neuesten Content." },
+    latestTelegram: { title: "Neueste Telegram Downloads", subtitle: "Kürzlich extrahierte Telegram-Medien.", description: "Finde neue Telegram-Dateien." }
+  },
+  tr: {
+    trendingTwitter: { title: "Popüler Twitter (X) Videoları", subtitle: "Bugün Twitter'daki en popüler videolar.", description: "Viral klipleri ve popüler Twitter haberlerini keşfedin." },
+    trendingTiktok: { title: "Popüler TikTok Videoları", subtitle: "Dünyanın her yerinden viral TikTok videoları.", description: "En son trendlerden haberdar olun." },
+    trendingTelegram: { title: "Popüler Telegram Medyaları", subtitle: "Telegram kanallarındaki popüler dosyalar.", description: "En çok indirilen medyaları keşfedin." },
+    latestTwitter: { title: "Son Twitter (X) İndirmeleri", subtitle: "Yeni ayıklanan Twitter videoları.", description: "Diğerlerinin ne indirdiğine bakın." },
+    latestTiktok: { title: "Son TikTok İndirmeleri", subtitle: "Yeni işlenen TikTok içerikleri.", description: "En yeni TikTok videolarına göz atın." },
+    latestTelegram: { title: "Son Telegram İndirmeleri", subtitle: "Yeni ayıklanan Telegram medyaları.", description: "En yeni Telegram dosyalarını bulun." }
+  }
 };

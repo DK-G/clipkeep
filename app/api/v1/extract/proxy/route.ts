@@ -12,8 +12,14 @@ export async function GET(req: NextRequest) {
     return new NextResponse("Missing url parameter", { status: 400 });
   }
 
-  // Security: Only allow proxying for known Telegram CDN domains
-  if (!url.includes("telesco.pe") && !url.includes("telegram.org")) {
+  // Security: Only allow proxying for known SNS CDN domains
+  const allowedDomains = [
+    "telesco.pe", "telegram.org", 
+    "twimg.com", "fxtwitter.com", "vxtwitter.com", "twitfix.com",
+    "ddinstagram.com", "cdninstagram.com", "fbcdn.net",
+    "tikwm.com", "tiktokv.com", "tiktok.com"
+  ];
+  if (!allowedDomains.some(domain => url.includes(domain))) {
     return new NextResponse("Invalid URL domain", { status: 403 });
   }
 
