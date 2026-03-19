@@ -10,7 +10,7 @@ export async function getDb(): Promise<D1Database> {
     throw new Error("Cloudflare Request Context not found. This code must run in a supported environment (Workers/Pages).");
   }
   
-  const env = context.env as { clipkeep_db: D1Database };
+  const env = context.env as { clipkeep_db: D1Database; [key: string]: unknown };
   const db = env.clipkeep_db;
   if (!db) {
     throw new Error("D1 database binding 'clipkeep_db' not found in environment.");

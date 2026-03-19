@@ -189,7 +189,7 @@ export const homeText: Record<Locale, HomeDict> = {
   },
   ar: {
     title: "أداة ClipKeep",
-    subtitle: "النسخة الأولية: تيليجرام أولًا ثم X/تويتر. تيك توك لاحقًا.",
+    subtitle: "قم بتنزيل مقاطع الفيديو من Twitter (X) و Telegram و TikTok على الفور.",
     platformLabel: "المنصة",
     sourceUrlLabel: "رابط المصدر",
     localeLabel: "اللغة",
@@ -241,7 +241,7 @@ export const homeText: Record<Locale, HomeDict> = {
   },
   es: {
     title: "ClipKeep Extractor",
-    subtitle: "MVP: Telegram primero, luego X/Twitter. TikTok planeado próximamente.",
+    subtitle: "Descarga videos de X (Twitter), Telegram y TikTok al instante.",
     platformLabel: "Plataforma",
     sourceUrlLabel: "URL de origen",
     localeLabel: "Idioma",
@@ -267,7 +267,7 @@ export const homeText: Record<Locale, HomeDict> = {
   },
   pt: {
     title: "ClipKeep Extractor",
-    subtitle: "MVP: Telegram primeiro, depois X/Twitter. TikTok planejado.",
+    subtitle: "Baixe vídeos do X (Twitter), Telegram e TikTok instantaneamente.",
     platformLabel: "Plataforma",
     sourceUrlLabel: "URL de origem",
     localeLabel: "Idioma",
@@ -293,7 +293,7 @@ export const homeText: Record<Locale, HomeDict> = {
   },
   fr: {
     title: "ClipKeep Extractor",
-    subtitle: "MVP : Telegram d'abord, puis X/Twitter. TikTok prévu plus tard.",
+    subtitle: "Téléchargez instantanément des vidéos de X (Twitter), Telegram et TikTok.",
     platformLabel: "Plateforme",
     sourceUrlLabel: "URL source",
     localeLabel: "Langue",
@@ -319,7 +319,7 @@ export const homeText: Record<Locale, HomeDict> = {
   },
   id: {
     title: "ClipKeep Extractor",
-    subtitle: "MVP: Telegram dulu, lalu X/Twitter. TikTok direncanakan nanti.",
+    subtitle: "Unduh video dari X (Twitter), Telegram, dan TikTok secara instan.",
     platformLabel: "Platform",
     sourceUrlLabel: "URL Sumber",
     localeLabel: "Bahasa",
@@ -345,7 +345,7 @@ export const homeText: Record<Locale, HomeDict> = {
   },
   hi: {
     title: "ClipKeep एक्सट्रैक्टर",
-    subtitle: "MVP: पहले टेलीग्राम, फिर X/ट्विटर। टिकटॉक बाद में।",
+    subtitle: "X (ट्विटर), टेलीग्राम और टिकटॉक से तुरंत वीडियो डाउनलोड करें।",
     platformLabel: "प्लेटफॉर्म",
     sourceUrlLabel: "स्रोत URL",
     localeLabel: "भाषा",
@@ -371,7 +371,7 @@ export const homeText: Record<Locale, HomeDict> = {
   },
   de: {
     title: "ClipKeep Extractor",
-    subtitle: "MVP: Zuerst Telegram, dann X/Twitter. TikTok folgt später.",
+    subtitle: "Laden Sie Videos von X (Twitter), Telegram und TikTok sofort herunter.",
     platformLabel: "Plattform",
     sourceUrlLabel: "Quell-URL",
     localeLabel: "Sprache",
@@ -397,7 +397,7 @@ export const homeText: Record<Locale, HomeDict> = {
   },
   tr: {
     title: "ClipKeep Ayıklayıcı",
-    subtitle: "MVP: Önce Telegram, sonra X/Twitter. TikTok yakında.",
+    subtitle: "X (Twitter), Telegram ve TikTok'tan videoları anında indirin.",
     platformLabel: "Platform",
     sourceUrlLabel: "Kaynak URL",
     localeLabel: "Dil",
@@ -979,8 +979,6 @@ export const tiktokText: Record<Locale, PlatformPageDict> = {
     subtitle: "Efficiently archive your favorite TikTok moments for offline viewing and content curation.",
     statusLabel: "Status",
     helpPage: "Help Page",
-    note: "Note: Early Access",
-    noteBody: "TikTok extraction is currently in limited early access. Some features may be restricted.",
     howToTitle: "How to Download TikTok Content",
     howToSteps: [
       "Get the TikTok URL: Open TikTok, find the video, and click 'Copy Link'.",
@@ -1028,8 +1026,6 @@ export const tiktokText: Record<Locale, PlatformPageDict> = {
     subtitle: "オフライン視聴やコンテンツ制作のために、お気に入りのTikTokを効率的に保存。",
     statusLabel: "ステータス",
     helpPage: "ヘルプページ",
-    note: "注意: 早期アクセス",
-    noteBody: "TikTok抽出機能は現在テスト運用中です。一部の機能が制限される場合があります。",
     howToTitle: "TikTokのダウンロード方法",
     howToSteps: [
       "動画ページへ移動: TikTokアプリまたはサイトで、保存したい動画の「リンクをコピー」をクリックします。",

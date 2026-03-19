@@ -43,7 +43,7 @@ export function ExtractorForm({ platform = 'telegram', locale = 'en', onStatusCh
   const l = homeText[locale];
 
   const canSubmit = useMemo(() => {
-    return sourceUrl.trim().length > 0 && !submitting;
+    return !!sourceUrl && !submitting;
   }, [sourceUrl, submitting]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -88,9 +88,9 @@ export function ExtractorForm({ platform = 'telegram', locale = 'en', onStatusCh
   };
 
   return (
-    <form onSubmit={onSubmit} className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-4">
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">{l.sourceUrlLabel}</label>
+    <form onSubmit={onSubmit} className="p-4 sm:p-5 bg-white dark:bg-slate-900 rounded-lg border border-slate-100 dark:border-slate-800 shadow-[0_1px_2px_rgba(0,0,0,0.05)] space-y-4">
+      <div className="space-y-1.5">
+        <label className="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{l.sourceUrlLabel}</label>
         <div className="relative">
           <input
             type="url"
@@ -103,18 +103,18 @@ export function ExtractorForm({ platform = 'telegram', locale = 'en', onStatusCh
               platform === 'instagram' ? 'https://instagram.com/...' :
               'https://tiktok.com/...'
             }
-            className="w-full px-6 py-5 bg-gray-50 border border-gray-100 rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-8 focus:ring-blue-50/30 transition duration-200 outline-none text-lg"
+            className="w-full min-w-[300px] px-3.5 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-md focus:bg-white dark:focus:bg-slate-800 focus:border-blue-500 transition-colors duration-150 outline-none text-base placeholder:text-slate-500 dark:placeholder:text-slate-400 appearance-none text-slate-900 dark:text-white"
           />
         </div>
       </div>
-
+ 
       <button 
         type="submit" 
         disabled={!canSubmit} 
-        className={`w-full py-5 rounded-2xl font-extrabold text-xl transition duration-200 transform active:scale-95 shadow-xl ${
+        className={`w-full py-3 rounded-md font-bold text-base transition-all duration-150 active:scale-[0.97] will-change-transform ${
           canSubmit 
-            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-100' 
-            : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
+            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm' 
+            : 'bg-slate-100 text-slate-500 dark:text-slate-600 cursor-not-allowed shadow-none'
         }`}
       >
         {submitting ? l.submitting : l.submit}

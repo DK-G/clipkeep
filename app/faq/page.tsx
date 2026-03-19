@@ -34,24 +34,41 @@ export default function FAQPage() {
     }
   ];
 
-  return (
-    <main style={{ maxWidth: 860, margin: '0 auto', padding: '40px 24px', fontFamily: 'system-ui, -apple-system, sans-serif', color: '#1a1a1a', lineHeight: 1.6 }}>
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', letterSpacing: '-0.02em' }}>Frequently Asked Questions</h1>
-      <p style={{ fontSize: '1.1rem', color: '#666', marginBottom: '2.5rem' }}>Last updated: {lastUpdated}</p>
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': faqs.map(faq => ({
+      '@type': 'Question',
+      'name': faq.question,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': faq.answer
+      }
+    }))
+  };
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+  return (
+    <main className="max-w-4xl mx-auto px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <h1 className="text-4xl font-extrabold text-gray-900 dark:text-slate-50 mb-4 tracking-tight">Frequently Asked Questions</h1>
+      <p className="text-xl text-slate-600 dark:text-slate-400 mb-12">Last updated: {lastUpdated}</p>
+
+      <div className="flex flex-col gap-6">
         {faqs.map((faq, index) => (
-          <div key={index} style={{ padding: '24px', border: '1px solid #f0f0f0', borderRadius: '16px', backgroundColor: '#fff', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
-            <h2 style={{ fontSize: '1.25rem', marginTop: 0, marginBottom: '12px', color: '#000', fontWeight: 600 }}>{faq.question}</h2>
-            <p style={{ margin: 0, color: '#444' }}>{faq.answer}</p>
+          <div key={index} className="p-8 border border-gray-100 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-sm">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-slate-50 mb-3">{faq.question}</h2>
+            <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{faq.answer}</p>
           </div>
         ))}
       </div>
 
-      <section style={{ marginTop: '4rem', padding: '30px', backgroundColor: '#f9f9f9', borderRadius: '16px', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '1.5rem', marginTop: 0 }}>Still have questions?</h2>
-        <p style={{ color: '#666' }}>If you couldn{"'"}t find the answer you were looking for, feel free to reach out to our team.</p>
-        <Link href="/contact" style={{ display: 'inline-block', marginTop: '12px', padding: '10px 24px', backgroundColor: '#000', color: '#fff', textDecoration: 'none', borderRadius: '30px', fontWeight: 500 }}>Contact Support</Link>
+      <section className="mt-16 p-10 bg-gray-50 dark:bg-slate-900/50 rounded-3xl text-center border border-gray-100 dark:border-slate-800">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-50 mb-4">Still have questions?</h2>
+        <p className="text-slate-600 dark:text-slate-400 mb-6 font-medium">If you couldn{"'"}t find the answer you were looking for, feel free to reach out to our team.</p>
+        <Link href="/contact" className="inline-block px-8 py-3 bg-gray-900 dark:bg-blue-600 text-white dark:text-white rounded-full font-bold hover:bg-gray-800 dark:hover:bg-blue-500 transition-colors shadow-lg">Contact Support</Link>
       </section>
     </main>
   );

@@ -1,106 +1,102 @@
-'use client';
+import { Suspense } from 'react';
+import type { Metadata } from 'next';
+import { TwitterDownloaderClient } from '@/components/downloaders/twitter-downloader-client';
+import { twitterText, normalizeLocale } from '@/lib/i18n/ui';
 
-import { useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { ExtractorForm } from '@/components/extractor-form';
-import { twitterText, normalizeLocale, localeDir } from '@/lib/i18n/ui';
-import { AdsterraNative } from '@/components/ads/native-banner';
-import { GallerySection } from '@/components/gallery-section';
+interface Props {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
-function TwitterDownloaderContent() {
-  const searchParams = useSearchParams();
-  const locale = normalizeLocale(searchParams.get('locale'));
-  const dir = localeDir(locale);
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const sp = await searchParams;
+  const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
+  const t = twitterText[locale];
+  const base = 'https://clipkeep.net';
+  const path = '/download-twitter-video';
+  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
+
+  return {
+    title: `${t.title} | ClipKeep`,
+    description: t.subtitle,
+    alternates: {
+      canonical: url,
+      languages: {
+        en: `${base}${path}`,
+        ja: `${base}${path}?locale=ja`,
+        ar: `${base}${path}?locale=ar`,
+      },
+    },
+    openGraph: {
+      title: t.title,
+      description: t.subtitle,
+      url: url,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t.title,
+      description: t.subtitle,
+    },
+  };
+}
+
+export default async function TwitterDownloaderPage({ searchParams }: Props) {
+  const sp = await searchParams;
+  const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = twitterText[locale];
 
-  const [message, setMessage] = useState(t.subtitle);
-  const [helpSlug, setHelpSlug] = useState<string | null>(null);
+  const websiteUrl = `https://clipkeep.net/download-twitter-video?locale=${locale}`;
 
-  const handleStatusChange = (msg: string, slug: string | null) => {
-    setMessage(msg);
-    setHelpSlug(slug);
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebApplication',
+        'name': t.title,
+        'url': websiteUrl,
+        'applicationCategory': 'MultimediaApplication',
+        'operatingSystem': 'Any',
+        'offers': {
+          '@type': 'Offer',
+          'price': '0',
+          'priceCurrency': 'USD'
+        },
+        'featureList': 'Fast X/Twitter video extraction, GIF support, High-quality MP4',
+        'description': t.subtitle
+      },
+      {
+        '@type': 'HowTo',
+        'name': t.howToTitle,
+        'description': t.subtitle,
+        'step': t.howToSteps.map((step: string, index: number) => ({
+          '@type': 'HowToStep',
+          'position': index + 1,
+          'text': step
+        }))
+      },
+      {
+        '@type': 'FAQPage',
+        'mainEntity': t.faqItems.map((item: { q: string, a: string }) => ({
+          '@type': 'Question',
+          'name': item.q,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': item.a
+          }
+        }))
+      }
+    ]
   };
 
   return (
-    <main dir={dir} className="max-w-4xl mx-auto px-6 py-12">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">{t.title}</h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          {t.subtitle}
-        </p>
-      </div>
-
-      <div className="mb-16">
-        <ExtractorForm platform="twitter" locale={locale} onStatusChange={handleStatusChange} />
-        
-        <AdsterraNative />
-
-        <div className="mt-6 p-4 rounded-xl bg-gray-50 border border-gray-100 text-sm text-gray-600">
-          <span className="font-bold mr-2">{t.statusLabel}:</span>
-          <span>{message}</span>
-          {helpSlug && (
-            <span className="mx-2">
-              | {t.helpPage}: <a href={`/solution/${helpSlug}?locale=${locale}`} className="text-blue-600 hover:underline">/solution/{helpSlug}</a>
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-12 text-gray-700">
-        <section className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-          <h2 className="text-2xl font-bold mb-6 pb-2 border-b-2 border-blue-50">{t.howToTitle}</h2>
-          <ol className="space-y-4 list-decimal pl-5">
-            {t.howToSteps.map((step, i) => (
-              <li key={i} className="leading-relaxed">{step}</li>
-            ))}
-          </ol>
-        </section>
-
-        <section className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-          <h2 className="text-2xl font-bold mb-6 pb-2 border-b-2 border-blue-50">{t.whyTitle}</h2>
-          <p className="mb-4 text-gray-600">{t.whyBody}</p>
-          <ul className="space-y-3 list-disc pl-5">
-            {t.whyPoints.map((point, i) => (
-              <li key={i} className="leading-relaxed">{point}</li>
-            ))}
-          </ul>
-          <AdsterraNative />
-        </section>
-      </div>
-
-      <GallerySection id="realtime" platform="twitter" locale={locale} title="Real-time / リアルタイム" />
-
-      <div className="my-12">
-        <AdsterraNative />
-      </div>
-
-      {t.trendingTitle && (
-        <GallerySection id="trending" platform="twitter" locale={locale} title={t.trendingTitle} />
-      )}
-
-      <div className="my-12">
-        <AdsterraNative />
-      </div>
-
-      {/* Detailed SEO Content Section */}
-      {t.seoContent && (
-        <section className="mt-16 prose prose-blue max-w-none bg-white p-8 md:p-12 rounded-3xl border border-gray-100 shadow-sm">
-          <h2 className="text-3xl font-extrabold mb-8 text-gray-900 border-b pb-4">
-            {t.galleryTitle.replace('Recent', 'About').replace('最近の', 'について')}
-          </h2>
-          <div className="text-gray-700 leading-relaxed space-y-6 text-lg whitespace-pre-line">
-            {t.seoContent}
-          </div>
-        </section>
-      )}
-    </main>
-  );
-}
-
-export default function TwitterDownloaderPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <TwitterDownloaderContent />
-    </Suspense>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Suspense fallback={<div className="p-12 text-center text-slate-600 dark:text-slate-400">Loading...</div>}>
+        <TwitterDownloaderClient locale={locale} />
+      </Suspense>
+    </>
   );
 }

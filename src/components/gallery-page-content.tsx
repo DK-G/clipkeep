@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -49,28 +49,34 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
   const feedHref = `${oppositeFeed(type, platform)}?locale=${locale}`;
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12">
+    <main className="max-w-5xl mx-auto px-4 py-8">
       <VideoSchema items={items} />
 
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">{dict.title}</h1>
-        <p className="text-xl text-gray-500 max-w-3xl mx-auto">{dict.subtitle}</p>
+        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-slate-50 mb-4">{dict.title}</h1>
+        <p className="text-xl text-gray-500 dark:text-slate-400 max-w-3xl mx-auto">{dict.subtitle}</p>
       </div>
 
-      <GallerySection platform={platform} locale={locale} title={type === 'trending' ? 'Weekly Ranking' : 'Recent Downloads'} />
+      <GallerySection 
+        platform={platform} 
+        locale={locale} 
+        title={type === 'trending' ? 'Weekly Ranking' : 'Recent Downloads'} 
+        initialItems={items}
+        limit={24}
+      />
 
-      <section className="mt-12 max-w-4xl mx-auto rounded-2xl border border-gray-100 bg-white p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Next Steps</h2>
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">Try the Downloader</h3>
-        <p className="text-gray-600 mb-3">
+      <section className="mt-12 max-w-4xl mx-auto rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-3">Next Steps</h2>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-slate-200 mb-2">Try the Downloader</h3>
+        <p className="text-gray-600 dark:text-slate-400 mb-3">
           Ready to save a specific clip? Go directly to the platform downloader.
         </p>
         <Link href={toolHref} className="text-blue-600 font-semibold hover:underline">
           Open {platform.toUpperCase()} Downloader
         </Link>
 
-        <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-2">Explore More Discovery Pages</h3>
-        <p className="text-gray-600 mb-3">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-slate-200 mt-6 mb-2">Explore More Discovery Pages</h3>
+        <p className="text-gray-600 dark:text-slate-400 mb-3">
           Continue browsing related media from the same platform.
         </p>
         <Link href={feedHref} className="text-blue-600 font-semibold hover:underline">

@@ -107,19 +107,34 @@ export async function createJob(platform: Platform, sourceUrl: string): Promise<
           };
           await saveJobToDb(completed);
         } else {
+          // If the extraction returned empty without throwing, it's usually because 
+          // nothing was found (private account, deleted post, or unsupported format)
           await saveJobToDb({
             ...processingJob,
             status: "failed",
-            warnings: ["Could not extract media from the provided URL. Make sure it contains a public video."],
+            warnings: ["Media could not be found. The post might be private, deleted, or the URL format is unsupported."],
             updatedAt: nowIso(),
           });
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error("Extraction error:", error);
+        
+        let userMessage = "An internal error occurred during extraction. Please try again later.";
+        
+        // Categorize errors based on message or type if available
+        const errorStr = String(error).toLowerCase();
+        if (errorStr.includes("private") || errorStr.includes("login")) {
+          userMessage = "This content appears to be private or requires login. We can only download public posts.";
+        } else if (errorStr.includes("404") || errorStr.includes("not found")) {
+          userMessage = "The post could not be found. It may have been deleted.";
+        } else if (errorStr.includes("timeout") || errorStr.includes("fetch failed")) {
+          userMessage = "The extraction service timed out or is temporarily unavailable. Please try again in a few minutes.";
+        }
+
         await saveJobToDb({
           ...job,
           status: "failed",
-          warnings: ["An internal error occurred during extraction."],
+          warnings: [userMessage],
           updatedAt: nowIso(),
         });
       }

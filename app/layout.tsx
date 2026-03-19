@@ -5,9 +5,11 @@ import { HeaderShell } from '@/components/header-shell';
 import { Footer } from '@/components/footer';
 import { LocaleUpdater } from '@/components/locale-updater';
 
-const siteUrl = 'https://clipkeep.com';
+import './globals.css';
+ 
+const siteUrl = 'https://clipkeep.net';
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
-
+ 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -30,23 +32,37 @@ export const metadata: Metadata = {
     siteName: 'ClipKeep',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ClipKeep',
+    description: 'SNS media extraction workflows with multilingual solution guidance.',
+    creator: '@clipkeep',
+  },
 };
-
+ 
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'ClipKeep',
   url: siteUrl,
-  inLanguage: ['en', 'ar'],
+  inLanguage: ['en', 'ja', 'ar'],
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${siteUrl}/?q={search_term_string}`
+    },
+    'query-input': 'required name=search_term_string'
+  }
 };
-
+ 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'ClipKeep',
   url: siteUrl,
 };
-
+ 
 export default function RootLayout({
   children,
 }: {
@@ -54,7 +70,7 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <body style={{ margin: 0, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      <body>
         <Suspense fallback={null}>
           <LocaleUpdater />
         </Suspense>

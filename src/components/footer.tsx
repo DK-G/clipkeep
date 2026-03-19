@@ -15,18 +15,18 @@ function FooterContent() {
   };
 
   return (
-    <footer style={{ maxWidth: 980, margin: '32px auto 24px', padding: '0 24px', fontSize: 13, color: '#555' }}>
-      <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 8 }}>
-        <Link href={buildUrl('/about')}>{t.about}</Link>
-        <Link href={buildUrl('/faq')}>{t.faq}</Link>
-        <Link href={buildUrl('/legal/terms')}>{t.terms}</Link>
-        <Link href={buildUrl('/legal/privacy')}>{t.privacy}</Link>
-        <Link href={buildUrl('/legal/cookies')}>{t.cookies}</Link>
-        <Link href={buildUrl('/legal/dmca')}>{t.dmca}</Link>
-        <Link href={buildUrl('/contact')}>{t.contact}</Link>
-        <Link href={buildUrl('/status')}>{t.status}</Link>
+    <footer className="max-w-2xl mx-auto mt-8 mb-12 px-4 text-xs text-slate-400 border-t border-slate-50 dark:border-slate-800/50 pt-6">
+      <nav className="flex flex-wrap gap-x-4 gap-y-2 mb-4">
+        <Link href={buildUrl('/about')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.about}</Link>
+        <Link href={buildUrl('/faq')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.faq}</Link>
+        <Link href={buildUrl('/legal/terms')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.terms}</Link>
+        <Link href={buildUrl('/legal/privacy')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.privacy}</Link>
+        <Link href={buildUrl('/legal/cookies')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.cookies}</Link>
+        <Link href={buildUrl('/legal/dmca')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.dmca}</Link>
+        <Link href={buildUrl('/contact')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.contact}</Link>
+        <Link href={buildUrl('/status')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.status}</Link>
       </nav>
-      <p style={{ margin: 0 }}>{t.adsDisclaimer}</p>
+      <p className="leading-relaxed opacity-70">{t.adsDisclaimer}</p>
     </footer>
   );
 }

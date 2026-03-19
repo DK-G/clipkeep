@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -63,11 +63,11 @@ export function LanguageSwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+        className="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm font-semibold text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
       >
-        <span>{dict.localeLabel}</span>
-        <span className="text-gray-500">{currentLabel}</span>
-        <svg className={`h-4 w-4 text-gray-500 transition-transform ${open ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <span className="text-gray-900 dark:text-white">{dict.localeLabel}</span>
+        <span className="text-gray-500 dark:text-slate-400">{currentLabel}</span>
+        <svg className={`h-4 w-4 text-gray-500 dark:text-slate-500 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
         </svg>
       </button>
@@ -75,7 +75,7 @@ export function LanguageSwitcher() {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-50 mt-2 w-48 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg"
+          className="absolute right-0 z-50 mt-2 w-48 overflow-hidden rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl"
         >
           <ul className="max-h-72 overflow-auto py-1">
             {languageOptions.map((lang) => {
@@ -86,10 +86,14 @@ export function LanguageSwitcher() {
                     type="button"
                     role="menuitem"
                     onClick={() => switchLocale(lang.code)}
-                    className={`flex w-full items-center justify-between px-3 py-2 text-sm ${active ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700 hover:bg-gray-50'}`}
+                    className={`flex w-full items-center justify-between px-3 py-2 text-sm transition-colors ${
+                      active 
+                        ? 'bg-gray-100 dark:bg-slate-800 font-semibold text-gray-900 dark:text-white' 
+                        : 'text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800'
+                    }`}
                   >
                     <span>{lang.label}</span>
-                    {active && <span className="text-xs text-blue-600">Current</span>}
+                    {active && <span className="text-xs text-blue-600 dark:text-blue-400">Current</span>}
                   </button>
                 </li>
               );

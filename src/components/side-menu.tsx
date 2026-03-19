@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -33,19 +33,13 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
   const t = menuText[locale];
   const ui = sideMenuUi[locale];
 
-  const isActive = (href: string, activeHash?: string) => {
-    const url = new URL(href, 'https://clipkeep.net');
-    const pathMatch = pathname === url.pathname;
-
-    if (activeHash) {
-      if (typeof window !== 'undefined') {
-        const currentHash = window.location.hash;
-        return pathMatch && currentHash === activeHash;
-      }
+  const isActive = (href: string) => {
+    try {
+      const url = new URL(href, 'https://clipkeep.net');
+      return pathname === url.pathname;
+    } catch {
       return false;
     }
-
-    return pathMatch;
   };
 
   const toggleSection = (idx: number) => {
@@ -112,6 +106,7 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
       title: t.rankings,
       items: [
         { label: t.twitter, href: `/twitter-trending-videos?locale=${locale}` },
+        { label: t.instagram, href: `/instagram-trending-videos?locale=${locale}` },
         { label: t.tiktok, href: `/tiktok-trending-videos?locale=${locale}` },
         { label: t.telegram, href: `/telegram-trending-videos?locale=${locale}` },
       ],
@@ -121,6 +116,7 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
       title: t.latest,
       items: [
         { label: t.twitter, href: `/twitter-latest-videos?locale=${locale}` },
+        { label: t.instagram, href: `/instagram-latest-videos?locale=${locale}` },
         { label: t.tiktok, href: `/tiktok-latest-videos?locale=${locale}` },
         { label: t.telegram, href: `/telegram-latest-videos?locale=${locale}` },
       ],
@@ -153,95 +149,77 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
     },
   ];
 
-  const drawerStyles: React.CSSProperties = {
-    position: 'fixed',
-    top: 0,
-    bottom: 0,
-    [dir === 'ltr' ? 'right' : 'left']: 0,
-    width: '320px',
-    maxWidth: '85vw',
-    backgroundColor: '#ffffff',
-    zIndex: 80,
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    transition: 'transform 0.3s ease-in-out',
-    transform: isOpen ? 'translateX(0)' : dir === 'ltr' ? 'translateX(100%)' : 'translateX(-100%)',
-    display: 'flex',
-    flexDirection: 'column',
-    textAlign: dir === 'ltr' ? 'left' : 'right',
-  };
-
   return (
     <>
       <div
         onClick={onClose}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(4px)',
-          zIndex: 70,
-          transition: 'opacity 0.3s',
-          opacity: isOpen ? 1 : 0,
-          pointerEvents: isOpen ? 'auto' : 'none',
-        }}
+        className={`fixed inset-0 z-[70] transition-opacity duration-300 bg-black/40 backdrop-blur-[4px] ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
       />
 
-      <div ref={menuRef} style={drawerStyles}>
-        <div style={{ padding: '24px', borderBottom: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f9fafb' }}>
-          <span style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '-0.025em', color: '#111827' }}>{ui.menu}</span>
-          <button onClick={onClose} aria-label={ui.close} style={{ border: 'none', background: 'none', padding: '8px', cursor: 'pointer', borderRadius: '50%' }}>
-            <svg style={{ width: '24px', height: '24px', color: '#6b7280' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div 
+        ref={menuRef} 
+        className={`fixed top-0 bottom-0 z-[80] w-[320px] max-w-[85vw] bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 ease-in-out flex flex-col ${
+          dir === 'ltr' ? 'right-0' : 'left-0'
+        } ${
+          isOpen ? 'translate-x-0' : (dir === 'ltr' ? 'translate-x-full' : '-translate-x-full')
+        } ${
+          dir === 'ltr' ? 'text-left' : 'text-right'
+        }
+        `}
+      >
+        <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50">
+          <span className="font-[900] text-xl tracking-tight text-slate-900 dark:text-white uppercase">{ui.menu}</span>
+          <button 
+            onClick={onClose} 
+            aria-label={ui.close} 
+            className="p-2 cursor-pointer rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            <svg className="w-6 h-6 text-gray-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="flex-1 overflow-y-auto">
+          <div className="flex flex-col">
             {menuData.map((group, gIdx) => {
               const isExpanded = expandedSections[gIdx] || false;
               return (
-                <div key={group.id} style={{ borderBottom: '1px solid #f9fafb' }}>
+                <div key={group.id} className="border-b border-gray-50 dark:border-slate-900">
                   <button
                     onClick={() => toggleSection(gIdx)}
                     aria-expanded={isExpanded}
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '24px',
-                      backgroundColor: 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                      textAlign: dir === 'ltr' ? 'left' : 'right',
-                    }}
+                    className="w-full flex items-center justify-between p-6 bg-transparent border-none cursor-pointer transition-colors"
                   >
-                    <span style={{ fontSize: '0.875rem', fontWeight: 'bold', letterSpacing: '0.1em', textTransform: 'uppercase', color: isExpanded ? '#2563eb' : '#9ca3af', transition: 'color 0.2s' }}>
+                    <span className={`text-xs font-bold tracking-[0.1em] uppercase transition-colors duration-200 ${
+                      isExpanded ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-slate-500'
+                    }`}>
                       {group.title}
                     </span>
-                    <svg style={{ width: '16px', height: '16px', color: isExpanded ? '#60a5fa' : '#d1d5db', transition: 'transform 0.3s', transform: isExpanded ? 'rotate(180deg)' : 'none' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className={`w-4 h-4 transition-transform duration-300 ${
+                      isExpanded ? 'rotate-180 text-blue-500 dark:text-blue-400' : 'text-gray-300 dark:text-slate-600'
+                    }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
-                  <div style={{ maxHeight: isExpanded ? '500px' : '0', opacity: isExpanded ? 1 : 0, overflow: 'hidden', transition: 'all 0.3s ease-in-out', backgroundColor: '#fff' }}>
-                    <div style={{ padding: '0 24px 24px 24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div className={`transition-all duration-300 ease-in-out bg-white dark:bg-slate-950 overflow-hidden ${
+                    isExpanded ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+                  }`}>
+                    <div className="px-6 pb-6 flex flex-col gap-4">
                       {group.items.map((item, iIdx) => {
-                        const active = isActive(item.href, ('hash' in item ? (item as { hash?: string }).hash : undefined));
+                        const active = isActive(item.href);
                         return (
                           <Link
                             key={iIdx}
                             href={item.href}
-                            style={{
-                              display: 'block',
-                              fontSize: '0.875rem',
-                              textDecoration: 'none',
-                              color: active ? '#2563eb' : '#4b5563',
-                              fontWeight: active ? 'bold' : '500',
-                              transition: 'all 0.2s',
-                              paddingLeft: active ? '4px' : '0',
-                            }}
+                            className={`block text-sm no-underline transition-all duration-200 ${
+                              active 
+                                ? 'text-blue-600 dark:text-blue-400 font-bold translate-x-1' 
+                                : 'text-gray-600 dark:text-slate-400 font-medium hover:text-blue-500 dark:hover:text-blue-400'
+                            }`}
                             onClick={onClose}
                           >
                             {item.label}
@@ -256,7 +234,7 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
           </div>
         </div>
 
-        <div style={{ padding: '32px', borderTop: '1px solid #f3f4f6', backgroundColor: 'rgba(249, 250, 251, 0.3)', fontSize: '10px', color: '#9ca3af', textAlign: 'center', letterSpacing: '0.1em' }}>
+        <div className="p-8 border-t border-gray-100 dark:border-slate-800 bg-gray-50/30 dark:bg-slate-900/10 text-[10px] text-gray-400 dark:text-slate-600 text-center tracking-[0.1em]">
           {ui.footer}
         </div>
       </div>

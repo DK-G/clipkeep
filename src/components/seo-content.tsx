@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 interface SEOContentProps {
   content: string;
@@ -14,15 +14,17 @@ export function SEOContent({ content }: SEOContentProps) {
       .map((line, i) => {
         if (line.startsWith('## ')) {
           return (
-            <h2 key={i} className="text-2xl font-bold mt-10 mb-6 text-gray-900 border-b border-gray-100 pb-2">
-              {line.replace('## ', '')}
-            </h2>
+            <div key={i} className="mb-12 last:mb-0">
+              <h2 className="text-2xl font-bold mt-10 mb-6 text-gray-900 dark:text-slate-100 border-b border-gray-100 dark:border-slate-800 pb-2">
+                {line.replace(/^##\s*/, '')}
+              </h2>
+            </div>
           );
         }
 
         if (line.startsWith('### ')) {
           return (
-            <h3 key={i} className="text-xl font-semibold mt-8 mb-4 text-gray-800">
+            <h3 key={i} className="text-xl font-semibold mt-8 mb-4 text-gray-800 dark:text-slate-200">
               {line.replace('### ', '')}
             </h3>
           );
@@ -50,7 +52,7 @@ export function SEOContent({ content }: SEOContentProps) {
         }
 
         return (
-          <p key={i} className="text-gray-600 leading-relaxed mb-6 text-lg">
+          <p key={i} className="text-gray-700 dark:text-slate-300 leading-relaxed mb-6 text-lg">
             {parts.length > 0 ? parts : line}
           </p>
         );

@@ -1,21 +1,44 @@
 import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://clipkeep.com';
+  const base = 'https://clipkeep.net';
   const now = new Date();
+  const locales = ['', '?locale=ja', '?locale=ar'];
 
-  return [
-    { url: `${base}/`, lastModified: now, changeFrequency: 'daily', priority: 1 },
-    { url: `${base}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${base}/faq`, lastModified: now, changeFrequency: 'weekly', priority: 0.6 },
-    { url: `${base}/status`, lastModified: now, changeFrequency: 'daily', priority: 0.7 },
-    { url: `${base}/download-telegram-video`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${base}/download-twitter-video`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${base}/download-tiktok-video`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${base}/blog/guide-to-media-archiving`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${base}/legal/terms`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${base}/legal/privacy`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${base}/legal/dmca`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${base}/solution/telegram-video-downloader-not-working?locale=en`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+  const routes = [
+    { path: '/', priority: 1.0, changeFrequency: 'daily' as const },
+    { path: '/about', priority: 0.6, changeFrequency: 'monthly' as const },
+    { path: '/faq', priority: 0.6, changeFrequency: 'weekly' as const },
+    { path: '/status', priority: 0.7, changeFrequency: 'daily' as const },
+    { path: '/contact', priority: 0.5, changeFrequency: 'monthly' as const },
+    { path: '/download-telegram-video', priority: 0.9, changeFrequency: 'daily' as const },
+    { path: '/download-twitter-video', priority: 0.9, changeFrequency: 'daily' as const },
+    { path: '/download-tiktok-video', priority: 0.8, changeFrequency: 'weekly' as const },
+    { path: '/download-instagram-video', priority: 0.8, changeFrequency: 'weekly' as const },
+    { path: '/blog/guide-to-media-archiving', priority: 0.9, changeFrequency: 'monthly' as const },
+    { path: '/legal/terms', priority: 0.5, changeFrequency: 'monthly' as const },
+    { path: '/legal/privacy', priority: 0.5, changeFrequency: 'monthly' as const },
+    { path: '/legal/dmca', priority: 0.5, changeFrequency: 'monthly' as const },
+    { path: '/solution/telegram-video-downloader-not-working', priority: 0.8, changeFrequency: 'weekly' as const },
+    { path: '/telegram-trending-videos', priority: 0.7, changeFrequency: 'daily' as const },
+    { path: '/twitter-trending-videos', priority: 0.7, changeFrequency: 'daily' as const },
+    { path: '/tiktok-trending-videos', priority: 0.7, changeFrequency: 'daily' as const },
+    { path: '/instagram-trending-videos', priority: 0.7, changeFrequency: 'daily' as const },
   ];
+
+  const sitemapEntries: MetadataRoute.Sitemap = [];
+
+  for (const route of routes) {
+    for (const locale of locales) {
+      sitemapEntries.push({
+        url: `${base}${route.path}${locale}`,
+        lastModified: now,
+        changeFrequency: route.changeFrequency,
+        priority: route.priority,
+      });
+    }
+  }
+
+  return sitemapEntries;
 }
+

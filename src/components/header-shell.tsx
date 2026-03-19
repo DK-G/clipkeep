@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -36,51 +36,37 @@ export function HeaderShell() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-100" style={{ height: '64px', backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(8px)' }}>
-        <div style={{ maxWidth: 980, margin: '0 auto', padding: '12px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
-          <Link href={`/?locale=${locale}`} style={{ fontSize: 20, fontWeight: 'bold', textDecoration: 'none', color: '#000' }}>
+      <header className="sticky top-0 z-50 h-[56px] bg-white dark:bg-slate-950 border-b border-gray-100 dark:border-slate-800 sm:bg-white/90 sm:dark:bg-slate-950/90 sm:backdrop-blur-md">
+        <div className="max-w-[1280px] mx-auto px-4 flex justify-between items-center h-full">
+          <Link 
+            href={`/?locale=${locale}`} 
+            className="text-lg font-[800] no-underline text-slate-900 dark:text-white tracking-tight"
+          >
             ClipKeep
           </Link>
-
-          <div className="flex items-center gap-4" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          
+          <div className="flex items-center">
             <div className="hidden sm:block">
               <LanguageSwitcher />
             </div>
           </div>
         </div>
       </header>
-
+ 
       <button
         ref={menuButtonRef}
         onClick={toggleMenu}
         aria-label={headerLabels[locale].toggleMenu}
         aria-expanded={isMenuOpen}
-        style={{
-          position: 'fixed',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          zIndex: 60,
-          width: '56px',
-          height: '56px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          cursor: 'pointer',
-          [dir === 'ltr' ? 'right' : 'left']: '16px',
-          backgroundColor: isMenuOpen ? '#fff' : '#2563eb',
-          color: isMenuOpen ? '#000' : '#fff',
-          borderRadius: '16px',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          outline: 'none',
-        }}
+        className={`fixed top-1/2 -translate-y-1/2 z-[60] w-11 h-11 flex flex-col justify-center items-center shadow-lg transition-all duration-200 cursor-pointer rounded-xl border border-black/5 outline-none
+          ${dir === 'ltr' ? 'right-3' : 'left-3'}
+          ${isMenuOpen ? 'bg-white dark:bg-slate-800 text-black dark:text-white' : 'bg-blue-600 dark:bg-blue-500 text-white'}
+        `}
       >
-        <div style={{ width: '24px', height: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ width: '100%', height: '2px', backgroundColor: 'currentColor', transition: 'all 0.3s', transform: isMenuOpen ? 'rotate(45deg) translateY(10px)' : 'none' }} />
-          <span style={{ width: '100%', height: '2px', backgroundColor: 'currentColor', transition: 'opacity 0.3s', opacity: isMenuOpen ? 0 : 1 }} />
-          <span style={{ width: '100%', height: '2px', backgroundColor: 'currentColor', transition: 'all 0.3s', transform: isMenuOpen ? 'rotate(-45deg) translateY(-10px)' : 'none' }} />
+        <div className="w-[18px] h-3.5 flex flex-col justify-between items-center">
+          <span className={`w-full h-[2px] bg-white dark:bg-slate-100 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-[6px] !bg-black dark:!bg-white' : ''}`} />
+          <span className={`w-full h-[2px] bg-white dark:bg-slate-100 transition-opacity duration-200 ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
+          <span className={`w-full h-[2px] bg-white dark:bg-slate-100 transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-[6px] !bg-black dark:!bg-white' : ''}`} />
         </div>
       </button>
 
@@ -94,4 +80,3 @@ export function HeaderShell() {
     </>
   );
 }
-
