@@ -1,122 +1,52 @@
-'use client';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { SolutionContentClient } from '@/components/solution-content-client';
+import { findSolutionPage, Locale as StoreLocale } from '@/lib/solution-pages/store';
 
-import { useEffect, useState, Suspense } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { solutionText, normalizeLocale, localeDir } from '@/lib/i18n/ui';
-import type { ApiSuccess, ApiFailure } from '@/lib/api/types';
+interface Props {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
-type Section = {
-  title: string;
-  content: string;
-};
+function normalizeStoreLocale(value: string | undefined): StoreLocale {
+  if (value === 'ar') return 'ar';
+  return 'en';
+}
 
-type PageData = {
-  slug: string;
-  locale: string;
-  title: string;
-  sections: Section[];
-  cta: {
-    text: string;
-    url: string;
-  };
-};
-
-function SolutionContent() {
-  const params = useParams();
-  const slug = params.slug as string;
-  const router = useRouter();
-  const searchParams = useSearchParams();
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const sp = await searchParams;
+  const locale = normalizeStoreLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   
-  const locale = normalizeLocale(searchParams.get('locale'));
-  const dir = localeDir(locale);
-  const t = solutionText[locale];
+  const page = findSolutionPage(slug, locale);
+  if (!page) return {};
 
-  const [data, setData] = useState<PageData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const base = 'https://clipkeep.net';
+  const path = `/solution/${slug}`;
+  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
-  const buildUrlWithLocale = (path: string) => {
-    return `${path}?locale=${locale}`;
+  return {
+    title: page.title,
+    description: page.sections[0]?.body || 'ClipKeep solution guide.',
+    alternates: {
+      canonical: url,
+      languages: {
+        en: `${base}${path}`,
+        ar: `${base}${path}?locale=ar`,
+      },
+    },
   };
-
-  useEffect(() => {
-    if (!slug) return;
-
-    const fetchPage = async () => {
-      try {
-        const res = await fetch(`/api/v1/solution-pages/${slug}?locale=${locale}`);
-        const result = (await res.json()) as ApiSuccess<PageData> | ApiFailure;
-
-        if (result.ok) {
-          setData(result.data);
-        } else {
-          setError(result.error?.message || 'Page not found');
-        }
-      } catch {
-        setError('Connection error');
-      }
-    };
-
-    fetchPage();
-  }, [slug, locale]);
-
-  if (error) {
-    return (
-      <div dir={dir} className="p-8 text-center">
-        <h1 className="text-2xl font-bold text-red-600 mb-4">{t.errorTitle}</h1>
-        <p className="text-gray-600 mb-8">{error}</p>
-        <button onClick={() => router.push(buildUrlWithLocale('/'))} className="text-blue-600 hover:underline">
-          {t.backToHome}
-        </button>
-      </div>
-    );
-  }
-
-  if (!data) {
-    return (
-      <div dir={dir} className="p-8 text-center animate-pulse">
-        <p className="text-gray-500">{t.loading}</p>
-      </div>
-    );
-  }
-
-  return (
-    <div dir={dir} className="max-w-4xl mx-auto p-4 sm:p-8">
-      <header className="mb-12 text-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-4">{data.title}</h1>
-        <button onClick={() => router.push(buildUrlWithLocale('/'))} className="text-blue-600 hover:underline">
-          {t.backToHome}
-        </button>
-      </header>
-
-      <main className="space-y-12">
-        {data.sections.map((section, idx) => (
-          <section key={idx} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">{section.title}</h2>
-            <div className="prose prose-blue max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap">
-              {section.content}
-            </div>
-          </section>
-        ))}
-
-        <div className="bg-blue-900 rounded-3xl p-10 text-center text-white">
-          <h3 className="text-2xl font-bold mb-6">{data.cta.text}</h3>
-          <button 
-            onClick={() => router.push(buildUrlWithLocale(data.cta.url))}
-            className="px-10 py-4 bg-white text-blue-900 rounded-2xl font-bold text-lg hover:bg-gray-100 transition shadow-xl"
-          >
-            {t.getStarted}
-          </button>
-        </div>
-      </main>
-    </div>
-  );
 }
 
-export default function SolutionPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SolutionContent />
-    </Suspense>
-  );
-}
+export default async function Page({ params, searchParams }: Props) {
+  const { slug } = await params;
+  const sp = await searchParams;
+  const locale = normalizeStoreLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
 
+  const page = findSolutionPage(slug, locale);
+  if (!page) {
+    notFound();
+  }
+
+  return <SolutionContentClient data={page} locale={locale} />;
+}

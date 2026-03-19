@@ -2685,3 +2685,153 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     latestTelegram: { title: "Son Telegram İndirmeleri", subtitle: "Yeni ayıklanan Telegram medyaları.", description: "En yeni Telegram dosyalarını bulun." }
   }
 };
+
+export type FAQItem = {
+  question: string;
+  answer: string;
+};
+
+export type FAQDict = {
+  title: string;
+  lastUpdated: string;
+  items: FAQItem[];
+  stillQuestions: string;
+  contactSupport: string;
+  contactText: string;
+};
+
+export type LegalSection = {
+  title: string;
+  content: string;
+};
+
+export type LegalPageDict = {
+  title: string;
+  lastUpdated: string;
+  sections: LegalSection[];
+};
+
+const faqBaseEn: FAQDict = {
+  title: 'Frequently Asked Questions',
+  lastUpdated: 'Last updated: 2026-03-19',
+  items: [
+    {
+      question: 'What is ClipKeep?',
+      answer: 'ClipKeep is a web tool for extracting media links from supported SNS pages for personal archiving workflows.',
+    },
+    {
+      question: 'Which platforms are supported now?',
+      answer: 'Current priority support is Telegram and X (Twitter). TikTok and Instagram pages exist, with behavior varying by source conditions.',
+    },
+    {
+      question: 'Do I need an account?',
+      answer: 'No. You can use the extraction flow without creating an account.',
+    },
+  ],
+  stillQuestions: 'Still have questions?',
+  contactSupport: 'Contact Support',
+  contactText: 'If your question is not covered here, please contact us via the contact page.',
+};
+
+const legalBaseEn = {
+  privacy: {
+    title: 'Privacy Policy',
+    lastUpdated: 'Last updated: 2026-03-19',
+    sections: [
+      { title: 'Data Handling', content: 'We process minimal request metadata required for operation, abuse prevention, and service reliability.' },
+      { title: 'Cookies and Analytics', content: 'We may use cookies and analytics tags for measurement and operational improvement.' },
+      { title: 'Contact', content: 'For privacy-related requests, contact us through the contact page.' },
+    ],
+  },
+  terms: {
+    title: 'Terms of Service',
+    lastUpdated: 'Last updated: 2026-03-19',
+    sections: [
+      { title: 'Acceptable Use', content: 'Users must comply with applicable laws and source platform terms.' },
+      { title: 'Service Scope', content: 'The service is provided as-is and may change based on upstream platform behavior.' },
+      { title: 'User Responsibility', content: 'Users are responsible for their handling and reuse of extracted media.' },
+    ],
+  },
+  cookies: {
+    title: 'Cookie Policy',
+    lastUpdated: 'Last updated: 2026-03-19',
+    sections: [
+      { title: 'Cookie Use', content: 'Cookies may be used for session continuity, analytics, and reliability controls.' },
+      { title: 'Control', content: 'You can control cookies through your browser settings.' },
+    ],
+  },
+  dmca: {
+    title: 'DMCA / Copyright',
+    lastUpdated: 'Last updated: 2026-03-19',
+    sections: [
+      { title: 'Copyright Notice', content: 'All media rights belong to their respective owners.' },
+      { title: 'Report Process', content: 'If you believe content infringes rights, contact us with sufficient detail for review.' },
+    ],
+  },
+};
+
+export const faqText: Record<Locale, FAQDict> = {
+  en: faqBaseEn,
+  ar: {
+    ...faqBaseEn,
+    title: 'الأسئلة الشائعة',
+    lastUpdated: 'آخر تحديث: 2026-03-19',
+    stillQuestions: 'هل ما زالت لديك أسئلة؟',
+    contactSupport: 'تواصل مع الدعم',
+    contactText: 'إذا لم تجد إجابتك هنا، يرجى التواصل عبر صفحة الاتصال.',
+  },
+  ja: {
+    ...faqBaseEn,
+    title: 'よくある質問',
+    lastUpdated: '最終更新: 2026-03-19',
+    stillQuestions: 'まだ質問がありますか？',
+    contactSupport: 'サポートに連絡',
+    contactText: 'ここで解決しない場合は、お問い合わせページからご連絡ください。',
+  },
+  es: { ...faqBaseEn, title: 'Preguntas Frecuentes', lastUpdated: 'Última actualización: 2026-03-19' },
+  pt: { ...faqBaseEn, title: 'Perguntas Frequentes', lastUpdated: 'Última atualização: 2026-03-19' },
+  fr: { ...faqBaseEn, title: 'Questions Fréquentes', lastUpdated: 'Dernière mise à jour: 2026-03-19' },
+  id: { ...faqBaseEn, title: 'Pertanyaan Umum', lastUpdated: 'Pembaruan terakhir: 2026-03-19' },
+  hi: { ...faqBaseEn, title: 'सामान्य प्रश्न', lastUpdated: 'अंतिम अपडेट: 2026-03-19' },
+  de: { ...faqBaseEn, title: 'Häufige Fragen', lastUpdated: 'Zuletzt aktualisiert: 2026-03-19' },
+  tr: { ...faqBaseEn, title: 'Sık Sorulan Sorular', lastUpdated: 'Son güncelleme: 2026-03-19' },
+};
+
+function localizeLegalTitle(locale: Locale, key: 'privacy' | 'terms' | 'cookies' | 'dmca'): string {
+  const map: Record<Locale, Record<typeof key, string>> = {
+    en: { privacy: 'Privacy Policy', terms: 'Terms of Service', cookies: 'Cookie Policy', dmca: 'DMCA / Copyright' },
+    ar: { privacy: 'سياسة الخصوصية', terms: 'شروط الخدمة', cookies: 'سياسة ملفات تعريف الارتباط', dmca: 'DMCA / حقوق النشر' },
+    ja: { privacy: 'プライバシーポリシー', terms: '利用規約', cookies: 'クッキーポリシー', dmca: 'DMCA / 著作権' },
+    es: { privacy: 'Política de Privacidad', terms: 'Términos del Servicio', cookies: 'Política de Cookies', dmca: 'DMCA / Copyright' },
+    pt: { privacy: 'Política de Privacidade', terms: 'Termos de Serviço', cookies: 'Política de Cookies', dmca: 'DMCA / Copyright' },
+    fr: { privacy: 'Politique de Confidentialité', terms: 'Conditions d\'utilisation', cookies: 'Politique de Cookies', dmca: 'DMCA / Copyright' },
+    id: { privacy: 'Kebijakan Privasi', terms: 'Ketentuan Layanan', cookies: 'Kebijakan Cookie', dmca: 'DMCA / Hak Cipta' },
+    hi: { privacy: 'गोपनीयता नीति', terms: 'सेवा की शर्तें', cookies: 'कुकी नीति', dmca: 'DMCA / कॉपीराइट' },
+    de: { privacy: 'Datenschutzerklärung', terms: 'Nutzungsbedingungen', cookies: 'Cookie-Richtlinie', dmca: 'DMCA / Urheberrecht' },
+    tr: { privacy: 'Gizlilik Politikası', terms: 'Hizmet Şartları', cookies: 'Çerez Politikası', dmca: 'DMCA / Telif Hakkı' },
+  };
+  return map[locale][key];
+}
+
+function legalByLocale(locale: Locale) {
+  return {
+    privacy: { ...legalBaseEn.privacy, title: localizeLegalTitle(locale, 'privacy'), lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : legalBaseEn.privacy.lastUpdated },
+    terms: { ...legalBaseEn.terms, title: localizeLegalTitle(locale, 'terms'), lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : legalBaseEn.terms.lastUpdated },
+    cookies: { ...legalBaseEn.cookies, title: localizeLegalTitle(locale, 'cookies'), lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : legalBaseEn.cookies.lastUpdated },
+    dmca: { ...legalBaseEn.dmca, title: localizeLegalTitle(locale, 'dmca'), lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : legalBaseEn.dmca.lastUpdated },
+  };
+}
+
+export const legalText: Record<Locale, { privacy: LegalPageDict; terms: LegalPageDict; cookies: LegalPageDict; dmca: LegalPageDict }> = {
+  en: legalByLocale('en'),
+  ar: legalByLocale('ar'),
+  ja: legalByLocale('ja'),
+  es: legalByLocale('es'),
+  pt: legalByLocale('pt'),
+  fr: legalByLocale('fr'),
+  id: legalByLocale('id'),
+  hi: legalByLocale('hi'),
+  de: legalByLocale('de'),
+  tr: legalByLocale('tr'),
+};
+

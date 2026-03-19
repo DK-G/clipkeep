@@ -1,52 +1,36 @@
-'use client';
+import type { Metadata } from 'next';
+import { StatusContentClient } from '@/components/status-content-client';
+import { normalizeLocale, statusText } from '@/lib/i18n/ui';
 
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
-import { statusText, normalizeLocale, localeDir } from '@/lib/i18n/ui';
+interface Props {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
-function StatusContent() {
-  const searchParams = useSearchParams();
-  const locale = normalizeLocale(searchParams.get('locale'));
-  const dir = localeDir(locale);
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const sp = await searchParams;
+  const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = statusText[locale];
+  const base = 'https://clipkeep.net';
+  const path = '/status';
+  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
-  return (
-    <main dir={dir} style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
-      <h1>{t.title}</h1>
-      <p>{t.liveHealth}: <Link href="/api/v1/health">/api/v1/health</Link></p>
-
-      <h2>{t.currentTitle}</h2>
-      <p>{t.currentBody}</p>
-
-      <h2>{t.incidentTitle}</h2>
-
-      <section style={{ border: '1px solid #eee', borderRadius: 10, padding: 12, marginBottom: 12 }}>
-        <h3>{t.partialDegradation.title}</h3>
-        <p>{t.partialDegradation.body}</p>
-        <p>{t.partialDegradation.nextUpdate}</p>
-      </section>
-
-      <section style={{ border: '1px solid #eee', borderRadius: 10, padding: 12, marginBottom: 12 }}>
-        <h3>{t.scheduledMaintenance.title}</h3>
-        <p>{t.scheduledMaintenance.body}</p>
-        <p>{t.scheduledMaintenance.window}</p>
-      </section>
-
-      <section style={{ border: '1px solid #eee', borderRadius: 10, padding: 12 }}>
-        <h3>{t.majorOutage.title}</h3>
-        <p>{t.majorOutage.body}</p>
-        <p>{t.majorOutage.nextUpdate}</p>
-      </section>
-    </main>
-  );
+  return {
+    title: t.title,
+    description: t.currentBody,
+    alternates: {
+      canonical: url,
+      languages: {
+        en: `${base}${path}`,
+        ja: `${base}${path}?locale=ja`,
+        ar: `${base}${path}?locale=ar`,
+      },
+    },
+  };
 }
 
-export default function StatusPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <StatusContent />
-    </Suspense>
-  );
-}
+export default async function StatusPage({ searchParams }: Props) {
+  const sp = await searchParams;
+  const localeParam = typeof sp.locale === 'string' ? sp.locale : undefined;
 
+  return <StatusContentClient localeParam={localeParam} />;
+}

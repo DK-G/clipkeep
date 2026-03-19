@@ -32,6 +32,19 @@ type SimilarItem = {
   access_count: number;
 };
 
+const resultUi = {
+  en: { play: 'Play', similar: 'You may also like', notice: 'Notice', downloads: 'downloads' },
+  ar: { play: 'تشغيل', similar: 'قد يعجبك أيضًا', notice: 'تنبيه', downloads: 'تنزيلات' },
+  ja: { play: '再生', similar: 'こちらもおすすめ', notice: 'お知らせ', downloads: 'ダウンロード' },
+  es: { play: 'Reproducir', similar: 'También te puede gustar', notice: 'Aviso', downloads: 'descargas' },
+  pt: { play: 'Reproduzir', similar: 'Você também pode gostar', notice: 'Aviso', downloads: 'downloads' },
+  fr: { play: 'Lire', similar: 'Vous aimerez aussi', notice: 'Notice', downloads: 'téléchargements' },
+  id: { play: 'Putar', similar: 'Anda mungkin juga suka', notice: 'Pemberitahuan', downloads: 'unduhan' },
+  hi: { play: 'चलाएँ', similar: 'आपको यह भी पसंद आ सकता है', notice: 'सूचना', downloads: 'डाउनलोड' },
+  de: { play: 'Abspielen', similar: 'Das könnte dir auch gefallen', notice: 'Hinweis', downloads: 'Downloads' },
+  tr: { play: 'Oynat', similar: 'Bunları da beğenebilirsiniz', notice: 'Bilgilendirme', downloads: 'indirme' },
+} as const;
+
 function ResultContent() {
   const params = useParams();
   const jobId = params.jobId as string;
@@ -41,6 +54,7 @@ function ResultContent() {
   const locale = normalizeLocale(searchParams.get('locale'));
   const dir = localeDir(locale);
   const t = resultText[locale];
+  const ui = resultUi[locale];
 
   const [data, setData] = useState<JobData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -173,7 +187,7 @@ function ResultContent() {
                       </div>
                       <div className="flex justify-end mt-2">
                         <a
-                          href={`/api/v1/extract/proxy?url=${encodeURIComponent(item.downloadUrl)}`}
+                          href={data.platform === 'telegram' ? `/api/v1/extract/proxy?url=${encodeURIComponent(item.downloadUrl)}` : item.downloadUrl}
                           onClick={() =>
                             trackEvent('download_click', {
                               platform: data.platform,
@@ -189,7 +203,7 @@ function ResultContent() {
                           rel="noopener noreferrer"
                           className="w-full sm:w-auto text-center px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-bold shadow-lg shadow-blue-200 active:transform active:scale-95"
                         >
-                          {data.platform === 'twitter' ? 'Play' : t.download}
+                          {data.platform === 'twitter' ? ui.play : t.download}
                         </a>
                       </div>
                     </div>
@@ -222,7 +236,7 @@ function ResultContent() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={item.thumbnail_url} alt="Related video" className="w-full h-full object-cover" loading="lazy" />
                   </div>
-                  <div className="px-2 py-2 text-xs text-gray-600">{item.access_count.toLocaleString()} downloads</div>
+                  <div className="px-2 py-2 text-xs text-gray-600">{item.access_count.toLocaleString()} {ui.downloads}</div>
                 </Link>
               ))}
             </div>
@@ -231,7 +245,7 @@ function ResultContent() {
 
         {data.status === 'completed' && data.warnings && data.warnings.length > 0 && (
           <div className="mt-8 p-4 bg-yellow-50 rounded-xl border border-yellow-100">
-            <p className="text-sm text-yellow-800 font-medium mb-1">Notice</p>
+            <p className="text-sm text-yellow-800 font-medium mb-1">{ui.notice}</p>
             <ul className="list-disc list-inside text-xs text-yellow-700 space-y-1">
               {data.warnings.map((w, i) => (
                 <li key={i}>{w}</li>
