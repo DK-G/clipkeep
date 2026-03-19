@@ -1,14 +1,28 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Locale, normalizeLocale } from '@/lib/i18n/ui';
 
-export const metadata: Metadata = {
-  title: 'ClipKeep Home | SNS Downloader Hub',
-  description: 'ClipKeep home hub for Twitter, Telegram, and TikTok downloader tools, weekly ranking, and recent downloads.',
-  alternates: {
-    canonical: '/',
-  },
-};
+export async function generateMetadata({ searchParams }: HomeProps): Promise<Metadata> {
+  const sp = await searchParams;
+  const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
+  const base = 'https://clipkeep.net';
+  const url = `${base}${locale !== 'en' ? `?locale=${locale}` : ''}`;
+
+  return {
+    title: locale === 'ja' ? 'SNS動画抽出ハブ' : 'SNS Downloader Hub',
+    description: locale === 'ja' 
+      ? 'TikTok、Twitter、Instagram、Telegramの動画抽出ツール、ランキング、履歴を提供するSNS動画保存のハブサイトです。'
+      : 'ClipKeep home hub for Twitter, Telegram, and TikTok downloader tools, weekly ranking, and recent downloads.',
+    alternates: {
+      canonical: url,
+      languages: {
+        en: `${base}`,
+        ja: `${base}?locale=ja`,
+        ar: `${base}?locale=ar`,
+      },
+    },
+  };
+}
 
 type TopPageDict = {
   intro: string;
@@ -202,13 +216,13 @@ const topPageText: Record<Locale, TopPageDict> = {
 };
 
 const cardClass =
-  'block rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm sm:text-base font-medium text-gray-800 no-underline hover:border-blue-300 hover:bg-blue-50 transition';
+  'block rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm sm:text-base font-bold text-gray-900 dark:text-slate-100 no-underline hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-slate-800 transition';
 
 const badgeClass =
-  'inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs sm:text-sm font-semibold text-slate-700';
+  'inline-flex items-center rounded-full border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 py-1 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200';
 
 const sectionCardClass =
-  'rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm';
+  'rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm';
 
 interface HomeProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -222,29 +236,30 @@ export default async function HomePage({ searchParams }: HomeProps) {
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
       <header className="mb-8 sm:mb-10">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900">ClipKeep</h1>
-        <p className="mt-3 text-base sm:text-lg leading-relaxed text-gray-600">{t.intro}</p>
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-slate-50">ClipKeep</h1>
+        <p className="mt-3 text-base sm:text-lg leading-relaxed text-gray-800 dark:text-slate-300 font-medium">{t.intro}</p>
         <div className="mt-4 flex flex-wrap gap-2 sm:gap-3">
           <span className={badgeClass}>X (Twitter)</span>
+          <span className={badgeClass}>Instagram</span>
           <span className={badgeClass}>TikTok</span>
           <span className={badgeClass}>Telegram</span>
         </div>
       </header>
 
       <section className="mb-8 sm:mb-10">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t.toolsFeeds}</h2>
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-slate-50">{t.toolsFeeds}</h2>
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className={sectionCardClass}>
-            <h3 className="mb-3 text-lg font-bold text-gray-900">Telegram</h3>
+            <h3 className="mb-3 text-lg font-bold text-gray-900 dark:text-slate-50">Instagram</h3>
             <div className="grid gap-2.5">
-              <Link href={`/download-telegram-video?locale=${locale}`} className={cardClass}>{t.downloader}</Link>
-              <Link href={`/telegram-trending-videos?locale=${locale}`} className={cardClass}>{t.weeklyRanking}</Link>
-              <Link href={`/telegram-latest-videos?locale=${locale}`} className={cardClass}>{t.recentDownloads}</Link>
+              <Link href={`/download-instagram-video?locale=${locale}`} className={cardClass}>{t.downloader}</Link>
+              <Link href={`/instagram-trending-videos?locale=${locale}`} className={cardClass}>{t.weeklyRanking}</Link>
+              <Link href={`/instagram-latest-videos?locale=${locale}`} className={cardClass}>{t.recentDownloads}</Link>
             </div>
           </div>
 
           <div className={sectionCardClass}>
-            <h3 className="mb-3 text-lg font-bold text-gray-900">X (Twitter)</h3>
+            <h3 className="mb-3 text-lg font-bold text-gray-900 dark:text-slate-50">X (Twitter)</h3>
             <div className="grid gap-2.5">
               <Link href={`/download-twitter-video?locale=${locale}`} className={cardClass}>{t.downloader}</Link>
               <Link href={`/twitter-trending-videos?locale=${locale}`} className={cardClass}>{t.weeklyRanking}</Link>
@@ -253,19 +268,28 @@ export default async function HomePage({ searchParams }: HomeProps) {
           </div>
 
           <div className={sectionCardClass}>
-            <h3 className="mb-3 text-lg font-bold text-gray-900">TikTok</h3>
+            <h3 className="mb-3 text-lg font-bold text-gray-900 dark:text-slate-50">TikTok</h3>
             <div className="grid gap-2.5">
               <Link href={`/download-tiktok-video?locale=${locale}`} className={cardClass}>{t.downloader}</Link>
               <Link href={`/tiktok-trending-videos?locale=${locale}`} className={cardClass}>{t.weeklyRanking}</Link>
               <Link href={`/tiktok-latest-videos?locale=${locale}`} className={cardClass}>{t.recentDownloads}</Link>
             </div>
           </div>
+ 
+          <div className={sectionCardClass}>
+            <h3 className="mb-3 text-lg font-bold text-gray-900 dark:text-slate-50">Telegram</h3>
+            <div className="grid gap-2.5">
+              <Link href={`/download-telegram-video?locale=${locale}`} className={cardClass}>{t.downloader}</Link>
+              <Link href={`/telegram-trending-videos?locale=${locale}`} className={cardClass}>{t.weeklyRanking}</Link>
+              <Link href={`/telegram-latest-videos?locale=${locale}`} className={cardClass}>{t.recentDownloads}</Link>
+            </div>
+          </div>
         </div>
       </section>
 
       <section className="mb-8 sm:mb-10">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t.siteInfo}</h2>
-        <ul className="mt-3 list-disc pl-5 leading-8 text-sm sm:text-base text-gray-700">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-slate-50">{t.siteInfo}</h2>
+        <ul className="mt-3 list-disc pl-5 leading-8 text-sm sm:text-base text-gray-700 dark:text-slate-300">
           <li><Link href="/sitemap.xml" className="hover:text-blue-700">{t.sitemap}</Link></li>
           <li><Link href={`/status?locale=${locale}`} className="hover:text-blue-700">{t.serviceStatus}</Link></li>
           <li><Link href={`/legal/terms?locale=${locale}`} className="hover:text-blue-700">{t.terms}</Link></li>
@@ -277,8 +301,8 @@ export default async function HomePage({ searchParams }: HomeProps) {
       </section>
 
       <section>
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t.notes}</h2>
-        <p className="mt-2 text-sm sm:text-base leading-relaxed text-gray-600">{t.noteBody}</p>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-slate-50">{t.notes}</h2>
+        <p className="mt-2 text-sm sm:text-base leading-relaxed text-gray-800 dark:text-slate-300 font-medium">{t.noteBody}</p>
       </section>
     </main>
   );

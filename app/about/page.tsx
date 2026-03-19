@@ -14,9 +14,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
   const titles: Record<string, string> = {
-    en: 'About ClipKeep | SNS Media Extraction Hub',
-    ja: 'ClipKeep について | SNS動画抽出ハブ',
-    ar: 'حول ClipKeep | مركز استخراج وسائط التواصل الاجتماعي',
+    en: 'About',
+    ja: 'ClipKeep について',
+    ar: 'حول',
   };
 
   const descriptions: Record<string, string> = {

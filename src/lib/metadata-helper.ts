@@ -8,16 +8,19 @@ export function getGalleryMetadata(type: string, platform: string, localeStr: st
 
   if (!dict) return {};
 
-  const path = `/${platform}-${type}-videos`; // Adjusting to match intended structure
+  const base = 'https://clipkeep.net';
+  const path = `/${platform}-${type}-videos`;
+  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
   
   return {
     title: dict.title,
     description: dict.description,
     alternates: {
-      canonical: `${path}?locale=${locale}`,
+      canonical: url,
       languages: {
-        en: `${path}?locale=en`,
-        ja: `${path}?locale=ja`,
+        en: `${base}${path}`,
+        ja: `${base}${path}?locale=ja`,
+        ar: `${base}${path}?locale=ar`,
       },
     },
     openGraph: {

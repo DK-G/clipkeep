@@ -14,9 +14,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
   const titles: Record<string, string> = {
-    en: 'Contact Us | ClipKeep Support',
-    ja: 'お問い合わせ | ClipKeep サポート',
-    ar: 'اتصل بنا | دعم ClipKeep',
+    en: 'Contact Us',
+    ja: 'お問い合わせ',
+    ar: 'اتصل بنا',
   };
 
   const descriptions: Record<string, string> = {

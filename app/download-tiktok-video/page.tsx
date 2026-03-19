@@ -16,7 +16,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
   return {
-    title: `${t.title} | ClipKeep`,
+    title: t.title,
     description: t.subtitle,
     alternates: {
       canonical: url,
