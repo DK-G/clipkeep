@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { localeDir, normalizeLocale, type Locale } from '@/lib/i18n/ui';
 
@@ -558,6 +559,77 @@ const blogText: Record<Locale, BlogDict> = {
     footer: '© 2026 ClipKeep Editorial. Tum haklari saklidir.',
   },
 };
+const blogMeta: Record<Locale, { title: string; description: string }> = {
+  en: {
+    title: 'Digital Media Archiving Guide 2026 | ClipKeep',
+    description: 'A practical guide to archiving Telegram, X, and TikTok media with reliable workflows.',
+  },
+  ja: {
+    title: 'デジタルメディア保存ガイド 2026 | ClipKeep',
+    description: 'Telegram・X・TikTokの保存運用を実務目線で解説するガイドです。',
+  },
+  ar: {
+    title: 'دليل أرشفة الوسائط الرقمية 2026 | ClipKeep',
+    description: 'دليل عملي لأرشفة وسائط Telegram وX وTikTok بخطوات واضحة.',
+  },
+  es: {
+    title: 'Guia de archivado digital 2026 | ClipKeep',
+    description: 'Guia practica para conservar medios de Telegram, X y TikTok con un flujo estable.',
+  },
+  pt: {
+    title: 'Guia de arquivamento digital 2026 | ClipKeep',
+    description: 'Guia pratico para preservar midias de Telegram, X e TikTok com um fluxo confiavel.',
+  },
+  fr: {
+    title: 'Guide d archivage numerique 2026 | ClipKeep',
+    description: 'Guide pratique pour conserver les medias Telegram, X et TikTok avec un flux fiable.',
+  },
+  id: {
+    title: 'Panduan arsip media digital 2026 | ClipKeep',
+    description: 'Panduan praktis menyimpan media Telegram, X, dan TikTok dengan alur yang stabil.',
+  },
+  hi: {
+    title: 'डिजिटल मीडिया आर्काइव गाइड 2026 | ClipKeep',
+    description: 'Telegram, X और TikTok मीडिया को व्यवस्थित तरीके से सुरक्षित रखने का व्यावहारिक गाइड।',
+  },
+  de: {
+    title: 'Leitfaden digitale Archivierung 2026 | ClipKeep',
+    description: 'Praxisleitfaden zur verlasslichen Archivierung von Telegram-, X- und TikTok-Medien.',
+  },
+  tr: {
+    title: 'Dijital medya arsiv rehberi 2026 | ClipKeep',
+    description: 'Telegram, X ve TikTok medyasini tutarli bir akisla arsivlemek icin pratik rehber.',
+  },
+};
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const sp = await searchParams;
+  const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
+  const base = 'https://clipkeep.net';
+  const path = '/blog/guide-to-media-archiving';
+  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
+  const meta = blogMeta[locale] ?? blogMeta.en;
+
+  return {
+    title: meta.title,
+    description: meta.description,
+    alternates: {
+      canonical: url,
+      languages: {
+        en: `${base}${path}`,
+        ja: `${base}${path}?locale=ja`,
+        ar: `${base}${path}?locale=ar`,
+        es: `${base}${path}?locale=es`,
+        pt: `${base}${path}?locale=pt`,
+        fr: `${base}${path}?locale=fr`,
+        id: `${base}${path}?locale=id`,
+        hi: `${base}${path}?locale=hi`,
+        de: `${base}${path}?locale=de`,
+        tr: `${base}${path}?locale=tr`,
+      },
+    },
+  };
+}
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
