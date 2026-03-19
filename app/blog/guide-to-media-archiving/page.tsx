@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { localeDir, normalizeLocale, type Locale } from '@/lib/i18n/ui';
 
 type BlogSection = {
@@ -186,19 +186,378 @@ const blogText: Record<Locale, BlogDict> = {
     ctaAfterLink: ' وابدأ بناء مكتبتك الرقمية بخطوات واضحة وآمنة.',
     footer: '© 2026 ClipKeep Editorial. جميع الحقوق محفوظة. ضمن التزامنا برفع الثقافة الرقمية وحفظ المحتوى.',
   },
-  es: {} as BlogDict,
-  pt: {} as BlogDict,
-  fr: {} as BlogDict,
-  id: {} as BlogDict,
-  hi: {} as BlogDict,
-  de: {} as BlogDict,
-  tr: {} as BlogDict,
+  es: {
+    editorialGuide: 'Guia editorial',
+    title: 'Guia practico de archivo de medios digitales en 2026',
+    byline: 'Equipo editorial de ClipKeep',
+    lastUpdatedLabel: 'Ultima actualizacion',
+    readTime: 'Lectura: 15 min',
+    intro:
+      'Cuando el contenido digital cambia con rapidez, conservar medios de Telegram, X y TikTok se vuelve una habilidad clave para archivo personal y trabajo de investigacion.',
+    sections: [
+      {
+        heading: '1. Por que archivar ahora',
+        paragraphs: [
+          'Las plataformas sociales son enormes y dinamicas, pero tambien fragiles. Videos y publicaciones pueden desaparecer por cambios de politica o de infraestructura.',
+          'Archivar no es solo guardar un archivo: tambien es conservar el contexto en el que fue compartido.',
+        ],
+      },
+      {
+        heading: '2. Base de un archivo personal',
+        paragraphs: ['Aplica una estrategia estable en lugar de descargas aisladas. La regla 3-2-1 sigue siendo una buena referencia.'],
+        bullets: [
+          { label: '3 copias', body: 'Mantener al menos tres copias del material importante.' },
+          { label: '2 tipos de almacenamiento', body: 'Por ejemplo, SSD y almacenamiento en la nube.' },
+          { label: '1 copia fuera del sitio', body: 'Guardar una copia en otra ubicacion fisica.' },
+        ],
+      },
+      {
+        heading: '3. Puntos clave de Telegram',
+        paragraphs: [
+          'Telegram suele mantener buena calidad en archivos multimedia, pero su extraccion fuera del cliente oficial puede requerir un flujo mas cuidadoso.',
+          'Cuando sea posible, prioriza rutas de stream directas para reducir recomprension y perdida de calidad.',
+        ],
+      },
+      {
+        heading: '4. Cambios en X (Twitter)',
+        paragraphs: [
+          'En X, varios recursos se entregan por streaming segmentado (HLS), por lo que guardar con metodos basicos no siempre funciona bien.',
+          'Conviene usar un flujo de extraccion que deje un archivo reproducible y reutilizable a futuro.',
+        ],
+      },
+      {
+        heading: '5. Etica y marco legal',
+        paragraphs: [
+          'El uso personal, academico y de redistribucion no se evalua igual en todos los paises.',
+          'Respeta siempre los derechos del creador y evita la redistribucion no autorizada.',
+        ],
+      },
+    ],
+    ctaTitle: 'Empieza hoy tu archivo',
+    ctaBeforeLink: 'Comienza desde nuestra ',
+    ctaLink: 'herramienta principal de extraccion',
+    ctaAfterLink: ' y construye una biblioteca personal ordenada y reutilizable.',
+    footer: '© 2026 ClipKeep Editorial. Todos los derechos reservados.',
+  },
+  pt: {
+    editorialGuide: 'Guia editorial',
+    title: 'Guia pratico para arquivamento de midia digital em 2026',
+    byline: 'Equipe editorial ClipKeep',
+    lastUpdatedLabel: 'Ultima atualizacao',
+    readTime: 'Leitura: 15 min',
+    intro:
+      'Com o conteudo digital mudando rapidamente, preservar midias de Telegram, X e TikTok tornou-se essencial para arquivo pessoal e pesquisa.',
+    sections: [
+      {
+        heading: '1. Por que arquivar agora',
+        paragraphs: [
+          'As redes sociais sao dinamicas e extensas, mas tambem instaveis. Videos e posts podem sumir por mudancas de politica ou de infraestrutura.',
+          'Arquivar nao e apenas baixar um arquivo; e manter o contexto do conteudo.',
+        ],
+      },
+      {
+        heading: '2. Estrutura de um arquivo pessoal',
+        paragraphs: ['Evite downloads pontuais sem metodo. A regra 3-2-1 continua um bom padrao para confiabilidade.'],
+        bullets: [
+          { label: '3 copias', body: 'Manter ao menos tres copias do material importante.' },
+          { label: '2 formatos de armazenamento', body: 'Por exemplo, SSD e nuvem.' },
+          { label: '1 copia externa', body: 'Guardar uma copia em local fisicamente separado.' },
+        ],
+      },
+      {
+        heading: '3. Boas praticas no Telegram',
+        paragraphs: [
+          'O Telegram costuma preservar boa qualidade de arquivo, mas a extracao fora do cliente oficial exige fluxo correto.',
+          'Sempre que possivel, use caminhos de stream direto para reduzir recompressao.',
+        ],
+      },
+      {
+        heading: '4. Mudancas no X (Twitter)',
+        paragraphs: [
+          'Parte da entrega de midia no X usa streaming segmentado (HLS), o que dificulta metodos simples de salvamento.',
+          'Prefira extracao que gere um arquivo final estavel para uso futuro.',
+        ],
+      },
+      {
+        heading: '5. Etica e legalidade',
+        paragraphs: [
+          'As regras legais variam conforme pais e finalidade de uso.',
+          'Respeite os direitos autorais e evite redistribuicao sem permissao.',
+        ],
+      },
+    ],
+    ctaTitle: 'Comece seu arquivo hoje',
+    ctaBeforeLink: 'Use a nossa ',
+    ctaLink: 'ferramenta principal de extracao',
+    ctaAfterLink: ' para iniciar um fluxo de arquivamento consistente.',
+    footer: '© 2026 ClipKeep Editorial. Todos os direitos reservados.',
+  },
+  fr: {
+    editorialGuide: 'Guide editorial',
+    title: 'Guide pratique d archivage des medias numeriques en 2026',
+    byline: 'Equipe editoriale ClipKeep',
+    lastUpdatedLabel: 'Derniere mise a jour',
+    readTime: 'Lecture: 15 min',
+    intro:
+      'Dans un environnement ou les contenus evoluent vite, conserver les medias de Telegram, X et TikTok devient essentiel pour l archivage personnel et la recherche.',
+    sections: [
+      {
+        heading: '1. Pourquoi archiver maintenant',
+        paragraphs: [
+          'Les plateformes sociales sont vastes et rapides, mais aussi fragiles. Des videos et publications disparaissent suite a des changements techniques ou de politique.',
+          'Archiver signifie conserver le fichier, mais aussi le contexte de sa diffusion.',
+        ],
+      },
+      {
+        heading: '2. Base d un archive personnel',
+        paragraphs: ['Mettez en place une methode stable. La regle 3-2-1 reste une base fiable.'],
+        bullets: [
+          { label: '3 copies', body: 'Conserver au moins trois copies des medias importants.' },
+          { label: '2 supports differents', body: 'Par exemple SSD et stockage cloud.' },
+          { label: '1 copie hors site', body: 'Garder une copie dans un lieu physiquement distinct.' },
+        ],
+      },
+      {
+        heading: '3. Telegram: points essentiels',
+        paragraphs: [
+          'Telegram preserve souvent une bonne qualite des fichiers, mais l extraction hors client officiel demande un flux adapte.',
+          'Favorisez les chemins de stream direct quand c est possible pour limiter la recompression.',
+        ],
+      },
+      {
+        heading: '4. Evolution de X (Twitter)',
+        paragraphs: [
+          'Sur X, de nombreux contenus passent par du streaming segmente (HLS), rendant les methodes simples moins fiables.',
+          'Utilisez un flux d extraction qui produit un fichier final lisible a long terme.',
+        ],
+      },
+      {
+        heading: '5. Ethique et legalite',
+        paragraphs: [
+          'Les regles juridiques dependent de la juridiction et de l usage.',
+          'Respectez les droits des createurs et evitez toute redistribution non autorisee.',
+        ],
+      },
+    ],
+    ctaTitle: 'Commencez votre archivage',
+    ctaBeforeLink: 'Demarrez avec notre ',
+    ctaLink: 'outil principal d extraction',
+    ctaAfterLink: ' pour construire une bibliotheque personnelle durable.',
+    footer: '© 2026 ClipKeep Editorial. Tous droits reserves.',
+  },
+  id: {
+    editorialGuide: 'Panduan editorial',
+    title: 'Panduan praktis pengarsipan media digital tahun 2026',
+    byline: 'Tim editorial ClipKeep',
+    lastUpdatedLabel: 'Pembaruan terakhir',
+    readTime: 'Baca: 15 menit',
+    intro:
+      'Saat konten digital berubah sangat cepat, menyimpan media dari Telegram, X, dan TikTok menjadi penting untuk arsip pribadi maupun riset.',
+    sections: [
+      {
+        heading: '1. Mengapa perlu mengarsip sekarang',
+        paragraphs: [
+          'Platform sosial sangat dinamis namun rapuh. Video dan posting dapat hilang karena perubahan kebijakan atau sistem.',
+          'Arsip bukan hanya menyimpan file, tetapi juga konteks saat konten dibagikan.',
+        ],
+      },
+      {
+        heading: '2. Fondasi arsip pribadi',
+        paragraphs: ['Gunakan metode yang konsisten. Aturan 3-2-1 tetap efektif untuk menjaga keandalan arsip.'],
+        bullets: [
+          { label: '3 salinan', body: 'Simpan minimal tiga salinan untuk media penting.' },
+          { label: '2 media penyimpanan', body: 'Misalnya SSD dan cloud storage.' },
+          { label: '1 salinan di lokasi lain', body: 'Simpan satu salinan di lokasi fisik yang berbeda.' },
+        ],
+      },
+      {
+        heading: '3. Strategi untuk Telegram',
+        paragraphs: [
+          'Telegram sering mempertahankan kualitas file, tetapi ekstraksi di luar klien resmi perlu alur yang tepat.',
+          'Jika memungkinkan, gunakan jalur stream langsung untuk mengurangi risiko kompresi ulang.',
+        ],
+      },
+      {
+        heading: '4. Perubahan di X (Twitter)',
+        paragraphs: [
+          'Di X, banyak media dikirim lewat streaming tersegmentasi (HLS), sehingga metode simpan sederhana sering gagal.',
+          'Pilih alur ekstraksi yang menghasilkan file final stabil untuk pemakaian jangka panjang.',
+        ],
+      },
+      {
+        heading: '5. Etika dan aspek hukum',
+        paragraphs: [
+          'Ketentuan hukum berbeda menurut negara dan tujuan penggunaan.',
+          'Hormati hak kreator dan hindari distribusi ulang tanpa izin.',
+        ],
+      },
+    ],
+    ctaTitle: 'Mulai arsip Anda hari ini',
+    ctaBeforeLink: 'Mulai dari ',
+    ctaLink: 'alat ekstraksi utama',
+    ctaAfterLink: ' untuk membangun perpustakaan media pribadi yang terstruktur.',
+    footer: '© 2026 ClipKeep Editorial. Seluruh hak cipta dilindungi.',
+  },
+  hi: {
+    editorialGuide: 'संपादकीय गाइड',
+    title: '2026 में डिजिटल मीडिया आर्काइविंग का व्यावहारिक गाइड',
+    byline: 'ClipKeep संपादकीय टीम',
+    lastUpdatedLabel: 'अंतिम अपडेट',
+    readTime: 'पढ़ने का समय: 15 मिनट',
+    intro:
+      'जब डिजिटल कंटेंट तेजी से बदलता है, तब Telegram, X और TikTok से मीडिया सुरक्षित रखना व्यक्तिगत रिकॉर्ड और शोध दोनों के लिए जरूरी हो जाता है।',
+    sections: [
+      {
+        heading: '1. अभी आर्काइव क्यों करें',
+        paragraphs: [
+          'सोशल प्लेटफॉर्म तेज और विशाल हैं, लेकिन स्थायी नहीं। नीति या तकनीकी बदलाव से पोस्ट और वीडियो कभी भी गायब हो सकते हैं।',
+          'आर्काइव का मतलब केवल फाइल सेव करना नहीं, बल्कि उसका संदर्भ भी बचाकर रखना है।',
+        ],
+      },
+      {
+        heading: '2. व्यक्तिगत आर्काइव की नींव',
+        paragraphs: ['बिना योजना के डाउनलोड करने के बजाय एक स्थिर नियम अपनाएं। 3-2-1 बैकअप नियम अभी भी उपयोगी है।'],
+        bullets: [
+          { label: '3 प्रतियां', body: 'महत्वपूर्ण मीडिया की कम से कम तीन प्रतियां रखें।' },
+          { label: '2 अलग स्टोरेज', body: 'जैसे SSD और cloud storage।' },
+          { label: '1 ऑफ-साइट कॉपी', body: 'एक कॉपी अलग भौतिक स्थान पर रखें।' },
+        ],
+      },
+      {
+        heading: '3. Telegram के लिए व्यावहारिक बिंदु',
+        paragraphs: [
+          'Telegram में अक्सर बेहतर मीडिया क्वालिटी मिलती है, लेकिन official client के बाहर extraction सावधानी से करना होता है।',
+          'जहां संभव हो direct stream path चुनें ताकि recompression कम हो।',
+        ],
+      },
+      {
+        heading: '4. X (Twitter) में बदलाव',
+        paragraphs: [
+          'X पर कई मीडिया अब segmented streaming (HLS) में आते हैं, इसलिए साधारण save तरीका हमेशा काम नहीं करता।',
+          'ऐसा extraction flow चुनें जो long-term के लिए stable playable file दे।',
+        ],
+      },
+      {
+        heading: '5. नैतिकता और कानूनी सावधानी',
+        paragraphs: [
+          'कानूनी नियम देश और उपयोग के उद्देश्य के अनुसार बदलते हैं।',
+          'कंटेंट क्रिएटर के अधिकारों का सम्मान करें और बिना अनुमति पुनर्वितरण न करें।',
+        ],
+      },
+    ],
+    ctaTitle: 'आज से अपना आर्काइव शुरू करें',
+    ctaBeforeLink: 'शुरुआत करें हमारे ',
+    ctaLink: 'मुख्य extraction tool',
+    ctaAfterLink: ' से और अपना media archive व्यवस्थित बनाएं।',
+    footer: '© 2026 ClipKeep Editorial. सर्वाधिकार सुरक्षित।',
+  },
+  de: {
+    editorialGuide: 'Redaktioneller Leitfaden',
+    title: 'Praxisleitfaden zur digitalen Medienarchivierung 2026',
+    byline: 'ClipKeep Redaktionsteam',
+    lastUpdatedLabel: 'Zuletzt aktualisiert',
+    readTime: 'Lesezeit: 15 Min.',
+    intro:
+      'Da digitale Inhalte schnell verschwinden konnen, ist das Archivieren von Medien aus Telegram, X und TikTok fur private Nutzung und Recherche besonders wichtig.',
+    sections: [
+      {
+        heading: '1. Warum jetzt archivieren',
+        paragraphs: [
+          'Soziale Plattformen sind dynamisch, aber auch storanfallig. Inhalte konnen durch Richtlinien- oder Technikanderungen plotzlich wegfallen.',
+          'Archivierung bedeutet nicht nur Dateiablage, sondern auch Erhalt des inhaltlichen Kontexts.',
+        ],
+      },
+      {
+        heading: '2. Grundlage fur ein personliches Archiv',
+        paragraphs: ['Arbeiten Sie mit einem stabilen Verfahren. Die 3-2-1-Regel ist weiterhin ein sinnvoller Standard.'],
+        bullets: [
+          { label: '3 Kopien', body: 'Mindestens drei Kopien wichtiger Medien vorhalten.' },
+          { label: '2 Speicherarten', body: 'Zum Beispiel SSD und Cloud-Speicher.' },
+          { label: '1 externe Kopie', body: 'Eine Kopie an einem getrennten physischen Ort speichern.' },
+        ],
+      },
+      {
+        heading: '3. Telegram richtig nutzen',
+        paragraphs: [
+          'Telegram liefert oft hohe Medienqualitat, aber die Extraktion ausserhalb des offiziellen Clients erfordert saubere Ablaufe.',
+          'Nutzen Sie wenn moglich direkte Stream-Pfade, um Re-Komprimierung zu vermeiden.',
+        ],
+      },
+      {
+        heading: '4. Wandel bei X (Twitter)',
+        paragraphs: [
+          'Viele Inhalte in X werden segmentiert per HLS bereitgestellt, wodurch einfache Speichermethoden unzuverlassig werden.',
+          'Ein Extraction-Flow mit stabiler Enddatei verbessert die langfristige Nutzbarkeit.',
+        ],
+      },
+      {
+        heading: '5. Ethik und Recht',
+        paragraphs: [
+          'Rechtliche Bewertung hangt von Land und Verwendungszweck ab.',
+          'Respektieren Sie Urheberrechte und vermeiden Sie unautorisierte Weiterverbreitung.',
+        ],
+      },
+    ],
+    ctaTitle: 'Starten Sie Ihr Archiv heute',
+    ctaBeforeLink: 'Beginnen Sie mit unserem ',
+    ctaLink: 'Haupt-Extraction-Tool',
+    ctaAfterLink: ' und bauen Sie ein belastbares Medienarchiv auf.',
+    footer: '© 2026 ClipKeep Editorial. Alle Rechte vorbehalten.',
+  },
+  tr: {
+    editorialGuide: 'Editor rehberi',
+    title: '2026 icin pratik dijital medya arsivleme rehberi',
+    byline: 'ClipKeep editor ekibi',
+    lastUpdatedLabel: 'Son guncelleme',
+    readTime: 'Okuma suresi: 15 dk',
+    intro:
+      'Dijital icerik hizla degisirken, Telegram, X ve TikTok medyasini saklamak hem kisisel arsiv hem de arastirma icin kritik hale geliyor.',
+    sections: [
+      {
+        heading: '1. Neden simdi arsivlemeli',
+        paragraphs: [
+          'Sosyal platformlar buyuk ve hizli olsa da kirilgandir. Politika veya altyapi degisiklikleriyle icerikler kaybolabilir.',
+          'Arsivleme sadece dosya tutmak degil, baglami da korumaktir.',
+        ],
+      },
+      {
+        heading: '2. Kisisel arsiv temeli',
+        paragraphs: ['Plansiz indirme yerine tutarli bir yontem kullanin. 3-2-1 yaklasimi hala guvenilir bir temel sunar.'],
+        bullets: [
+          { label: '3 kopya', body: 'Onemli medyadan en az uc kopya tutun.' },
+          { label: '2 farkli depolama', body: 'Ornegin SSD ve bulut depolama.' },
+          { label: '1 uzak konum', body: 'Bir kopyayi fiziksel olarak ayri bir yerde saklayin.' },
+        ],
+      },
+      {
+        heading: '3. Telegram icin onemli noktalar',
+        paragraphs: [
+          'Telegram genelde iyi kalite sunar; ancak resmi istemci disinda extraction sureci dikkat gerektirir.',
+          'Mumkunse dogrudan stream yollarini tercih ederek yeniden sikistirmayi azaltin.',
+        ],
+      },
+      {
+        heading: '4. X (Twitter) degisimi',
+        paragraphs: [
+          'X tarafinda bircok medya HLS parcali akis ile geliyor; bu da basit kaydetme yontemlerini zayiflatiyor.',
+          'Uzun vadede kullanilabilir tekil dosya ureten extraction akisini tercih edin.',
+        ],
+      },
+      {
+        heading: '5. Etik ve hukuki cerceve',
+        paragraphs: [
+          'Hukuki degerlendirme ulke ve kullanim amacina gore degisir.',
+          'Uretici haklarina saygi gosterin ve izinsiz yeniden dagitimdan kacinin.',
+        ],
+      },
+    ],
+    ctaTitle: 'Arsivinize bugun baslayin',
+    ctaBeforeLink: 'Baslamak icin ',
+    ctaLink: 'ana extraction aracimizi',
+    ctaAfterLink: ' kullanin ve duzenli bir medya kutuphanesi olusturun.',
+    footer: '© 2026 ClipKeep Editorial. Tum haklari saklidir.',
+  },
 };
-
-for (const locale of ['es', 'pt', 'fr', 'id', 'hi', 'de', 'tr'] as const) {
-  blogText[locale] = blogText.en;
-}
-
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
