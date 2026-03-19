@@ -10,9 +10,22 @@ interface TwitterDownloaderClientProps {
   locale: Locale;
 }
 
+const sectionLabels: Record<Locale, { realtime: string; about: string }> = {
+  en: { realtime: 'Real-time', about: 'About' },
+  ar: { realtime: 'في الوقت الفعلي', about: 'حول' },
+  ja: { realtime: 'リアルタイム', about: 'について' },
+  es: { realtime: 'En tiempo real', about: 'Acerca de' },
+  pt: { realtime: 'Em tempo real', about: 'Sobre' },
+  fr: { realtime: 'En temps reel', about: 'A propos' },
+  id: { realtime: 'Waktu nyata', about: 'Tentang' },
+  hi: { realtime: 'रीयल टाइम', about: 'जानकारी' },
+  de: { realtime: 'Echtzeit', about: 'Info' },
+  tr: { realtime: 'Gercek zamanli', about: 'Hakkinda' },
+};
 export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps) {
   const dir = localeDir(locale);
   const t = twitterText[locale];
+  const labels = sectionLabels[locale];
 
   const [message, setMessage] = useState(t.subtitle);
   const [helpSlug, setHelpSlug] = useState<string | null>(null);
@@ -69,7 +82,7 @@ export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps
         </section>
       </div>
 
-      <GallerySection id="realtime" platform="twitter" locale={locale} title="Real-time / リアルタイム" type="recent" />
+      <GallerySection id="realtime" platform="twitter" locale={locale} title={labels.realtime} type="recent" />
 
       <div className="my-12">
         <AdsterraNative />
@@ -87,7 +100,7 @@ export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps
       {t.seoContent && (
         <section className="mt-16 prose dark:prose-invert prose-blue max-w-none bg-white dark:bg-slate-900 p-8 md:p-12 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm">
           <h2 className="text-3xl font-extrabold mb-8 text-gray-900 dark:text-slate-100 border-b dark:border-slate-800 pb-4">
-            {t.galleryTitle.replace('Recent', 'About').replace('最近の', 'について')}
+            {labels.about}
           </h2>
           <div className="text-gray-700 dark:text-slate-300 leading-relaxed space-y-6 text-lg whitespace-pre-line">
             {t.seoContent}
@@ -97,3 +110,4 @@ export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps
     </main>
   );
 }
+
