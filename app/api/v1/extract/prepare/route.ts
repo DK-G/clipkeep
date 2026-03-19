@@ -130,18 +130,31 @@ export async function POST(request: Request) {
     });
   }
 
-  const job = await createJob(platform, url);
-  recordExtractAttempt({ upstreamFailed: false, queueWaitMs: 0 });
+  try {
+    const job = await createJob(platform, url);
+    recordExtractAttempt({ upstreamFailed: false, queueWaitMs: 0 });
 
-  return success({
-    status: 202,
-    requestId,
-    locale: body.locale,
-    data: {
-      jobId: job.id,
-      status: job.status,
-      pollAfterMs: 1200,
-    },
-  });
+    return success({
+      status: 202,
+      requestId,
+      locale: body.locale,
+      data: {
+        jobId: job.id,
+        status: job.status,
+        pollAfterMs: 1200,
+      },
+    });
+  } catch (error) {
+    console.error("Critical error in prepare route:", error);
+    return failure({
+      status: 500,
+      requestId,
+      error: {
+        code: "INTERNAL_ERROR",
+        message: error instanceof Error ? error.message : "An unexpected error occurred",
+        details: {},
+      },
+    });
+  }
 }
 
