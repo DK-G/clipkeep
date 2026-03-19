@@ -2835,3 +2835,105 @@ export const legalText: Record<Locale, { privacy: LegalPageDict; terms: LegalPag
   tr: legalByLocale('tr'),
 };
 
+
+type AboutDict = {
+  title: string;
+  body: string;
+  visionTitle: string;
+  visionBody: string;
+  whyUsTitle: string;
+  whyUsBody: string;
+  projectNote: string;
+};
+
+type ContactDict = {
+  title: string;
+  subtitle: string;
+  emailLabel: string;
+  dmcaTitle: string;
+  dmcaBody: string;
+  socialTitle: string;
+  socialBody: string;
+  comingSoon: string;
+};
+
+const aboutBaseEn: AboutDict = {
+  title: 'About ClipKeep',
+  body: 'ClipKeep helps you organize and preserve publicly shared media from supported social platforms. We focus on practical workflows for personal archiving, research, and reference use.',
+  visionTitle: 'What We Aim For',
+  visionBody: 'We design ClipKeep so users can keep important online media accessible over time, even when platform interfaces or content availability change.',
+  whyUsTitle: 'How ClipKeep Works',
+  whyUsBody: 'ClipKeep processes public links and focuses on clear extraction flows. The service is built for reliability and consistent response performance.',
+  projectNote: 'ClipKeep is built around utility, transparency, and stable SNS archiving workflows.',
+};
+
+export const aboutText: Record<Locale, AboutDict> = {
+  en: aboutBaseEn,
+  ja: {
+    title: 'ClipKeep について',
+    body: 'ClipKeep は、対応するSNS上で公開されているメディアを整理・保存するためのサービスです。個人アーカイブや調査用途で使いやすい、実務的な導線を重視しています。',
+    visionTitle: '目指していること',
+    visionBody: 'プラットフォームの仕様変更や公開状況の変化があっても、必要な記録に継続してアクセスできる状態を保つことを目標にしています。',
+    whyUsTitle: 'ClipKeep の仕組み',
+    whyUsBody: '公開リンクを起点に処理し、分かりやすい抽出フローを提供します。安定性と応答性を重視した構成で運用しています。',
+    projectNote: 'ClipKeep は、実用性・透明性・安定したSNSアーカイブ運用を重視して開発しています。',
+  },
+  ar: {
+    title: 'حول ClipKeep',
+    body: 'يساعدك ClipKeep على تنظيم وحفظ الوسائط المنشورة علنًا من المنصات الاجتماعية المدعومة. نركز على سير عمل عملي يناسب الأرشفة الشخصية والبحث والاستخدام المرجعي.',
+    visionTitle: 'ما الذي نسعى إليه',
+    visionBody: 'نطوّر ClipKeep بحيث تظل الوسائط المهمة متاحة مع مرور الوقت، حتى عند تغيّر واجهات المنصات أو سياسات النشر.',
+    whyUsTitle: 'كيف يعمل ClipKeep',
+    whyUsBody: 'يعتمد ClipKeep على الروابط العامة ويوفر مسار استخراج واضحًا. تم بناء الخدمة لتحقيق الاستقرار وسرعة الاستجابة بشكل متسق.',
+    projectNote: 'تم تطوير ClipKeep مع التركيز على الفائدة العملية والشفافية واستقرار أرشفة محتوى SNS.',
+  },
+  es: aboutBaseEn,
+  pt: aboutBaseEn,
+  fr: aboutBaseEn,
+  id: aboutBaseEn,
+  hi: aboutBaseEn,
+  de: aboutBaseEn,
+  tr: aboutBaseEn,
+};
+
+const contactBaseEn: ContactDict = {
+  title: 'Contact Us',
+  subtitle: 'Questions, feedback, or operational inquiries are welcome.',
+  emailLabel: 'Support Email',
+  dmcaTitle: 'DMCA / Copyright',
+  dmcaBody: 'For copyright claims or DMCA requests, send the target URL and supporting details by email.',
+  socialTitle: 'Service Updates',
+  socialBody: 'Operational updates and announcements will be published through official channels.',
+  comingSoon: 'Channel links will be added soon.',
+};
+
+export const contactText: Record<Locale, ContactDict> = {
+  en: contactBaseEn,
+  ja: {
+    title: 'お問い合わせ',
+    subtitle: 'ご質問・ご意見・運用に関するご連絡はこちらから受け付けています。',
+    emailLabel: 'サポートメール',
+    dmcaTitle: 'DMCA / 著作権',
+    dmcaBody: '著作権申立てやDMCA対応の依頼は、対象URLと根拠情報を添えてメールでご連絡ください。',
+    socialTitle: '運用アップデート',
+    socialBody: '障害情報や重要なお知らせは、公式チャネルで順次公開します。',
+    comingSoon: 'チャネル情報は順次追加予定です。',
+  },
+  ar: {
+    title: 'اتصل بنا',
+    subtitle: 'نرحب بالاستفسارات والملاحظات وطلبات الدعم التشغيلي.',
+    emailLabel: 'بريد الدعم',
+    dmcaTitle: 'DMCA / حقوق النشر',
+    dmcaBody: 'لطلبات DMCA أو شكاوى حقوق النشر، أرسل رابط المحتوى والمعلومات الداعمة عبر البريد الإلكتروني.',
+    socialTitle: 'تحديثات الخدمة',
+    socialBody: 'سيتم نشر تحديثات التشغيل والإعلانات الرسمية عبر القنوات المعتمدة.',
+    comingSoon: 'سيتم إضافة روابط القنوات قريبًا.',
+  },
+  es: contactBaseEn,
+  pt: contactBaseEn,
+  fr: contactBaseEn,
+  id: contactBaseEn,
+  hi: contactBaseEn,
+  de: contactBaseEn,
+  tr: contactBaseEn,
+};

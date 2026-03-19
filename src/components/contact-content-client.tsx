@@ -1,6 +1,6 @@
 'use client';
 
-import { normalizeLocale, localeDir } from '@/lib/i18n/ui';
+import { contactText, normalizeLocale, localeDir } from '@/lib/i18n/ui';
 
 interface Props {
   localeParam?: string;
@@ -9,41 +9,7 @@ interface Props {
 export function ContactContentClient({ localeParam }: Props) {
   const locale = normalizeLocale(localeParam);
   const dir = localeDir(locale);
-
-  const texts = {
-    en: {
-      title: 'Contact Us',
-      subtitle: 'Questions, feedback, or operational inquiries are welcome.',
-      emailLabel: 'Support Email',
-      dmcaTitle: 'DMCA / Copyright',
-      dmcaBody: 'For copyright claims or DMCA requests, send the target URL and supporting details by email.',
-      socialTitle: 'Service Updates',
-      socialBody: 'Operational updates and announcements will be published through official channels.',
-      comingSoon: 'Channel links will be added soon.',
-    },
-    ja: {
-      title: 'お問い合わせ',
-      subtitle: 'ご質問・ご意見・運用に関するご連絡はこちらから受け付けています。',
-      emailLabel: 'サポートメール',
-      dmcaTitle: 'DMCA / 著作権',
-      dmcaBody: '著作権申立てやDMCA対応の依頼は、対象URLと根拠情報を添えてメールでご連絡ください。',
-      socialTitle: '運用アップデート',
-      socialBody: '障害情報や重要なお知らせは、公式チャネルで順次公開します。',
-      comingSoon: 'チャネル情報は順次追加予定です。',
-    },
-    ar: {
-      title: 'اتصل بنا',
-      subtitle: 'نرحب بالاستفسارات والملاحظات وطلبات الدعم التشغيلي.',
-      emailLabel: 'بريد الدعم',
-      dmcaTitle: 'DMCA / حقوق النشر',
-      dmcaBody: 'لطلبات DMCA أو شكاوى حقوق النشر، أرسل رابط المحتوى والمعلومات الداعمة عبر البريد الإلكتروني.',
-      socialTitle: 'تحديثات الخدمة',
-      socialBody: 'سيتم نشر تحديثات التشغيل والإعلانات الرسمية عبر القنوات المعتمدة.',
-      comingSoon: 'سيتم إضافة روابط القنوات قريبًا.',
-    },
-  };
-
-  const t = texts[locale as keyof typeof texts] || texts.en;
+  const t = contactText[locale] || contactText.en;
 
   return (
     <main dir={dir} className="max-w-4xl mx-auto px-6 py-12">
