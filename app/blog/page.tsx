@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { keywordArticles, type BlogLocale } from '@/lib/blog/keyword-articles';
 import { normalizeLocale } from '@/lib/i18n/ui';
@@ -9,7 +9,7 @@ type Props = {
 
 function toBlogLocale(input: string | null | undefined): BlogLocale {
   const n = normalizeLocale(input);
-  if (n === 'es' || n === 'ar') return n;
+  if (n === 'es' || n === 'ar' || n === 'ja') return n;
   return 'en';
 }
 
@@ -32,6 +32,12 @@ const categoryLabel: Record<BlogLocale, { twitter: string; tiktok: string; teleg
     telegram: 'تيليجرام',
     comparison: 'مقارنة / أمان',
   },
+  ja: {
+    twitter: 'Twitter',
+    tiktok: 'TikTok',
+    telegram: 'Telegram',
+    comparison: '比較 / セキュリティ',
+  },
 };
 
 const pageText: Record<BlogLocale, { title: string; subtitle: string; listName: string }> = {
@@ -50,6 +56,11 @@ const pageText: Record<BlogLocale, { title: string; subtitle: string; listName: 
     subtitle: 'مقالات موجهة للكلمات المفتاحية باللغات EN / ES / AR.',
     listName: 'مقالات مدونة ClipKeep SEO',
   },
+  ja: {
+    title: 'ClipKeep SEO ブログ',
+    subtitle: '日英・西・亜言語対応のキーワード解説記事。',
+    listName: 'ClipKeep SEO ブログ記事一覧',
+  },
 };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
@@ -67,6 +78,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       canonical: url,
       languages: {
         en: `${base}${path}`,
+        ja: `${base}${path}?locale=ja`,
         es: `${base}${path}?locale=es`,
         ar: `${base}${path}?locale=ar`,
       },

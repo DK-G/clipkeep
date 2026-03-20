@@ -21,8 +21,15 @@ export const metadata: Metadata = {
     canonical: '/',
     languages: {
       en: '/?locale=en',
-      es: '/?locale=es',
       ar: '/?locale=ar',
+      ja: '/?locale=ja',
+      es: '/?locale=es',
+      pt: '/?locale=pt',
+      fr: '/?locale=fr',
+      id: '/?locale=id',
+      hi: '/?locale=hi',
+      de: '/?locale=de',
+      tr: '/?locale=tr',
       'x-default': '/',
     },
   },
@@ -50,7 +57,7 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: 'ClipKeep',
   url: siteUrl,
-  inLanguage: ['en', 'es', 'ar'],
+  inLanguage: ['en', 'ar', 'ja', 'es', 'pt', 'fr', 'id', 'hi', 'de', 'tr'],
   potentialAction: {
     '@type': 'SearchAction',
     target: {
@@ -100,6 +107,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
-

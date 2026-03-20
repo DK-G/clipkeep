@@ -1,4 +1,4 @@
-export type BlogLocale = 'en' | 'es' | 'ar';
+export type BlogLocale = 'en' | 'es' | 'ar' | 'ja';
 
 export type KeywordCategory = 'twitter' | 'tiktok' | 'telegram' | 'comparison';
 
@@ -9,6 +9,7 @@ export type KeywordArticle = {
     en: string;
     es: string;
     ar: string;
+    ja: string;
   };
   toolPath: string;
   supportPath: string;
@@ -75,6 +76,7 @@ const baseArticles: Array<{
 
 function localizeKeyword(keywordEn: string, locale: BlogLocale): string {
   if (locale === 'en') return keywordEn;
+  if (locale === 'ja') return keywordEn; // Keep as is, some already have ja
 
   const mapEs: Array<[RegExp, string]> = [
     [/video downloader/gi, 'descargador de videos'],
@@ -125,6 +127,7 @@ export const keywordArticles: KeywordArticle[] = baseArticles.map((a) => ({
     en: a.en,
     es: localizeKeyword(a.en, 'es'),
     ar: localizeKeyword(a.en, 'ar'),
+    ja: localizeKeyword(a.en, 'ja'),
   },
   toolPath: a.toolPath,
   supportPath: a.supportPath,

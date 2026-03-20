@@ -38,8 +38,15 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       canonical: url,
       languages: {
         en: `${base}${path}`,
-        ja: `${base}${path}?locale=ja`,
         ar: `${base}${path}?locale=ar`,
+        ja: `${base}${path}?locale=ja`,
+        es: `${base}${path}?locale=es`,
+        pt: `${base}${path}?locale=pt`,
+        fr: `${base}${path}?locale=fr`,
+        id: `${base}${path}?locale=id`,
+        hi: `${base}${path}?locale=hi`,
+        de: `${base}${path}?locale=de`,
+        tr: `${base}${path}?locale=tr`,
       },
     },
     openGraph: {

@@ -5,7 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = 'https://clipkeep.net';
   const now = new Date();
   const allLocales = ['', '?locale=ja', '?locale=ar', '?locale=es', '?locale=pt', '?locale=fr', '?locale=id', '?locale=hi', '?locale=de', '?locale=tr'];
-  const solutionLocales = ['', '?locale=ar'];
+  const solutionLocales = ['', '?locale=ar', '?locale=ja'];
 
   const routes = [
     { path: '/', priority: 1.0, changeFrequency: 'daily' as const, locales: allLocales },
@@ -17,7 +17,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/download-twitter-video', priority: 0.9, changeFrequency: 'daily' as const, locales: allLocales },
     { path: '/download-tiktok-video', priority: 0.8, changeFrequency: 'weekly' as const, locales: allLocales },
     { path: '/download-instagram-video', priority: 0.8, changeFrequency: 'weekly' as const, locales: allLocales },
-    { path: '/blog', priority: 0.8, changeFrequency: 'daily' as const, locales: ['', '?locale=es', '?locale=ar'] },
+    { path: '/blog', priority: 0.8, changeFrequency: 'daily' as const, locales: ['', '?locale=ja', '?locale=es', '?locale=ar'] },
+
     { path: '/blog/guide-to-media-archiving', priority: 0.9, changeFrequency: 'monthly' as const, locales: allLocales },
     { path: '/legal/terms', priority: 0.5, changeFrequency: 'monthly' as const, locales: allLocales },
     { path: '/legal/privacy', priority: 0.5, changeFrequency: 'monthly' as const, locales: allLocales },

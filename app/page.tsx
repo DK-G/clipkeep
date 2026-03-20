@@ -58,8 +58,15 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
       canonical: url,
       languages: {
         en: `${base}`,
-        ja: `${base}?locale=ja`,
         ar: `${base}?locale=ar`,
+        ja: `${base}?locale=ja`,
+        es: `${base}?locale=es`,
+        pt: `${base}?locale=pt`,
+        fr: `${base}?locale=fr`,
+        id: `${base}?locale=id`,
+        hi: `${base}?locale=hi`,
+        de: `${base}?locale=de`,
+        tr: `${base}?locale=tr`,
       },
     },
   };

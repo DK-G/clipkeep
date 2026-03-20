@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { trackEvent } from '@/lib/analytics/gtag';
@@ -7,7 +7,7 @@ type BlogCtaLinkProps = {
   href: string;
   className?: string;
   children: React.ReactNode;
-  locale: 'en' | 'es' | 'ar';
+  locale: 'en' | 'es' | 'ar' | 'ja';
   slug: string;
   ctaType: 'tool' | 'support';
   ctaPosition: 'header' | 'main' | 'problem' | 'compare';

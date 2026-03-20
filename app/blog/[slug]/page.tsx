@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BlogCtaLink } from '@/components/blog-cta-link';
 import { notFound } from 'next/navigation';
@@ -12,7 +12,7 @@ type Props = {
 
 function toBlogLocale(input: string | null | undefined): BlogLocale {
   const n = normalizeLocale(input);
-  if (n === 'es' || n === 'ar') return n;
+  if (n === 'es' || n === 'ar' || n === 'ja') return n;
   return 'en';
 }
 
@@ -378,6 +378,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       canonical: url,
       languages: {
         en: `${base}${path}`,
+        ja: `${base}${path}?locale=ja`,
         es: `${base}${path}?locale=es`,
         ar: `${base}${path}?locale=ar`,
       },
