@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { normalizeLocale, legalText, localeDir } from '@/lib/i18n/ui';
 
 interface Props {
@@ -16,8 +16,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const descriptions = {
     en: 'Read the copyright and DMCA reporting policy for ClipKeep.',
     ja: 'ClipKeepの著作権およびDMCA申請手続きに関する方針を確認できます。',
-    ar: 'اطلع على سياسة حقوق النشر وإبلاغ DMCA الخاصة بـ ClipKeep.',
-    es: 'Consulta la política de derechos de autor y reportes DMCA de ClipKeep.',
+    ar: 'اطلع على سياسة حقوق النشر وإجراءات الإبلاغ وفق DMCA في ClipKeep، بما في ذلك متطلبات البلاغ.',
+    es: 'Consulta la política de derechos de autor y el procedimiento de reportes DMCA en ClipKeep, incluidos los requisitos del aviso.',
     pt: 'Consulte a política de direitos autorais e notificações DMCA do ClipKeep.',
     fr: 'Consultez la politique de droits d’auteur et de signalement DMCA de ClipKeep.',
     id: 'Pelajari kebijakan hak cipta dan pelaporan DMCA di ClipKeep.',
@@ -71,3 +71,4 @@ export default async function DmcaPage({ searchParams }: Props) {
     </main>
   );
 }
+

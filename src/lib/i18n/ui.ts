@@ -1,4 +1,4 @@
-export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
+﻿export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
 
 export function normalizeLocale(value: string | null | undefined): Locale {
   const v = value?.toLowerCase();
@@ -2788,7 +2788,28 @@ export const faqText: Record<Locale, FAQDict> = {
     contactSupport: 'サポートに連絡',
     contactText: 'ここで解決しない場合は、お問い合わせページからご連絡ください。',
   },
-  es: { ...faqBaseEn, title: 'Preguntas Frecuentes', lastUpdated: 'Última actualización: 2026-03-19' },
+  es: {
+    ...faqBaseEn,
+    title: 'Preguntas Frecuentes',
+    lastUpdated: 'Última actualización: 2026-03-19',
+    items: [
+      {
+        question: '¿Qué es ClipKeep?',
+        answer: 'ClipKeep es una herramienta web para extraer enlaces de medios desde páginas SNS compatibles para flujos de archivado personal.',
+      },
+      {
+        question: '¿Qué plataformas están soportadas ahora?',
+        answer: 'La prioridad de soporte actual es Telegram y X (Twitter). También existen páginas para TikTok e Instagram, con comportamiento variable según la fuente.',
+      },
+      {
+        question: '¿Necesito una cuenta?',
+        answer: 'No. Puedes usar el flujo de extracción sin crear una cuenta.',
+      },
+    ],
+    stillQuestions: '¿Aún tienes preguntas?',
+    contactSupport: 'Contactar soporte',
+    contactText: 'Si tu pregunta no aparece aquí, contáctanos desde la página de contacto.',
+  },
   pt: { ...faqBaseEn, title: 'Perguntas Frequentes', lastUpdated: 'Última atualização: 2026-03-19' },
   fr: { ...faqBaseEn, title: 'Questions Fréquentes', lastUpdated: 'Dernière mise à jour: 2026-03-19' },
   id: { ...faqBaseEn, title: 'Pertanyaan Umum', lastUpdated: 'Pembaruan terakhir: 2026-03-19' },
@@ -2814,14 +2835,79 @@ function localizeLegalTitle(locale: Locale, key: 'privacy' | 'terms' | 'cookies'
 }
 
 function legalByLocale(locale: Locale) {
+  const localizedSections: Partial<Record<Locale, { privacy: LegalSection[]; terms: LegalSection[]; cookies: LegalSection[]; dmca: LegalSection[] }>> = {
+    ar: {
+      privacy: [
+        { title: 'معالجة البيانات', content: 'نعالج الحد الأدنى من بيانات الطلب اللازمة للتشغيل ومنع الإساءة والحفاظ على موثوقية الخدمة.' },
+        { title: 'ملفات تعريف الارتباط والتحليلات', content: 'قد نستخدم ملفات تعريف الارتباط وعلامات التحليلات لأغراض القياس وتحسين التشغيل.' },
+        { title: 'التواصل', content: 'للطلبات المتعلقة بالخصوصية، يرجى التواصل معنا عبر صفحة الاتصال.' },
+      ],
+      terms: [
+        { title: 'الاستخدام المقبول', content: 'يجب على المستخدمين الالتزام بالقوانين المعمول بها وشروط المنصة الأصلية.' },
+        { title: 'نطاق الخدمة', content: 'تُقدَّم الخدمة كما هي، وقد تتغير وفقًا لتغيرات المنصات المصدر.' },
+        { title: 'مسؤولية المستخدم', content: 'المستخدم مسؤول عن كيفية التعامل مع الوسائط المستخرجة وإعادة استخدامها.' },
+      ],
+      cookies: [
+        { title: 'استخدام ملفات تعريف الارتباط', content: 'قد تُستخدم ملفات تعريف الارتباط لاستمرارية الجلسة والتحليلات وضبط الموثوقية.' },
+        { title: 'التحكم', content: 'يمكنك التحكم في ملفات تعريف الارتباط من خلال إعدادات المتصفح.' },
+      ],
+      dmca: [
+        { title: 'إشعار حقوق النشر', content: 'جميع حقوق الوسائط تعود إلى مالكيها الأصليين.' },
+        { title: 'آلية الإبلاغ', content: 'إذا كنت تعتقد بوجود انتهاك للحقوق، تواصل معنا مع تفاصيل كافية لمراجعة البلاغ.' },
+      ],
+    },
+    es: {
+      privacy: [
+        { title: 'Tratamiento de datos', content: 'Procesamos el mínimo de metadatos de solicitud necesarios para operación, prevención de abuso y fiabilidad del servicio.' },
+        { title: 'Cookies y analítica', content: 'Podemos usar cookies y etiquetas de analítica para medición y mejora operativa.' },
+        { title: 'Contacto', content: 'Para solicitudes relacionadas con privacidad, contáctanos mediante la página de contacto.' },
+      ],
+      terms: [
+        { title: 'Uso aceptable', content: 'Los usuarios deben cumplir las leyes aplicables y los términos de la plataforma de origen.' },
+        { title: 'Alcance del servicio', content: 'El servicio se proporciona tal cual y puede cambiar según el comportamiento de plataformas externas.' },
+        { title: 'Responsabilidad del usuario', content: 'El usuario es responsable del manejo y la reutilización de los medios extraídos.' },
+      ],
+      cookies: [
+        { title: 'Uso de cookies', content: 'Las cookies pueden usarse para continuidad de sesión, analítica y controles de fiabilidad.' },
+        { title: 'Control', content: 'Puedes controlar las cookies desde la configuración de tu navegador.' },
+      ],
+      dmca: [
+        { title: 'Aviso de copyright', content: 'Todos los derechos de los medios pertenecen a sus respectivos propietarios.' },
+        { title: 'Proceso de reporte', content: 'Si crees que un contenido infringe derechos, contáctanos con detalles suficientes para revisarlo.' },
+      ],
+    },
+  };
+
+  const fallback = legalBaseEn;
+  const current = localizedSections[locale];
+
   return {
-    privacy: { ...legalBaseEn.privacy, title: localizeLegalTitle(locale, 'privacy'), lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : legalBaseEn.privacy.lastUpdated },
-    terms: { ...legalBaseEn.terms, title: localizeLegalTitle(locale, 'terms'), lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : legalBaseEn.terms.lastUpdated },
-    cookies: { ...legalBaseEn.cookies, title: localizeLegalTitle(locale, 'cookies'), lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : legalBaseEn.cookies.lastUpdated },
-    dmca: { ...legalBaseEn.dmca, title: localizeLegalTitle(locale, 'dmca'), lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : legalBaseEn.dmca.lastUpdated },
+    privacy: {
+      ...fallback.privacy,
+      title: localizeLegalTitle(locale, 'privacy'),
+      lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : fallback.privacy.lastUpdated,
+      sections: current?.privacy ?? fallback.privacy.sections,
+    },
+    terms: {
+      ...fallback.terms,
+      title: localizeLegalTitle(locale, 'terms'),
+      lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : fallback.terms.lastUpdated,
+      sections: current?.terms ?? fallback.terms.sections,
+    },
+    cookies: {
+      ...fallback.cookies,
+      title: localizeLegalTitle(locale, 'cookies'),
+      lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : fallback.cookies.lastUpdated,
+      sections: current?.cookies ?? fallback.cookies.sections,
+    },
+    dmca: {
+      ...fallback.dmca,
+      title: localizeLegalTitle(locale, 'dmca'),
+      lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : fallback.dmca.lastUpdated,
+      sections: current?.dmca ?? fallback.dmca.sections,
+    },
   };
 }
-
 export const legalText: Record<Locale, { privacy: LegalPageDict; terms: LegalPageDict; cookies: LegalPageDict; dmca: LegalPageDict }> = {
   en: legalByLocale('en'),
   ar: legalByLocale('ar'),
@@ -2885,16 +2971,16 @@ export const aboutText: Record<Locale, AboutDict> = {
     visionBody: 'نطوّر ClipKeep بحيث تظل الوسائط المهمة متاحة مع مرور الوقت، حتى عند تغيّر واجهات المنصات أو سياسات النشر.',
     whyUsTitle: 'كيف يعمل ClipKeep',
     whyUsBody: 'يعتمد ClipKeep على الروابط العامة ويوفر مسار استخراج واضحًا. تم بناء الخدمة لتحقيق الاستقرار وسرعة الاستجابة بشكل متسق.',
-    projectNote: 'تم تطوير ClipKeep مع التركيز على الفائدة العملية والشفافية واستقرار أرشفة محتوى SNS.',
+    projectNote: 'تم تطوير ClipKeep مع التركيز على الفائدة العملية والشفافية واستقرار تدفقات أرشفة محتوى SNS.',
   },
   es: {
     title: 'Acerca de ClipKeep',
-    body: 'ClipKeep te ayuda a organizar y conservar medios publicados en redes sociales compatibles. Priorizamos flujos practicos para archivo personal, investigacion y consulta.',
+    body: 'ClipKeep te ayuda a organizar y conservar medios publicados en plataformas sociales compatibles. Priorizamos flujos prácticos para archivo personal, investigación y consulta.',
     visionTitle: 'Nuestro enfoque',
-    visionBody: 'Queremos que el acceso a medios importantes se mantenga estable, incluso cuando cambian interfaces o politicas de las plataformas.',
-    whyUsTitle: 'Como funciona ClipKeep',
-    whyUsBody: 'ClipKeep procesa enlaces publicos con un flujo de extraccion claro. El servicio esta orientado a estabilidad y respuesta consistente.',
-    projectNote: 'ClipKeep se construye con foco en utilidad, transparencia y archivado SNS estable.',
+    visionBody: 'Queremos que el acceso a medios importantes se mantenga estable, incluso cuando cambien las interfaces o las políticas de las plataformas.',
+    whyUsTitle: 'Cómo funciona ClipKeep',
+    whyUsBody: 'ClipKeep procesa enlaces públicos con un flujo de extracción claro. El servicio está orientado a la estabilidad y a una respuesta consistente.',
+    projectNote: 'ClipKeep se construye con foco en utilidad, transparencia y un flujo de archivado SNS estable.',
   },
   pt: {
     title: 'Sobre o ClipKeep',
@@ -2980,7 +3066,7 @@ export const contactText: Record<Locale, ContactDict> = {
     subtitle: 'نرحب بالاستفسارات والملاحظات وطلبات الدعم التشغيلي.',
     emailLabel: 'بريد الدعم',
     dmcaTitle: 'DMCA / حقوق النشر',
-    dmcaBody: 'لطلبات DMCA أو شكاوى حقوق النشر، أرسل رابط المحتوى والمعلومات الداعمة عبر البريد الإلكتروني.',
+    dmcaBody: 'لطلبات DMCA أو بلاغات حقوق النشر، أرسل رابط المحتوى والمعلومات الداعمة عبر البريد الإلكتروني.',
     socialTitle: 'تحديثات الخدمة',
     socialBody: 'سيتم نشر تحديثات التشغيل والإعلانات الرسمية عبر القنوات المعتمدة.',
     comingSoon: 'سيتم إضافة روابط القنوات قريبًا.',
@@ -2990,10 +3076,10 @@ export const contactText: Record<Locale, ContactDict> = {
     subtitle: 'Recibimos consultas, comentarios y solicitudes operativas.',
     emailLabel: 'Correo de soporte',
     dmcaTitle: 'DMCA / Copyright',
-    dmcaBody: 'Para solicitudes DMCA o reclamos de derechos de autor, envia por correo el URL objetivo y los detalles de respaldo.',
+    dmcaBody: 'Para solicitudes de DMCA o reclamos de derechos de autor, envía por correo la URL objetivo y los detalles de respaldo.',
     socialTitle: 'Actualizaciones del servicio',
-    socialBody: 'Publicaremos anuncios y estado operativo por canales oficiales.',
-    comingSoon: 'Los enlaces de canales se agregaran pronto.',
+    socialBody: 'Publicaremos anuncios y el estado operativo a través de canales oficiales.',
+    comingSoon: 'Los enlaces de canales se agregarán pronto.',
   },
   pt: {
     title: 'Contato',
@@ -3056,3 +3142,6 @@ export const contactText: Record<Locale, ContactDict> = {
     comingSoon: 'Kanal baglantilari yakinda eklenecek.',
   },
 };
+
+
+

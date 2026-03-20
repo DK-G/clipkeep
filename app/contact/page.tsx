@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { ContactContentClient } from '@/components/contact-content-client';
 import { normalizeLocale } from '@/lib/i18n/ui';
 
@@ -29,8 +29,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const descriptions: Record<string, string> = {
     en: 'Contact the ClipKeep team for support, feedback, or DMCA inquiries.',
     ja: 'サポート、フィードバック、またはDMCAに関するお問い合わせはClipKeepチームまでご連絡ください。',
-    ar: 'اتصل بفريق ClipKeep للحصول على الدعم أو الملاحظات أو استفسارات DMCA.',
-    es: 'Ponte en contacto con el equipo de ClipKeep para soporte, comentarios o consultas de DMCA.',
+    ar: 'تواصل مع فريق ClipKeep للحصول على الدعم أو إرسال الملاحظات أو الاستفسار عن طلبات DMCA.',
+    es: 'Ponte en contacto con el equipo de ClipKeep para soporte, comentarios o consultas relacionadas con DMCA.',
     pt: 'Entre em contato com a equipe do ClipKeep para suporte, feedback ou solicitações de DMCA.',
     fr: 'Contactez l\'équipe ClipKeep pour le support, les retours ou les demandes DMCA.',
     id: 'Hubungi tim ClipKeep untuk dukungan, masukan, atau permintaan DMCA.',
@@ -66,3 +66,4 @@ export default async function ContactPage({ searchParams }: Props) {
 
   return <ContactContentClient localeParam={localeParam} />;
 }
+

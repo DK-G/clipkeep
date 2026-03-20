@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { normalizeLocale, faqText, localeDir } from '@/lib/i18n/ui';
 
@@ -85,3 +85,4 @@ export default async function FAQPage({ searchParams }: Props) {
     </main>
   );
 }
+

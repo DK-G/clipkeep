@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { normalizeLocale, legalText, localeDir } from '@/lib/i18n/ui';
 
 interface Props {
@@ -16,8 +16,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const descriptions = {
     en: 'See how ClipKeep uses cookies and similar technologies.',
     ja: 'ClipKeepで使用するCookieおよび類似技術の取り扱いを説明します。',
-    ar: 'تعرّف على كيفية استخدام ClipKeep لملفات تعريف الارتباط والتقنيات المشابهة.',
-    es: 'Consulta cómo ClipKeep utiliza cookies y tecnologías similares.',
+    ar: 'تعرّف على كيفية استخدام ClipKeep لملفات تعريف الارتباط والتقنيات المشابهة، وخيارات التحكم المتاحة للمستخدم.',
+    es: 'Consulta cómo ClipKeep utiliza cookies y tecnologías similares, así como las opciones de control disponibles para el usuario.',
     pt: 'Veja como o ClipKeep usa cookies e tecnologias semelhantes.',
     fr: 'Découvrez comment ClipKeep utilise les cookies et technologies similaires.',
     id: 'Lihat bagaimana ClipKeep menggunakan cookie dan teknologi serupa.',
@@ -71,3 +71,4 @@ export default async function CookiePolicyPage({ searchParams }: Props) {
     </main>
   );
 }
+

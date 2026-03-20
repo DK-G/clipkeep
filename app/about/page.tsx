@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { AboutContentClient } from '@/components/about-content-client';
 import { normalizeLocale } from '@/lib/i18n/ui';
 
@@ -29,8 +29,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const descriptions: Record<string, string> = {
     en: 'Learn more about ClipKeep, a fast and reliable tool for organizing public SNS media links.',
     ja: 'TikTok、Twitter、Telegram向けの高速で安全なメディア抽出ツール、ClipKeepについての詳細。',
-    ar: 'تعرّف على ClipKeep، أداة سريعة وموثوقة لتنظيم روابط الوسائط العامة من شبكات التواصل.',
-    es: 'Conoce ClipKeep, una herramienta para organizar y preservar medios de SNS a partir de enlaces públicos.',
+    ar: 'تعرّف على ClipKeep، أداة سريعة وموثوقة لتنظيم وحفظ وسائط SNS انطلاقًا من الروابط العامة.',
+    es: 'Conoce ClipKeep, una herramienta rápida y fiable para organizar y conservar medios de SNS a partir de enlaces públicos.',
     pt: 'Conheça o ClipKeep, uma ferramenta para organizar e preservar mídias de SNS a partir de links públicos.',
     fr: 'Découvrez ClipKeep, un outil pour organiser et conserver des médias SNS à partir de liens publics.',
     id: 'Pelajari ClipKeep, alat untuk mengelola dan menyimpan media SNS dari tautan publik.',
@@ -66,3 +66,4 @@ export default async function AboutPage({ searchParams }: Props) {
 
   return <AboutContentClient localeParam={localeParam} />;
 }
+

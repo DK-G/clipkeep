@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { normalizeLocale, legalText, localeDir } from '@/lib/i18n/ui';
 
 interface Props {
@@ -16,8 +16,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const descriptions = {
     en: 'Read the terms and conditions for using ClipKeep services.',
     ja: 'ClipKeepのサービス利用に関する利用条件を確認できます。',
-    ar: 'اطلع على شروط وأحكام استخدام خدمات ClipKeep.',
-    es: 'Consulta los términos y condiciones para usar los servicios de ClipKeep.',
+    ar: 'راجع شروط وأحكام استخدام خدمات ClipKeep، بما في ذلك نطاق الخدمة ومسؤوليات المستخدم.',
+    es: 'Consulta los términos y condiciones de uso de ClipKeep, incluido el alcance del servicio y las responsabilidades del usuario.',
     pt: 'Leia os termos e condições para usar os serviços do ClipKeep.',
     fr: 'Consultez les conditions d’utilisation des services ClipKeep.',
     id: 'Baca syarat dan ketentuan penggunaan layanan ClipKeep.',
@@ -56,7 +56,7 @@ export default async function TermsPage({ searchParams }: Props) {
   return (
     <main dir={dir} className="max-w-4xl mx-auto px-6 py-12 text-slate-900 dark:text-slate-50">
       <h1 className="text-4xl font-extrabold mb-4 tracking-tight">{t.title}</h1>
-      <p className="text-xl text-slate-600 dark:text-slate-400 mb-12 uppercase font-semibold">{t.lastUpdated}</p>
+      <p className="text-xl text-slate-600 dark:text-slate-400 mb-12">{t.lastUpdated}</p>
 
       <div className="space-y-10">
         {t.sections.map((section, index) => (
@@ -71,3 +71,4 @@ export default async function TermsPage({ searchParams }: Props) {
     </main>
   );
 }
+

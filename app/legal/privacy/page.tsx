@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { normalizeLocale, legalText, localeDir } from '@/lib/i18n/ui';
 
 interface Props {
@@ -16,8 +16,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const descriptions = {
     en: 'Learn how ClipKeep handles personal data and privacy protection.',
     ja: 'ClipKeepにおける個人データの取り扱いとプライバシー保護方針を説明します。',
-    ar: 'تعرّف على كيفية تعامل ClipKeep مع البيانات الشخصية وحماية الخصوصية.',
-    es: 'Descubre cómo ClipKeep gestiona los datos personales y protege la privacidad.',
+    ar: 'تعرّف على كيفية معالجة ClipKeep للبيانات وحماية الخصوصية، بما في ذلك استخدام التحليلات وملفات تعريف الارتباط.',
+    es: 'Conoce cómo ClipKeep trata los datos personales y protege la privacidad, incluido el uso de analítica y cookies.',
     pt: 'Saiba como o ClipKeep trata dados pessoais e protege sua privacidade.',
     fr: 'Découvrez comment ClipKeep traite les données personnelles et protège la vie privée.',
     id: 'Pelajari bagaimana ClipKeep menangani data pribadi dan melindungi privasi.',
@@ -71,3 +71,4 @@ export default async function PrivacyPage({ searchParams }: Props) {
     </main>
   );
 }
+

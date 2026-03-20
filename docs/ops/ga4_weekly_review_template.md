@@ -17,7 +17,7 @@
 
 ## セグメント確認
 - platform別（twitter / telegram / tiktok）
-- locale別（en / ar）
+- locale別（en / es / ar）
 - gallery_section別（recent / trending）
 
 ## 判定
@@ -38,3 +38,4 @@
 - 実施したUI変更:
 - 懸念点:
 - 次週タスク:
+

@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+﻿import { Metadata } from 'next';
 import { galleryPages, normalizeLocale } from '@/lib/i18n/ui';
 
 export function getGalleryMetadata(type: string, platform: string, localeStr: string | null): Metadata {
@@ -19,6 +19,7 @@ export function getGalleryMetadata(type: string, platform: string, localeStr: st
       canonical: url,
       languages: {
         en: `${base}${path}`,
+        es: `${base}${path}?locale=es`,
         ja: `${base}${path}?locale=ja`,
         ar: `${base}${path}?locale=ar`,
       },

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { localeDir, normalizeLocale, type Locale } from '@/lib/i18n/ui';
 
@@ -136,7 +136,7 @@ const blogText: Record<Locale, BlogDict> = {
   },
   ar: {
     editorialGuide: 'دليل تحريري',
-    title: 'الدليل العملي لأرشفة الوسائط الرقمية في 2026',
+    title: 'الدليل العملي لأرشفة الوسائط الرقمية: حفظ محتوى الشبكات في 2026',
     byline: 'فريق ClipKeep التحريري',
     lastUpdatedLabel: 'آخر تحديث',
     readTime: 'مدة القراءة 15 دقيقة',
@@ -152,7 +152,7 @@ const blogText: Record<Locale, BlogDict> = {
       },
       {
         heading: '2. مكونات الأرشيف الشخصي المتين',
-        paragraphs: ['اعتمد منهجية ثابتة بدل التنزيل العشوائي. طبّق قاعدة 3-2-1 بنسختها المناسبة لوسائط SNS.'],
+        paragraphs: ['اعتمد منهجية ثابتة بدل التنزيل العشوائي. طبّق قاعدة 3-2-1 بصيغة مناسبة لمحتوى الشبكات الاجتماعية.'],
         bullets: [
           { label: '3 نسخ', body: 'احتفظ بثلاث نسخ على الأقل من المواد المهمة.' },
           { label: 'وسيلتا تخزين مختلفتان', body: 'مثل SSD مع تخزين سحابي.' },
@@ -184,23 +184,23 @@ const blogText: Record<Locale, BlogDict> = {
     ctaTitle: 'ابدأ أرشفتك اليوم',
     ctaBeforeLink: 'لبداية عملية ومنظمة، انتقل إلى ',
     ctaLink: 'أداة الاستخراج الرئيسية',
-    ctaAfterLink: ' وابدأ بناء مكتبتك الرقمية بخطوات واضحة وآمنة.',
+    ctaAfterLink: ' لتبدأ بناء مكتبتك الرقمية بخطوات واضحة وآمنة.',
     footer: '© 2026 ClipKeep Editorial. جميع الحقوق محفوظة. ضمن التزامنا برفع الثقافة الرقمية وحفظ المحتوى.',
   },
   es: {
-    editorialGuide: 'Guia editorial',
-    title: 'Guia practico de archivo de medios digitales en 2026',
+    editorialGuide: 'Guía editorial',
+    title: 'Guía práctica de archivado de medios digitales en 2026',
     byline: 'Equipo editorial de ClipKeep',
-    lastUpdatedLabel: 'Ultima actualizacion',
+    lastUpdatedLabel: 'Última actualización',
     readTime: 'Lectura: 15 min',
     intro:
-      'Cuando el contenido digital cambia con rapidez, conservar medios de Telegram, X y TikTok se vuelve una habilidad clave para archivo personal y trabajo de investigacion.',
+      'Cuando el contenido digital cambia con rapidez, conservar medios de Telegram, X y TikTok se vuelve una habilidad clave para archivo personal y trabajo de investigación.',
     sections: [
       {
-        heading: '1. Por que archivar ahora',
+        heading: '1. Por qué archivar ahora',
         paragraphs: [
-          'Las plataformas sociales son enormes y dinamicas, pero tambien fragiles. Videos y publicaciones pueden desaparecer por cambios de politica o de infraestructura.',
-          'Archivar no es solo guardar un archivo: tambien es conservar el contexto en el que fue compartido.',
+          'Las plataformas sociales son enormes y dinámicas, pero también frágiles. Videos y publicaciones pueden desaparecer por cambios de política o de infraestructura.',
+          'Archivar no es solo guardar un archivo: también es conservar el contexto en el que fue compartido.',
         ],
       },
       {
@@ -209,39 +209,39 @@ const blogText: Record<Locale, BlogDict> = {
         bullets: [
           { label: '3 copias', body: 'Mantener al menos tres copias del material importante.' },
           { label: '2 tipos de almacenamiento', body: 'Por ejemplo, SSD y almacenamiento en la nube.' },
-          { label: '1 copia fuera del sitio', body: 'Guardar una copia en otra ubicacion fisica.' },
+          { label: '1 copia fuera del sitio', body: 'Guardar una copia en otra ubicación física.' },
         ],
       },
       {
         heading: '3. Puntos clave de Telegram',
         paragraphs: [
-          'Telegram suele mantener buena calidad en archivos multimedia, pero su extraccion fuera del cliente oficial puede requerir un flujo mas cuidadoso.',
-          'Cuando sea posible, prioriza rutas de stream directas para reducir recomprension y perdida de calidad.',
+          'Telegram suele mantener buena calidad en archivos multimedia, pero su extracción fuera del cliente oficial puede requerir un flujo más cuidadoso.',
+          'Cuando sea posible, prioriza rutas de stream directas para reducir recomprensión y pérdida de calidad.',
         ],
       },
       {
         heading: '4. Cambios en X (Twitter)',
         paragraphs: [
-          'En X, varios recursos se entregan por streaming segmentado (HLS), por lo que guardar con metodos basicos no siempre funciona bien.',
-          'Conviene usar un flujo de extraccion que deje un archivo reproducible y reutilizable a futuro.',
+          'En X, varios recursos se entregan por streaming segmentado (HLS), por lo que guardar con métodos básicos no siempre funciona bien.',
+          'Conviene usar un flujo de extracción que deje un archivo reproducible y reutilizable a futuro.',
         ],
       },
       {
-        heading: '5. Etica y marco legal',
+        heading: '5. Ética y marco legal',
         paragraphs: [
-          'El uso personal, academico y de redistribucion no se evalua igual en todos los paises.',
-          'Respeta siempre los derechos del creador y evita la redistribucion no autorizada.',
+          'El uso personal, académico y de redistribución no se evalúa igual en todos los países.',
+          'Respeta siempre los derechos del creador y evita la redistribución no autorizada.',
         ],
       },
     ],
     ctaTitle: 'Empieza hoy tu archivo',
     ctaBeforeLink: 'Comienza desde nuestra ',
-    ctaLink: 'herramienta principal de extraccion',
-    ctaAfterLink: ' y construye una biblioteca personal ordenada y reutilizable.',
+    ctaLink: 'herramienta principal de extracción',
+    ctaAfterLink: ' y construye una biblioteca personal ordenada, segura y reutilizable.',
     footer: '© 2026 ClipKeep Editorial. Todos los derechos reservados.',
   },
   pt: {
-    editorialGuide: 'Guia editorial',
+    editorialGuide: 'Guía editorial',
     title: 'Guia pratico para arquivamento de midia digital em 2026',
     byline: 'Equipe editorial ClipKeep',
     lastUpdatedLabel: 'Ultima atualizacao',
@@ -570,11 +570,11 @@ const blogMeta: Record<Locale, { title: string; description: string }> = {
   },
   ar: {
     title: 'دليل أرشفة الوسائط الرقمية 2026 | ClipKeep',
-    description: 'دليل عملي لأرشفة وسائط Telegram وX وTikTok بخطوات واضحة.',
+    description: 'دليل عملي لحفظ وسائط Telegram وX وTikTok بخطوات واضحة وآمنة.',
   },
   es: {
-    title: 'Guia de archivado digital 2026 | ClipKeep',
-    description: 'Guia practica para conservar medios de Telegram, X y TikTok con un flujo estable.',
+    title: 'Guía de archivado digital 2026 | ClipKeep',
+    description: 'Guía práctica para conservar medios de Telegram, X y TikTok con un flujo estable y seguro.',
   },
   pt: {
     title: 'Guia de arquivamento digital 2026 | ClipKeep',
@@ -692,3 +692,4 @@ export default async function MediaArchivingGuidePage({ searchParams }: Props) {
     </main>
   );
 }
+

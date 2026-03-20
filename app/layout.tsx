@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Script from 'next/script';
 import { HeaderShell } from '@/components/header-shell';
@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     canonical: '/',
     languages: {
       en: '/?locale=en',
+      es: '/?locale=es',
       ar: '/?locale=ar',
       'x-default': '/',
     },
@@ -45,7 +46,7 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: 'ClipKeep',
   url: siteUrl,
-  inLanguage: ['en', 'ja', 'ar'],
+  inLanguage: ['en', 'es', 'ar'],
   potentialAction: {
     '@type': 'SearchAction',
     target: {
@@ -95,3 +96,6 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+
