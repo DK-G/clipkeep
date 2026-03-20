@@ -88,6 +88,13 @@ export default function RootLayout({
           <HeaderShell />
         </Suspense>
 
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5877075056686035"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+
         {children}
         <Footer />
       </body>
