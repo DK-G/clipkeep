@@ -1,3 +1,4 @@
+import { keywordArticles } from '@/lib/blog/keyword-articles';
 import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -16,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/download-twitter-video', priority: 0.9, changeFrequency: 'daily' as const, locales: allLocales },
     { path: '/download-tiktok-video', priority: 0.8, changeFrequency: 'weekly' as const, locales: allLocales },
     { path: '/download-instagram-video', priority: 0.8, changeFrequency: 'weekly' as const, locales: allLocales },
+    { path: '/blog', priority: 0.8, changeFrequency: 'daily' as const, locales: ['', '?locale=es', '?locale=ar'] },
     { path: '/blog/guide-to-media-archiving', priority: 0.9, changeFrequency: 'monthly' as const, locales: allLocales },
     { path: '/legal/terms', priority: 0.5, changeFrequency: 'monthly' as const, locales: allLocales },
     { path: '/legal/privacy', priority: 0.5, changeFrequency: 'monthly' as const, locales: allLocales },
@@ -27,9 +29,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/instagram-trending-videos', priority: 0.7, changeFrequency: 'daily' as const, locales: allLocales },
   ];
 
+
+  const blogKeywordRoutes = keywordArticles.map((a) => ({
+    path: `/blog/${a.slug}`,
+    priority: 0.7,
+    changeFrequency: 'weekly' as const,
+    locales: ['', '?locale=es', '?locale=ar'],
+  }));
   const sitemapEntries: MetadataRoute.Sitemap = [];
 
-  for (const route of routes) {
+  for (const route of [...routes, ...blogKeywordRoutes]) {
     for (const locale of route.locales) {
       sitemapEntries.push({
         url: `${base}${route.path}${locale}`,
