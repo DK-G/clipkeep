@@ -1,18 +1,18 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { solutionText, localeDir } from '@/lib/i18n/ui';
+import { solutionText, localeDir, type Locale } from '@/lib/i18n/ui';
 import type { SolutionPage as PageData } from '@/lib/solution-pages/store';
 
 interface Props {
   data: PageData;
-  locale: 'en' | 'ar';
+  locale: Locale;
 }
 
 export function SolutionContentClient({ data, locale }: Props) {
   const router = useRouter();
   const dir = localeDir(locale);
-  const t = solutionText[locale];
+  const t = solutionText[locale] || solutionText.en;
 
   const buildUrlWithLocale = (path: string) => {
     return `${path}?locale=${locale}`;

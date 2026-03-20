@@ -1,23 +1,26 @@
-import { getRequestId } from "@/lib/api/request-id";
+﻿import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
 import { findSolutionPage } from "@/lib/solution-pages/store";
+import { normalizeLocale, type Locale } from "@/lib/i18n/ui";
 
 type Context = {
   params: Promise<{ slug: string }>;
 };
 
-function normalizeLocale(value: string | null): "en" | "ar" | null {
+const supported = new Set(["en", "ja", "ar", "es", "pt", "fr", "id", "hi", "de", "tr"]);
+
+function normalizeApiLocale(value: string | null): Locale | null {
   if (!value) return "en";
   const normalized = value.toLowerCase();
-  if (normalized === "en" || normalized === "ar") return normalized;
-  return null;
+  if (!supported.has(normalized)) return null;
+  return normalizeLocale(normalized);
 }
 
 export async function GET(request: Request, context: Context) {
   const requestId = await getRequestId();
   const { slug } = await context.params;
   const { searchParams } = new URL(request.url);
-  const locale = normalizeLocale(searchParams.get("locale"));
+  const locale = normalizeApiLocale(searchParams.get("locale"));
 
   if (!locale) {
     return failure({
@@ -25,7 +28,7 @@ export async function GET(request: Request, context: Context) {
       requestId,
       error: {
         code: "INVALID_REQUEST",
-        message: "locale must be en or ar",
+        message: "locale must be one of en, ja, ar, es, pt, fr, id, hi, de, tr",
         details: {},
       },
     });

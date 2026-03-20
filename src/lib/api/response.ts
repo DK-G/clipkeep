@@ -1,7 +1,8 @@
 ﻿import { NextResponse } from "next/server";
+import type { Locale } from "@/lib/i18n/ui";
 import type { ApiErrorBody, ApiFailure, ApiMeta, ApiSuccess } from "@/lib/api/types";
 
-function buildMeta(requestId: string, locale: "en" | "ar", degraded: boolean): ApiMeta {
+function buildMeta(requestId: string, locale: Locale, degraded: boolean): ApiMeta {
   return {
     requestId,
     locale,
@@ -13,7 +14,7 @@ function buildMeta(requestId: string, locale: "en" | "ar", degraded: boolean): A
 export function success<T>(args: {
   data: T;
   requestId: string;
-  locale?: "en" | "ar";
+  locale?: Locale;
   degraded?: boolean;
   status?: number;
 }): NextResponse<ApiSuccess<T>> {
@@ -34,7 +35,7 @@ export function success<T>(args: {
 export function failure(args: {
   error: ApiErrorBody;
   requestId: string;
-  locale?: "en" | "ar";
+  locale?: Locale;
   degraded?: boolean;
   status: number;
 }): NextResponse<ApiFailure> {

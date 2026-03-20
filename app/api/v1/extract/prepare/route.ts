@@ -1,15 +1,16 @@
-import { evaluateDegraded } from "@/lib/degraded/evaluator";
+﻿import { evaluateDegraded } from "@/lib/degraded/evaluator";
 import { recordExtractAttempt } from "@/lib/degraded/state";
 import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
 import { createJob } from "@/lib/extract/store";
 import { checkExtractRateLimit, getClientKey } from "@/lib/rate-limit/extract";
 import type { Platform } from "@/lib/extract/types";
+import type { Locale } from "@/lib/i18n/ui";
 
 type PrepareBody = {
   url?: string;
   platform?: string;
-  locale?: "en" | "ar";
+  locale?: Locale;
 };
 
 function normalizePlatform(raw: string): Platform | null {
@@ -157,4 +158,7 @@ export async function POST(request: Request) {
     });
   }
 }
+
+
+
 
