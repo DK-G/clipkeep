@@ -1,0 +1,30 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<!-- Triangle (cut shape) -->
+<path d="
+M140 100
+L140 412
+L380 256
+Z
+M260 210
+Q280 190 300 210
+Q280 230 260 210
+Z
+" fill="#2563EB" fill-rule="evenodd"/>
+<!-- Paperclip -->
+<g transform="rotate(-20 300 200)">
+<path d="
+M300 120
+C360 120 380 150 380 180
+C380 210 360 240 300 240
+L260 240
+C230 240 210 220 210 190
+C210 160 230 140 260 140
+L300 140
+"
+fill="none"
+stroke="#1F2937"
+stroke-width="36"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+</g>
+</svg>

@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Script from 'next/script';
 import { HeaderShell } from '@/components/header-shell';
@@ -38,6 +38,10 @@ export const metadata: Metadata = {
     title: 'ClipKeep',
     description: 'SNS media extraction workflows with multilingual solution guidance.',
     creator: '@clipkeep',
+  },
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
   },
 };
  
