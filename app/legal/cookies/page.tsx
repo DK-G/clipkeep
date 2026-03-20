@@ -13,9 +13,22 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const path = '/legal/cookies';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
+  const descriptions = {
+    en: 'See how ClipKeep uses cookies and similar technologies.',
+    ja: 'ClipKeepで使用するCookieおよび類似技術の取り扱いを説明します。',
+    ar: 'تعرّف على كيفية استخدام ClipKeep لملفات تعريف الارتباط والتقنيات المشابهة.',
+    es: 'Consulta cómo ClipKeep utiliza cookies y tecnologías similares.',
+    pt: 'Veja como o ClipKeep usa cookies e tecnologias semelhantes.',
+    fr: 'Découvrez comment ClipKeep utilise les cookies et technologies similaires.',
+    id: 'Lihat bagaimana ClipKeep menggunakan cookie dan teknologi serupa.',
+    hi: 'जानें कि ClipKeep कुकीज़ और समान तकनीकों का उपयोग कैसे करता है।',
+    de: 'Erfahren Sie, wie ClipKeep Cookies und ähnliche Technologien verwendet.',
+    tr: 'ClipKeep’in çerezleri ve benzer teknolojileri nasıl kullandığını inceleyin.',
+  } as const;
+
   return {
     title: t.title,
-    description: 'Cookie Policy for ClipKeep - Learn how we use cookies to improve your experience.',
+    description: descriptions[locale],
     alternates: {
       canonical: url,
       languages: {

@@ -7,6 +7,22 @@ interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
+function loadingText(locale: ReturnType<typeof normalizeLocale>): string {
+  const dict = {
+    en: 'Loading...',
+    ja: '読み込み中...',
+    ar: 'جار التحميل...',
+    es: 'Cargando...',
+    pt: 'Carregando...',
+    fr: 'Chargement...',
+    id: 'Memuat...',
+    hi: 'लोड हो रहा है...',
+    de: 'Wird geladen...',
+    tr: 'Yukleniyor...'
+  } as const;
+  return dict[locale];
+}
+
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
@@ -94,9 +110,10 @@ export default async function InstagramDownloaderPage({ searchParams }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Suspense fallback={<div className="p-12 text-center text-slate-600 dark:text-slate-400">Loading...</div>}>
+      <Suspense fallback={<div className="p-12 text-center text-slate-600 dark:text-slate-400">{loadingText(locale)}</div>}>
         <InstagramDownloaderClient locale={locale} />
       </Suspense>
     </>
   );
 }
+

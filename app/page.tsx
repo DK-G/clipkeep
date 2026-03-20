@@ -8,11 +8,52 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
   const base = 'https://clipkeep.net';
   const url = `${base}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
+  const meta = {
+    en: {
+      title: 'SNS Downloader Hub',
+      description: 'ClipKeep home hub for Twitter, Telegram, and TikTok downloader tools, weekly ranking, and recent downloads.',
+    },
+    ja: {
+      title: 'SNS動画保存ハブ',
+      description: 'X、Telegram、TikTok、Instagram向けの保存ツール、週間ランキング、最近のダウンロードをまとめた案内ページです。',
+    },
+    ar: {
+      title: 'بوابة تنزيل فيديوهات SNS',
+      description: 'صفحة ClipKeep الرئيسية لأدوات التنزيل والتصنيف الأسبوعي وأحدث التنزيلات.',
+    },
+    es: {
+      title: 'Centro de descarga SNS',
+      description: 'Página principal de ClipKeep con herramientas de descarga, ranking semanal y descargas recientes.',
+    },
+    pt: {
+      title: 'Hub de download SNS',
+      description: 'Página inicial do ClipKeep com ferramentas de download, ranking semanal e downloads recentes.',
+    },
+    fr: {
+      title: 'Hub de téléchargement SNS',
+      description: 'Page d’accueil ClipKeep avec outils de téléchargement, classement hebdomadaire et téléchargements récents.',
+    },
+    id: {
+      title: 'Pusat unduhan SNS',
+      description: 'Halaman utama ClipKeep untuk alat unduh, peringkat mingguan, dan unduhan terbaru.',
+    },
+    hi: {
+      title: 'SNS डाउनलोड हब',
+      description: 'ClipKeep का मुख्य पृष्ठ: डाउनलोड टूल, साप्ताहिक रैंकिंग और हालिया डाउनलोड।',
+    },
+    de: {
+      title: 'SNS-Download-Hub',
+      description: 'ClipKeep-Startseite mit Download-Tools, Wochenranking und neuesten Downloads.',
+    },
+    tr: {
+      title: 'SNS indirme merkezi',
+      description: 'ClipKeep ana sayfası: indirme araçları, haftalık sıralama ve son indirmeler.',
+    },
+  } as const;
+
   return {
-    title: locale === 'ja' ? 'SNS動画抽出ハブ' : 'SNS Downloader Hub',
-    description: locale === 'ja' 
-      ? 'TikTok、Twitter、Instagram、Telegramの動画抽出ツール、ランキング、履歴を提供するSNS動画保存のハブサイトです。'
-      : 'ClipKeep home hub for Twitter, Telegram, and TikTok downloader tools, weekly ranking, and recent downloads.',
+    title: meta[locale].title,
+    description: meta[locale].description,
     alternates: {
       canonical: url,
       languages: {
@@ -28,7 +69,7 @@ type TopPageDict = {
   intro: string;
   toolsFeeds: string;
   downloader: string;
-  weeklyRanking: string;
+    weeklyRanking: 'Tendências',
   recentDownloads: string;
   siteInfo: string;
   notes: string;
@@ -47,8 +88,8 @@ const topPageText: Record<Locale, TopPageDict> = {
     intro: 'This is the gateway page for SNS video downloaders. Choose a page based on your purpose.',
     toolsFeeds: 'SNS Tools & Feeds',
     downloader: 'Downloader',
-    weeklyRanking: 'Weekly Ranking',
-    recentDownloads: 'Recent Downloads',
+    weeklyRanking: 'Trend',
+    recentDownloads: 'Latest',
     siteInfo: 'Site Information',
     notes: 'Notes',
     noteBody: 'The home page does not provide extraction directly. Please use each dedicated downloader page.',
@@ -62,27 +103,27 @@ const topPageText: Record<Locale, TopPageDict> = {
   },
   ja: {
     intro: 'SNS動画ダウンローダーへの案内ページです。用途に応じて各ページへ進んでください。',
-    toolsFeeds: 'SNS Tools & Feeds',
-    downloader: 'Downloader',
-    weeklyRanking: 'Weekly Ranking',
-    recentDownloads: 'Recent Downloads',
-    siteInfo: 'Site Information',
-    notes: 'Notes',
+    toolsFeeds: 'SNSツールとフィード',
+    downloader: 'ダウンローダー',
+    weeklyRanking: 'トレンド',
+    recentDownloads: '最新',
+    siteInfo: 'サイト情報',
+    notes: '注意事項',
     noteBody: 'トップページでは抽出機能を提供しません。抽出は各専用ダウンローダーページから行ってください。',
-    sitemap: 'Sitemap',
-    serviceStatus: 'Service Status',
-    terms: 'Terms of Service',
-    privacy: 'Privacy Policy',
-    cookies: 'Cookie Policy',
-    dmca: 'DMCA / Copyright',
-    contact: 'Contact',
+    sitemap: 'サイトマップ',
+    serviceStatus: 'サービス稼働状況',
+    terms: '利用規約',
+    privacy: 'プライバシーポリシー',
+    cookies: 'クッキーポリシー',
+    dmca: 'DMCA / 著作権',
+    contact: 'お問い合わせ',
   },
   ar: {
     intro: 'هذه صفحة التوجيه لأدوات تنزيل فيديوهات SNS. اختر الصفحة المناسبة حسب الهدف.',
     toolsFeeds: 'الأدوات والخلاصات',
     downloader: 'أداة التنزيل',
-    weeklyRanking: 'الترتيب الأسبوعي',
-    recentDownloads: 'أحدث التنزيلات',
+    weeklyRanking: 'الرائج',
+    recentDownloads: 'الأحدث',
     siteInfo: 'معلومات الموقع',
     notes: 'ملاحظات',
     noteBody: 'لا توفر الصفحة الرئيسية الاستخراج مباشرة. استخدم صفحات التنزيل المخصصة.',
@@ -98,8 +139,8 @@ const topPageText: Record<Locale, TopPageDict> = {
     intro: 'Esta es la página de acceso a los descargadores SNS. Elige la sección según tu objetivo.',
     toolsFeeds: 'Herramientas y feeds SNS',
     downloader: 'Descargador',
-    weeklyRanking: 'Ranking semanal',
-    recentDownloads: 'Descargas recientes',
+    weeklyRanking: 'Tendencias',
+    recentDownloads: 'Últimos',
     siteInfo: 'Información del sitio',
     notes: 'Notas',
     noteBody: 'La página principal no ofrece extracción directa. Usa cada página de descargador dedicada.',
@@ -114,9 +155,9 @@ const topPageText: Record<Locale, TopPageDict> = {
   pt: {
     intro: 'Esta é a página de entrada dos baixadores SNS. Escolha a página conforme seu objetivo.',
     toolsFeeds: 'Ferramentas e feeds SNS',
-    downloader: 'Downloader',
-    weeklyRanking: 'Ranking semanal',
-    recentDownloads: 'Downloads recentes',
+    downloader: 'Baixador',
+    weeklyRanking: 'Tendências',
+    recentDownloads: 'Últimos',
     siteInfo: 'Informações do site',
     notes: 'Notas',
     noteBody: 'A página inicial não oferece extração direta. Use cada página de downloader dedicada.',
@@ -132,8 +173,8 @@ const topPageText: Record<Locale, TopPageDict> = {
     intro: 'Ceci est la page d’entrée des outils de téléchargement SNS. Choisissez la page selon votre besoin.',
     toolsFeeds: 'Outils et flux SNS',
     downloader: 'Téléchargeur',
-    weeklyRanking: 'Classement hebdomadaire',
-    recentDownloads: 'Téléchargements récents',
+    weeklyRanking: 'Tendances',
+    recentDownloads: 'Récents',
     siteInfo: 'Informations du site',
     notes: 'Notes',
     noteBody: 'La page d’accueil ne fournit pas l’extraction directe. Utilisez les pages dédiées.',
@@ -149,8 +190,8 @@ const topPageText: Record<Locale, TopPageDict> = {
     intro: 'Ini adalah halaman gerbang untuk pengunduh video SNS. Pilih halaman sesuai kebutuhan Anda.',
     toolsFeeds: 'Alat & feed SNS',
     downloader: 'Pengunduh',
-    weeklyRanking: 'Peringkat mingguan',
-    recentDownloads: 'Unduhan terbaru',
+    weeklyRanking: 'Tren',
+    recentDownloads: 'Terbaru',
     siteInfo: 'Informasi situs',
     notes: 'Catatan',
     noteBody: 'Halaman beranda tidak menyediakan ekstraksi langsung. Gunakan halaman pengunduh khusus.',
@@ -166,8 +207,8 @@ const topPageText: Record<Locale, TopPageDict> = {
     intro: 'यह SNS वीडियो डाउनलोडर का प्रवेश पृष्ठ है। अपने उपयोग के अनुसार पेज चुनें।',
     toolsFeeds: 'SNS टूल्स और फीड्स',
     downloader: 'डाउनलोडर',
-    weeklyRanking: 'साप्ताहिक रैंकिंग',
-    recentDownloads: 'हालिया डाउनलोड',
+    weeklyRanking: 'ट्रेंडिंग',
+    recentDownloads: 'नवीनतम',
     siteInfo: 'साइट जानकारी',
     notes: 'नोट्स',
     noteBody: 'होम पेज सीधे एक्सट्रैक्शन नहीं देता। कृपया प्रत्येक समर्पित डाउनलोडर पेज का उपयोग करें।',
@@ -183,8 +224,8 @@ const topPageText: Record<Locale, TopPageDict> = {
     intro: 'Dies ist die Einstiegsseite für SNS-Video-Downloader. Wählen Sie je nach Zweck die passende Seite.',
     toolsFeeds: 'SNS-Tools & Feeds',
     downloader: 'Downloader',
-    weeklyRanking: 'Wochenranking',
-    recentDownloads: 'Neueste Downloads',
+    weeklyRanking: 'Trends',
+    recentDownloads: 'Neueste',
     siteInfo: 'Seiteninformationen',
     notes: 'Hinweise',
     noteBody: 'Die Startseite bietet keine direkte Extraktion. Bitte verwenden Sie die jeweiligen Downloader-Seiten.',
@@ -200,8 +241,8 @@ const topPageText: Record<Locale, TopPageDict> = {
     intro: 'Bu, SNS video indiricileri için giriş sayfasıdır. Amacınıza göre ilgili sayfayı seçin.',
     toolsFeeds: 'SNS araçları ve akışlar',
     downloader: 'İndirici',
-    weeklyRanking: 'Haftalık sıralama',
-    recentDownloads: 'Son indirmeler',
+    weeklyRanking: 'Trend',
+    recentDownloads: 'En Son',
     siteInfo: 'Site bilgileri',
     notes: 'Notlar',
     noteBody: 'Ana sayfa doğrudan çıkarım sağlamaz. Lütfen ilgili indirici sayfalarını kullanın.',

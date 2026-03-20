@@ -13,9 +13,22 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const path = '/legal/privacy';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
+  const descriptions = {
+    en: 'Learn how ClipKeep handles personal data and privacy protection.',
+    ja: 'ClipKeepにおける個人データの取り扱いとプライバシー保護方針を説明します。',
+    ar: 'تعرّف على كيفية تعامل ClipKeep مع البيانات الشخصية وحماية الخصوصية.',
+    es: 'Descubre cómo ClipKeep gestiona los datos personales y protege la privacidad.',
+    pt: 'Saiba como o ClipKeep trata dados pessoais e protege sua privacidade.',
+    fr: 'Découvrez comment ClipKeep traite les données personnelles et protège la vie privée.',
+    id: 'Pelajari bagaimana ClipKeep menangani data pribadi dan melindungi privasi.',
+    hi: 'जानें कि ClipKeep व्यक्तिगत डेटा को कैसे संभालता है और गोपनीयता की रक्षा करता है।',
+    de: 'Erfahren Sie, wie ClipKeep personenbezogene Daten verarbeitet und die Privatsphäre schützt.',
+    tr: 'ClipKeep’in kişisel verileri nasıl işlediğini ve gizliliği nasıl koruduğunu öğrenin.',
+  } as const;
+
   return {
     title: t.title,
-    description: 'Privacy Policy for ClipKeep - Learn how we handle your data and protect your privacy.',
+    description: descriptions[locale],
     alternates: {
       canonical: url,
       languages: {

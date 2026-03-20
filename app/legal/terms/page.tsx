@@ -13,9 +13,22 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const path = '/legal/terms';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
+  const descriptions = {
+    en: 'Read the terms and conditions for using ClipKeep services.',
+    ja: 'ClipKeepのサービス利用に関する利用条件を確認できます。',
+    ar: 'اطلع على شروط وأحكام استخدام خدمات ClipKeep.',
+    es: 'Consulta los términos y condiciones para usar los servicios de ClipKeep.',
+    pt: 'Leia os termos e condições para usar os serviços do ClipKeep.',
+    fr: 'Consultez les conditions d’utilisation des services ClipKeep.',
+    id: 'Baca syarat dan ketentuan penggunaan layanan ClipKeep.',
+    hi: 'ClipKeep सेवाओं के उपयोग की शर्तें और नियम पढ़ें।',
+    de: 'Lesen Sie die Nutzungsbedingungen für die Dienste von ClipKeep.',
+    tr: 'ClipKeep hizmetlerinin kullanım şart ve koşullarını okuyun.',
+  } as const;
+
   return {
     title: t.title,
-    description: 'Terms of Service for ClipKeep - Guidelines and rules for using our media extraction tool.',
+    description: descriptions[locale],
     alternates: {
       canonical: url,
       languages: {

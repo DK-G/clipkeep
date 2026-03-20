@@ -2393,8 +2393,8 @@ export const degradedText: Record<Locale, DegradedDict> = {
 export const menuText: Record<Locale, MenuDict> = {
   en: {
     downloads: "DOWNLOAD",
-    rankings: "Weekly Ranking",
-    latest: "Latest Downloads",
+    rankings: "Trend",
+    latest: "Latest",
     language: "LANGUAGE",
     more: "MORE",
     twitter: "Twitter (X) Downloader",
@@ -2408,8 +2408,8 @@ export const menuText: Record<Locale, MenuDict> = {
   },
   ar: {
     downloads: "تنزيل",
-    rankings: "الترتيب الأسبوعي",
-    latest: "آخر التنزيلات",
+    rankings: "الرائج",
+    latest: "الأحدث",
     language: "اللغة",
     more: "المزيد",
     twitter: "تويتر",
@@ -2423,8 +2423,8 @@ export const menuText: Record<Locale, MenuDict> = {
   },
   ja: {
     downloads: "ダウンロード",
-    rankings: "週間ランキング",
-    latest: "最近のダウンロード",
+    rankings: "トレンド",
+    latest: "最新",
     language: "言語切り替え",
     more: "その他",
     twitter: "Twitter 保存",
@@ -2438,8 +2438,8 @@ export const menuText: Record<Locale, MenuDict> = {
   },
   es: {
     downloads: "DESCARGAS",
-    rankings: "Ranking semanal",
-    latest: "Recientes",
+    rankings: "Tendencias",
+    latest: "Últimos",
     language: "IDIOMA",
     more: "MÁS",
     twitter: "Descargador de Twitter (X)",
@@ -2453,8 +2453,8 @@ export const menuText: Record<Locale, MenuDict> = {
   },
   pt: {
     downloads: "DOWNLOADS",
-    rankings: "Ranking Semanal",
-    latest: "Recentes",
+    rankings: "Tendências",
+    latest: "Últimos",
     language: "IDIOMA",
     more: "MAIS",
     twitter: "Baixador do Twitter (X)",
@@ -2468,7 +2468,7 @@ export const menuText: Record<Locale, MenuDict> = {
   },
   fr: {
     downloads: "TÉLÉCHARGEMENTS",
-    rankings: "Classement hebdomadaire",
+    rankings: "Tendances",
     latest: "Récents",
     language: "LANGUE",
     more: "PLUS",
@@ -2483,7 +2483,7 @@ export const menuText: Record<Locale, MenuDict> = {
   },
   id: {
     downloads: "UNDUHAN",
-    rankings: "Peringkat Mingguan",
+    rankings: "Tren",
     latest: "Terbaru",
     language: "BAHASA",
     more: "LAINNYA",
@@ -2498,8 +2498,8 @@ export const menuText: Record<Locale, MenuDict> = {
   },
   hi: {
     downloads: "डाउनलोड",
-    rankings: "साप्ताहिक रैंकिंग",
-    latest: "नवीनतम डाउनलोड",
+    rankings: "ट्रेंडिंग",
+    latest: "नवीनतम",
     language: "भाषा",
     more: "अधिक",
     twitter: "ट्विटर डाउनलोडर",
@@ -2513,7 +2513,7 @@ export const menuText: Record<Locale, MenuDict> = {
   },
   de: {
     downloads: "DOWNLOADS",
-    rankings: "Wochen-Ranking",
+    rankings: "Trends",
     latest: "Neueste",
     language: "SPRACHE",
     more: "MEHR",
@@ -2528,8 +2528,8 @@ export const menuText: Record<Locale, MenuDict> = {
   },
   tr: {
     downloads: "İNDİRMELER",
-    rankings: "Haftalık Sıralama",
-    latest: "Son İndirmeler",
+    rankings: "Trend",
+    latest: "En Son",
     language: "DİL",
     more: "DAHA FAZLA",
     twitter: "Twitter İndirici",

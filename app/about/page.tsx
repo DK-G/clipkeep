@@ -14,29 +14,29 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
   const titles: Record<string, string> = {
-    en: 'About',
+    en: 'About ClipKeep',
     ja: 'ClipKeep について',
-    ar: 'حول',
+    ar: 'حول ClipKeep',
     es: 'Acerca de ClipKeep',
     pt: 'Sobre o ClipKeep',
-    fr: 'A propos de ClipKeep',
+    fr: 'À propos de ClipKeep',
     id: 'Tentang ClipKeep',
     hi: 'ClipKeep के बारे में',
-    de: 'Uber ClipKeep',
-    tr: 'ClipKeep Hakkinda',
+    de: 'Über ClipKeep',
+    tr: 'ClipKeep Hakkında',
   };
 
   const descriptions: Record<string, string> = {
-    en: 'Learn more about ClipKeep, a fast and secure media extraction tool for TikTok, Twitter, and Telegram.',
+    en: 'Learn more about ClipKeep, a fast and reliable tool for organizing public SNS media links.',
     ja: 'TikTok、Twitter、Telegram向けの高速で安全なメディア抽出ツール、ClipKeepについての詳細。',
-    ar: 'تعرف على المزيد حول ClipKeep، وهي أداة سريعة وآمنة لاستخراج الوسائط لتيك توك وتويتر وتيليجرام.',
-    es: 'Conoce ClipKeep, una herramienta para organizar y preservar medios de SNS mediante enlaces publicos.',
-    pt: 'Conheca o ClipKeep, uma ferramenta para organizar e preservar midias de SNS a partir de links publicos.',
-    fr: 'Decouvrez ClipKeep, un outil pour organiser et conserver des medias SNS a partir de liens publics.',
+    ar: 'تعرّف على ClipKeep، أداة سريعة وموثوقة لتنظيم روابط الوسائط العامة من شبكات التواصل.',
+    es: 'Conoce ClipKeep, una herramienta para organizar y preservar medios de SNS a partir de enlaces públicos.',
+    pt: 'Conheça o ClipKeep, uma ferramenta para organizar e preservar mídias de SNS a partir de links públicos.',
+    fr: 'Découvrez ClipKeep, un outil pour organiser et conserver des médias SNS à partir de liens publics.',
     id: 'Pelajari ClipKeep, alat untuk mengelola dan menyimpan media SNS dari tautan publik.',
-    hi: 'ClipKeep ke bare me jane, jo public links se SNS media ko sangrahit karne me madad karta hai.',
-    de: 'Erfahren Sie mehr uber ClipKeep, ein Tool zum Organisieren und Archivieren von SNS-Medien uber offentliche Links.',
-    tr: 'ClipKeep hakkinda bilgi alin: acik baglantilarla SNS medyasini duzenleme ve arsivleme araci.',
+    hi: 'ClipKeep के बारे में जानें, जो सार्वजनिक लिंक से SNS मीडिया को व्यवस्थित और सुरक्षित रखने में मदद करता है।',
+    de: 'Erfahren Sie mehr über ClipKeep, ein Tool zum Organisieren und Archivieren von SNS-Medien über öffentliche Links.',
+    tr: 'ClipKeep hakkında bilgi alın: açık bağlantılarla SNS medyasını düzenleme ve arşivleme aracı.',
   };
 
   return {

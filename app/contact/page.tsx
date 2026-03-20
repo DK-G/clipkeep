@@ -23,20 +23,20 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     id: 'Kontak',
     hi: 'संपर्क',
     de: 'Kontakt',
-    tr: 'Iletisim',
+    tr: 'İletişim',
   };
 
   const descriptions: Record<string, string> = {
-    en: 'Get in touch with the ClipKeep team for support, feedback, or DMCA inquiries.',
+    en: 'Contact the ClipKeep team for support, feedback, or DMCA inquiries.',
     ja: 'サポート、フィードバック、またはDMCAに関するお問い合わせはClipKeepチームまでご連絡ください。',
     ar: 'اتصل بفريق ClipKeep للحصول على الدعم أو الملاحظات أو استفسارات DMCA.',
     es: 'Ponte en contacto con el equipo de ClipKeep para soporte, comentarios o consultas de DMCA.',
-    pt: 'Entre em contato com a equipe do ClipKeep para suporte, feedback ou solicitacoes de DMCA.',
-    fr: 'Contactez l equipe ClipKeep pour le support, les retours ou les demandes DMCA.',
+    pt: 'Entre em contato com a equipe do ClipKeep para suporte, feedback ou solicitações de DMCA.',
+    fr: 'Contactez l\'équipe ClipKeep pour le support, les retours ou les demandes DMCA.',
     id: 'Hubungi tim ClipKeep untuk dukungan, masukan, atau permintaan DMCA.',
-    hi: 'Support, feedback, ya DMCA sawalon ke liye ClipKeep team se sampark karein.',
-    de: 'Kontaktieren Sie das ClipKeep-Team fur Support, Feedback oder DMCA-Anfragen.',
-    tr: 'Destek, geri bildirim veya DMCA talepleri icin ClipKeep ekibiyle iletisime gecin.',
+    hi: 'सहायता, फीडबैक या DMCA संबंधी प्रश्नों के लिए ClipKeep टीम से संपर्क करें।',
+    de: 'Kontaktieren Sie das ClipKeep-Team für Support, Feedback oder DMCA-Anfragen.',
+    tr: 'Destek, geri bildirim veya DMCA talepleri için ClipKeep ekibiyle iletişime geçin.',
   };
 
   return {

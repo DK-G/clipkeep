@@ -10,9 +10,23 @@ interface InstagramDownloaderClientProps {
   locale: Locale;
 }
 
+const sectionLabels: Record<Locale, { realtime: string; about: string }> = {
+  en: { realtime: 'Real-time', about: 'About' },
+  ar: { realtime: 'في الوقت الفعلي', about: 'حول' },
+  ja: { realtime: 'リアルタイム', about: 'について' },
+  es: { realtime: 'En tiempo real', about: 'Acerca de' },
+  pt: { realtime: 'Em tempo real', about: 'Sobre' },
+  fr: { realtime: 'En temps reel', about: 'A propos' },
+  id: { realtime: 'Waktu nyata', about: 'Tentang' },
+  hi: { realtime: 'रीयल टाइम', about: 'जानकारी' },
+  de: { realtime: 'Echtzeit', about: 'Info' },
+  tr: { realtime: 'Gercek zamanli', about: 'Hakkinda' },
+};
+
 export function InstagramDownloaderClient({ locale }: InstagramDownloaderClientProps) {
   const dir = localeDir(locale);
   const t = instagramText[locale];
+  const labels = sectionLabels[locale];
 
   const [message, setMessage] = useState(t.subtitle);
   const [helpSlug, setHelpSlug] = useState<string | null>(null);
@@ -68,7 +82,7 @@ export function InstagramDownloaderClient({ locale }: InstagramDownloaderClientP
         </section>
       </div>
 
-      <GallerySection id="realtime" platform="instagram" locale={locale} title="Real-time / リアルタイム" type="recent" />
+      <GallerySection id="realtime" platform="instagram" locale={locale} title={labels.realtime} type="recent" />
 
       <div className="my-12">
         <AdsterraNative />
@@ -84,3 +98,4 @@ export function InstagramDownloaderClient({ locale }: InstagramDownloaderClientP
     </main>
   );
 }
+

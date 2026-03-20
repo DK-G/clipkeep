@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { useEffect, useState, Suspense } from 'react';
@@ -82,16 +82,16 @@ function ResultContent() {
             }
           }
         } else {
-          setError(result.error?.message || 'Failed to fetch job');
+          setError(result.error?.message || t.failedToLoad);
         }
       } catch {
-        setError('Connection error');
+        setError(t.networkError);
       }
     };
 
     poll();
     return () => clearTimeout(timer);
-  }, [jobId]);
+  }, [jobId, t.failedToLoad, t.networkError]);
 
   useEffect(() => {
     const loadSimilar = async () => {
@@ -216,7 +216,7 @@ function ResultContent() {
 
         {data.status === 'completed' && similar.length > 0 && (
           <section className="mt-10">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">You may also like</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{ui.similar}</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {similar.map((item) => (
                 <Link
@@ -264,10 +264,8 @@ function ResultContent() {
 
 export default function ResultPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div aria-hidden="true" />}>
       <ResultContent />
     </Suspense>
   );
 }
-
-
