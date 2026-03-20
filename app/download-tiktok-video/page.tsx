@@ -47,6 +47,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         hi: `${base}${path}?locale=hi`,
         de: `${base}${path}?locale=de`,
         tr: `${base}${path}?locale=tr`,
+        'x-default': `${base}${path}`,
       },
     },
     openGraph: {

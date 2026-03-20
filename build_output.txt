@@ -1,0 +1,29 @@
+﻿
+> clipkeep@0.1.0 build
+> node --max-old-space-size=4096 ./node_modules/next/dist/bin/next build
+
+   ▲ Next.js 15.2.9
+   - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+npm : 
+At line:1 char:1
++ npm run build > build_output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String)  
+   [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Failed to compile.
+
+./src/components/ads/adsterra.tsx
+3:8  Error: 'Script' is defined but never used.  @types
+cript-eslint/no-unused-vars
+12:31  Error: 'showPopunder' is assigned a value but ne
+ver used.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more h
+ere: https://nextjs.org/docs/app/api-reference/config/e
+slint#disabling-rules

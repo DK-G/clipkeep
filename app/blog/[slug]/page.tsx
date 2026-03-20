@@ -381,6 +381,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         ja: `${base}${path}?locale=ja`,
         es: `${base}${path}?locale=es`,
         ar: `${base}${path}?locale=ar`,
+        'x-default': `${base}${path}`,
       },
     },
   };

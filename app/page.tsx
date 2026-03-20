@@ -6,7 +6,8 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const base = 'https://clipkeep.net';
-  const url = `${base}${locale !== 'en' ? `?locale=${locale}` : ''}`;
+  // Standardize: always use / before ? for consistency
+  const url = `${base}/${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
   const meta = {
     en: {
@@ -57,16 +58,17 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
     alternates: {
       canonical: url,
       languages: {
-        en: `${base}`,
-        ar: `${base}?locale=ar`,
-        ja: `${base}?locale=ja`,
-        es: `${base}?locale=es`,
-        pt: `${base}?locale=pt`,
-        fr: `${base}?locale=fr`,
-        id: `${base}?locale=id`,
-        hi: `${base}?locale=hi`,
-        de: `${base}?locale=de`,
-        tr: `${base}?locale=tr`,
+        en: `${base}/`,
+        ja: `${base}/?locale=ja`,
+        ar: `${base}/?locale=ar`,
+        es: `${base}/?locale=es`,
+        pt: `${base}/?locale=pt`,
+        fr: `${base}/?locale=fr`,
+        id: `${base}/?locale=id`,
+        hi: `${base}/?locale=hi`,
+        de: `${base}/?locale=de`,
+        tr: `${base}/?locale=tr`,
+        'x-default': `${base}/`,
       },
     },
   };
@@ -168,7 +170,7 @@ const topPageText: Record<Locale, TopPageDict> = {
     siteInfo: 'Informações do site',
     notes: 'Notas',
     noteBody: 'A página inicial não oferece extração direta. Use cada página de downloader dedicada.',
-    sitemap: 'Mapa do site',
+    sitemap: 'Mapa del sitio',
     serviceStatus: 'Status do serviço',
     terms: 'Termos de serviço',
     privacy: 'Política de privacidade',
@@ -222,7 +224,7 @@ const topPageText: Record<Locale, TopPageDict> = {
     sitemap: 'साइटमैप',
     serviceStatus: 'सेवा स्थिति',
     terms: 'सेवा की शर्तें',
-    privacy: 'गोपनीयता नीति',
+    privacy: 'गो分पता नीति',
     cookies: 'कुकी नीति',
     dmca: 'DMCA / कॉपीराइट',
     contact: 'संपर्क',

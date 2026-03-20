@@ -19,19 +19,6 @@ export const metadata: Metadata = {
   description: 'ClipKeep is an SNS media extraction hub focused on practical workflows and solution guidance.',
   alternates: {
     canonical: '/',
-    languages: {
-      en: '/?locale=en',
-      ar: '/?locale=ar',
-      ja: '/?locale=ja',
-      es: '/?locale=es',
-      pt: '/?locale=pt',
-      fr: '/?locale=fr',
-      id: '/?locale=id',
-      hi: '/?locale=hi',
-      de: '/?locale=de',
-      tr: '/?locale=tr',
-      'x-default': '/',
-    },
   },
   openGraph: {
     title: 'ClipKeep',
