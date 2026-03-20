@@ -69,7 +69,7 @@ type TopPageDict = {
   intro: string;
   toolsFeeds: string;
   downloader: string;
-    weeklyRanking: 'Tendências',
+  weeklyRanking: string;
   recentDownloads: string;
   siteInfo: string;
   notes: string;
