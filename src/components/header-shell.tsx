@@ -45,6 +45,7 @@ export function HeaderShell() {
             ClipKeep
           </Link>
           
+          <div className="flex-1" /> {/* Spacer added here */}
           <div className="flex items-center">
             <div className="hidden sm:block">
               <LanguageSwitcher />
@@ -53,15 +54,15 @@ export function HeaderShell() {
         </div>
       </header>
  
-      <button
+      {/* Floating Menu Button (Mobile & Desktop) */}
+      <button 
         ref={menuButtonRef}
         onClick={toggleMenu}
+        className={`fixed top-4 right-3 z-[60] p-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl border border-white/20 dark:border-slate-200 transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center
+          ${isMenuOpen ? 'opacity-0 pointer-events-none scale-0' : 'opacity-100 scale-100'}
+        `}
         aria-label={headerLabels[locale].toggleMenu}
         aria-expanded={isMenuOpen}
-        className={`fixed top-1/2 -translate-y-1/2 z-[60] w-11 h-11 flex flex-col justify-center items-center shadow-lg transition-all duration-200 cursor-pointer rounded-xl border border-black/5 outline-none
-          ${dir === 'ltr' ? 'left-3' : 'right-3'}
-          ${isMenuOpen ? 'bg-white dark:bg-slate-800 text-black dark:text-white' : 'bg-blue-600 dark:bg-blue-500 text-white'}
-        `}
       >
         <div className="w-[18px] h-3.5 flex flex-col justify-between items-center">
           <span className={`w-full h-[2px] bg-white dark:bg-slate-100 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-[6px] !bg-black dark:!bg-white' : ''}`} />

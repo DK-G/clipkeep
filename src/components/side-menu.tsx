@@ -192,8 +192,9 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto flex flex-col justify-end">
+        <div className="flex-1 overflow-y-auto">
           <div className="flex flex-col min-h-full">
+            <div className="flex-1" />
             {menuData.map((group, gIdx) => {
               const isExpanded = expandedSections[gIdx] || false;
               return (
