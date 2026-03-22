@@ -94,30 +94,30 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale }: SideMenuProps)
       id: 'downloads',
       title: t.downloads,
       items: [
-        { label: t.twitter, href: `/download-twitter-video?locale=${locale}` },
-        { label: t.tiktok, href: `/download-tiktok-video?locale=${locale}` },
-        { label: t.telegram, href: `/download-telegram-video?locale=${locale}` },
         { label: t.instagram, href: `/download-instagram-video?locale=${locale}` },
+        { label: t.telegram, href: `/download-telegram-video?locale=${locale}` },
+        { label: t.tiktok, href: `/download-tiktok-video?locale=${locale}` },
+        { label: t.twitter, href: `/download-twitter-video?locale=${locale}` },
       ],
     },
     {
       id: 'rankings',
       title: t.rankings,
       items: [
-        { label: t.twitter, href: `/twitter-trending-videos?locale=${locale}` },
         { label: t.instagram, href: `/instagram-trending-videos?locale=${locale}` },
-        { label: t.tiktok, href: `/tiktok-trending-videos?locale=${locale}` },
         { label: t.telegram, href: `/telegram-trending-videos?locale=${locale}` },
+        { label: t.tiktok, href: `/tiktok-trending-videos?locale=${locale}` },
+        { label: t.twitter, href: `/twitter-trending-videos?locale=${locale}` },
       ],
     },
     {
       id: 'latest',
       title: t.latest,
       items: [
-        { label: t.twitter, href: `/twitter-latest-videos?locale=${locale}` },
         { label: t.instagram, href: `/instagram-latest-videos?locale=${locale}` },
-        { label: t.tiktok, href: `/tiktok-latest-videos?locale=${locale}` },
         { label: t.telegram, href: `/telegram-latest-videos?locale=${locale}` },
+        { label: t.tiktok, href: `/tiktok-latest-videos?locale=${locale}` },
+        { label: t.twitter, href: `/twitter-latest-videos?locale=${locale}` },
       ],
     },
     {

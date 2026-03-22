@@ -4,6 +4,7 @@
 
 ### 概要
 - トレンド(Trend)と最新(Latest)の専用ページにおいて、タイルの視認性を高めるため「Latesst」ページと同じ標準サイズ（非dense）のタイル表示に統一。
+- サイドメニューおよびホームページ内のSNS（Twitter, TikTok, Telegram, Instagram）の表示順を、ユーザーの利便性と整合性のためにアルファベット順（Instagram, Telegram, TikTok, Twitter）に統一。
 - `GallerySection`を拡張し、トップページの「トレンドハブ」などでは引き続き「高密度（dense）表示」と「メタ情報非表示」をサポート。
 - ホームページの全10言語における翻訳タイポ（`recentDonwloads` → `recentDownloads`）を修正し、フォールバックを解消。
 - ホームページのメタデータ（description）に Instagram の記述を追加（全言語）。
