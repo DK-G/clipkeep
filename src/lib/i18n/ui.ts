@@ -74,6 +74,7 @@ type ResultDict = {
   downloadDescription: string;
   unknownAuthor: string;
   warningsTitle: string;
+  recommendedClips: string;
 };
 
 type SolutionDict = {
@@ -1509,7 +1510,7 @@ export const statusText: Record<Locale, StatusDict> = {
     majorOutage: {
       title: "मेजर आउटेज",
       body: "वर्तमान में मुख्य एक्सट्रैक्शन कार्यक्षमता प्रभावित है। टीम जांच कर रही है।",
-      nextUpdate: "अगला अपडेट: 15 मिनट के भीतर।"
+      nextUpdate: "अगला अपडेट: 15 मिनट के भीतर."
     }
   },
   de: {
@@ -1593,6 +1594,7 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Select your preferred quality from the list below.",
     unknownAuthor: "Unknown Author",
     warningsTitle: "Extraction Warnings",
+    recommendedClips: "Recommended Clips",
   },
   ar: {
     title: "نتيجة الاستخراج",
@@ -1628,6 +1630,7 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "حدد الجودة المفضلة لديك من القائمة أدناه.",
     unknownAuthor: "مؤلف غير معروف",
     warningsTitle: "تحذيرات الاستخراج",
+    recommendedClips: "مقاطع مقترحة",
   },
   ja: {
     title: "抽出結果",
@@ -1663,6 +1666,7 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "以下のリストからご希望の品質を選択してください。",
     unknownAuthor: "不明な投稿者",
     warningsTitle: "抽出に関する警告",
+    recommendedClips: "おすすめクリップ",
   },
   es: {
     title: "Resultado de ClipKeep",
@@ -1698,6 +1702,7 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Seleccione la calidad preferida de la lista.",
     unknownAuthor: "Autor desconocido",
     warningsTitle: "Advertencias de extracción",
+    recommendedClips: "Clips recomendados",
   },
   pt: {
     title: "Resultado do ClipKeep",
@@ -1733,6 +1738,7 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Selecione a qualidade preferida na lista.",
     unknownAuthor: "Autor desconhecido",
     warningsTitle: "Avisos de extração",
+    recommendedClips: "Clips recomendados",
   },
   fr: {
     title: "Résultat ClipKeep",
@@ -1768,6 +1774,7 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Sélectionnez la qualité préférée dans la liste.",
     unknownAuthor: "Auteur inconnu",
     warningsTitle: "Avertissements d'extraction",
+    recommendedClips: "Clips recommandés",
   },
   id: {
     title: "Hasil ClipKeep",
@@ -1803,6 +1810,7 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Pilih kualitas yang Anda inginkan dari daftar di bawah.",
     unknownAuthor: "Penulis Tidak Dikenal",
     warningsTitle: "Peringatan Ekstraksi",
+    recommendedClips: "Klip yang Direkomendasikan",
   },
   hi: {
     title: "ClipKeep परिणाम",
@@ -1838,6 +1846,7 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "नीचे दी गई सूची से अपनी पसंदीदा गुणवत्ता चुनें।",
     unknownAuthor: "अज्ञात लेखक",
     warningsTitle: "निष्कर्षण चेतावनियाँ",
+    recommendedClips: "अनुशंसित क्लिप",
   },
   de: {
     title: "ClipKeep Ergebnis",
@@ -1873,6 +1882,7 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Wählen Sie die gewünschte Qualität aus der Liste aus.",
     unknownAuthor: "Unbekannter Autor",
     warningsTitle: "Extraktionswarnungen",
+    recommendedClips: "Empfohlene Clips",
   },
   tr: {
     title: "ClipKeep Sonucu",
@@ -1908,6 +1918,7 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Aşağıdaki listeden tercih ettiğiniz kaliteyi seçin.",
     unknownAuthor: "Bilinmeyen Yazar",
     warningsTitle: "Ayıklama Uyarıları",
+    recommendedClips: "Önerilen Klipler",
   }
 };
 

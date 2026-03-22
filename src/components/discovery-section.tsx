@@ -94,22 +94,6 @@ export function DiscoverySection({ locale }: { locale: Locale }) {
                   loading="lazy"
                   onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-video.png'; }}
                 />
-                
-                {/* Micro platform icon */}
-                <div className="absolute top-1 right-1">
-                   <div className="bg-slate-950/80 backdrop-blur-sm p-1 rounded-full border border-white/20">
-                      {item.platform === 'twitter' && <XIcon />}
-                      {item.platform === 'tiktok' && <TiktokIcon />}
-                      {item.platform === 'instagram' && <InstaIcon />}
-                      {item.platform === 'telegram' && <TelegramIcon />}
-                   </div>
-                </div>
-
-                <div className="absolute bottom-1 left-1">
-                   <div className="bg-black/60 text-white text-[8px] font-bold px-1 rounded-sm">
-                      {formatDuration(item.duration_sec)}
-                   </div>
-                </div>
               </div>
             </div>
           );
