@@ -261,17 +261,6 @@ export default async function HomePage({ searchParams }: HomeProps) {
         </p>
       </div>
 
-      <div className="mb-16">
-        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-2 flex items-center">
-          <span className="w-1.5 h-6 bg-indigo-600 rounded-full mr-3 shadow-[0_0_8px_rgba(79,70,229,0.4)]"></span>
-          {t.globalTrending}
-        </h2>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 ml-4.5">
-          {t.globalTrendingSubtitle}
-        </p>
-        <GallerySection platform="all" type="trending" locale={locale} layout="masonry" limit={12} id="global-hub" title="" hideMeta={false} />
-      </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-16">
          <Link href={`/download-twitter-video${locale !== 'en' ? `?locale=${locale}` : ''}`} className="group p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1">
             <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center mb-6 ring-4 ring-slate-50 dark:ring-slate-800">
@@ -321,6 +310,17 @@ export default async function HomePage({ searchParams }: HomeProps) {
           </h2>
           <GallerySection platform="twitter" locale={locale} title={t.recentDonwloads} type="recent" limit={6} hideMeta={false} layout="masonry" />
         </div>
+      </div>
+
+      <div className="mb-16">
+        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-2 flex items-center">
+          <span className="w-1.5 h-6 bg-indigo-600 rounded-full mr-3 shadow-[0_0_8px_rgba(79,70,229,0.4)]"></span>
+          {t.globalTrending}
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 ml-4.5">
+          {t.globalTrendingSubtitle}
+        </p>
+        <GallerySection platform="all" type="trending" locale={locale} layout="carousel" limit={12} id="global-hub" title="" hideMeta={true} />
       </div>
 
       <section className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl p-8 sm:p-12 border border-slate-100 dark:border-slate-800">
