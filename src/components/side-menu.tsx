@@ -10,7 +10,6 @@ interface SideMenuProps {
   onClose: () => void;
   triggerRef: React.RefObject<HTMLButtonElement | null>;
   locale: Locale;
-  dir: 'ltr' | 'rtl';
 }
 
 const sideMenuUi = {
@@ -26,7 +25,7 @@ const sideMenuUi = {
   tr: { menu: 'MENÜ', close: 'Menüyü kapat', footer: 'EST. 2025 • CLIPKEEP' },
 } as const;
 
-export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuProps) {
+export function SideMenu({ isOpen, onClose, triggerRef, locale }: SideMenuProps) {
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const [expandedSections, setExpandedSections] = useState<Record<number, boolean>>({});
@@ -161,17 +160,8 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
       <div 
         ref={menuRef} 
         className={`fixed z-[80] bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 ease-in-out flex flex-col
-          /* Mobile: Bottom Sheet */
-          bottom-0 left-0 right-0 top-auto w-full h-auto max-h-[90vh] rounded-t-[2.5rem]
-          ${isOpen ? 'translate-y-0 shadow-[0_-20px_50px_-12px_rgba(0,0,0,0.3)]' : 'translate-y-full'}
-          
-          /* Desktop: Side Drawer */
-          md:top-0 md:bottom-0 md:h-full md:w-[320px] md:max-w-[85vw] md:rounded-none md:translate-y-0
-          ${dir === 'ltr' ? 'md:left-0 md:right-auto md:text-left' : 'md:right-0 md:left-auto md:text-right'}
-          ${isOpen 
-            ? 'md:translate-x-0' 
-            : (dir === 'ltr' ? 'md:-translate-x-full' : 'md:translate-x-full')
-          }
+          top-0 bottom-0 right-0 left-auto h-full w-[320px] max-w-[85vw]
+          ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
       >
         {/* Mobile Handle */}
@@ -179,7 +169,7 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
           <div className="w-12 h-1.5 bg-gray-200 dark:bg-slate-800 rounded-full" />
         </div>
 
-        <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50 rounded-t-[2.5rem] md:rounded-none">
+        <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50">
           <span className="font-[900] text-xl tracking-tight text-slate-900 dark:text-white uppercase">{ui.menu}</span>
           <button 
             onClick={onClose} 

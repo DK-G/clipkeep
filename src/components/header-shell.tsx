@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams, usePathname } from 'next/navigation';
-import { normalizeLocale, localeDir } from '@/lib/i18n/ui';
+import { normalizeLocale } from '@/lib/i18n/ui';
 import { LanguageSwitcher } from './language-switcher';
 import { SideMenu } from './side-menu';
 
@@ -25,7 +25,6 @@ export function HeaderShell() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const locale = normalizeLocale(searchParams.get('locale'));
-  const dir = localeDir(locale);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -58,8 +57,8 @@ export function HeaderShell() {
       <button 
         ref={menuButtonRef}
         onClick={toggleMenu}
-        className={`fixed top-4 right-3 z-[60] p-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl border border-white/20 dark:border-slate-200 transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center
-          ${isMenuOpen ? 'opacity-0 pointer-events-none scale-0' : 'opacity-100 scale-100'}
+        className={`fixed top-1/2 -translate-y-1/2 right-3 z-[60] w-11 h-11 flex flex-col justify-center items-center shadow-lg transition-all duration-300 cursor-pointer rounded-xl border border-black/5 outline-none
+          ${isMenuOpen ? 'bg-white dark:bg-slate-800 text-black dark:text-white opacity-0 scale-0 pointer-events-none' : 'bg-blue-600 dark:bg-blue-500 text-white opacity-100 scale-100'}
         `}
         aria-label={headerLabels[locale].toggleMenu}
         aria-expanded={isMenuOpen}
@@ -76,7 +75,6 @@ export function HeaderShell() {
         onClose={() => setIsMenuOpen(false)}
         triggerRef={menuButtonRef}
         locale={locale}
-        dir={dir}
       />
     </>
   );
