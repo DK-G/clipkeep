@@ -26,6 +26,7 @@ interface GallerySectionProps {
   limit?: number;
   layout?: 'grid' | 'carousel' | 'masonry';
   hideMeta?: boolean;
+  dense?: boolean;
 }
 
 function formatDuration(sec?: number): string {
@@ -45,8 +46,9 @@ export function GallerySection({
   type = 'recent', 
   limit = 8,
   layout = 'grid',
-  hideMeta = true
-}: GallerySectionProps & { platform: Platform | 'all' }) {
+  hideMeta = true,
+  dense = false
+}: GallerySectionProps) {
   const router = useRouter();
   const [items, setItems] = useState<GalleryItem[]>(initialItems || []);
   const [loading, setLoading] = useState(!initialItems);
@@ -96,6 +98,8 @@ export function GallerySection({
     ? "flex overflow-x-auto gap-4 pb-6 px-2 sm:px-0 snap-x snap-mandatory scrollbar-hide -mx-2 sm:mx-0"
     : layout === 'masonry'
     ? "columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-2 sm:gap-4 px-2 sm:px-0"
+    : dense
+    ? "grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-1.5 sm:gap-3 px-2 sm:px-0"
     : "grid grid-cols-3 md:grid-cols-5 gap-2 sm:gap-4 px-2 sm:px-0";
 
   return (

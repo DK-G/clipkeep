@@ -320,7 +320,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
         <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 ml-4.5">
           {t.globalTrendingSubtitle}
         </p>
-        <GallerySection platform="all" type="trending" locale={locale} layout="carousel" limit={12} id="global-hub" title="" hideMeta={true} />
+        <GallerySection platform="all" type="trending" locale={locale} layout="grid" dense={true} limit={12} id="global-hub" title="" hideMeta={true} />
       </div>
 
       <section className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl p-8 sm:p-12 border border-slate-100 dark:border-slate-800">
