@@ -104,7 +104,9 @@ const translations: Record<string, Record<string, string>> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "Platform Stability Notes",
-    noteBody: "We constantly update our extractors to match platform changes. Most extractions take less than 10 seconds."
+    noteBody: "We constantly update our extractors to match platform changes. Most extractions take less than 10 seconds.",
+    globalTrending: "Global Trending Hub",
+    globalTrendingSubtitle: "Discover popular clips across all platforms."
   },
   ja: {
     welcome: "ClipKeep へようこそ",
@@ -117,24 +119,28 @@ const translations: Record<string, Record<string, string>> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "安定性について",
-    noteBody: "プラットフォームの仕様変更に合わせて常に更新しています。ほとんどの抽出は10秒以内に完了します。"
+    noteBody: "プラットフォームの仕様変更に合わせて常に更新しています。ほとんどの抽出は10秒以内に完了します。",
+    globalTrending: "グローバルトレンドハブ",
+    globalTrendingSubtitle: "すべてのプラットフォームから人気のクリップを公開。"
   },
   ar: {
     welcome: "مرحبًا بك في ClipKeep",
-    subtitle: "مركز تنزيل الكل في واحد لمنصاتك المفضلة।",
-    weeklyTrending: "الترند الأسبوعي",
-    recentDonwloads: "التنزيلات الأخيرة",
+    subtitle: "قم بتنزيل مقاطع فيديو عالية الجودة من منصات مختلفة।",
+    weeklyTrending: "الأكثر رواجًا لهذا الأسبوع",
+    recentDonwloads: "أحدث التنزيلات",
     startDownloading: "ابدأ الاستخراج الآن",
     twitter: "Twitter (X)",
     telegram: "Telegram",
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "ملاحظات استقرار المنصة",
-    noteBody: "نحن نقوم باستمرار بتحديث المستخرجات الخاصة بنا لتناسب تغييرات المنصة। تستغرق معظم عمليات الاستخراج أقل من 10 ثوانٍ।"
+    noteBody: "نحن نقوم باستمرار بتحديث المستخرجات الخاصة بنا لتناسب تغييرات المنصة। تستغرق معظم عمليات الاستخراج أقل من 10 ثوانٍ।",
+    globalTrending: "مركز الترند العالمي",
+    globalTrendingSubtitle: "اكتشف المقاطع الشائعة عبر جميع المنصات."
   },
   es: {
     welcome: "Bienvenido a ClipKeep",
-    subtitle: "El centro de descarga todo en uno para tus plataformas favoritas।",
+    subtitle: "Descarga videos de alta calidad de varias plataformas।",
     weeklyTrending: "Tendencias Semanales",
     recentDonwloads: "Descargas Recientes",
     startDownloading: "Comenzar Extracción",
@@ -143,11 +149,13 @@ const translations: Record<string, Record<string, string>> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "Notas de Estabilidad",
-    noteBody: "Actualizamos constantemente nuestros extractores। La mayoría de las extracciones tardan menos de 10 segundos।"
+    noteBody: "Actualizamos constantemente nuestros extractores। La mayoría de las extracciones tardan menos de 10 segundos।",
+    globalTrending: "Hub de tendencias globales",
+    globalTrendingSubtitle: "Descubre clips populares en todas las plataformas."
   },
   pt: {
     welcome: "Bem-vindo ao ClipKeep",
-    subtitle: "O hub de download completo para suas plataformas favoritas।",
+    subtitle: "Baixe vídeos de alta qualidade de várias plataformas।",
     weeklyTrending: "Tendências Semanais",
     recentDonwloads: "Downloads Recentes",
     startDownloading: "Começar Extração",
@@ -156,11 +164,13 @@ const translations: Record<string, Record<string, string>> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "Notas de Estabilidade",
-    noteBody: "Atualizamos constantemente nossos extratores। A maioria das extrações leva menos de 10 segundos।"
+    noteBody: "Atualizamos constantemente nossos extratores। A maioria das extrações leva menos de 10 segundos।",
+    globalTrending: "Hub de tendências globais",
+    globalTrendingSubtitle: "Descubra clipes populares em todas as plataformas."
   },
   fr: {
     welcome: "Bienvenue sur ClipKeep",
-    subtitle: "Le hub de téléchargement tout-en-un pour vos plateformes préférées।",
+    subtitle: "Téléchargez des vidéos de haute qualité depuis diverses plateformes।",
     weeklyTrending: "Tendances Hebdomadaires",
     recentDonwloads: "Téléchargements Récents",
     startDownloading: "Démarrer l'Extraction",
@@ -169,11 +179,13 @@ const translations: Record<string, Record<string, string>> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "Notes sur la Stabilité",
-    noteBody: "Nous mettons à jour nos extracteurs régulièrement। La plupart des extractions prennent moins de 10 secondes。"
+    noteBody: "Nous mettons à jour nos extracteurs régulièrement। La plupart des extractions prennent moins de 10 secondes。",
+    globalTrending: "Hub des tendances mondiales",
+    globalTrendingSubtitle: "Découvrez les clips populaires sur toutes les plateformes."
   },
   id: {
-    welcome: "Selamat Datang di ClipKeep",
-    subtitle: "Hub pengunduh all-in-one untuk platform favorit Anda।",
+    welcome: "Selamat datang di ClipKeep",
+    subtitle: "Unduh video berkualitas tinggi dari berbagai platform।",
     weeklyTrending: "Tren Mingguan",
     recentDonwloads: "Unduhan Terbaru",
     startDownloading: "Mulai Ekstraksi Sekarang",
@@ -182,11 +194,13 @@ const translations: Record<string, Record<string, string>> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "Catatan Stabilitas Platform",
-    noteBody: "Kami terus memperbarui ekstraktor kami। Sebagian besar ekstraksi memakan waktu kurang dari 10 detik。"
+    noteBody: "Kami terus memperbarui ekstraktor kami। Sebagian besar ekstraksi memakan waktu kurang dari 10 detik。",
+    globalTrending: "Pusat Tren Global",
+    globalTrendingSubtitle: "Temukan klip populer di semua platform."
   },
   hi: {
     welcome: "क्लिपकीप में आपका स्वागत है",
-    subtitle: "आपके पसंदीदा प्लेटफॉर्म के लिए ऑल-इन-वन डाउनलोडर हब।",
+    subtitle: "विभिन्न प्लेटफार्मों से उच्च गुणवत्ता वाले वीडियो डाउनलोड करें।",
     weeklyTrending: "साप्ताहिक ट्रेंडिंग",
     recentDonwloads: "हाल के डाउनलोड",
     startDownloading: "अभी निकालना शुरू करें",
@@ -195,7 +209,9 @@ const translations: Record<string, Record<string, string>> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "प्लेटफॉर्म स्थिरता नोट्स",
-    noteBody: "हम प्लेटफॉर्म परिवर्तन के अनुसार अपने एक्सट्रैक्टर्स को लगातार अपडेट करते हैं। अधिकांश निष्कर्षण 10 सेकंड से कम समय लेते हैं।"
+    noteBody: "हम प्लेटफॉर्म परिवर्तन के अनुसार अपने एक्सट्रैक्टर्स को लगातार अपडेट करते हैं। अधिकांश निष्कर्षण 10 सेकंड से कम समय लेते हैं।",
+    globalTrending: "वैश्विक ट्रेंडिंग हब",
+    globalTrendingSubtitle: "सभी प्लेटफार्मों पर लोकप्रिय क्लिप खोजें।"
   },
   de: {
     welcome: "Willkommen bei ClipKeep",
@@ -208,7 +224,9 @@ const translations: Record<string, Record<string, string>> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "Stabilitätshinweise",
-    noteBody: "Wir aktualisieren unsere Extraktoren ständig। Die meisten Extraktionen dauern weniger als 10 Sekunden。"
+    noteBody: "Wir aktualisieren unsere Extraktoren ständig। Die meisten Extraktionen dauern weniger als 10 Sekunden。",
+    globalTrending: "Globaler Trend-Hub",
+    globalTrendingSubtitle: "Entdecken Sie beliebte Clips auf allen Plattformen。"
   },
   tr: {
     welcome: "ClipKeep'e Hoş Geldiniz",
@@ -221,7 +239,9 @@ const translations: Record<string, Record<string, string>> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "Platform Kararlılık Notları",
-    noteBody: "Platform değişikliklerine uyum sağlamak için araçlarımızı sürekli güncelliyoruz। Çoğu işlem 10 saniyeden kısa sürer।"
+    noteBody: "Platform değişikliklerine uyum sağlamak için araçlarımızı sürekli güncelliyoruz। Çoğu işlem 10 saniyeden kısa sürer।",
+    globalTrending: "Küresel Trend Merkezi",
+    globalTrendingSubtitle: "Tüm platformlardaki popüler klipleri keşfedin。"
   }
 };
 
@@ -239,6 +259,17 @@ export default async function HomePage({ searchParams }: HomeProps) {
         <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
           {t.subtitle}
         </p>
+      </div>
+
+      <div className="mb-16">
+        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-2 flex items-center">
+          <span className="w-1.5 h-6 bg-indigo-600 rounded-full mr-3 shadow-[0_0_8px_rgba(79,70,229,0.4)]"></span>
+          {t.globalTrending}
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 ml-4.5">
+          {t.globalTrendingSubtitle}
+        </p>
+        <GallerySection platform="all" type="trending" locale={locale} layout="masonry" limit={12} id="global-hub" title="" hideMeta={false} />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-16">
@@ -281,14 +312,14 @@ export default async function HomePage({ searchParams }: HomeProps) {
             <span className="w-1.5 h-6 bg-blue-600 rounded-full mr-3"></span>
             {t.weeklyTrending}
           </h2>
-          <GallerySection platform="twitter" locale={locale} title={t.weeklyTrending} type="trending" limit={6} />
+          <GallerySection platform="twitter" locale={locale} title={t.weeklyTrending} type="trending" limit={6} hideMeta={false} layout="masonry" />
         </div>
         <div>
           <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-8 flex items-center">
             <span className="w-1.5 h-6 bg-slate-400 dark:bg-slate-700 rounded-full mr-3"></span>
             {t.recentDonwloads}
           </h2>
-          <GallerySection platform="twitter" locale={locale} title={t.recentDonwloads} type="recent" limit={6} />
+          <GallerySection platform="twitter" locale={locale} title={t.recentDonwloads} type="recent" limit={6} hideMeta={false} layout="masonry" />
         </div>
       </div>
 

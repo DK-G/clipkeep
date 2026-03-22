@@ -23,10 +23,14 @@ export async function GET(request: Request) {
     const { results } = await db.prepare(
       `SELECT id, platform, source_url, thumbnail_url, access_count, created_at
        FROM extractor_jobs
-       WHERE platform = ? AND status = 'completed' AND is_public = 1 AND thumbnail_url IS NOT NULL
+       WHERE ${platform === 'all' ? '1=1' : 'platform = ?'} AND status = 'completed' AND is_public = 1 AND thumbnail_url IS NOT NULL
        ORDER BY created_at DESC
        LIMIT ? OFFSET ?`
-    ).bind(platform, limit, offset).all();
+    ).bind(...[
+      ...(platform === 'all' ? [] : [platform]),
+      limit, 
+      offset
+    ]).all();
 
     return success({
       status: 200,

@@ -4,7 +4,8 @@ const PATTERNS: string[] = [
   'trendingX', 'latestX',
   'trendingTikTok', 'latestTikTok',
   'trendingInstagram', 'latestInstagram',
-  'trendingTelegram', 'latestTelegram'
+  'trendingTelegram', 'latestTelegram',
+  'globalTrending'
 ];
 
 export async function GET() {

@@ -34,7 +34,7 @@ export async function GET(request: Request) {
          ${locale ? "AND locale = ?" : ""}
          GROUP BY job_id
        ) s ON j.id = s.job_id
-       WHERE j.platform = ? 
+       WHERE ${platform === 'all' ? '1=1' : 'j.platform = ?'}
          AND j.status = 'completed' 
          AND j.is_public = 1 
          AND j.thumbnail_url IS NOT NULL
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
     ).bind(...[
       sevenDaysAgo, 
       ...(locale ? [locale] : []), 
-      platform, 
+      ...(platform === 'all' ? [] : [platform]),
       limit, 
       offset
     ]).all();

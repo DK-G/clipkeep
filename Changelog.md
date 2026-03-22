@@ -1,5 +1,23 @@
 # Change Log（開発概要 + diff.mdスナップショット）
 
+## 2026-03-22（CL-0060） グローバルハブの統合とMasonryレイアウトの導入
+
+### 概要
+- サイドメニュー最上部に「GLOBAL HUB (グローバルハブ)」セクションを新設。
+- ホーム画面の「グローバルトレンドハブ」セクションの翻訳と表示を最適化。
+- ギャラリーのレイアウトを CSS columns を使用した Masonry（Pinterest風）へ移行し、すき間のないタイル表示を実現。
+- ユーザーの要望に基づき、すべてのビデオカードで「ダウンロード数」と「再生時間」の表示を再有効化。
+- カテゴリ別ページ（トレンド・最新）を含むサイト全体のギャラリー表示を統一。
+
+## 2026-03-22（CL-0059） おすすめクリップの実装と全サムネイルのクリーンアップ
+
+### 概要
+- 抽出結果ページ下部に「おすすめクリップ」カルーセルを実装。
+- 現在の動画と同じプラットフォームのトレンド動画を表示するようにフィルタリングを適用。
+- サイト全体の全サムネイルカードから、ダウンロード数（アクセス数）と再生時間の表示を削除。
+- カルーセルの「おすすめクリップ」タイトルを全10言語でローカライズ。
+- 横スクロールとスナップ機能を備えたモバイルフレンドリーなカルーセルUIの導入。
+
 ## 2026-03-22（CL-0058） メニューUIの改善と配置修正
 
 ### 概要
@@ -24,6 +42,17 @@
 - ユーザーの手書きスケッチを清書した「第7案（Glossy Sketch版）」を最終採用。
 - `app/icon.png` として正式導入し、全デバイスでの視認性を確保。
 - Cloudflareへのデプロイを完了し、本番サイト（clipkeep.net）に反映。
+
+## [2026-03-22] - Phase 3: Global Trends Hub Implementation
+- **Implemented Global Trends Hub**: Added a cross-platform trending carousel at the top of the home page.
+- **Enhanced Gallery APIs**: Updated `trending` and `recent` APIs to support mixed-platform queries via `platform=all`.
+- **Improved Discovery UI**: Added platform icons to `GallerySection` and `DiscoverySection` thumbnails for clarity in mixed views.
+- **Multilingual Support**: Added internationalization for "Global Trends Hub" across 10 supported languages.
+
+## [2026-03-22] - Phase 2: Recommended Clips & UI Cleanup
+- **Implemented "Recommended Clips" Carousel**: Added platform-specific trending carousels to the extraction result page.
+- **Global Metadata Cleanup**: Removed download counts and playback durations from all video thumbnails for a cleaner UI.
+- **Performance & Type Safety**: Refactored `GallerySection` for reusability and resolved build-time linting issues.
 
 ## 2026-03-20（CL-0055） ビルドエラー修正と機能状態の総点検
 

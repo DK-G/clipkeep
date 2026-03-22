@@ -1,0 +1,39 @@
+﻿
+> clipkeep@0.1.0 build
+> node --max-old-space-size=4096 ./node_modules/next/dist/bin/next build
+
+   ▲ Next.js 15.2.9
+   - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+npm : 
+At line:1 char:1
++ npm run build > build_final_2.log 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String)  
+   [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Failed to compile.
+
+./app/result/[jobId]/page.tsx
+194:38  Error: Unexpected any. Specify a different type
+.  @typescript-eslint/no-explicit-any
+
+./src/components/discovery-section.tsx
+10:10  Error: 'formatDuration' is defined but never use
+d.  @typescript-eslint/no-unused-vars
+106:10  Error: 'XIcon' is defined but never used.  @typ
+escript-eslint/no-unused-vars
+107:10  Error: 'TiktokIcon' is defined but never used. 
+ @typescript-eslint/no-unused-vars
+108:10  Error: 'InstaIcon' is defined but never used.  
+@typescript-eslint/no-unused-vars
+109:10  Error: 'TelegramIcon' is defined but never used
+.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more h
+ere: https://nextjs.org/docs/app/api-reference/config/e
+slint#disabling-rules

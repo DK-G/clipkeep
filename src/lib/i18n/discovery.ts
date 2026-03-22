@@ -9,6 +9,7 @@ export type DiscoveryDict = {
   latestInstagram: string;
   trendingTelegram: string;
   latestTelegram: string;
+  globalTrending: string;
 };
 
 export const discoveryText: Record<Locale, DiscoveryDict> = {
@@ -20,7 +21,8 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     trendingInstagram: "Trending on Instagram",
     latestInstagram: "Latest Instagram Media",
     trendingTelegram: "Popular on Telegram",
-    latestTelegram: "Recent Telegram Shares"
+    latestTelegram: "Recent Telegram Shares",
+    globalTrending: "Global Trending Hub"
   },
   ar: {
     trendingX: "الرائج على X (تويتر)",
@@ -30,7 +32,8 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     trendingInstagram: "شائع على Instagram",
     latestInstagram: "أحدث صور Instagram",
     trendingTelegram: "شائع على Telegram",
-    latestTelegram: "مشاركات Telegram الأخيرة"
+    latestTelegram: "مشاركات Telegram الأخيرة",
+    globalTrending: "مركز الترند العالمي"
   },
   ja: {
     trendingX: "X (Twitter) のトレンド",
@@ -40,7 +43,8 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     trendingInstagram: "Instagram のトレンド",
     latestInstagram: "最新の Instagram 投稿",
     trendingTelegram: "Telegram で人気",
-    latestTelegram: "最近の Telegram 共有"
+    latestTelegram: "最近の Telegram 共有",
+    globalTrending: "グローバルトレンドハブ"
   },
   es: {
     trendingX: "Tendencias en X (Twitter)",
@@ -50,7 +54,8 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     trendingInstagram: "Tendencias en Instagram",
     latestInstagram: "Lo último de Instagram",
     trendingTelegram: "Popular en Telegram",
-    latestTelegram: "Compartidos recientes de Telegram"
+    latestTelegram: "Compartidos recientes de Telegram",
+    globalTrending: "Hub de Tendencias Globales"
   },
   pt: {
     trendingX: "Tendências no X (Twitter)",
@@ -60,7 +65,8 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     trendingInstagram: "Tendências no Instagram",
     latestInstagram: "Mais recentes do Instagram",
     trendingTelegram: "Popular no Telegram",
-    latestTelegram: "Partilhas recentes do Telegram"
+    latestTelegram: "Partilhas recentes do Telegram",
+    globalTrending: "Hub de Tendências Globais"
   },
   fr: {
     trendingX: "Tendances sur X (Twitter)",
@@ -70,7 +76,8 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     trendingInstagram: "Tendances sur Instagram",
     latestInstagram: "Derniers médias Instagram",
     trendingTelegram: "Populaire sur Telegram",
-    latestTelegram: "Partages Telegram récents"
+    latestTelegram: "Partages Telegram récents",
+    globalTrending: "Hub des Tendances Mondiales"
   },
   id: {
     trendingX: "Populer di X (Twitter)",
@@ -80,7 +87,8 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     trendingInstagram: "Populer di Instagram",
     latestInstagram: "Media Instagram Terbaru",
     trendingTelegram: "Populer di Telegram",
-    latestTelegram: "Berbagi Telegram Terbaru"
+    latestTelegram: "Berbagi Telegram Terbaru",
+    globalTrending: "Hub Tren Global"
   },
   hi: {
     trendingX: "X (Twitter) पर ट्रेंडिंग",
@@ -90,7 +98,8 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     trendingInstagram: "Instagram पर ट्रेंडिंग",
     latestInstagram: "नवीनतम Instagram मीडिया",
     trendingTelegram: "Telegram पर लोकप्रिय",
-    latestTelegram: "हालिया Telegram शेयर"
+    latestTelegram: "हालिया Telegram शेयर",
+    globalTrending: "ग्लोबल ट्रेंडिंग हब"
   },
   de: {
     trendingX: "Trendet auf X (Twitter)",
@@ -100,7 +109,8 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     trendingInstagram: "Trendet auf Instagram",
     latestInstagram: "Neueste Instagram-Medien",
     trendingTelegram: "Beliebt auf Telegram",
-    latestTelegram: "Aktuelle Telegram-Beiträge"
+    latestTelegram: "Aktuelle Telegram-Beiträge",
+    globalTrending: "Globaler Trend-Hub"
   },
   tr: {
     trendingX: "X (Twitter) Üzerinde Trend",
@@ -110,6 +120,7 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     trendingInstagram: "Instagram Üzerinde Trend",
     latestInstagram: "En Yeni Instagram İçerikleri",
     trendingTelegram: "Telegram Üzerinde Popüler",
-    latestTelegram: "Son Telegram Paylaşımları"
+    latestTelegram: "Son Telegram Paylaşımları",
+    globalTrending: "Küresel Trend Merkezi"
   }
 };

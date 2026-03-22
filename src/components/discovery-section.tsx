@@ -7,13 +7,6 @@ import { discoveryText, DiscoveryDict } from '@/lib/i18n/discovery';
 import type { GalleryItem } from './gallery-section';
 import { trackEvent } from '@/lib/analytics/gtag';
 
-function formatDuration(sec?: number): string {
-  if (!sec || Number.isNaN(sec) || sec <= 0) return '--:--';
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-}
-
 export function DiscoverySection({ locale }: { locale: Locale }) {
   const router = useRouter();
   const [data, setData] = useState<{ pattern: keyof DiscoveryDict; items: GalleryItem[] } | null>(null);
@@ -94,6 +87,30 @@ export function DiscoverySection({ locale }: { locale: Locale }) {
                   loading="lazy"
                   onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-video.png'; }}
                 />
+                
+                {/* Platform Icon Overlay */}
+                <div className="absolute top-1 right-1 pointer-events-none">
+                  {item.platform === 'twitter' && (
+                    <div className="bg-black/80 backdrop-blur-sm p-1 rounded-sm shadow-sm">
+                      <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                    </div>
+                  )}
+                  {item.platform === 'tiktok' && (
+                    <div className="bg-black/80 backdrop-blur-sm p-1 rounded-sm shadow-sm">
+                      <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"></path></svg>
+                    </div>
+                  )}
+                  {item.platform === 'instagram' && (
+                    <div className="bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-1 rounded-sm shadow-sm scale-[0.85] origin-top-right">
+                      <svg className="w-3 h-3 text-white fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </div>
+                  )}
+                  {item.platform === 'telegram' && (
+                    <div className="bg-blue-500/90 backdrop-blur-sm p-1 rounded-sm shadow-sm">
+                      <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path></svg>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           );
@@ -102,8 +119,3 @@ export function DiscoverySection({ locale }: { locale: Locale }) {
     </section>
   );
 }
-
-function XIcon() { return <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>; }
-function TiktokIcon() { return <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"></path></svg>; }
-function InstaIcon() { return <svg className="w-2.5 h-2.5 text-white fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>; }
-function TelegramIcon() { return <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path></svg>; }

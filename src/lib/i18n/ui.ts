@@ -43,6 +43,8 @@ type HomeDict = {
   twitterDesc: string;
   tiktokTitle: string;
   tiktokDesc: string;
+  globalTrending: string;
+  globalTrendingSubtitle: string;
 };
 
 type ResultDict = {
@@ -140,6 +142,8 @@ type MenuDict = {
   faq: string;
   privacy: string;
   contact: string;
+  globalHub: string;
+  globalTrend: string;
 };
 
 
@@ -194,7 +198,9 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "Twitter (X) Downloader",
     twitterDesc: "Archive videos and GIFs from X/Twitter posts instantly.",
     tiktokTitle: "TikTok Downloader",
-    tiktokDesc: "Download TikTok videos and images for offline archiving."
+    tiktokDesc: "Download TikTok videos and images for offline archiving.",
+    globalTrending: "Global Trending Hub",
+    globalTrendingSubtitle: "Discover popular clips across all platforms."
   },
   ar: {
     title: "أداة ClipKeep",
@@ -220,7 +226,9 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "محمل فيديوهات تويتر (X)",
     twitterDesc: "أرشف الفيديوهات والصور المتحركة من منشورات X/تويتر فوراً.",
     tiktokTitle: "محمل فيديوهات تيك توك",
-    tiktokDesc: "قم بتنزيل فيديوهات وصور تيك توك للأرشفة في وضع عدم الاتصال."
+    tiktokDesc: "استخراج فيديو وصوت عالي الجودة من TikTok.",
+    globalTrending: "مركز الترند العالمي",
+    globalTrendingSubtitle: "اكتشف المقاطع الشائعة عبر جميع المنصات."
   },
   ja: {
     title: "SNS動画ダウンローダー",
@@ -246,7 +254,9 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "Twitter (X) ダウンローダー",
     twitterDesc: "X/Twitterの投稿から動画やGIFを瞬時にアーカイブします。",
     tiktokTitle: "TikTok ダウンローダー",
-    tiktokDesc: "オフライン保存用にTikTokの動画や画像をダウンロードします。"
+    tiktokDesc: "TikTokから高品質な動画と音声を抽出します。",
+    globalTrending: "グローバルトレンドハブ",
+    globalTrendingSubtitle: "すべてのプラットフォームから人気のクリップを公開。"
   },
   es: {
     title: "ClipKeep Extractor",
@@ -272,7 +282,9 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "Descargador de Twitter (X)",
     twitterDesc: "Archive videos y GIFs de X/Twitter al instante.",
     tiktokTitle: "Descargador de TikTok",
-    tiktokDesc: "Descargue videos de TikTok para verlos sin conexión."
+    tiktokDesc: "Descargue videos de TikTok para verlos sin conexión.",
+    globalTrending: "Hub de tendencias globales",
+    globalTrendingSubtitle: "Descubre clips populares en todas las plataformas."
   },
   pt: {
     title: "ClipKeep Extractor",
@@ -298,7 +310,9 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "Downloader do Twitter (X)",
     twitterDesc: "Arquive vídeos e GIFs do X/Twitter instantaneamente.",
     tiktokTitle: "Downloader do TikTok",
-    tiktokDesc: "Baixe vídeos do TikTok para visualização offline."
+    tiktokDesc: "Baixe vídeos do TikTok para visualização offline.",
+    globalTrending: "Hub de tendências globais",
+    globalTrendingSubtitle: "Descubra clipes populares em todas as plataformas."
   },
   fr: {
     title: "ClipKeep Extractor",
@@ -324,7 +338,9 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "Téléchargeur Twitter (X)",
     twitterDesc: "Archivez instantanément des vidéos et GIFs de X/Twitter.",
     tiktokTitle: "Téléchargeur TikTok",
-    tiktokDesc: "Téléchargez des vidéos TikTok pour une lecture hors ligne."
+    tiktokDesc: "Téléchargez des vidéos TikTok pour une lecture hors ligne.",
+    globalTrending: "Hub des tendances mondiales",
+    globalTrendingSubtitle: "Découvrez les clips populaires sur toutes les plateformes."
   },
   id: {
     title: "ClipKeep Extractor",
@@ -350,7 +366,9 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "Pengunduh Twitter (X)",
     twitterDesc: "Arsip video dan GIF dari postingan X/Twitter secara instan.",
     tiktokTitle: "Pengunduh TikTok",
-    tiktokDesc: "Unduh video TikTok untuk arsip offline."
+    tiktokDesc: "Unduh video TikTok untuk arsip offline.",
+    globalTrending: "Pusat Tren Global",
+    globalTrendingSubtitle: "Temukan klip populer di semua platform."
   },
   hi: {
     title: "ClipKeep एक्सट्रैक्टर",
@@ -376,7 +394,9 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "ट्विटर (X) डाउनलोडर",
     twitterDesc: "X/ट्विटर पोस्ट से वीडियो और GIF तुरंत आर्काइव करें।",
     tiktokTitle: "टिकटॉक डाउनलोडर",
-    tiktokDesc: "ऑफलाइन आर्काइविंग के लिए टिकटॉक वीडियो डाउनलोड करें。"
+    tiktokDesc: "ऑफलाइन आर्काइविंग के लिए टिकटॉक वीडियो डाउनलोड करें।",
+    globalTrending: "वैश्विक ट्रेंडिंग हब",
+    globalTrendingSubtitle: "सभी प्लेटफार्मों पर लोकप्रिय क्लिप खोजें।"
   },
   de: {
     title: "ClipKeep Extractor",
@@ -402,7 +422,9 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "Twitter (X) Downloader",
     twitterDesc: "Archivieren Sie Videos von X/Twitter sofort.",
     tiktokTitle: "TikTok Downloader",
-    tiktokDesc: "Videos für die Offline-Ansicht herunterladen."
+    tiktokDesc: "Videos für die Offline-Ansicht herunterladen.",
+    globalTrending: "Globaler Trend-Hub",
+    globalTrendingSubtitle: "Entdecken Sie beliebte Clips auf allen Plattformen."
   },
   tr: {
     title: "ClipKeep Ayıklayıcı",
@@ -428,7 +450,9 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "Twitter (X) İndirici",
     twitterDesc: "Postlardan videoları anında arşivleyin.",
     tiktokTitle: "TikTok İndirici",
-    tiktokDesc: "TikTok videolarını çevrimdışı arşivleyin."
+    tiktokDesc: "TikTok videolarını çevrimdışı arşivleyin.",
+    globalTrending: "Küresel Trend Merkezi",
+    globalTrendingSubtitle: "Tüm platformlardaki popüler klipleri keşfedin."
   }
 };
 
@@ -2494,6 +2518,8 @@ export const menuText: Record<Locale, MenuDict> = {
     faq: "FAQ",
     privacy: "Privacy Policy",
     contact: "Contact Support",
+    globalHub: "GLOBAL HUB",
+    globalTrend: "Global Trend",
   },
   ar: {
     downloads: "تنزيل",
@@ -2509,6 +2535,8 @@ export const menuText: Record<Locale, MenuDict> = {
     faq: "الأسئلة الشائعة",
     privacy: "سياسة الخصوصية",
     contact: "اتصل بنا",
+    globalHub: "المركز العالمي",
+    globalTrend: "الترند العالمي",
   },
   ja: {
     downloads: "ダウンロード",
@@ -2524,6 +2552,8 @@ export const menuText: Record<Locale, MenuDict> = {
     faq: "よくある質問",
     privacy: "プライバシーポリシー",
     contact: "お問い合わせ",
+    globalHub: "グローバルハブ",
+    globalTrend: "グローバルトレンド",
   },
   es: {
     downloads: "DESCARGAS",
@@ -2538,7 +2568,9 @@ export const menuText: Record<Locale, MenuDict> = {
     about: "Sobre nosotros",
     faq: "FAQ",
     privacy: "Privacidad",
-    contact: "Contacto"
+    contact: "Contacto",
+    globalHub: "HUB GLOBAL",
+    globalTrend: "Tendencia global"
   },
   pt: {
     downloads: "DOWNLOADS",
@@ -2552,8 +2584,10 @@ export const menuText: Record<Locale, MenuDict> = {
     instagram: "Baixador do Instagram",
     about: "Sobre",
     faq: "FAQ",
-    privacy: "Privacidade",
-    contact: "Contato"
+    privacy: "Privacidad",
+    contact: "Contato",
+    globalHub: "HUB GLOBAL",
+    globalTrend: "Tendência global"
   },
   fr: {
     downloads: "TÉLÉCHARGEMENTS",
@@ -2568,7 +2602,9 @@ export const menuText: Record<Locale, MenuDict> = {
     about: "À propos",
     faq: "FAQ",
     privacy: "Confidentialité",
-    contact: "Contact"
+    contact: "Contact",
+    globalHub: "HUB MONDIAL",
+    globalTrend: "Tendance mondiale"
   },
   id: {
     downloads: "UNDUHAN",
@@ -2583,7 +2619,9 @@ export const menuText: Record<Locale, MenuDict> = {
     about: "Tentang",
     faq: "FAQ",
     privacy: "Privasi",
-    contact: "Kontak"
+    contact: "Kontak",
+    globalHub: "HUB GLOBAL",
+    globalTrend: "Tren Global"
   },
   hi: {
     downloads: "डाउनलोड",
@@ -2598,7 +2636,9 @@ export const menuText: Record<Locale, MenuDict> = {
     about: "बारे में",
     faq: "FAQ",
     privacy: "गोपनीयता नीति",
-    contact: "संपर्क"
+    contact: "सहायता केंद्र",
+    globalHub: "ग्लोबल हब",
+    globalTrend: "ग्लोबल ट्रेंड"
   },
   de: {
     downloads: "DOWNLOADS",
@@ -2613,7 +2653,9 @@ export const menuText: Record<Locale, MenuDict> = {
     about: "Über uns",
     faq: "FAQ",
     privacy: "Datenschutz",
-    contact: "Kontakt"
+    contact: "Support kontaktieren",
+    globalHub: "GLOBAL HUB",
+    globalTrend: "Globaler Trend"
   },
   tr: {
     downloads: "İNDİRMELER",
@@ -2627,8 +2669,10 @@ export const menuText: Record<Locale, MenuDict> = {
     instagram: "Instagram İndirici",
     about: "Hakkimizda",
     faq: "SSS",
-    privacy: "Gizlilik",
-    contact: "İletişim"
+    privacy: "Gizlilik Politikası",
+    contact: "Destekle İletişime Geç",
+    globalHub: "KÜRESEL HUB",
+    globalTrend: "Küresel Trend"
   }
 };
 

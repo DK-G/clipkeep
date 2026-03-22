@@ -180,6 +180,8 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
         title={type === 'trending' ? menu.rankings : menu.latest}
         initialItems={items}
         limit={24}
+        hideMeta={false}
+        layout="masonry"
       />
 
       <section className="mt-12 max-w-4xl mx-auto rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">

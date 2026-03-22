@@ -5,6 +5,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { normalizeLocale, resultText, localeDir } from '@/lib/i18n/ui';
 import type { ApiSuccess, ApiFailure, ExtractionResult } from '@/lib/api/types';
+import type { Platform } from '@/lib/extract/types';
 import { AdsterraNative } from '@/components/ads/native-banner';
 import { DownloadItem } from '@/components/download-item';
 import { GallerySection } from '@/components/gallery-section';
@@ -191,7 +192,7 @@ function ResultContent() {
       {/* Recommended Clips Section */}
       <div className="mt-16">
         <GallerySection 
-          platform={data.platform as any}
+          platform={data.platform as Platform}
           locale={locale}
           title={t.recommendedClips}
           type="trending"
