@@ -97,7 +97,7 @@ export function GallerySection({
   const containerClasses = layout === 'carousel'
     ? "flex overflow-x-auto gap-4 pb-6 px-2 sm:px-0 snap-x snap-mandatory scrollbar-hide -mx-2 sm:mx-0"
     : layout === 'masonry'
-    ? "columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-2 sm:gap-4 px-2 sm:px-0"
+    ? (dense ? "columns-[140px] sm:columns-[160px] md:columns-[180px] gap-2 sm:gap-4 px-2 sm:px-0" : "columns-[200px] sm:columns-[240px] md:columns-[280px] gap-2 sm:gap-4 px-2 sm:px-0")
     : dense
     ? "grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-1.5 sm:gap-3 px-2 sm:px-0"
     : "grid grid-cols-3 md:grid-cols-5 gap-2 sm:gap-4 px-2 sm:px-0";

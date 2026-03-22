@@ -251,7 +251,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
   const t = translations[locale] || translations.en;
 
   return (
-    <main className="max-w-4xl mx-auto py-12 px-6">
+    <main className="max-w-screen-xl mx-auto py-12 px-6">
       <div className="text-center mb-16">
         <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-4">
           {t.welcome}
@@ -303,7 +303,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
         <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 ml-4.5">
           {t.globalTrendingSubtitle}
         </p>
-        <GallerySection platform="all" type="trending" locale={locale} layout="grid" dense={true} limit={12} id="trending-hub" title="" hideMeta={true} />
+        <GallerySection platform="all" type="trending" locale={locale} layout="masonry" dense={true} limit={12} id="trending-hub" title="" hideMeta={true} />
       </div>
 
       <div className="mb-16">
