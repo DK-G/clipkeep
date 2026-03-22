@@ -303,7 +303,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
         <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 ml-4.5">
           {t.globalTrendingSubtitle}
         </p>
-        <GallerySection platform="all" type="trending" locale={locale} layout="masonry" dense={true} limit={12} id="trending-hub" title="" hideMeta={true} />
+        <GallerySection platform="all" type="trending" locale={locale} layout="masonry" dense={true} limit={8} id="trending-hub" title="" hideMeta={true} />
       </div>
 
       <div className="mb-16">
@@ -311,7 +311,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
           <span className="w-1.5 h-6 bg-blue-600 rounded-full mr-3"></span>
           {t.recentDownloads || "Recent Downloads"}
         </h2>
-        <GallerySection platform="all" locale={locale} type="recent" limit={12} hideMeta={false} layout="masonry" id="recent-downloads" title="" />
+        <GallerySection platform="all" locale={locale} type="recent" limit={8} hideMeta={false} layout="masonry" id="recent-downloads" title="" />
       </div>
 
       <section className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl p-8 sm:p-12 border border-slate-100 dark:border-slate-800">
