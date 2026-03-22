@@ -3,250 +3,186 @@
 import Link from 'next/link';
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { resultText, normalizeLocale, localeDir } from '@/lib/i18n/ui';
-import type { ApiSuccess, ApiFailure } from '@/lib/api/types';
+import { Locale, normalizeLocale, resultText, localeDir } from '@/lib/i18n/ui';
+import type { ApiSuccess, ApiFailure, ExtractionResult, MediaVariant } from '@/lib/api/types';
 import { AdsterraNative } from '@/components/ads/native-banner';
+import { DownloadItem } from '@/components/download-item';
+import { DiscoverySection } from '@/components/discovery-section';
 import { trackEvent } from '@/lib/analytics/gtag';
 
 type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
 
-type JobData = {
-  jobId: string;
-  platform: 'telegram' | 'twitter' | 'tiktok';
-  status: JobStatus;
-  progress?: number;
-  media?: Array<{
-    mediaId: string;
-    type: string;
-    quality: string;
-    downloadUrl: string;
-    expiresAt: string;
-    thumbUrl?: string;
-  }>;
-  warnings?: string[];
-};
+function XIcon() { return <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>; }
+function TiktokIcon() { return <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"></path></svg>; }
+function TelegramIcon() { return <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path></svg>; }
 
-type SimilarItem = {
-  id: string;
-  thumbnail_url: string;
-  access_count: number;
-};
 
-const resultUi = {
-  en: { play: 'Play', similar: 'You may also like', notice: 'Notice', downloads: 'downloads' },
-  ar: { play: 'تشغيل', similar: 'قد يعجبك أيضًا', notice: 'تنبيه', downloads: 'تنزيلات' },
-  ja: { play: '再生', similar: 'こちらもおすすめ', notice: 'お知らせ', downloads: 'ダウンロード' },
-  es: { play: 'Reproducir', similar: 'También te puede gustar', notice: 'Aviso', downloads: 'descargas' },
-  pt: { play: 'Reproduzir', similar: 'Você também pode gostar', notice: 'Aviso', downloads: 'downloads' },
-  fr: { play: 'Lire', similar: 'Vous aimerez aussi', notice: 'Notice', downloads: 'téléchargements' },
-  id: { play: 'Putar', similar: 'Anda mungkin juga suka', notice: 'Pemberitahuan', downloads: 'unduhan' },
-  hi: { play: 'चलाएँ', similar: 'आपको यह भी पसंद आ सकता है', notice: 'सूचना', downloads: 'डाउनलोड' },
-  de: { play: 'Abspielen', similar: 'Das könnte dir auch gefallen', notice: 'Hinweis', downloads: 'Downloads' },
-  tr: { play: 'Oynat', similar: 'Bunları da beğenebilirsiniz', notice: 'Bilgilendirme', downloads: 'indirme' },
-} as const;
+
+export default function ResultPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ResultContent />
+    </Suspense>
+  );
+}
 
 function ResultContent() {
-  const params = useParams();
-  const jobId = params.jobId as string;
   const router = useRouter();
+  const params = useParams();
   const searchParams = useSearchParams();
-
   const locale = normalizeLocale(searchParams.get('locale'));
+  const t = resultText[locale] || resultText.en;
   const dir = localeDir(locale);
-  const t = resultText[locale];
-  const ui = resultUi[locale];
 
-  const [data, setData] = useState<JobData | null>(null);
+  const [data, setData] = useState<ExtractionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [similar, setSimilar] = useState<SimilarItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const buildUrlWithLocale = (path: string) => `${path}?locale=${locale}`;
+  const jobId = params.jobId as string;
 
   useEffect(() => {
     if (!jobId) return;
 
-    let timer: NodeJS.Timeout;
+    let pollInterval: NodeJS.Timeout;
 
-    const poll = async () => {
+    async function fetchResult() {
       try {
-        const res = await fetch(`/api/v1/extract/jobs/${jobId}`);
-        const result = (await res.json()) as ApiSuccess<JobData> | ApiFailure;
+        const res = await fetch(`/api/v1/extract/status/${jobId}`);
+        const json = (await res.json()) as ApiSuccess<ExtractionResult> | ApiFailure;
 
-        if (result.ok) {
-          setData(result.data);
-          if (result.data.status !== 'completed' && result.data.status !== 'failed') {
-            timer = setTimeout(poll, 2000);
-          } else if (result.data.status === 'completed') {
-            if (result.data.platform !== 'telegram') {
-              fetch(`/api/v1/gallery/access/${jobId}`, { method: 'POST' }).catch(() => {});
-            }
+        if (json.ok) {
+          setData(json.data);
+          if (json.data.status === 'completed' || json.data.status === 'failed') {
+            setLoading(false);
+            if (json.data.status === 'failed') setError(t.errorTitle);
+          } else {
+            // Still processing, poll again in 2s
+            pollInterval = setTimeout(fetchResult, 2000);
           }
         } else {
-          setError(result.error?.message || t.failedToLoad);
+          setError(json.error.message || t.errorTitle);
+          setLoading(false);
         }
-      } catch {
-        setError(t.networkError);
+      } catch (err) {
+        setError(t.errorTitle);
+        setLoading(false);
       }
-    };
+    }
 
-    poll();
-    return () => clearTimeout(timer);
-  }, [jobId, t.failedToLoad, t.networkError]);
+    fetchResult();
+    return () => clearTimeout(pollInterval);
+  }, [jobId, t.errorTitle]);
 
-  useEffect(() => {
-    const loadSimilar = async () => {
-      if (!data || data.status !== 'completed' || !data.platform) return;
-      try {
-        const r = await fetch(`/api/v1/gallery/recent?platform=${data.platform}&limit=6`);
-        const j = (await r.json()) as { ok: boolean; data: SimilarItem[] };
-        if (j.ok) {
-          setSimilar(j.data.filter((x) => x.id !== jobId).slice(0, 4));
-        }
-      } catch {
-        // no-op
-      }
-    };
-    loadSimilar();
-  }, [data, jobId]);
+  if (loading && !data) {
+    return (
+      <div className="max-w-4xl mx-auto py-12 px-6 text-center">
+        <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6"></div>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{t.loadingTitle}</h2>
+        <p className="text-slate-600 dark:text-slate-400 mt-2">{t.loadingSubtitle}</p>
+      </div>
+    );
+  }
 
   if (error) {
     return (
-      <div dir={dir} className="p-8 text-center">
-        <h1 className="text-2xl font-bold text-red-600 mb-4">{t.errorTitle}</h1>
-        <p className="text-gray-600 mb-8">{error}</p>
-        <button onClick={() => router.push(buildUrlWithLocale('/'))} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-          {t.backToHome}
+      <div className="max-w-4xl mx-auto py-12 px-6 text-center">
+        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">!</div>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{t.errorTitle}</h2>
+        <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-md mx-auto">{error}</p>
+        <button onClick={() => router.back()} className="mt-8 px-6 py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl font-bold shadow-lg">
+          {t.backToDownloader}
         </button>
       </div>
     );
   }
 
-  if (!data) {
-    return (
-      <div dir={dir} className="p-8 text-center animate-pulse">
-        <p className="text-gray-500">{t.loading}</p>
-      </div>
-    );
-  }
+  if (!data) return null;
 
   return (
-    <div dir={dir} className="max-w-4xl mx-auto p-4 sm:p-8">
-      <header className="mb-8 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-blue-900">ClipKeep</h1>
-        <button onClick={() => router.push(buildUrlWithLocale('/'))} className="text-blue-600 hover:underline">
-          {t.backToHome}
-        </button>
+    <div className="max-w-5xl mx-auto py-8 sm:py-12 px-4 sm:px-6" dir={dir}>
+      <header className="mb-8">
+        <Link href={`/${data.platform}?locale=${locale}`} className="text-blue-600 dark:text-blue-400 font-bold hover:underline inline-flex items-center gap-2">
+          ← {t.backToDownloader}
+        </Link>
       </header>
 
-      <main className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-10">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xl font-semibold text-gray-800">{t.statusTitle}</h2>
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
-                data.status === 'completed' ? 'bg-green-100 text-green-700' : data.status === 'failed' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
-              }`}
-            >
-              {t.states[data.status as keyof typeof t.states] || data.status}
-            </span>
-          </div>
-          {data.status !== 'completed' && data.status !== 'failed' && (
-            <div className="w-full bg-gray-100 rounded-full h-2.5">
-              <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style={{ width: `${data.progress || 10}%` }}></div>
-            </div>
-          )}
-        </div>
-
-        {data.status === 'completed' && data.media && data.media.length > 0 && (
-          <div className="space-y-8">
-            <h3 className="text-lg font-medium text-gray-700">{t.mediaTitle} ({data.media.length})</h3>
-            <div className="grid gap-6">
-              {data.media.map((item) => (
-                <div key={item.mediaId} className="group bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden transition-all hover:shadow-md">
-                  <div className="flex flex-col sm:flex-row">
-                    {item.thumbUrl && (
-                      <div className="w-full sm:w-48 h-32 bg-gray-200">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={item.thumbUrl}
-                          alt="Thumbnail"
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                          }}
-                        />
+      <main className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        {/* Preview Area */}
+        <div className="lg:col-span-5">
+           <div className="sticky top-24">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none">
+                 <div className="aspect-video sm:aspect-[4/5] relative bg-slate-100 dark:bg-slate-950">
+                    <img 
+                      src={data.thumbnail_url || '/placeholder-video.png'} 
+                      alt="Preview" 
+                      className="w-full h-full object-cover"
+                    />
+                    {data.status === 'processing' && (
+                      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-8 text-center">
+                         <div className="animate-spin w-8 h-8 border-3 border-white border-t-transparent rounded-full mb-4"></div>
+                         <p className="text-white font-bold">{t.loadingTitle}...</p>
                       </div>
                     )}
-                    <div className="flex-1 p-5 flex flex-col justify-between">
-                      <div className="mb-4 sm:mb-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <p className="font-bold text-gray-900 capitalize">{item.type}</p>
-                          <span className="px-2 py-0.5 bg-gray-200 text-gray-600 text-xs rounded-md uppercase font-semibold">{item.quality}</span>
-                        </div>
-                        <p className="text-xs text-gray-400">ID: {item.mediaId}</p>
-                      </div>
-                      <div className="flex justify-end mt-2">
-                        <a
-                          href={data.platform === 'telegram' ? `/api/v1/extract/proxy?url=${encodeURIComponent(item.downloadUrl)}` : item.downloadUrl}
-                          onClick={() =>
-                            trackEvent('download_click', {
-                              platform: data.platform,
-                              locale,
-                              job_id: data.jobId,
-                              media_id: item.mediaId,
-                              media_type: item.type,
-                              quality: item.quality,
-                            })
-                          }
-                          download={data.platform === 'telegram'}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full sm:w-auto text-center px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-bold shadow-lg shadow-blue-200 active:transform active:scale-95"
-                        >
-                          {data.platform === 'twitter' ? ui.play : t.download}
-                        </a>
-                      </div>
+                 </div>
+                 
+                 <div className="p-4 sm:p-6 border-t border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-3 mb-3">
+                       <div className="bg-slate-900 dark:bg-slate-800 p-2 rounded-lg text-white">
+                          {data.platform === 'twitter' && <XIcon />}
+                          {data.platform === 'tiktok' && <TiktokIcon />}
+                          {data.platform === 'telegram' && <TelegramIcon />}
+                       </div>
+                       <div>
+                          <p className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight truncate max-w-[200px]">
+                            {data.author_name || t.unknownAuthor}
+                          </p>
+                          <p className="text-xs text-slate-500">@{data.author_handle || 'source'}</p>
+                       </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+                    {data.title && (
+                      <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 leading-tight line-clamp-2">
+                        {data.title}
+                      </h2>
+                    )}
+                 </div>
+              </div>
+           </div>
+        </div>
 
-        {data.status === 'completed' && similar.length > 0 && (
-          <section className="mt-10">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">{ui.similar}</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {similar.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/result/${item.id}?locale=${locale}`}
-                  onClick={() =>
-                    trackEvent('similar_click', {
-                      platform: data.platform,
-                      locale,
-                      from_job_id: data.jobId,
-                      to_job_id: item.id,
-                    })
-                  }
-                  className="block rounded-xl overflow-hidden border border-gray-200 bg-white hover:shadow-md transition"
-                >
-                  <div className="aspect-video bg-gray-100 overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={item.thumbnail_url} alt="Related video" className="w-full h-full object-cover" loading="lazy" />
-                  </div>
-                  <div className="px-2 py-2 text-xs text-gray-600">{item.access_count.toLocaleString()} {ui.downloads}</div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
+        {/* Action Area */}
+        <div className="lg:col-span-7">
+           <div className="mb-6">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight">
+                {data.status === 'completed' ? t.successSubtitle : t.loadingTitle}
+              </h1>
+              <p className="text-slate-500 dark:text-slate-400 mt-2">{t.downloadDescription}</p>
+           </div>
 
-        {data.status === 'completed' && data.warnings && data.warnings.length > 0 && (
-          <div className="mt-8 p-4 bg-yellow-50 rounded-xl border border-yellow-100">
-            <p className="text-sm text-yellow-800 font-medium mb-1">{ui.notice}</p>
-            <ul className="list-disc list-inside text-xs text-yellow-700 space-y-1">
+           <div className="space-y-4">
+              {data.variants.map((variant, idx) => (
+                <DownloadItem 
+                  key={idx}
+                  jobId={jobId}
+                  variant={variant}
+                  locale={locale}
+                />
+              ))}
+           </div>
+
+           {/* Adsterra Native Section */}
+           <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-900">
+              <AdsterraNative />
+           </div>
+        </div>
+
+        {/* Warnings Section */}
+        {data.warnings.length > 0 && (
+          <div className="lg:col-span-12 mt-8 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 rounded-xl">
+            <h3 className="text-amber-800 dark:text-amber-200 font-bold mb-2 flex items-center gap-2">
+               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
+               {t.warningsTitle}
+            </h3>
+            <ul className="text-amber-700 dark:text-amber-300 text-sm space-y-1 list-disc list-inside">
               {data.warnings.map((w, i) => (
                 <li key={i}>{w}</li>
               ))}
@@ -255,17 +191,12 @@ function ResultContent() {
         )}
       </main>
 
-      <div className="mt-8">
-        <AdsterraNative />
+      {/* Discovery Section */}
+      <div className="mt-16">
+        <DiscoverySection locale={locale} />
       </div>
     </div>
   );
 }
 
-export default function ResultPage() {
-  return (
-    <Suspense fallback={<div aria-hidden="true" />}>
-      <ResultContent />
-    </Suspense>
-  );
-}
+

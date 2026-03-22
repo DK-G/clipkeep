@@ -34,8 +34,18 @@ export const metadata: Metadata = {
     creator: '@clipkeep',
   },
   icons: {
-    icon: '/icon.png',
-    apple: '/icon.png',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', type: 'image/png' },
+    ],
+  },
+  verification: {
+    other: {
+      'google-adsense-account': 'ca-pub-5877075056686035',
+    },
   },
 };
  
@@ -70,9 +80,15 @@ export default function RootLayout({
   return (
     <html>
       <body>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5877075056686035"
+          crossOrigin="anonymous"
+        />
         <Suspense fallback={null}>
           <LocaleUpdater />
         </Suspense>
+
         {gaId && (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
@@ -88,15 +104,17 @@ export default function RootLayout({
           <HeaderShell />
         </Suspense>
 
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5877075056686035"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
-
         {children}
         <Footer />
+
+        {/* Monetag: In-Page Push */}
+        <Script id="monetag-in-page-push" strategy="afterInteractive">
+          {`(function(s){s.dataset.zone='10760541',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
+        </Script>
+        {/* Monetag: Vignette */}
+        <Script id="monetag-vignette" strategy="afterInteractive">
+          {`(function(s){s.dataset.zone='10760542',s.src='https://izcle.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
+        </Script>
       </body>
     </html>
   );

@@ -21,7 +21,9 @@ export async function POST(
   try {
     const { searchParams } = new URL(request.url);
     const mediaIndex = searchParams.get('index');
-    await recordAccess(jobId, mediaIndex ? parseInt(mediaIndex) : undefined);
+    const locale = searchParams.get('locale') || 'en';
+    
+    await recordAccess(jobId, locale, mediaIndex ? parseInt(mediaIndex) : undefined);
     return success({
       status: 200,
       requestId,

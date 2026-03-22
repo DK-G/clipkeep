@@ -1,359 +1,303 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Locale, normalizeLocale } from '@/lib/i18n/ui';
+import { DiscoverySection } from '@/components/discovery-section';
+import { GallerySection } from '@/components/gallery-section';
+
+type HomeProps = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
 export async function generateMetadata({ searchParams }: HomeProps): Promise<Metadata> {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const base = 'https://clipkeep.net';
-  // Standardize: always use / before ? for consistency
   const url = `${base}/${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
-  const meta = {
+  const meta: Record<string, { title: string; description: string }> = {
     en: {
       title: 'SNS Downloader Hub',
       description: 'ClipKeep home hub for Twitter, Telegram, and TikTok downloader tools, weekly ranking, and recent downloads.',
     },
     ja: {
       title: 'SNS動画保存ハブ',
-      description: 'X、Telegram、TikTok、Instagram向けの保存ツール、週間ランキング、最近のダウンロードをまとめた案内ページです。',
+      description: 'X、Telegram、TikTok、Instagram向けの保存ツール、週間ランキング、最近のダウンロードをまとめた案内ページです।',
     },
     ar: {
-      title: 'بوابة تنزيل فيديوهات SNS',
-      description: 'صفحة ClipKeep الرئيسية لأدوات التنزيل والتصنيف الأسبوعي وأحدث التنزيلات.',
+      title: 'مركز مطور SNS',
+      description: 'ClipKeep هو المركز الرئيسي لأدوات تنزيل Twitter و Telegram و TikTok والتصنيفات الأسبوعية والتنزيلات الحديثة।',
     },
     es: {
-      title: 'Centro de descarga SNS',
-      description: 'Página principal de ClipKeep con herramientas de descarga, ranking semanal y descargas recientes.',
+      title: 'Centro de Descarga de Redes Sociales',
+      description: 'Hub de ClipKeep para Twitter, Telegram y TikTok, con ranking semanal y descargas recientes।',
     },
     pt: {
-      title: 'Hub de download SNS',
-      description: 'Página inicial do ClipKeep com ferramentas de download, ranking semanal e downloads recentes.',
+      title: 'Central de Downloads de Redes Sociais',
+      description: 'Hub do ClipKeep para Twitter, Telegram e TikTok, com ranking semanal e downloads recentes।',
     },
     fr: {
-      title: 'Hub de téléchargement SNS',
-      description: 'Page d’accueil ClipKeep avec outils de téléchargement, classement hebdomadaire et téléchargements récents.',
+      title: 'Hub de Téléchargement SNS',
+      description: 'Hub ClipKeep pour Twitter, Telegram et TikTok, avec classement hebdomadaire et téléchargements récents।',
     },
     id: {
-      title: 'Pusat unduhan SNS',
-      description: 'Halaman utama ClipKeep untuk alat unduh, peringkat mingguan, dan unduhan terbaru.',
+      title: 'Hub Pengunduh SNS',
+      description: 'Hub ClipKeep untuk Twitter, Telegram, dan TikTok, dengan peringkat mingguan dan unduhan terbaru।',
     },
     hi: {
-      title: 'SNS डाउनलोड हब',
-      description: 'ClipKeep का मुख्य पृष्ठ: डाउनलोड टूल, साप्ताहिक रैंकिंग और हालिया डाउनलोड।',
+      title: 'SNS डाउनलोडर हब',
+      description: 'ट्विटर, टेलीग्राम और टिकटॉक डाउनलोडर टूल्स, साप्ताहिक रैंकिंग और हाल के डाउनलोड के लिए क्लिपकीप हब।',
     },
     de: {
-      title: 'SNS-Download-Hub',
-      description: 'ClipKeep-Startseite mit Download-Tools, Wochenranking und neuesten Downloads.',
+      title: 'SNS Downloader Hub',
+      description: 'ClipKeep Hub für Twitter, Telegram und TikTok Downloader, wöchentliches Ranking und aktuelle Downloads।',
     },
     tr: {
-      title: 'SNS indirme merkezi',
-      description: 'ClipKeep ana sayfası: indirme araçları, haftalık sıralama ve son indirmeler.',
-    },
-  } as const;
+      title: 'SNS İndirici Merkezi',
+      description: 'Twitter, Telegram ve TikTok indirici araçları, haftalık sıralama ve son indirmeler için ClipKeep merkezi।',
+    }
+  };
+
+  const m = meta[locale] || meta.en;
 
   return {
-    title: meta[locale].title,
-    description: meta[locale].description,
+    title: m.title,
+    description: m.description,
     alternates: {
-      canonical: url,
       languages: {
-        en: `${base}/`,
-        ja: `${base}/?locale=ja`,
-        ar: `${base}/?locale=ar`,
-        es: `${base}/?locale=es`,
-        pt: `${base}/?locale=pt`,
-        fr: `${base}/?locale=fr`,
-        id: `${base}/?locale=id`,
-        hi: `${base}/?locale=hi`,
-        de: `${base}/?locale=de`,
-        tr: `${base}/?locale=tr`,
-        'x-default': `${base}/`,
+        'en': `${base}/`,
+        'ja': `${base}/?locale=ja`,
+        'ar': `${base}/?locale=ar`,
+        'es': `${base}/?locale=es`,
+        'pt': `${base}/?locale=pt`,
+        'fr': `${base}/?locale=fr`,
+        'id': `${base}/?locale=id`,
+        'hi': `${base}/?locale=hi`,
+        'de': `${base}/?locale=de`,
+        'tr': `${base}/?locale=tr`,
       },
+      canonical: url,
+    },
+    openGraph: {
+      title: m.title,
+      description: m.description,
+      url: url,
+      siteName: 'ClipKeep',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: m.title,
+      description: m.description,
     },
   };
 }
 
-type TopPageDict = {
-  intro: string;
-  toolsFeeds: string;
-  downloader: string;
-  weeklyRanking: string;
-  recentDownloads: string;
-  siteInfo: string;
-  notes: string;
-  noteBody: string;
-  sitemap: string;
-  serviceStatus: string;
-  terms: string;
-  privacy: string;
-  cookies: string;
-  dmca: string;
-  contact: string;
-};
-
-const topPageText: Record<Locale, TopPageDict> = {
+const translations: Record<string, any> = {
   en: {
-    intro: 'This is the gateway page for SNS video downloaders. Choose a page based on your purpose.',
-    toolsFeeds: 'SNS Tools & Feeds',
-    downloader: 'Downloader',
-    weeklyRanking: 'Trend',
-    recentDownloads: 'Latest',
-    siteInfo: 'Site Information',
-    notes: 'Notes',
-    noteBody: 'The home page does not provide extraction directly. Please use each dedicated downloader page.',
-    sitemap: 'Sitemap',
-    serviceStatus: 'Service Status',
-    terms: 'Terms of Service',
-    privacy: 'Privacy Policy',
-    cookies: 'Cookie Policy',
-    dmca: 'DMCA / Copyright',
-    contact: 'Contact',
+    welcome: "Welcome to ClipKeep",
+    subtitle: "The all-in-one downloader hub for your favorite platforms.",
+    weeklyTrending: "Weekly Trending",
+    recentDonwloads: "Recent Downloads",
+    startDownloading: "Start Extracting Now",
+    twitter: "Twitter (X)",
+    telegram: "Telegram",
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    notes: "Platform Stability Notes",
+    noteBody: "We constantly update our extractors to match platform changes. Most extractions take less than 10 seconds."
   },
   ja: {
-    intro: 'SNS動画ダウンローダーへの案内ページです。用途に応じて各ページへ進んでください。',
-    toolsFeeds: 'SNSツールとフィード',
-    downloader: 'ダウンローダー',
-    weeklyRanking: 'トレンド',
-    recentDownloads: '最新',
-    siteInfo: 'サイト情報',
-    notes: '注意事項',
-    noteBody: 'トップページでは抽出機能を提供しません。抽出は各専用ダウンローダーページから行ってください。',
-    sitemap: 'サイトマップ',
-    serviceStatus: 'サービス稼働状況',
-    terms: '利用規約',
-    privacy: 'プライバシーポリシー',
-    cookies: 'クッキーポリシー',
-    dmca: 'DMCA / 著作権',
-    contact: 'お問い合わせ',
+    welcome: "ClipKeep へようこそ",
+    subtitle: "お気に入りのプラットフォームに対応したオールインワン保存ハブ。",
+    weeklyTrending: "週間トレンド",
+    recentDonwloads: "最近のダウンロード",
+    startDownloading: "今すぐ保存を開始",
+    twitter: "Twitter (X)",
+    telegram: "Telegram",
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    notes: "安定性について",
+    noteBody: "プラットフォームの仕様変更に合わせて常に更新しています。ほとんどの抽出は10秒以内に完了します।"
   },
   ar: {
-    intro: 'هذه صفحة التوجيه لأدوات تنزيل فيديوهات SNS. اختر الصفحة المناسبة حسب الهدف.',
-    toolsFeeds: 'الأدوات والخلاصات',
-    downloader: 'أداة التنزيل',
-    weeklyRanking: 'الرائج',
-    recentDownloads: 'الأحدث',
-    siteInfo: 'معلومات الموقع',
-    notes: 'ملاحظات',
-    noteBody: 'لا توفر الصفحة الرئيسية الاستخراج مباشرة. استخدم صفحات التنزيل المخصصة.',
-    sitemap: 'خريطة الموقع',
-    serviceStatus: 'حالة الخدمة',
-    terms: 'شروط الخدمة',
-    privacy: 'سياسة الخصوصية',
-    cookies: 'سياسة ملفات تعريف الارتباط',
-    dmca: 'حقوق النشر / DMCA',
-    contact: 'اتصل بنا',
+    welcome: "مرحبًا بك في ClipKeep",
+    subtitle: "مركز تنزيل الكل في واحد لمنصاتك المفضلة।",
+    weeklyTrending: "الترند الأسبوعي",
+    recentDonwloads: "التنزيلات الأخيرة",
+    startDownloading: "ابدأ الاستخراج الآن",
+    twitter: "Twitter (X)",
+    telegram: "Telegram",
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    notes: "ملاحظات استقرار المنصة",
+    noteBody: "نحن نقوم باستمرار بتحديث المستخرجات الخاصة بنا لتناسب تغييرات المنصة। تستغرق معظم عمليات الاستخراج أقل من 10 ثوانٍ।"
   },
   es: {
-    intro: 'Esta es la página de acceso a los descargadores SNS. Elige la sección según tu objetivo.',
-    toolsFeeds: 'Herramientas y feeds SNS',
-    downloader: 'Descargador',
-    weeklyRanking: 'Tendencias',
-    recentDownloads: 'Últimos',
-    siteInfo: 'Información del sitio',
-    notes: 'Notas',
-    noteBody: 'La página principal no ofrece extracción directa. Usa cada página de descargador dedicada.',
-    sitemap: 'Mapa del sitio',
-    serviceStatus: 'Estado del servicio',
-    terms: 'Términos de servicio',
-    privacy: 'Política de privacidad',
-    cookies: 'Política de cookies',
-    dmca: 'DMCA / Copyright',
-    contact: 'Contacto',
+    welcome: "Bienvenido a ClipKeep",
+    subtitle: "El centro de descarga todo en uno para tus plataformas favoritas।",
+    weeklyTrending: "Tendencias Semanales",
+    recentDonwloads: "Descargas Recientes",
+    startDownloading: "Comenzar Extracción",
+    twitter: "Twitter (X)",
+    telegram: "Telegram",
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    notes: "Notas de Estabilidad",
+    noteBody: "Actualizamos constantemente nuestros extractores। La mayoría de las extracciones tardan menos de 10 segundos।"
   },
   pt: {
-    intro: 'Esta é a página de entrada dos baixadores SNS. Escolha a página conforme seu objetivo.',
-    toolsFeeds: 'Ferramentas e feeds SNS',
-    downloader: 'Baixador',
-    weeklyRanking: 'Tendências',
-    recentDownloads: 'Últimos',
-    siteInfo: 'Informações do site',
-    notes: 'Notas',
-    noteBody: 'A página inicial não oferece extração direta. Use cada página de downloader dedicada.',
-    sitemap: 'Mapa del sitio',
-    serviceStatus: 'Status do serviço',
-    terms: 'Termos de serviço',
-    privacy: 'Política de privacidade',
-    cookies: 'Política de cookies',
-    dmca: 'DMCA / Copyright',
-    contact: 'Contato',
+    welcome: "Bem-vindo ao ClipKeep",
+    subtitle: "O hub de download completo para suas plataformas favoritas।",
+    weeklyTrending: "Tendências Semanais",
+    recentDonwloads: "Downloads Recentes",
+    startDownloading: "Começar Extração",
+    twitter: "Twitter (X)",
+    telegram: "Telegram",
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    notes: "Notas de Estabilidade",
+    noteBody: "Atualizamos constantemente nossos extratores। A maioria das extrações leva menos de 10 segundos।"
   },
   fr: {
-    intro: 'Ceci est la page d’entrée des outils de téléchargement SNS. Choisissez la page selon votre besoin.',
-    toolsFeeds: 'Outils et flux SNS',
-    downloader: 'Téléchargeur',
-    weeklyRanking: 'Tendances',
-    recentDownloads: 'Récents',
-    siteInfo: 'Informations du site',
-    notes: 'Notes',
-    noteBody: 'La page d’accueil ne fournit pas l’extraction directe. Utilisez les pages dédiées.',
-    sitemap: 'Plan du site',
-    serviceStatus: 'État du service',
-    terms: 'Conditions d’utilisation',
-    privacy: 'Politique de confidentialité',
-    cookies: 'Politique de cookies',
-    dmca: 'DMCA / Copyright',
-    contact: 'Contact',
+    welcome: "Bienvenue sur ClipKeep",
+    subtitle: "Le hub de téléchargement tout-en-un pour vos plateformes préférées।",
+    weeklyTrending: "Tendances Hebdomadaires",
+    recentDonwloads: "Téléchargements Récents",
+    startDownloading: "Démarrer l'Extraction",
+    twitter: "Twitter (X)",
+    telegram: "Telegram",
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    notes: "Notes sur la Stabilité",
+    noteBody: "Nous mettons à jour nos extracteurs régulièrement। La plupart des extractions prennent moins de 10 secondes।"
   },
   id: {
-    intro: 'Ini adalah halaman gerbang untuk pengunduh video SNS. Pilih halaman sesuai kebutuhan Anda.',
-    toolsFeeds: 'Alat & feed SNS',
-    downloader: 'Pengunduh',
-    weeklyRanking: 'Tren',
-    recentDownloads: 'Terbaru',
-    siteInfo: 'Informasi situs',
-    notes: 'Catatan',
-    noteBody: 'Halaman beranda tidak menyediakan ekstraksi langsung. Gunakan halaman pengunduh khusus.',
-    sitemap: 'Peta situs',
-    serviceStatus: 'Status layanan',
-    terms: 'Ketentuan layanan',
-    privacy: 'Kebijakan privasi',
-    cookies: 'Kebijakan cookie',
-    dmca: 'DMCA / Hak cipta',
-    contact: 'Kontak',
+    welcome: "Selamat Datang di ClipKeep",
+    subtitle: "Hub pengunduh all-in-one untuk platform favorit Anda।",
+    weeklyTrending: "Tren Mingguan",
+    recentDonwloads: "Unduhan Terbaru",
+    startDownloading: "Mulai Ekstraksi Sekarang",
+    twitter: "Twitter (X)",
+    telegram: "Telegram",
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    notes: "Catatan Stabilitas Platform",
+    noteBody: "Kami terus memperbarui ekstraktor kami। Sebagian besar ekstraksi memakan waktu kurang dari 10 detik।"
   },
   hi: {
-    intro: 'यह SNS वीडियो डाउनलोडर का प्रवेश पृष्ठ है। अपने उपयोग के अनुसार पेज चुनें।',
-    toolsFeeds: 'SNS टूल्स और फीड्स',
-    downloader: 'डाउनलोडर',
-    weeklyRanking: 'ट्रेंडिंग',
-    recentDownloads: 'नवीनतम',
-    siteInfo: 'साइट जानकारी',
-    notes: 'नोट्स',
-    noteBody: 'होम पेज सीधे एक्सट्रैक्शन नहीं देता। कृपया प्रत्येक समर्पित डाउनलोडर पेज का उपयोग करें।',
-    sitemap: 'साइटमैप',
-    serviceStatus: 'सेवा स्थिति',
-    terms: 'सेवा की शर्तें',
-    privacy: 'गो分पता नीति',
-    cookies: 'कुकी नीति',
-    dmca: 'DMCA / कॉपीराइट',
-    contact: 'संपर्क',
+    welcome: "क्लिपकीप में आपका स्वागत है",
+    subtitle: "आपके पसंदीदा प्लेटफॉर्म के लिए ऑल-इन-वन डाउनलोडर हब।",
+    weeklyTrending: "साप्ताहिक ट्रेंडिंग",
+    recentDonwloads: "हाल के डाउनलोड",
+    startDownloading: "अभी निकालना शुरू करें",
+    twitter: "Twitter (X)",
+    telegram: "Telegram",
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    notes: "प्लेटफॉर्म स्थिरता नोट्स",
+    noteBody: "हम प्लेटफॉर्म परिवर्तन के अनुसार अपने एक्सट्रैक्टर्स को लगातार अपडेट करते हैं। अधिकांश निष्कर्षण 10 सेकंड से कम समय लेते हैं।"
   },
   de: {
-    intro: 'Dies ist die Einstiegsseite für SNS-Video-Downloader. Wählen Sie je nach Zweck die passende Seite.',
-    toolsFeeds: 'SNS-Tools & Feeds',
-    downloader: 'Downloader',
-    weeklyRanking: 'Trends',
-    recentDownloads: 'Neueste',
-    siteInfo: 'Seiteninformationen',
-    notes: 'Hinweise',
-    noteBody: 'Die Startseite bietet keine direkte Extraktion. Bitte verwenden Sie die jeweiligen Downloader-Seiten.',
-    sitemap: 'Sitemap',
-    serviceStatus: 'Service-Status',
-    terms: 'Nutzungsbedingungen',
-    privacy: 'Datenschutzerklärung',
-    cookies: 'Cookie-Richtlinie',
-    dmca: 'DMCA / Urheberrecht',
-    contact: 'Kontakt',
+    welcome: "Willkommen bei ClipKeep",
+    subtitle: "Das All-in-One-Downloader-Hub für Ihre Lieblingsplattformen।",
+    weeklyTrending: "Wöchentliche Trends",
+    recentDonwloads: "Aktuelle Downloads",
+    startDownloading: "Jetzt Extraktion starten",
+    twitter: "Twitter (X)",
+    telegram: "Telegram",
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    notes: "Stabilitätshinweise",
+    noteBody: "Wir aktualisieren unsere Extraktoren ständig। Die meisten Extraktionen dauern weniger als 10 Sekunden।"
   },
   tr: {
-    intro: 'Bu, SNS video indiricileri için giriş sayfasıdır. Amacınıza göre ilgili sayfayı seçin.',
-    toolsFeeds: 'SNS araçları ve akışlar',
-    downloader: 'İndirici',
-    weeklyRanking: 'Trend',
-    recentDownloads: 'En Son',
-    siteInfo: 'Site bilgileri',
-    notes: 'Notlar',
-    noteBody: 'Ana sayfa doğrudan çıkarım sağlamaz. Lütfen ilgili indirici sayfalarını kullanın.',
-    sitemap: 'Site haritası',
-    serviceStatus: 'Servis durumu',
-    terms: 'Hizmet şartları',
-    privacy: 'Gizlilik politikası',
-    cookies: 'Çerez politikası',
-    dmca: 'DMCA / Telif hakkı',
-    contact: 'İletişim',
-  },
+    welcome: "ClipKeep'e Hoş Geldiniz",
+    subtitle: "Favori platformlarınız için hepsi bir arada indirici merkezi।",
+    weeklyTrending: "Haftalık Gündem",
+    recentDonwloads: "Son İndirmeler",
+    startDownloading: "Şimdi Çıkarmaya Başlayın",
+    twitter: "Twitter (X)",
+    telegram: "Telegram",
+    tiktok: "TikTok",
+    instagram: "Instagram",
+    notes: "Platform Kararlılık Notları",
+    noteBody: "Platform değişikliklerine uyum sağlamak için araçlarımızı sürekli güncelliyoruz। Çoğu işlem 10 saniyeden kısa sürer।"
+  }
 };
-
-const cardClass =
-  'block rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm sm:text-base font-bold text-gray-900 dark:text-slate-100 no-underline hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-slate-800 transition';
-
-const badgeClass =
-  'inline-flex items-center rounded-full border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 py-1 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200';
-
-const sectionCardClass =
-  'rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm';
-
-interface HomeProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
 
 export default async function HomePage({ searchParams }: HomeProps) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
-  const t = topPageText[locale];
+  const t = translations[locale] || translations.en;
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
-      <header className="mb-8 sm:mb-10">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-slate-50">ClipKeep</h1>
-        <p className="mt-3 text-base sm:text-lg leading-relaxed text-gray-800 dark:text-slate-300 font-medium">{t.intro}</p>
-        <div className="mt-4 flex flex-wrap gap-2 sm:gap-3">
-          <span className={badgeClass}>X (Twitter)</span>
-          <span className={badgeClass}>Instagram</span>
-          <span className={badgeClass}>TikTok</span>
-          <span className={badgeClass}>Telegram</span>
+    <main className="max-w-4xl mx-auto py-12 px-6">
+      <div className="text-center mb-16">
+        <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-4">
+          {t.welcome}
+        </h1>
+        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          {t.subtitle}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-16">
+         <Link href={`/twitter${locale !== 'en' ? `?locale=${locale}` : ''}`} className="group p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1">
+            <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center mb-6 ring-4 ring-slate-50 dark:ring-slate-800">
+               <svg className="w-6 h-6 text-white fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+            </div>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">{t.twitter}</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{t.startDownloading}</p>
+         </Link>
+
+         <Link href={`/telegram${locale !== 'en' ? `?locale=${locale}` : ''}`} className="group p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1">
+            <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mb-6 ring-4 ring-blue-50 dark:ring-slate-800">
+               <svg className="w-6 h-6 text-white fill-current" viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path></svg>
+            </div>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">{t.telegram}</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{t.startDownloading}</p>
+         </Link>
+
+         <Link href={`/tiktok${locale !== 'en' ? `?locale=${locale}` : ''}`} className="group p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-pink-500/50 shadow-sm hover:shadow-xl hover:shadow-pink-500/10 transition-all duration-300 transform hover:-translate-y-1">
+            <div className="w-12 h-12 bg-slate-950 rounded-xl flex items-center justify-center mb-6 ring-4 ring-slate-100 dark:ring-slate-800">
+               <svg className="w-6 h-6 text-white fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"></path></svg>
+            </div>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">{t.tiktok}</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{t.startDownloading}</p>
+         </Link>
+
+         <Link href={`/instagram${locale !== 'en' ? `?locale=${locale}` : ''}`} className="group p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-purple-500/50 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 transform hover:-translate-y-1">
+            <div className="w-12 h-12 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 ring-4 ring-purple-50 dark:ring-slate-800">
+               <svg className="w-6 h-6 text-white fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </div>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">{t.instagram}</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{t.startDownloading}</p>
+         </Link>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <div>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-8 flex items-center">
+            <span className="w-1.5 h-6 bg-blue-600 rounded-full mr-3"></span>
+            {t.weeklyTrending}
+          </h2>
+          <GallerySection platform="twitter" locale={locale} title={t.weeklyTrending} type="trending" limit={6} />
         </div>
-      </header>
-
-      <section className="mb-8 sm:mb-10">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-slate-50">{t.toolsFeeds}</h2>
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className={sectionCardClass}>
-            <h3 className="mb-3 text-lg font-bold text-gray-900 dark:text-slate-50">Instagram</h3>
-            <div className="grid gap-2.5">
-              <Link href={`/download-instagram-video?locale=${locale}`} className={cardClass}>{t.downloader}</Link>
-              <Link href={`/instagram-trending-videos?locale=${locale}`} className={cardClass}>{t.weeklyRanking}</Link>
-              <Link href={`/instagram-latest-videos?locale=${locale}`} className={cardClass}>{t.recentDownloads}</Link>
-            </div>
-          </div>
-
-          <div className={sectionCardClass}>
-            <h3 className="mb-3 text-lg font-bold text-gray-900 dark:text-slate-50">X (Twitter)</h3>
-            <div className="grid gap-2.5">
-              <Link href={`/download-twitter-video?locale=${locale}`} className={cardClass}>{t.downloader}</Link>
-              <Link href={`/twitter-trending-videos?locale=${locale}`} className={cardClass}>{t.weeklyRanking}</Link>
-              <Link href={`/twitter-latest-videos?locale=${locale}`} className={cardClass}>{t.recentDownloads}</Link>
-            </div>
-          </div>
-
-          <div className={sectionCardClass}>
-            <h3 className="mb-3 text-lg font-bold text-gray-900 dark:text-slate-50">TikTok</h3>
-            <div className="grid gap-2.5">
-              <Link href={`/download-tiktok-video?locale=${locale}`} className={cardClass}>{t.downloader}</Link>
-              <Link href={`/tiktok-trending-videos?locale=${locale}`} className={cardClass}>{t.weeklyRanking}</Link>
-              <Link href={`/tiktok-latest-videos?locale=${locale}`} className={cardClass}>{t.recentDownloads}</Link>
-            </div>
-          </div>
- 
-          <div className={sectionCardClass}>
-            <h3 className="mb-3 text-lg font-bold text-gray-900 dark:text-slate-50">Telegram</h3>
-            <div className="grid gap-2.5">
-              <Link href={`/download-telegram-video?locale=${locale}`} className={cardClass}>{t.downloader}</Link>
-              <Link href={`/telegram-trending-videos?locale=${locale}`} className={cardClass}>{t.weeklyRanking}</Link>
-              <Link href={`/telegram-latest-videos?locale=${locale}`} className={cardClass}>{t.recentDownloads}</Link>
-            </div>
-          </div>
+        <div>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-8 flex items-center">
+            <span className="w-1.5 h-6 bg-slate-400 dark:bg-slate-700 rounded-full mr-3"></span>
+            {t.recentDonwloads}
+          </h2>
+          <GallerySection platform="twitter" locale={locale} title={t.recentDonwloads} type="recent" limit={6} />
         </div>
-      </section>
+      </div>
 
-      <section className="mb-8 sm:mb-10">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-slate-50">{t.siteInfo}</h2>
-        <ul className="mt-3 list-disc pl-5 leading-8 text-sm sm:text-base text-gray-700 dark:text-slate-300">
-          <li><Link href="/sitemap.xml" className="hover:text-blue-700">{t.sitemap}</Link></li>
-          <li><Link href={`/status?locale=${locale}`} className="hover:text-blue-700">{t.serviceStatus}</Link></li>
-          <li><Link href={`/legal/terms?locale=${locale}`} className="hover:text-blue-700">{t.terms}</Link></li>
-          <li><Link href={`/legal/privacy?locale=${locale}`} className="hover:text-blue-700">{t.privacy}</Link></li>
-          <li><Link href={`/legal/cookies?locale=${locale}`} className="hover:text-blue-700">{t.cookies}</Link></li>
-          <li><Link href={`/legal/dmca?locale=${locale}`} className="hover:text-blue-700">{t.dmca}</Link></li>
-          <li><Link href={`/contact?locale=${locale}`} className="hover:text-blue-700">{t.contact}</Link></li>
-        </ul>
-      </section>
-
-      <section>
+      <section className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl p-8 sm:p-12 border border-slate-100 dark:border-slate-800">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-slate-50">{t.notes}</h2>
         <p className="mt-2 text-sm sm:text-base leading-relaxed text-gray-800 dark:text-slate-300 font-medium">{t.noteBody}</p>
       </section>
+
+      <DiscoverySection locale={locale} />
     </main>
   );
 }

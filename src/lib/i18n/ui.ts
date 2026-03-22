@@ -1,4 +1,4 @@
-﻿export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
+export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
 
 export function normalizeLocale(value: string | null | undefined): Locale {
   const v = value?.toLowerCase();
@@ -67,6 +67,13 @@ type ResultDict = {
   states: Record<string, string>;
   mediaTitle: string;
   download: string;
+  loadingTitle: string;
+  loadingSubtitle: string;
+  backToDownloader: string;
+  successSubtitle: string;
+  downloadDescription: string;
+  unknownAuthor: string;
+  warningsTitle: string;
 };
 
 type SolutionDict = {
@@ -133,6 +140,7 @@ type MenuDict = {
   privacy: string;
   contact: string;
 };
+
 
 type PlatformPageDict = {
   title: string;
@@ -367,7 +375,7 @@ export const homeText: Record<Locale, HomeDict> = {
     twitterTitle: "ट्विटर (X) डाउनलोडर",
     twitterDesc: "X/ट्विटर पोस्ट से वीडियो और GIF तुरंत आर्काइव करें।",
     tiktokTitle: "टिकटॉक डाउनलोडर",
-    tiktokDesc: "ऑफलाइन आर्काइविंग के लिए टिकटॉक वीडियो डाउनलोड करें।"
+    tiktokDesc: "ऑफलाइन आर्काइविंग के लिए टिकटॉक वीडियो डाउनलोड करें。"
   },
   de: {
     title: "ClipKeep Extractor",
@@ -1578,6 +1586,13 @@ export const resultText: Record<Locale, ResultDict> = {
     },
     mediaTitle: "Media Ready",
     download: "Download",
+    loadingTitle: "Extracting Media",
+    loadingSubtitle: "This usually takes 5-15 seconds depending on content size.",
+    backToDownloader: "Back to Downloader",
+    successSubtitle: "Ready for Download",
+    downloadDescription: "Select your preferred quality from the list below.",
+    unknownAuthor: "Unknown Author",
+    warningsTitle: "Extraction Warnings",
   },
   ar: {
     title: "نتيجة الاستخراج",
@@ -1604,8 +1619,15 @@ export const resultText: Record<Locale, ResultDict> = {
       completed: "مكتمل",
       failed: "فشل",
     },
-    mediaTitle: "الملفات جاهزة",
-    download: "تحميل",
+    mediaTitle: "الوسائط جاهزة",
+    download: "تنزيل",
+    loadingTitle: "جاري استخراج الوسائط",
+    loadingSubtitle: "يستغرق هذا عادةً من 5 إلى 15 ثانية حسب حجم المحتوى.",
+    backToDownloader: "العودة إلى أداة التنزيل",
+    successSubtitle: "جاهز للتنزيل",
+    downloadDescription: "حدد الجودة المفضلة لديك من القائمة أدناه.",
+    unknownAuthor: "مؤلف غير معروف",
+    warningsTitle: "تحذيرات الاستخراج",
   },
   ja: {
     title: "抽出結果",
@@ -1634,6 +1656,13 @@ export const resultText: Record<Locale, ResultDict> = {
     },
     mediaTitle: "保存準備完了",
     download: "ダウンロード",
+    loadingTitle: "メディアを抽出中",
+    loadingSubtitle: "通常5〜15秒ほどで完了します。少々お待ちください。",
+    backToDownloader: "ダウンローダーに戻る",
+    successSubtitle: "保存準備が整いました",
+    downloadDescription: "以下のリストからご希望の品質を選択してください。",
+    unknownAuthor: "不明な投稿者",
+    warningsTitle: "抽出に関する警告",
   },
   es: {
     title: "Resultado de ClipKeep",
@@ -1653,7 +1682,7 @@ export const resultText: Record<Locale, ResultDict> = {
     checkSolution: "Ver guía",
     errorTitle: "Algo salió mal",
     backToHome: "Inicio",
-    statusTitle: "Estado",
+    statusTitle: "Status",
     states: {
       queued: "En cola",
       processing: "Procesando",
@@ -1661,7 +1690,14 @@ export const resultText: Record<Locale, ResultDict> = {
       failed: "Error",
     },
     mediaTitle: "Media Lista",
-    download: "Descargar"
+    download: "Descargar",
+    loadingTitle: "Extrayendo medios",
+    loadingSubtitle: "Esto suele tardar de 5 a 15 segundos.",
+    backToDownloader: "Volver al descargador",
+    successSubtitle: "Listo para descargar",
+    downloadDescription: "Seleccione la calidad preferida de la lista.",
+    unknownAuthor: "Autor desconocido",
+    warningsTitle: "Advertencias de extracción",
   },
   pt: {
     title: "Resultado do ClipKeep",
@@ -1689,7 +1725,14 @@ export const resultText: Record<Locale, ResultDict> = {
       failed: "Falha",
     },
     mediaTitle: "Mídia Pronta",
-    download: "Baixar"
+    download: "Baixar",
+    loadingTitle: "Extraindo mídia",
+    loadingSubtitle: "Isso geralmente leva de 5 a 15 segundos.",
+    backToDownloader: "Voltar ao downloader",
+    successSubtitle: "Pronto para baixar",
+    downloadDescription: "Selecione a qualidade preferida na lista.",
+    unknownAuthor: "Autor desconhecido",
+    warningsTitle: "Avisos de extração",
   },
   fr: {
     title: "Résultat ClipKeep",
@@ -1717,7 +1760,14 @@ export const resultText: Record<Locale, ResultDict> = {
       failed: "Échec",
     },
     mediaTitle: "Médias prêts",
-    download: "Télécharger"
+    download: "Télécharger",
+    loadingTitle: "Extraction des médias",
+    loadingSubtitle: "Cela prend généralement 5 à 15 secondes.",
+    backToDownloader: "Retour au téléchargeur",
+    successSubtitle: "Prêt pour le téléchargement",
+    downloadDescription: "Sélectionnez la qualité préférée dans la liste.",
+    unknownAuthor: "Auteur inconnu",
+    warningsTitle: "Avertissements d'extraction",
   },
   id: {
     title: "Hasil ClipKeep",
@@ -1745,7 +1795,14 @@ export const resultText: Record<Locale, ResultDict> = {
       failed: "Gagal",
     },
     mediaTitle: "Media Siap",
-    download: "Unduh"
+    download: "Unduh",
+    loadingTitle: "Mengekstrak Media",
+    loadingSubtitle: "Ini biasanya memakan waktu 5-15 detik.",
+    backToDownloader: "Kembali ke Pengunduh",
+    successSubtitle: "Siap diunduh",
+    downloadDescription: "Pilih kualitas yang Anda inginkan dari daftar di bawah.",
+    unknownAuthor: "Penulis Tidak Dikenal",
+    warningsTitle: "Peringatan Ekstraksi",
   },
   hi: {
     title: "ClipKeep परिणाम",
@@ -1772,8 +1829,15 @@ export const resultText: Record<Locale, ResultDict> = {
       completed: "पूर्ण",
       failed: "विफल",
     },
-    mediaTitle: "मीडिया तैयार",
-    download: "डाउनलोड"
+    mediaTitle: "मीडिया तैयार है",
+    download: "डाउनलोड",
+    loadingTitle: "मीडिया निकाला जा रहा है",
+    loadingSubtitle: "इसमें आमतौर पर 5-15 सेकंड लगते हैं।",
+    backToDownloader: "डाउनलोडर पर वापस जाएं",
+    successSubtitle: "डाउनलोड के लिए तैयार",
+    downloadDescription: "नीचे दी गई सूची से अपनी पसंदीदा गुणवत्ता चुनें।",
+    unknownAuthor: "अज्ञात लेखक",
+    warningsTitle: "निष्कर्षण चेतावनियाँ",
   },
   de: {
     title: "ClipKeep Ergebnis",
@@ -1801,7 +1865,14 @@ export const resultText: Record<Locale, ResultDict> = {
       failed: "Fehlgeschlagen",
     },
     mediaTitle: "Medien bereit",
-    download: "Download"
+    download: "Download",
+    loadingTitle: "Medien werden extrahiert",
+    loadingSubtitle: "Dies dauert normalerweise 5-15 Sekunden.",
+    backToDownloader: "Zurück zum Downloader",
+    successSubtitle: "Bereit zum Download",
+    downloadDescription: "Wählen Sie die gewünschte Qualität aus der Liste aus.",
+    unknownAuthor: "Unbekannter Autor",
+    warningsTitle: "Extraktionswarnungen",
   },
   tr: {
     title: "ClipKeep Sonucu",
@@ -1829,7 +1900,14 @@ export const resultText: Record<Locale, ResultDict> = {
       failed: "Hata",
     },
     mediaTitle: "Dosyalar Hazır",
-    download: "İndir"
+    download: "İndir",
+    loadingTitle: "Medya Ayıklanıyor",
+    loadingSubtitle: "Bu işlem genellikle 5-15 saniye sürer.",
+    backToDownloader: "İndiriciye Dön",
+    successSubtitle: "İndirmeye Hazır",
+    downloadDescription: "Aşağıdaki listeden tercih ettiğiniz kaliteyi seçin.",
+    unknownAuthor: "Bilinmeyen Yazar",
+    warningsTitle: "Ayıklama Uyarıları",
   }
 };
 

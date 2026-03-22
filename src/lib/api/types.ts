@@ -1,4 +1,4 @@
-﻿import type { Locale } from "@/lib/i18n/ui";
+import type { Locale } from "@/lib/i18n/ui";
 
 export type ApiMeta = {
   requestId: string;
@@ -36,3 +36,25 @@ export type ApiFailure = {
   error: ApiErrorBody;
   meta: ApiMeta;
 };
+
+export interface MediaVariant {
+  url: string;
+  quality: string;
+  ext: string;
+  size?: number;
+  type: 'video' | 'image' | 'audio' | 'gif';
+  width?: number;
+  height?: number;
+}
+
+export interface ExtractionResult {
+  id: string;
+  platform: string;
+  status: 'queued' | 'processing' | 'completed' | 'failed';
+  variants: MediaVariant[];
+  author_name?: string;
+  author_handle?: string;
+  title?: string;
+  thumbnail_url?: string;
+  warnings: string[];
+}

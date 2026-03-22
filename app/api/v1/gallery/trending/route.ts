@@ -21,19 +21,32 @@ export async function GET(request: Request) {
   try {
     const db = await getDb();
     // Trending = Most accessed in the last 7 days
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const locale = searchParams.get("locale"); // For future localized trends
 
     const { results } = await db.prepare(
-      `SELECT id, platform, source_url, thumbnail_url, access_count, created_at
-       FROM extractor_jobs
-       WHERE platform = ? 
-         AND status = 'completed' 
-         AND is_public = 1 
-         AND thumbnail_url IS NOT NULL
-         AND (last_accessed_at >= ? OR created_at >= ?)
-       ORDER BY access_count DESC, created_at DESC
+      `SELECT j.id, j.platform, j.source_url, j.thumbnail_url, s.total_access as access_count, j.created_at
+       FROM extractor_jobs j
+       JOIN (
+         SELECT job_id, SUM(count) as total_access
+         FROM job_stats
+         WHERE date >= ?
+         ${locale ? "AND locale = ?" : ""}
+         GROUP BY job_id
+       ) s ON j.id = s.job_id
+       WHERE j.platform = ? 
+         AND j.status = 'completed' 
+         AND j.is_public = 1 
+         AND j.thumbnail_url IS NOT NULL
+       ORDER BY s.total_access DESC, j.created_at DESC
        LIMIT ? OFFSET ?`
-    ).bind(platform, sevenDaysAgo, sevenDaysAgo, limit, offset).all();
+    ).bind(...[
+      sevenDaysAgo, 
+      ...(locale ? [locale] : []), 
+      platform, 
+      limit, 
+      offset
+    ]).all();
 
     return success({
       status: 200,

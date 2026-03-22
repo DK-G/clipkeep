@@ -11,9 +11,55 @@ function nowIso(): string {
 }
 
 /**
+ * Normalizes a URL by stripping tracking parameters and ensuring consistent format.
+ */
+function normalizeUrl(url: string, platform: Platform): string {
+  try {
+    const u = new URL(url.trim());
+    u.protocol = 'https:'; // Force https
+    
+    // Remove common trackers
+    const trackers = ['s', 't', 'ref', 'utm_source', 'utm_medium', 'utm_campaign', 'feature'];
+    trackers.forEach(t => u.searchParams.delete(t));
+
+    // Platform-specific normalization
+    if (platform === 'twitter') {
+      // Remove trailing slash and query entirely for status URLs
+      if (u.pathname.includes('/status/')) {
+        u.search = ''; 
+      }
+    } else if (platform === 'tiktok') {
+      // TikTok often has many trackers
+      u.search = '';
+    }
+
+    return u.toString().toLowerCase().replace(/\/$/, "");
+  } catch {
+    return url.trim().toLowerCase().replace(/\/$/, "");
+  }
+}
+
+/**
+ * Generates a deterministic Job ID based on the normalized URL.
+ * Uses a simple prefix and a truncated part of the URL (or hash if available).
+ */
+async function getDeterministicJobId(platform: Platform, sourceUrl: string): Promise<string> {
+  const normalized = normalizeUrl(sourceUrl, platform);
+  
+  // Use a hash for the final ID to avoid length issues and special characters
+  const encoder = new TextEncoder();
+  const data = encoder.encode(normalized);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  
+  return `job_${platform}_${hashHex.substring(0, 16)}`;
+}
+
+/**
  * Persists or updates a job in D1.
  */
-async function saveJobToDb(job: ExtractJob): Promise<void> {
+async function saveJobToDb(job: ExtractJob, locale: string = 'en'): Promise<void> {
   const db = await getDb();
   const resultPayload = JSON.stringify({
     media: job.media,
@@ -28,15 +74,16 @@ async function saveJobToDb(job: ExtractJob): Promise<void> {
   const isPublic = job.platform === 'telegram' ? 0 : 1;
 
   await db.prepare(
-    `INSERT INTO extractor_jobs (id, platform, source_url, status, progress, result_payload, thumbnail_url, is_public, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `INSERT INTO extractor_jobs (id, platform, source_url, status, progress, result_payload, thumbnail_url, is_public, created_at, updated_at, locale)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON CONFLICT(id) DO UPDATE SET
        status = excluded.status,
        progress = excluded.progress,
        result_payload = excluded.result_payload,
        thumbnail_url = coalesce(excluded.thumbnail_url, extractor_jobs.thumbnail_url),
        is_public = excluded.is_public,
-       updated_at = excluded.updated_at`
+       updated_at = excluded.updated_at,
+       locale = coalesce(extractor_jobs.locale, excluded.locale)`
   ).bind(
     job.id,
     job.platform,
@@ -47,13 +94,14 @@ async function saveJobToDb(job: ExtractJob): Promise<void> {
     firstThumb,
     isPublic,
     job.createdAt,
-    job.updatedAt
+    job.updatedAt,
+    locale
   ).run();
 }
 
-export async function createJob(platform: Platform, sourceUrl: string): Promise<ExtractJob> {
+export async function createJob(platform: Platform, sourceUrl: string, locale: string = 'en'): Promise<ExtractJob> {
   const now = nowIso();
-  const id = `job_${crypto.randomUUID()}`;
+  const id = await getDeterministicJobId(platform, sourceUrl);
 
   const job: ExtractJob = {
     id,
@@ -68,7 +116,7 @@ export async function createJob(platform: Platform, sourceUrl: string): Promise<
   };
 
   // Initial persist
-  await saveJobToDb(job);
+  await saveJobToDb(job, locale);
 
   // Background Extraction using waitUntil
   const cloudflare = await getCloudflareContext();
@@ -180,9 +228,10 @@ export async function getJob(jobId: string): Promise<ExtractJob | undefined> {
  * Increments the access count for a job and updates its visibility window.
  * For Telegram, it creates a specific "gallery entry" job if a media index is provided.
  */
-export async function recordAccess(jobId: string, mediaIndex?: number): Promise<void> {
+export async function recordAccess(jobId: string, locale: string = 'en', mediaIndex?: number): Promise<void> {
   const db = await getDb();
   const now = nowIso();
+  const today = new Date().toISOString().split('T')[0];
   
   // Base access record
   await db.prepare(
@@ -191,6 +240,14 @@ export async function recordAccess(jobId: string, mediaIndex?: number): Promise<
          last_accessed_at = ?
      WHERE id = ?`
   ).bind(now, jobId).run();
+
+  // Update daily stats for trending
+  await db.prepare(
+    `INSERT INTO job_stats (job_id, locale, date, count)
+     VALUES (?, ?, ?, 1)
+     ON CONFLICT(job_id, locale, date) DO UPDATE SET
+       count = job_stats.count + 1`
+  ).bind(jobId, locale, today).run();
 
   // Telegram specialized gallery logic: 
   // If a media index is specified, we ensure a "public" entry exists for this specific media.
@@ -209,12 +266,13 @@ export async function recordAccess(jobId: string, mediaIndex?: number): Promise<
       });
 
       await db.prepare(
-        `INSERT INTO extractor_jobs (id, platform, source_url, status, progress, result_payload, thumbnail_url, is_public, access_count, created_at, updated_at, last_accessed_at)
-         VALUES (?, ?, ?, 'completed', 100, ?, ?, 1, 1, ?, ?, ?)
+        `INSERT INTO extractor_jobs (id, platform, source_url, status, progress, result_payload, thumbnail_url, is_public, access_count, created_at, updated_at, last_accessed_at, locale)
+         VALUES (?, ?, ?, 'completed', 100, ?, ?, 1, 1, ?, ?, ?, ?)
          ON CONFLICT(id) DO UPDATE SET
            access_count = extractor_jobs.access_count + 1,
            last_accessed_at = excluded.last_accessed_at,
-           updated_at = excluded.updated_at`
+           updated_at = excluded.updated_at,
+           locale = coalesce(extractor_jobs.locale, excluded.locale)`
       ).bind(
         galleryId,
         original.platform,
@@ -223,7 +281,8 @@ export async function recordAccess(jobId: string, mediaIndex?: number): Promise<
         media.thumbUrl,
         original.createdAt,
         now,
-        now
+        now,
+        locale
       ).run();
     }
   }
