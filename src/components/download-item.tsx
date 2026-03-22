@@ -1,22 +1,14 @@
 'use client';
 
 import { Locale, resultText } from '@/lib/i18n/ui';
-
-interface MediaVariant {
-  url: string;
-  quality: string;
-  ext: string;
-  size?: number;
-  type: 'video' | 'image' | 'audio' | 'gif';
-}
+import type { MediaVariant } from '@/lib/api/types';
 
 interface DownloadItemProps {
   variant: MediaVariant;
-  jobId: string;
   locale: Locale;
 }
 
-export function DownloadItem({ variant, jobId, locale }: DownloadItemProps) {
+export function DownloadItem({ variant, locale }: DownloadItemProps) {
   const t = resultText[locale];
 
   const formatSize = (bytes?: number) => {

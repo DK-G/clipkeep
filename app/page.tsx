@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Locale, normalizeLocale } from '@/lib/i18n/ui';
+import { normalizeLocale } from '@/lib/i18n/ui';
 import { DiscoverySection } from '@/components/discovery-section';
 import { GallerySection } from '@/components/gallery-section';
 
@@ -92,7 +92,7 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
   };
 }
 
-const translations: Record<string, any> = {
+const translations: Record<string, Record<string, string>> = {
   en: {
     welcome: "Welcome to ClipKeep",
     subtitle: "The all-in-one downloader hub for your favorite platforms.",
@@ -117,7 +117,7 @@ const translations: Record<string, any> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "安定性について",
-    noteBody: "プラットフォームの仕様変更に合わせて常に更新しています。ほとんどの抽出は10秒以内に完了します।"
+    noteBody: "プラットフォームの仕様変更に合わせて常に更新しています。ほとんどの抽出は10秒以内に完了します。"
   },
   ar: {
     welcome: "مرحبًا بك في ClipKeep",
@@ -169,7 +169,7 @@ const translations: Record<string, any> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "Notes sur la Stabilité",
-    noteBody: "Nous mettons à jour nos extracteurs régulièrement। La plupart des extractions prennent moins de 10 secondes।"
+    noteBody: "Nous mettons à jour nos extracteurs régulièrement। La plupart des extractions prennent moins de 10 secondes。"
   },
   id: {
     welcome: "Selamat Datang di ClipKeep",
@@ -182,7 +182,7 @@ const translations: Record<string, any> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "Catatan Stabilitas Platform",
-    noteBody: "Kami terus memperbarui ekstraktor kami। Sebagian besar ekstraksi memakan waktu kurang dari 10 detik।"
+    noteBody: "Kami terus memperbarui ekstraktor kami। Sebagian besar ekstraksi memakan waktu kurang dari 10 detik。"
   },
   hi: {
     welcome: "क्लिपकीप में आपका स्वागत है",
@@ -208,7 +208,7 @@ const translations: Record<string, any> = {
     tiktok: "TikTok",
     instagram: "Instagram",
     notes: "Stabilitätshinweise",
-    noteBody: "Wir aktualisieren unsere Extraktoren ständig। Die meisten Extraktionen dauern weniger als 10 Sekunden।"
+    noteBody: "Wir aktualisieren unsere Extraktoren ständig। Die meisten Extraktionen dauern weniger als 10 Sekunden。"
   },
   tr: {
     welcome: "ClipKeep'e Hoş Geldiniz",

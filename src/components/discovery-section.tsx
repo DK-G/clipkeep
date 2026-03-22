@@ -86,6 +86,7 @@ export function DiscoverySection({ locale }: { locale: Locale }) {
               className="group relative bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 hover:border-blue-400/30 shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)] transition-all duration-300 cursor-pointer"
             >
               <div className="aspect-[16/9] relative bg-slate-100 dark:bg-slate-950">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.thumbnail_url}
                   alt="Thumbnail"
