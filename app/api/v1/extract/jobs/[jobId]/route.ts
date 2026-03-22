@@ -27,10 +27,16 @@ export async function GET(_request: Request, context: Context) {
     return success({
       requestId,
       data: {
-        jobId: job.id,
+        id: job.id,
         platform: job.platform,
         status: job.status,
-        media: job.media,
+        variants: job.media.map(m => ({
+          url: m.downloadUrl,
+          quality: m.quality,
+          ext: m.type === 'video' ? 'mp4' : m.type === 'image' ? 'jpg' : 'mp3',
+          type: m.type,
+          thumbUrl: m.thumbUrl,
+        })),
         warnings: job.warnings,
       },
     });
@@ -39,10 +45,12 @@ export async function GET(_request: Request, context: Context) {
   return success({
     requestId,
     data: {
-      jobId: job.id,
+      id: job.id,
       platform: job.platform,
       status: job.status,
       progress: job.progress,
+      variants: [],
+      warnings: job.warnings || [],
     },
   });
 }

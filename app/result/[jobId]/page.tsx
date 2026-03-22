@@ -45,7 +45,7 @@ function ResultContent() {
 
     async function fetchResult() {
       try {
-        const res = await fetch(`/api/v1/extract/status/${jobId}`);
+        const res = await fetch(`/api/v1/extract/jobs/${jobId}`);
         const json = (await res.json()) as ApiSuccess<ExtractionResult> | ApiFailure;
 
         if (json.ok) {

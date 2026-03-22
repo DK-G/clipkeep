@@ -180,7 +180,8 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
         title={type === 'trending' ? menu.rankings : menu.latest}
         initialItems={items}
         limit={24}
-        hideMeta={false}
+        hideMeta={type === 'trending'}
+        dense={type === 'trending'}
         layout="masonry"
       />
 
