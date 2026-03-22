@@ -251,7 +251,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
   const t = translations[locale] || translations.en;
 
   return (
-    <main className="max-w-screen-xl mx-auto py-12 px-6">
+    <main className="max-w-[1400px] mx-auto py-12 px-6">
       <div className="text-center mb-16">
         <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-4">
           {t.welcome}
