@@ -262,13 +262,6 @@ export default async function HomePage({ searchParams }: HomeProps) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-8 mb-16">
-         <Link href={`/download-instagram-video${locale !== 'en' ? `?locale=${locale}` : ''}`} className="group p-4 sm:p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-purple-500/50 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 transform hover:-translate-y-1">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 rounded-xl flex items-center justify-center mb-3 sm:mb-6 ring-4 ring-purple-50 dark:ring-slate-800">
-               <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-            </div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-50 mb-1 sm:mb-2">{t.instagram}</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-sm leading-relaxed line-clamp-1 sm:line-clamp-none">{t.startDownloading}</p>
-         </Link>
 
          <Link href={`/download-telegram-video${locale !== 'en' ? `?locale=${locale}` : ''}`} className="group p-4 sm:p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500 rounded-xl flex items-center justify-center mb-3 sm:mb-6 ring-4 ring-blue-50 dark:ring-slate-800">
