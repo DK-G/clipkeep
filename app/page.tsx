@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { normalizeLocale } from '@/lib/i18n/ui';
 import { DiscoverySection } from '@/components/discovery-section';
 import { GallerySection } from '@/components/gallery-section';
+import { ExtractorForm } from '@/components/extractor-form';
 
 type HomeProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -17,11 +18,11 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
   const meta: Record<string, { title: string; description: string }> = {
     en: {
       title: 'SNS Downloader Hub',
-      description: 'ClipKeep home hub for Twitter, Telegram, TikTok, and Instagram downloader tools, weekly ranking, and recent downloads.',
+      description: 'ClipKeep home hub for Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok, and Twitter downloader tools.',
     },
     ja: {
       title: 'SNS動画保存ハブ',
-      description: 'X、Telegram、TikTok、Instagram向けの保存ツール、週間ランキング、最近のダウンロードをまとめた案内ページです।',
+      description: 'Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok, X(Twitter)などの保存ツールをまとめたハブページです。',
     },
     ar: {
       title: 'مركز مطور SNS',
@@ -53,7 +54,7 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
     },
     tr: {
       title: 'SNS İndirici Merkezi',
-      description: 'Twitter, Telegram, TikTok ve Instagram indirici araçları, haftalık sıralama ve son indirmeler için ClipKeep merkezi।',
+      description: 'Reddit, Pinterest, Threads, Bluesky, TikTok ve Twitter indirici araçları için ClipKeep merkezi.',
     }
   };
 
@@ -99,10 +100,17 @@ const translations: Record<string, Record<string, string>> = {
     weeklyTrending: "Weekly Trending",
     recentDownloads: "Recent Downloads",
     startDownloading: "Start Extracting Now",
-    twitter: "Twitter (X)",
+    bilibili: "Bilibili",
+    bluesky: "Bluesky",
+    discord: "Discord",
+    facebook: "Facebook",
+    lemon8: "Lemon8",
+    pinterest: "Pinterest",
+    reddit: "Reddit",
     telegram: "Telegram",
+    threads: "Threads",
     tiktok: "TikTok",
-    instagram: "Instagram",
+    twitter: "Twitter (X)",
     notes: "Platform Stability Notes",
     noteBody: "We constantly update our extractors to match platform changes. Most extractions take less than 10 seconds.",
     globalTrending: "Global Trending Hub",
@@ -114,10 +122,17 @@ const translations: Record<string, Record<string, string>> = {
     weeklyTrending: "週間トレンド",
     recentDownloads: "最近のダウンロード",
     startDownloading: "今すぐ保存を開始",
-    twitter: "Twitter (X)",
+    bilibili: "Bilibili",
+    bluesky: "Bluesky",
+    discord: "Discord",
+    facebook: "Facebook",
+    lemon8: "Lemon8",
+    pinterest: "Pinterest",
+    reddit: "Reddit",
     telegram: "Telegram",
+    threads: "Threads",
     tiktok: "TikTok",
-    instagram: "Instagram",
+    twitter: "Twitter (X)",
     notes: "安定性について",
     noteBody: "プラットフォームの仕様変更に合わせて常に更新しています。ほとんどの抽出は10秒以内に完了します。",
     globalTrending: "グローバルトレンドハブ",
@@ -129,10 +144,17 @@ const translations: Record<string, Record<string, string>> = {
     weeklyTrending: "الأكثر رواجًا لهذا الأسبوع",
     recentDownloads: "أحدث التنزيلات",
     startDownloading: "ابدأ الاستخراج الآن",
-    twitter: "Twitter (X)",
+    bilibili: "Bilibili",
+    bluesky: "Bluesky",
+    discord: "Discord",
+    facebook: "Facebook",
+    lemon8: "Lemon8",
+    pinterest: "Pinterest",
+    reddit: "Reddit",
     telegram: "Telegram",
+    threads: "Threads",
     tiktok: "TikTok",
-    instagram: "Instagram",
+    twitter: "Twitter (X)",
     notes: "ملاحظات استقرار المنصة",
     noteBody: "نحن نقوم باستمرار بتحديث المستخرجات الخاصة بنا لتناسب تغييرات المنصة। تستغرق معظم عمليات الاستخراج أقل من 10 ثوانٍ।",
     globalTrending: "مركز الترند العالمي",
@@ -144,10 +166,17 @@ const translations: Record<string, Record<string, string>> = {
     weeklyTrending: "Tendencias Semanales",
     recentDownloads: "Descargas Recientes",
     startDownloading: "Comenzar Extracción",
-    twitter: "Twitter (X)",
+    bilibili: "Bilibili",
+    bluesky: "Bluesky",
+    discord: "Discord",
+    facebook: "Facebook",
+    lemon8: "Lemon8",
+    pinterest: "Pinterest",
+    reddit: "Reddit",
     telegram: "Telegram",
+    threads: "Threads",
     tiktok: "TikTok",
-    instagram: "Instagram",
+    twitter: "Twitter (X)",
     notes: "Notas de Estabilidad",
     noteBody: "Actualizamos constantemente nuestros extractores। La mayoría de las extracciones tardan menos de 10 segundos।",
     globalTrending: "Hub de tendencias globales",
@@ -159,10 +188,17 @@ const translations: Record<string, Record<string, string>> = {
     weeklyTrending: "Tendências Semanais",
     recentDownloads: "Downloads Recentes",
     startDownloading: "Começar Extração",
-    twitter: "Twitter (X)",
+    bilibili: "Bilibili",
+    bluesky: "Bluesky",
+    discord: "Discord",
+    facebook: "Facebook",
+    lemon8: "Lemon8",
+    pinterest: "Pinterest",
+    reddit: "Reddit",
     telegram: "Telegram",
+    threads: "Threads",
     tiktok: "TikTok",
-    instagram: "Instagram",
+    twitter: "Twitter (X)",
     notes: "Notas de Estabilidade",
     noteBody: "Atualizamos constantemente nossos extratores। A maioria das extrações leva menos de 10 segundos।",
     globalTrending: "Hub de tendências globais",
@@ -174,10 +210,17 @@ const translations: Record<string, Record<string, string>> = {
     weeklyTrending: "Tendances Hebdomadaires",
     recentDownloads: "Téléchargements Récents",
     startDownloading: "Démarrer l'Extraction",
-    twitter: "Twitter (X)",
+    bilibili: "Bilibili",
+    bluesky: "Bluesky",
+    discord: "Discord",
+    facebook: "Facebook",
+    lemon8: "Lemon8",
+    pinterest: "Pinterest",
+    reddit: "Reddit",
     telegram: "Telegram",
+    threads: "Threads",
     tiktok: "TikTok",
-    instagram: "Instagram",
+    twitter: "Twitter (X)",
     notes: "Notes sur la Stabilité",
     noteBody: "Nous mettons à jour nos extracteurs régulièrement। La plupart des extractions prennent moins de 10 secondes。",
     globalTrending: "Hub des tendances mondiales",
@@ -189,10 +232,17 @@ const translations: Record<string, Record<string, string>> = {
     weeklyTrending: "Tren Mingguan",
     recentDownloads: "Unduhan Terbaru",
     startDownloading: "Mulai Ekstraksi Sekarang",
-    twitter: "Twitter (X)",
+    bilibili: "Bilibili",
+    bluesky: "Bluesky",
+    discord: "Discord",
+    facebook: "Facebook",
+    lemon8: "Lemon8",
+    pinterest: "Pinterest",
+    reddit: "Reddit",
     telegram: "Telegram",
+    threads: "Threads",
     tiktok: "TikTok",
-    instagram: "Instagram",
+    twitter: "Twitter (X)",
     notes: "Catatan Stabilitas Platform",
     noteBody: "Kami terus memperbarui ekstraktor kami। Sebagian besar ekstraksi memakan waktu kurang dari 10 detik。",
     globalTrending: "Pusat Tren Global",
@@ -204,10 +254,17 @@ const translations: Record<string, Record<string, string>> = {
     weeklyTrending: "साप्ताहिक ट्रेंडिंग",
     recentDownloads: "हाल के डाउनलोड",
     startDownloading: "अभी निकालना शुरू करें",
-    twitter: "Twitter (X)",
+    bilibili: "Bilibili",
+    bluesky: "Bluesky",
+    discord: "Discord",
+    facebook: "Facebook",
+    lemon8: "Lemon8",
+    pinterest: "Pinterest",
+    reddit: "Reddit",
     telegram: "Telegram",
+    threads: "Threads",
     tiktok: "TikTok",
-    instagram: "Instagram",
+    twitter: "Twitter (X)",
     notes: "प्लेटफॉर्म स्थिरता नोट्स",
     noteBody: "हम प्लेटफॉर्म परिवर्तन के अनुसार अपने एक्सट्रैक्टर्स को लगातार अपडेट करते हैं। अधिकांश निष्कर्षण 10 सेकंड से कम समय लेते हैं।",
     globalTrending: "वैश्विक ट्रेंडिंग हब",
@@ -219,10 +276,17 @@ const translations: Record<string, Record<string, string>> = {
     weeklyTrending: "Wöchentliche Trends",
     recentDownloads: "Aktuelle Downloads",
     startDownloading: "Jetzt Extraktion starten",
-    twitter: "Twitter (X)",
+    bilibili: "Bilibili",
+    bluesky: "Bluesky",
+    discord: "Discord",
+    facebook: "Facebook",
+    lemon8: "Lemon8",
+    pinterest: "Pinterest",
+    reddit: "Reddit",
     telegram: "Telegram",
+    threads: "Threads",
     tiktok: "TikTok",
-    instagram: "Instagram",
+    twitter: "Twitter (X)",
     notes: "Stabilitätshinweise",
     noteBody: "Wir aktualisieren unsere Extraktoren ständig। Die meisten Extraktionen dauern weniger als 10 Sekunden。",
     globalTrending: "Globaler Trend-Hub",
@@ -234,10 +298,17 @@ const translations: Record<string, Record<string, string>> = {
     weeklyTrending: "Haftalık Gündem",
     recentDownloads: "Son İndirmeler",
     startDownloading: "Şimdi Çıkarmaya Başlayın",
-    twitter: "Twitter (X)",
+    bilibili: "Bilibili",
+    bluesky: "Bluesky",
+    discord: "Discord",
+    facebook: "Facebook",
+    lemon8: "Lemon8",
+    pinterest: "Pinterest",
+    reddit: "Reddit",
     telegram: "Telegram",
+    threads: "Threads",
     tiktok: "TikTok",
-    instagram: "Instagram",
+    twitter: "Twitter (X)",
     notes: "Platform Kararlılık Notları",
     noteBody: "Platform değişikliklerine uyum sağlamak için araçlarımızı sürekli güncelliyoruz। Çoğu işlem 10 saniyeden kısa sürer।",
     globalTrending: "Küresel Trend Merkezi",
@@ -252,40 +323,47 @@ export default async function HomePage({ searchParams }: HomeProps) {
 
   return (
     <main className="max-w-[1400px] mx-auto py-12 px-6">
-      <div className="text-center mb-16">
+      <div className="text-center mb-10">
         <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-4">
           {t.welcome}
         </h1>
-        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed mb-8">
           {t.subtitle}
         </p>
+
+        <div className="mb-12 dynamic-glow relative z-10 w-full max-w-3xl mx-auto">
+          <ExtractorForm locale={locale} hero={true} />
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-8 mb-16">
-
-         <Link href={`/download-telegram-video${locale !== 'en' ? `?locale=${locale}` : ''}`} className="group p-4 sm:p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500 rounded-xl flex items-center justify-center mb-3 sm:mb-6 ring-4 ring-blue-50 dark:ring-slate-800">
-               <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-current" viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path></svg>
-            </div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-50 mb-1 sm:mb-2">{t.telegram}</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-sm leading-relaxed line-clamp-1 sm:line-clamp-none">{t.startDownloading}</p>
-         </Link>
-
-         <Link href={`/download-tiktok-video${locale !== 'en' ? `?locale=${locale}` : ''}`} className="group p-4 sm:p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-pink-500/50 shadow-sm hover:shadow-xl hover:shadow-pink-500/10 transition-all duration-300 transform hover:-translate-y-1">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-950 rounded-xl flex items-center justify-center mb-3 sm:mb-6 ring-4 ring-slate-100 dark:ring-slate-800">
-               <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"></path></svg>
-            </div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-50 mb-1 sm:mb-2">{t.tiktok}</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-sm leading-relaxed line-clamp-1 sm:line-clamp-none">{t.startDownloading}</p>
-         </Link>
-
-         <Link href={`/download-twitter-video${locale !== 'en' ? `?locale=${locale}` : ''}`} className="group p-4 sm:p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 rounded-xl flex items-center justify-center mb-3 sm:mb-6 ring-4 ring-slate-50 dark:ring-slate-800">
-               <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
-            </div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-50 mb-1 sm:mb-2">{t.twitter}</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-sm leading-relaxed line-clamp-1 sm:line-clamp-none">{t.startDownloading}</p>
-         </Link>
+      <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-20 max-w-4xl mx-auto">
+         {[
+           { name: t.tiktok, id: 'tiktok', color: 'bg-slate-950', abbr: 'TK' },
+           { name: t.twitter, id: 'twitter', color: 'bg-slate-900', abbr: 'X' },
+           { name: t.reddit, id: 'reddit', color: 'bg-orange-600', abbr: 'RD' },
+           { name: t.facebook, id: 'facebook', color: 'bg-blue-600', abbr: 'FB' },
+           { name: t.telegram, id: 'telegram', color: 'bg-blue-400', abbr: 'TG' },
+           { name: t.pinterest, id: 'pinterest', color: 'bg-red-600', abbr: 'PN' },
+           { name: t.threads, id: 'threads', color: 'bg-slate-900', abbr: 'TH' },
+           { name: t.bluesky, id: 'bluesky', color: 'bg-blue-400', abbr: 'BS' },
+           { name: t.bilibili, id: 'bilibili', color: 'bg-pink-400', abbr: 'BL' },
+           { name: t.discord, id: 'discord', color: 'bg-indigo-500', abbr: 'DC' },
+           { name: t.lemon8, id: 'lemon8', color: 'bg-yellow-400', abbr: 'L8' },
+         ].map((p) => (
+           <Link 
+             key={p.id}
+             href={`/download-${p.id}-video${locale !== 'en' ? `?locale=${locale}` : ''}`} 
+             title={p.name}
+             className="group flex flex-col items-center gap-2"
+           >
+              <div className={`w-12 h-12 flex items-center justify-center rounded-2xl ${p.color} shadow-sm group-hover:shadow-lg transition-all duration-300 transform group-hover:-translate-y-1 group-hover:scale-110 ring-4 ring-transparent group-hover:ring-${p.color.replace('bg-', '')}/20`}>
+                <span className="text-white font-black text-xs tracking-wider">{p.abbr}</span>
+              </div>
+              <span className="text-[11px] font-bold text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                {p.name}
+              </span>
+           </Link>
+         ))}
       </div>
 
       <div className="mb-16">
@@ -296,7 +374,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
         <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 ml-4.5">
           {t.globalTrendingSubtitle}
         </p>
-        <GallerySection platform="all" type="trending" locale={locale} layout="masonry" dense={true} limit={8} id="trending-hub" title="" hideMeta={true} />
+        <GallerySection platform="all" type="trending" locale={locale} layout="masonry" dense={false} limit={8} id="trending-hub" title="" hideMeta={false} />
       </div>
 
       <div className="mb-16">

@@ -183,7 +183,7 @@ export function GallerySection({
                         onCardClick();
                       }
                     }}
-                    className="group relative bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 hover:border-blue-400/30 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer will-change-transform"
+                    className="group relative bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer will-change-transform hover:-translate-y-1"
                   >
                     <div className="h-auto relative overflow-hidden bg-slate-50 dark:bg-slate-950">
                       <img
@@ -199,15 +199,6 @@ export function GallerySection({
                           <div className="bg-white/95 dark:bg-slate-900/95 px-1 py-0.5 rounded-sm text-[9px] font-bold shadow-sm border border-slate-200/50 flex items-center gap-1 tabular-nums mr-0.5">
                             <span className="w-1.5 h-1.5 bg-green-500 rounded-full shadow-[0_0_2px_rgba(34,197,94,0.4)]"></span>
                             {item.access_count > 1000 ? `${(item.access_count/1000).toFixed(1)}k` : item.access_count}
-                          </div>
-                        )}
-                        {showIcons && item.platform === 'instagram' && (
-                          <div className="bg-[#E4405F] rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm">
-                            <svg className="w-2.5 h-2.5 text-white fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                            </svg>
                           </div>
                         )}
                         {showIcons && item.platform === 'twitter' && (
@@ -229,6 +220,19 @@ export function GallerySection({
                             <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24">
                               <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path>
                             </svg>
+                          </div>
+                        )}
+                        {showIcons && ['reddit', 'pinterest', 'threads', 'bluesky', 'lemon8', 'bilibili', 'discord'].includes(item.platform) && (
+                          <div className={`${
+                            item.platform === 'reddit' ? 'bg-orange-600' :
+                            item.platform === 'pinterest' ? 'bg-red-600' :
+                            item.platform === 'threads' ? 'bg-slate-900' :
+                            item.platform === 'bluesky' ? 'bg-blue-400' :
+                            item.platform === 'lemon8' ? 'bg-yellow-400' :
+                            item.platform === 'bilibili' ? 'bg-pink-400' :
+                            'bg-indigo-500'
+                          } rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm`}>
+                             <span className="text-white text-[8px] font-black">{item.platform.slice(0, 2).toUpperCase()}</span>
                           </div>
                         )}
                         {!hideMeta && (
@@ -272,7 +276,7 @@ export function GallerySection({
                     onCardClick();
                   }
                 }}
-                className={`group relative bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 hover:border-blue-400/30 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer will-change-transform snap-start ${
+                className={`group relative bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer will-change-transform snap-start hover:-translate-y-1 ${
                   layout === 'carousel' ? 'flex-none w-[200px] sm:w-[260px]' : ''
                 }`}
               >
@@ -290,15 +294,6 @@ export function GallerySection({
                       <div className="bg-white/95 dark:bg-slate-900/95 px-1 py-0.5 rounded-sm text-[9px] font-bold shadow-sm border border-slate-200/50 flex items-center gap-1 tabular-nums mr-0.5">
                         <span className="w-1.5 h-1.5 bg-green-500 rounded-full shadow-[0_0_2px_rgba(34,197,94,0.4)]"></span>
                         {item.access_count > 1000 ? `${(item.access_count/1000).toFixed(1)}k` : item.access_count}
-                      </div>
-                    )}
-                    {showIcons && item.platform === 'instagram' && (
-                      <div className="bg-[#E4405F] rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm">
-                        <svg className="w-2.5 h-2.5 text-white fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                        </svg>
                       </div>
                     )}
                     {showIcons && item.platform === 'twitter' && (
@@ -320,6 +315,19 @@ export function GallerySection({
                         <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24">
                           <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path>
                         </svg>
+                      </div>
+                    )}
+                    {showIcons && ['reddit', 'pinterest', 'threads', 'bluesky', 'lemon8', 'bilibili', 'discord'].includes(item.platform) && (
+                      <div className={`${
+                        item.platform === 'reddit' ? 'bg-orange-600' :
+                        item.platform === 'pinterest' ? 'bg-red-600' :
+                        item.platform === 'threads' ? 'bg-slate-900' :
+                        item.platform === 'bluesky' ? 'bg-blue-400' :
+                        item.platform === 'lemon8' ? 'bg-yellow-400' :
+                        item.platform === 'bilibili' ? 'bg-pink-400' :
+                        'bg-indigo-500'
+                      } rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm`}>
+                         <span className="text-white text-[8px] font-black">{item.platform.slice(0, 2).toUpperCase()}</span>
                       </div>
                     )}
                     {!hideMeta && (

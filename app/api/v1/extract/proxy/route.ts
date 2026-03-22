@@ -16,8 +16,15 @@ export async function GET(req: NextRequest) {
   const allowedDomains = [
     "telesco.pe", "telegram.org", 
     "twimg.com", "fxtwitter.com", "vxtwitter.com", "twitfix.com",
-    "ddinstagram.com", "cdninstagram.com", "fbcdn.net",
-    "tikwm.com", "tiktokv.com", "tiktok.com", "tiktokcdn.com", "tiktokcdn-us.com", "kktiktok.com"
+    "ddinstagram.com", "cdninstagram.com", "fbcdn.net", "fna.fbcdn.net",
+    "tikwm.com", "tiktokv.com", "tiktok.com", "tiktokcdn.com", "tiktokcdn-us.com", "kktiktok.com",
+    "redd.it", "redditstatic.com", "reddit.com", "rxddit.com",
+    "pinimg.com", "pinterest.com",
+    "bsky.social", "bsky.network", "bsky.app",
+    "byteimg.com", "lemon8-app.com",
+    "hdslb.com", "bilibili.com",
+    "discordapp.net", "discordapp.com", "discord.com",
+    "threads.net"
   ];
   if (!allowedDomains.some(domain => url.includes(domain))) {
     return new NextResponse("Invalid URL domain", { status: 403 });

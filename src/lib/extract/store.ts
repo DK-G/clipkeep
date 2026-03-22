@@ -1,8 +1,16 @@
-import type { ExtractJob, Platform } from "@/lib/extract/types";
-import { extractTelegram, type TelegramMedia } from "@/lib/extract/telegram";
-import { extractTwitter, type TwitterMedia } from "@/lib/extract/twitter";
-import { extractInstagram, type InstagramMedia } from "@/lib/extract/instagram";
-import { extractTikTok, type TikTokMedia } from "@/lib/extract/tiktok";
+import type { ExtractJob, Platform } from "./types";
+import { extractTelegram, type TelegramMedia } from "./telegram";
+import { extractTwitter, type TwitterMedia } from "./twitter";
+import { extractInstagram, type InstagramMedia } from "./instagram";
+import { extractTikTok, type TikTokMedia } from "./tiktok";
+import { extractReddit } from "./reddit";
+import { extractPinterest } from "./pinterest";
+import { extractBluesky } from "./bluesky";
+import { extractLemon8 } from "./lemon8";
+import { extractBilibili } from "./bilibili";
+import { extractDiscord } from "./discord";
+import { extractThreads } from "./threads";
+import { extractFacebook } from "./facebook";
 import { getDb } from "@/lib/db/d1";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
@@ -28,8 +36,22 @@ function normalizeUrl(url: string, platform: Platform): string {
       if (u.pathname.includes('/status/')) {
         u.search = ''; 
       }
-    } else if (platform === 'tiktok') {
-      // TikTok often has many trackers
+    } else if (platform === 'tiktok' || platform === 'lemon8' || platform === 'facebook') {
+      // TikTok, Lemon8, and Facebook often have many trackers
+      if (platform === 'facebook') {
+        const kept = ['v'];
+        const currentParams = Array.from(u.searchParams.keys());
+        currentParams.forEach(k => {
+          if (!kept.includes(k)) u.searchParams.delete(k);
+        });
+      } else {
+        u.search = '';
+      }
+    } else if (platform === 'reddit') {
+      // Normalize reddit URLs (remove search, consolidate domains)
+      u.search = '';
+      if (u.hostname === 'old.reddit.com') u.hostname = 'www.reddit.com';
+    } else if (platform === 'threads') {
       u.search = '';
     }
 
@@ -136,6 +158,22 @@ export async function createJob(platform: Platform, sourceUrl: string, locale: s
           results = await extractInstagram(sourceUrl);
         } else if (platform === "tiktok") {
           results = await extractTikTok(sourceUrl);
+        } else if (platform === "reddit") {
+          results = await extractReddit(sourceUrl);
+        } else if (platform === "pinterest") {
+          results = await extractPinterest(sourceUrl);
+        } else if (platform === "bluesky") {
+          results = await extractBluesky(sourceUrl);
+        } else if (platform === "lemon8") {
+          results = await extractLemon8(sourceUrl);
+        } else if (platform === "bilibili") {
+          results = await extractBilibili(sourceUrl);
+        } else if (platform === "discord") {
+          results = await extractDiscord(sourceUrl);
+        } else if (platform === "threads") {
+          results = await extractThreads(sourceUrl);
+        } else if (platform === "facebook") {
+          results = await extractFacebook(sourceUrl);
         }
 
         if (results && results.length > 0) {

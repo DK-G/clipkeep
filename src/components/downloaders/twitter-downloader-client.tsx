@@ -64,7 +64,7 @@ export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps
         <section className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm">
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b-2 border-blue-50 dark:border-blue-900/30 text-gray-900 dark:text-slate-100">{t.howToTitle}</h2>
           <ol className="space-y-4 list-decimal pl-5">
-            {t.howToSteps.map((step, i) => (
+            {t.howToSteps.map((step: string, i: number) => (
               <li key={i} className="leading-relaxed">{step}</li>
             ))}
           </ol>
@@ -74,7 +74,7 @@ export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b-2 border-blue-50 dark:border-blue-900/30 text-gray-900 dark:text-slate-100">{t.whyTitle}</h2>
           <p className="mb-4 text-gray-600 dark:text-slate-400">{t.whyBody}</p>
           <ul className="space-y-3 list-disc pl-5">
-            {t.whyPoints.map((point, i) => (
+            {t.whyPoints.map((point: string, i: number) => (
               <li key={i} className="leading-relaxed">{point}</li>
             ))}
           </ul>
@@ -82,14 +82,14 @@ export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps
         </section>
       </div>
 
-      <GallerySection id="realtime" platform="twitter" locale={locale} title={labels.realtime} type="recent" />
+      <GallerySection id="realtime" platform="twitter" locale={locale} title={labels.realtime} type="recent" layout="masonry" hideMeta={false} />
 
       <div className="my-12">
         <AdsterraNative />
       </div>
 
       {t.trendingTitle && (
-        <GallerySection id="trending" platform="twitter" locale={locale} title={t.trendingTitle} type="trending" />
+        <GallerySection id="trending" platform="twitter" locale={locale} title={t.trendingTitle} type="trending" layout="masonry" hideMeta={false} />
       )}
 
       <div className="my-12">

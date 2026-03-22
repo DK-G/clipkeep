@@ -1,127 +1,28 @@
-import { Suspense } from 'react';
-import type { Metadata } from 'next';
-import { InstagramDownloaderClient } from '@/components/downloaders/instagram-downloader-client';
-import { instagramText, normalizeLocale } from '@/lib/i18n/ui';
 
-interface Props {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
+import { normalizeLocale } from '@/lib/i18n/ui';
 
-function loadingText(locale: ReturnType<typeof normalizeLocale>): string {
-  const dict = {
-    en: 'Loading...',
-    ja: '読み込み中...',
-    ar: 'جار التحميل...',
-    es: 'Cargando...',
-    pt: 'Carregando...',
-    fr: 'Chargement...',
-    id: 'Memuat...',
-    hi: 'लोड हो रहा है...',
-    de: 'Wird geladen...',
-    tr: 'Yukleniyor...'
-  } as const;
-  return dict[locale];
-}
-
-export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+export default async function Page({ searchParams }: { searchParams: Promise<{ locale?: string }> }) {
   const sp = await searchParams;
-  const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
-  const t = instagramText[locale];
-  const base = 'https://clipkeep.net';
-  const path = '/download-instagram-video';
-  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
-
-  return {
-    title: t.title,
-    description: t.subtitle,
-    alternates: {
-      canonical: url,
-      languages: {
-        en: `${base}${path}`,
-        ar: `${base}${path}?locale=ar`,
-        ja: `${base}${path}?locale=ja`,
-        es: `${base}${path}?locale=es`,
-        pt: `${base}${path}?locale=pt`,
-        fr: `${base}${path}?locale=fr`,
-        id: `${base}${path}?locale=id`,
-        hi: `${base}${path}?locale=hi`,
-        de: `${base}${path}?locale=de`,
-        tr: `${base}${path}?locale=tr`,
-        'x-default': `${base}${path}`,
-      },
-    },
-    openGraph: {
-      title: t.title,
-      description: t.subtitle,
-      url: url,
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: t.title,
-      description: t.subtitle,
-    },
+  const locale = normalizeLocale(sp.locale);
+  
+  const messages = {
+    en: "This service is currently under maintenance or temporarily disabled.",
+    ja: "このサービスは現在メンテナンス中か、一時的に停止しています。",
   };
-}
-
-export default async function InstagramDownloaderPage({ searchParams }: Props) {
-  const sp = await searchParams;
-  const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
-  const t = instagramText[locale];
-
-  const websiteUrl = `https://clipkeep.net/download-instagram-video?locale=${locale}`;
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebApplication',
-        'name': t.title,
-        'url': websiteUrl,
-        'applicationCategory': 'MultimediaApplication',
-        'operatingSystem': 'Any',
-        'offers': {
-          '@type': 'Offer',
-          'price': '0',
-          'priceCurrency': 'USD'
-        },
-        'featureList': 'Easy Instagram video extraction, Reel download support, Multilingual interface',
-        'description': t.subtitle
-      },
-      {
-        '@type': 'HowTo',
-        'name': t.howToTitle,
-        'description': t.subtitle,
-        'step': t.howToSteps.map((step: string, index: number) => ({
-          '@type': 'HowToStep',
-          'position': index + 1,
-          'text': step
-        }))
-      },
-      {
-        '@type': 'FAQPage',
-        'mainEntity': t.faqItems.map((item: { q: string, a: string }) => ({
-          '@type': 'Question',
-          'name': item.q,
-          'acceptedAnswer': {
-            '@type': 'Answer',
-            'text': item.a
-          }
-        }))
-      }
-    ]
-  };
+  const msg = messages[locale as keyof typeof messages] || messages.en;
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <Suspense fallback={<div className="p-12 text-center text-slate-600 dark:text-slate-400">{loadingText(locale)}</div>}>
-        <InstagramDownloaderClient locale={locale} />
-      </Suspense>
-    </>
+    <div className="min-h-[60vh] flex items-center justify-center p-6">
+      <div className="max-w-md w-full p-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl text-center">
+        <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span className="text-2xl">⚠️</span>
+        </div>
+        <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-4">Under Maintenance</h1>
+        <p className="text-slate-600 dark:text-slate-400">{msg}</p>
+        <a href={`/?locale=${locale}`} className="mt-8 inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors">
+          Back to Home
+        </a>
+      </div>
+    </div>
   );
 }
-
