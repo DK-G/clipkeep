@@ -59,7 +59,7 @@ export function HeaderShell() {
         aria-label={headerLabels[locale].toggleMenu}
         aria-expanded={isMenuOpen}
         className={`fixed top-1/2 -translate-y-1/2 z-[60] w-11 h-11 flex flex-col justify-center items-center shadow-lg transition-all duration-200 cursor-pointer rounded-xl border border-black/5 outline-none
-          ${dir === 'ltr' ? 'right-3' : 'left-3'}
+          ${dir === 'ltr' ? 'left-3' : 'right-3'}
           ${isMenuOpen ? 'bg-white dark:bg-slate-800 text-black dark:text-white' : 'bg-blue-600 dark:bg-blue-500 text-white'}
         `}
       >

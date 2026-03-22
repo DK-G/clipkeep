@@ -160,16 +160,26 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
 
       <div 
         ref={menuRef} 
-        className={`fixed top-0 bottom-0 z-[80] w-[320px] max-w-[85vw] bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 ease-in-out flex flex-col ${
-          dir === 'ltr' ? 'right-0' : 'left-0'
-        } ${
-          isOpen ? 'translate-x-0' : (dir === 'ltr' ? 'translate-x-full' : '-translate-x-full')
-        } ${
-          dir === 'ltr' ? 'text-left' : 'text-right'
-        }
+        className={`fixed z-[80] bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 ease-in-out flex flex-col
+          /* Mobile: Bottom Sheet */
+          bottom-0 left-0 right-0 top-auto w-full h-auto max-h-[90vh] rounded-t-[2.5rem]
+          ${isOpen ? 'translate-y-0 shadow-[0_-20px_50px_-12px_rgba(0,0,0,0.3)]' : 'translate-y-full'}
+          
+          /* Desktop: Side Drawer */
+          md:top-0 md:bottom-0 md:h-full md:w-[320px] md:max-w-[85vw] md:rounded-none md:translate-y-0
+          ${dir === 'ltr' ? 'md:left-0 md:right-auto md:text-left' : 'md:right-0 md:left-auto md:text-right'}
+          ${isOpen 
+            ? 'md:translate-x-0' 
+            : (dir === 'ltr' ? 'md:-translate-x-full' : 'md:translate-x-full')
+          }
         `}
       >
-        <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50">
+        {/* Mobile Handle */}
+        <div className="md:hidden flex justify-center pt-3 pb-1">
+          <div className="w-12 h-1.5 bg-gray-200 dark:bg-slate-800 rounded-full" />
+        </div>
+
+        <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50 rounded-t-[2.5rem] md:rounded-none">
           <span className="font-[900] text-xl tracking-tight text-slate-900 dark:text-white uppercase">{ui.menu}</span>
           <button 
             onClick={onClose} 
@@ -182,8 +192,8 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale, dir }: SideMenuP
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
-          <div className="flex flex-col">
+        <div className="flex-1 overflow-y-auto flex flex-col justify-end">
+          <div className="flex flex-col min-h-full">
             {menuData.map((group, gIdx) => {
               const isExpanded = expandedSections[gIdx] || false;
               return (
