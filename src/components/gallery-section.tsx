@@ -155,8 +155,14 @@ export function GallerySection({
                 />
                 
                 {/* Platform Icon Badge */}
-                <div className="absolute bottom-1 right-1 flex items-center gap-1">
-                   {showIcons && item.platform === 'instagram' && (
+                 <div className="absolute bottom-1 right-1 flex items-center gap-1">
+                    {!hideMeta && (
+                      <div className="bg-white/95 dark:bg-slate-900/95 px-1 py-0.5 rounded-sm text-[9px] font-bold shadow-sm border border-slate-200/50 flex items-center gap-1 tabular-nums mr-0.5">
+                         <span className="w-1.5 h-1.5 bg-green-500 rounded-full shadow-[0_0_2px_rgba(34,197,94,0.4)]"></span>
+                         {item.access_count > 1000 ? `${(item.access_count / 1000).toFixed(1)}k` : item.access_count}
+                      </div>
+                    )}
+                    {showIcons && item.platform === 'instagram' && (
                      <div className="bg-[#E4405F] rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm">
                         <svg className="w-2.5 h-2.5 text-white fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -193,14 +199,6 @@ export function GallerySection({
                    )}
                 </div>
  
-                {!hideMeta && (
-                  <div className="absolute top-1 left-1">
-                    <div className="bg-white/95 dark:bg-slate-900/95 px-1.5 py-0.5 rounded-sm text-[9px] font-bold shadow-sm border border-slate-200/50 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full shadow-[0_0_2px_rgba(34,197,94,0.4)]"></span>
-                        {item.access_count > 1000 ? `${(item.access_count / 1000).toFixed(1)}k` : item.access_count}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           );

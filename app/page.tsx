@@ -295,32 +295,23 @@ export default async function HomePage({ searchParams }: HomeProps) {
          </Link>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-        <div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-8 flex items-center">
-            <span className="w-1.5 h-6 bg-blue-600 rounded-full mr-3"></span>
-            {t.weeklyTrending}
-          </h2>
-          <GallerySection platform="twitter" locale={locale} title={t.weeklyTrending} type="trending" limit={6} hideMeta={false} layout="masonry" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-8 flex items-center">
-            <span className="w-1.5 h-6 bg-slate-400 dark:bg-slate-700 rounded-full mr-3"></span>
-            {t.recentDonwloads}
-          </h2>
-          <GallerySection platform="twitter" locale={locale} title={t.recentDonwloads} type="recent" limit={6} hideMeta={false} layout="masonry" />
-        </div>
-      </div>
-
       <div className="mb-16">
         <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-2 flex items-center">
           <span className="w-1.5 h-6 bg-indigo-600 rounded-full mr-3 shadow-[0_0_8px_rgba(79,70,229,0.4)]"></span>
-          {t.globalTrending}
+          {t.globalTrending || "Trending Hub"}
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 ml-4.5">
           {t.globalTrendingSubtitle}
         </p>
-        <GallerySection platform="all" type="trending" locale={locale} layout="grid" dense={true} limit={12} id="global-hub" title="" hideMeta={true} />
+        <GallerySection platform="all" type="trending" locale={locale} layout="grid" dense={true} limit={12} id="trending-hub" title="" hideMeta={true} />
+      </div>
+
+      <div className="mb-16">
+        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-8 flex items-center">
+          <span className="w-1.5 h-6 bg-blue-600 rounded-full mr-3"></span>
+          {t.recentDownloads || "Recent Downloads"}
+        </h2>
+        <GallerySection platform="all" locale={locale} type="recent" limit={12} hideMeta={false} layout="masonry" id="recent-downloads" title="" />
       </div>
 
       <section className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl p-8 sm:p-12 border border-slate-100 dark:border-slate-800">
