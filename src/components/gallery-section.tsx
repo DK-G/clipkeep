@@ -97,7 +97,7 @@ export function GallerySection({
   const containerClasses = layout === 'carousel'
     ? "flex overflow-x-auto gap-4 pb-6 px-2 sm:px-0 snap-x snap-mandatory scrollbar-hide -mx-2 sm:mx-0"
     : layout === 'masonry'
-    ? "columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 2xl:columns-8 gap-2 sm:gap-4 px-2 sm:px-0"
+    ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3 sm:gap-6 px-2 sm:px-0"
     : dense
     ? "grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-1.5 sm:gap-3 px-2 sm:px-0"
     : "grid grid-cols-3 md:grid-cols-5 gap-2 sm:gap-4 px-2 sm:px-0";
@@ -139,15 +139,14 @@ export function GallerySection({
                 }
               }}
               className={`group relative bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 hover:border-blue-400/30 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer will-change-transform snap-start ${
-                layout === 'carousel' ? 'flex-none w-[200px] sm:w-[260px]' : 
-                layout === 'masonry' ? 'break-inside-avoid mb-2 sm:mb-4 inline-block w-full' : ''
+                layout === 'carousel' ? 'flex-none w-[200px] sm:w-[260px]' : ''
               }`}
             >
-              <div className={`${layout === 'masonry' ? 'h-auto' : 'aspect-[16/9]'} relative overflow-hidden bg-slate-50 dark:bg-slate-950`}>
+              <div className="aspect-[16/9] relative overflow-hidden bg-slate-50 dark:bg-slate-950">
                 <img
                   src={item.thumbnail_url}
                   alt="Video Thumbnail"
-                  className={`w-full ${layout === 'masonry' ? 'h-auto' : 'h-full'} object-cover transition duration-300 group-hover:scale-105`}
+                  className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
                   loading="lazy"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = '/placeholder-video.png';
