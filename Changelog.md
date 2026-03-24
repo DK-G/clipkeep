@@ -4,10 +4,11 @@
 
 ### 概要
 - **構造化データの強化**: ホームページ、全ダウンローダーページ、ギャラリーページに `BreadcrumbList` スキーマを導入し、検索結果での視認性を向上。
+- **スキーマの統合 (@graph)**: レンダリングの堅牢性を高めるため、`WebApplication`, `HowTo`, `FAQPage`, `BreadcrumbList` を単一の `@graph` ブロックに統合。
 - **ホームページの最適化**: `WebSite`, `Organization`, `FAQPage`, `WebApplication` の各スキーマを統合した `@graph` 構造を実装。
 - **結果ページの SEO リファクタリング**: `app/result/[jobId]/page.tsx` をサーバーコンポーネント化し、動的なメタデータ生成（OpenGraph, Twitter Card）および `VideoObject` スキーマに対応。
 - **警告の解消**: Google Rich Results Test で指摘されていた `WebApplication` の `aggregateRating` 欠落警告を、全プラットフォームのダウンローダーページで修正。
-- **メンテナンス中のページ対応**: Instagram および Telegram ダウンローダーがメンテナンスモードであることを考慮し、スキーマの適用を最小限に調整。
+- **メンテナンス中のページ対応**: Instagram および Telegram ダウンローダーのメンテナンスページにも基本のパンくずリスト・スキーマを適用。
 
 ## 2026-03-23（CL-0062） 抽出ロジックの安定化（Bilibili, TikTok, Reddit）
 
