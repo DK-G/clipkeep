@@ -7,7 +7,7 @@ type BlogCtaLinkProps = {
   href: string;
   className?: string;
   children: React.ReactNode;
-  locale: 'en' | 'es' | 'ar' | 'ja';
+  locale: 'en' | 'es' | 'ar' | 'ja' | 'pt' | 'fr' | 'de' | 'tr' | 'id' | 'hi';
   slug: string;
   ctaType: 'tool' | 'support';
   ctaPosition: 'header' | 'main' | 'problem' | 'compare';

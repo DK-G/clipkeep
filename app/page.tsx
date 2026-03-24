@@ -4,6 +4,7 @@ import { normalizeLocale } from '@/lib/i18n/ui';
 import { DiscoverySection } from '@/components/discovery-section';
 import { GallerySection } from '@/components/gallery-section';
 import { ExtractorForm } from '@/components/extractor-form';
+import { TiktokIcon, TwitterXIcon, RedditIcon, FacebookIcon, TelegramIcon, PinterestIcon, ThreadsIcon, BlueskyIcon, BilibiliIcon, DiscordIcon, Lemon8Icon } from '@/components/platform-icons';
 
 type HomeProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -338,18 +339,20 @@ export default async function HomePage({ searchParams }: HomeProps) {
 
       <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-20 max-w-4xl mx-auto">
          {[
-           { name: t.tiktok, id: 'tiktok', color: 'bg-slate-950', abbr: 'TK' },
-           { name: t.twitter, id: 'twitter', color: 'bg-slate-900', abbr: 'X' },
-           { name: t.reddit, id: 'reddit', color: 'bg-orange-600', abbr: 'RD' },
-           { name: t.facebook, id: 'facebook', color: 'bg-blue-600', abbr: 'FB' },
-           { name: t.telegram, id: 'telegram', color: 'bg-blue-400', abbr: 'TG' },
-           { name: t.pinterest, id: 'pinterest', color: 'bg-red-600', abbr: 'PN' },
-           { name: t.threads, id: 'threads', color: 'bg-slate-900', abbr: 'TH' },
-           { name: t.bluesky, id: 'bluesky', color: 'bg-blue-400', abbr: 'BS' },
-           { name: t.bilibili, id: 'bilibili', color: 'bg-pink-400', abbr: 'BL' },
-           { name: t.discord, id: 'discord', color: 'bg-indigo-500', abbr: 'DC' },
-           { name: t.lemon8, id: 'lemon8', color: 'bg-yellow-400', abbr: 'L8' },
-         ].map((p) => (
+           { name: t.tiktok, id: 'tiktok', color: 'bg-slate-950', icon: TiktokIcon },
+           { name: t.twitter, id: 'twitter', color: 'bg-slate-900', icon: TwitterXIcon },
+           { name: t.reddit, id: 'reddit', color: 'bg-orange-600', icon: RedditIcon },
+           { name: t.facebook, id: 'facebook', color: 'bg-blue-600', icon: FacebookIcon },
+           { name: t.telegram, id: 'telegram', color: 'bg-blue-400', icon: TelegramIcon },
+           { name: t.pinterest, id: 'pinterest', color: 'bg-red-600', icon: PinterestIcon },
+           { name: t.threads, id: 'threads', color: 'bg-slate-900', icon: ThreadsIcon },
+           { name: t.bluesky, id: 'bluesky', color: 'bg-blue-400', icon: BlueskyIcon },
+           { name: t.bilibili, id: 'bilibili', color: 'bg-pink-400', icon: BilibiliIcon },
+           { name: t.discord, id: 'discord', color: 'bg-indigo-500', icon: DiscordIcon },
+           { name: t.lemon8, id: 'lemon8', color: 'bg-yellow-400', icon: Lemon8Icon },
+         ].map((p) => {
+           const Icon = p.icon;
+           return (
            <Link 
              key={p.id}
              href={`/download-${p.id}-video${locale !== 'en' ? `?locale=${locale}` : ''}`} 
@@ -357,13 +360,13 @@ export default async function HomePage({ searchParams }: HomeProps) {
              className="group flex flex-col items-center gap-2"
            >
               <div className={`w-12 h-12 flex items-center justify-center rounded-2xl ${p.color} shadow-sm group-hover:shadow-lg transition-all duration-300 transform group-hover:-translate-y-1 group-hover:scale-110 ring-4 ring-transparent group-hover:ring-${p.color.replace('bg-', '')}/20`}>
-                <span className="text-white font-black text-xs tracking-wider">{p.abbr}</span>
+                <Icon />
               </div>
               <span className="text-[11px] font-bold text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
                 {p.name}
               </span>
            </Link>
-         ))}
+         )})}
       </div>
 
       <div className="mb-16">

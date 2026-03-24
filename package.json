@@ -18,6 +18,7 @@
         "check:release": "powershell -ExecutionPolicy Bypass -File .\\scripts\\release_gate.ps1"
     },
     "dependencies": {
+        "@cloudflare/puppeteer": "^1.0.6",
         "next": "15.2.9",
         "react": "19.0.0",
         "react-dom": "19.0.0"

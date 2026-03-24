@@ -115,6 +115,12 @@ export default function RootLayout({
         <Script id="monetag-vignette" strategy="afterInteractive">
           {`(function(s){s.dataset.zone='10760542',s.src='https://izcle.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
         </Script>
+
+        {/* Cloudflare Turnstile */}
+        <Script 
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" 
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

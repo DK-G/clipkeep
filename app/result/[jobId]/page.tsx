@@ -87,6 +87,15 @@ function ResultContent() {
         <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">!</div>
         <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{t.errorTitle}</h2>
         <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-md mx-auto">{error}</p>
+        
+        {data?.warnings && data.warnings.length > 0 && (
+          <div className="mt-8 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 rounded-xl text-left max-w-2xl mx-auto">
+             <ul className="text-amber-700 dark:text-amber-300 text-sm space-y-1 list-disc list-inside">
+               {data.warnings.map((w, i) => <li key={i}>{w}</li>)}
+             </ul>
+          </div>
+        )}
+
         <button onClick={() => router.back()} className="mt-8 px-6 py-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl font-bold shadow-lg">
           {t.backToDownloader}
         </button>

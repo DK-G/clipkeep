@@ -1,9 +1,29 @@
-'use client';
+﻿'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useMemo, useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { homeText, Locale } from '@/lib/i18n/ui';
 import { trackEvent } from '@/lib/analytics/gtag';
+
+type TurnstileRenderOptions = {
+  sitekey: string;
+  callback: (token: string) => void;
+  'expired-callback': () => void;
+  'error-callback': () => void;
+  theme: 'auto' | 'light' | 'dark';
+  size: 'normal' | 'compact' | 'invisible';
+};
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: string | HTMLElement, options: TurnstileRenderOptions) => string;
+      reset: (widgetId?: string) => void;
+      getResponse: (widgetId?: string) => string;
+      remove: (widgetId?: string) => void;
+    };
+  }
+}
 
 export type Platform = 'telegram' | 'twitter' | 'tiktok' | 'reddit' | 'pinterest' | 'threads' | 'bluesky' | 'lemon8' | 'bilibili' | 'discord' | 'facebook';
 
@@ -35,11 +55,11 @@ const platformPatterns: Record<string, RegExp> = {
   tiktok: /tiktok\.com\//i,
   reddit: /reddit\.com\/(r|user|comments)/i,
   pinterest: /(pinterest\.com\/pin\/|pin\.it\/)/i,
-  threads: /threads\.net\//i,
-  bluesky: /(bsky\.app\/profile\/|at:\/\/|bsky\.social\/)/i,
-  lemon8: /lemon8-app\.com\//i,
+  threads: /threads\.(com|net)\//i,
+  bluesky: /bsky\.app\/profile\//i,
+  lemon8: /(lemon8-app\.com\/|v\.lemon8-app\.com\/)/i,
   bilibili: /(bilibili\.com\/video\/|b23\.tv\/)/i,
-  discord: /(discord\.com\/channels\/|discord\.com\/attachments\/|cdn\.discordapp\.com\/)/i,
+  discord: /(discord\.com\/channels\/|discord\.com\/attachments\/|cdn\.discordapp\.com\/|media\.discordapp\.net\/)/i,
   facebook: /(facebook\.com\/|fb\.watch\/|fb\.com\/)/i,
 };
 
@@ -69,6 +89,9 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
   const [sourceUrl, setSourceUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [detectedPlatform, setDetectedPlatform] = useState<Platform | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileContainerRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
 
   const l = homeText[locale];
 
@@ -89,9 +112,35 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     }
   };
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    const initTurnstile = () => {
+      if (window.turnstile && turnstileContainerRef.current && !widgetIdRef.current) {
+        widgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
+          sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA',
+          callback: (token: string) => setTurnstileToken(token),
+          'expired-callback': () => setTurnstileToken(null),
+          'error-callback': () => setTurnstileToken(null),
+          theme: 'auto',
+          size: 'normal',
+        });
+      } else if (!window.turnstile) {
+        timer = setTimeout(initTurnstile, 500);
+      }
+    };
+    initTurnstile();
+    return () => {
+      if (timer) clearTimeout(timer);
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
+      }
+    };
+  }, []);
+
   const canSubmit = useMemo(() => {
-    return !!sourceUrl && !submitting;
-  }, [sourceUrl, submitting]);
+    return !!sourceUrl && !submitting && !!turnstileToken;
+  }, [sourceUrl, submitting, turnstileToken]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -104,7 +153,12 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
       const res = await fetch('/api/v1/extract/prepare', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ url: sourceUrl, platform: activePlatform, locale }),
+        body: JSON.stringify({ 
+          url: sourceUrl, 
+          platform: activePlatform, 
+          locale,
+          turnstileToken
+        }),
       });
 
       const payload = (await res.json()) as PrepareSuccess | ApiError;
@@ -131,6 +185,11 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
       if (onStatusChange) onStatusChange(l.networkError, null, undefined);
     } finally {
       setSubmitting(false);
+      // Reset Turnstile after each attempt
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.reset(widgetIdRef.current);
+      }
+      setTurnstileToken(null);
     }
   };
 
@@ -189,6 +248,13 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
           )}
         </button>
       </div>
+
+      <div className="mt-4 flex justify-center">
+        <div ref={turnstileContainerRef} />
+      </div>
     </form>
   );
 }
+
+
+

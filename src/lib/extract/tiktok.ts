@@ -7,6 +7,7 @@ export type TikTokMedia = {
   url: string;
   thumbUrl?: string;
   title?: string;
+  sourcePath?: string;
 };
 
 interface TikWMResponse {
@@ -17,7 +18,24 @@ interface TikWMResponse {
     wmplay?: string;
     cover?: string;
     title?: string;
+    images?: string[];
   };
+}
+
+type LovetikLink = {
+  t?: string;
+  a?: string;
+};
+
+type LovetikResponse = {
+  status?: string;
+  links?: LovetikLink[] | unknown;
+  cover?: string;
+  desc?: string;
+};
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 /**
@@ -38,94 +56,176 @@ async function resolveTikTokUrl(url: string): Promise<string> {
     });
 
     if (response.ok) {
-      // Remove query parameters to get the clean canonical URL
       const finalUrl = new URL(response.url);
       finalUrl.search = "";
       return finalUrl.toString();
     }
-  } catch (error) {
-    console.error("Error resolving TikTok URL:", error);
+  } catch (error: unknown) {
+    console.error("Error resolving TikTok URL:", getErrorMessage(error));
   }
 
-  return url;
+  throw new Error("SHORT_URL_RESOLVE_FAILED");
 }
 
+
 /**
- * Extracts TikTok media using the TikWM public API.
- * This is a reliable third-party API that provides watermark-free videos.
+ * Extracts TikTok media using public APIs/fixers.
  */
 export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
+  const startTime = Date.now();
+
   try {
     const resolvedUrl = await resolveTikTokUrl(sourceUrl);
-    
-    // Try TikWM API first
-    const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(resolvedUrl)}`;
-    
-    const response = await fetch(apiUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      },
-    });
+    console.log(`[TikTok] Resolved URL: ${resolvedUrl}`);
 
-    if (response.ok) {
-      const text = await response.text();
-      try {
-        const data = JSON.parse(text) as TikWMResponse;
-        if (data && data.code === 0 && data.data) {
+    try {
+      const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(resolvedUrl)}`;
+      const response = await fetch(apiUrl, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        },
+      });
+
+      if (response.status === 403 || response.status === 429) {
+        throw new Error("ANTI_BOT_BLOCKED");
+      }
+
+      if (response.ok) {
+        const data = await response.json() as TikWMResponse;
+        if (data.code === 0 && data.data) {
+          // Priority 1: Slideshow (Multi-image)
+          if (data.data.images && data.data.images.length > 0) {
+            console.log(`[TikTok] Success via TikWM Slideshow (${Date.now() - startTime}ms)`);
+            return data.data.images.map(imageUrl => ({
+              type: "image",
+              url: imageUrl,
+              thumbUrl: data.data?.cover,
+              title: data.data?.title,
+              sourcePath: "tikwm-slideshow",
+            }));
+          }
+
+          // Priority 2: Video
           const videoUrl = data.data.play || data.data.wmplay;
-          const thumbUrl = data.data.cover;
-          const title = data.data.title;
-
           if (videoUrl) {
+            console.log(`[TikTok] Success via TikWM Video (${Date.now() - startTime}ms)`);
             return [{
               type: "video",
               url: videoUrl,
-              thumbUrl: thumbUrl,
-              title: title
+              thumbUrl: data.data.cover,
+              title: data.data.title,
+              sourcePath: "tikwm-video",
             }];
           }
-        } else {
-          console.warn("TikWM API returned non-zero code or empty data:", data);
         }
-      } catch (e) {
-        console.warn("TikWM API returned invalid JSON. Start of response:", text.substring(0, 100), e);
+
+        if (data.msg?.toLowerCase().includes("private")) {
+          throw new Error("PRIVATE_POST");
+        }
       }
-    } else {
-      console.warn("TikWM API request failed with status:", response.status);
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(error);
+      if (errorMessage === "PRIVATE_POST" || errorMessage === "ANTI_BOT_BLOCKED") {
+        throw error;
+      }
+      console.warn("[TikTok] TikWM path failed:", errorMessage);
     }
 
-    // Fallback: Try kktiktok (vxtiktok successor)
+    // vxtiktok fallback removed (service is down)
+
+    // Lovetik fallback (good for slideshows/carousels)
+    try {
+      const loveApi = `https://lovetik.com/api/ajax/search`;
+      const loveRes = await fetch(loveApi, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        },
+        body: `q=${encodeURIComponent(resolvedUrl)}`,
+      });
+
+      if (loveRes.ok) {
+        const data = (await loveRes.json()) as LovetikResponse;
+        if (data.status === "ok" && data.links) {
+          const links: LovetikLink[] = Array.isArray(data.links) ? data.links : [];
+          const images = links
+            .filter((l): l is LovetikLink & { a: string } => l.t === "Image" && typeof l.a === "string" && l.a.length > 0)
+            .map((l) => ({
+              type: "image" as const,
+              url: l.a,
+              thumbUrl: data.cover,
+              title: data.desc,
+              sourcePath: "lovetik-image",
+            }));
+
+          if (images.length > 0) {
+            console.log(`[TikTok] Success via Lovetik Slideshow (${Date.now() - startTime}ms)`);
+            return images;
+          }
+
+          const video = links.find((l) => l.t === "Video" || l.t === "Video(Watermark)");
+          if (video?.a) {
+            console.log(`[TikTok] Success via Lovetik Video (${Date.now() - startTime}ms)`);
+            return [{
+              type: "video",
+              url: video.a,
+              thumbUrl: data.cover,
+              title: data.desc,
+              sourcePath: "lovetik-video",
+            }];
+          }
+        }
+      }
+    } catch (error: unknown) {
+      console.warn("[TikTok] Lovetik fallback failed:", getErrorMessage(error));
+    }
+
     const kkUrl = resolvedUrl.replace("tiktok.com", "kktiktok.com");
     try {
       const kkResponse = await fetch(kkUrl, {
-        headers: { "User-Agent": "TelegramBot" },
+        redirect: "follow",
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)",
+        },
       });
+      if (kkResponse.status === 403 || kkResponse.status === 429) {
+        throw new Error("ANTI_BOT_BLOCKED");
+      }
+
       if (kkResponse.ok) {
-        const contentType = kkResponse.headers.get("content-type") || "";
-        if (contentType.includes("video/")) {
-          // If the fallback directly returns the video stream, use the final URL
-          return [{
-            type: "video",
-            url: kkResponse.url || kkUrl,
-          }];
-        }
-        
         const html = await kkResponse.text();
-        const videoMatch = html.match(/<meta property="og:video" content="([^"]+)"/i);
-        if (videoMatch && videoMatch[1]) {
+        const videoUrl = html.match(/<meta[^>]+property="og:video:url"[^>]+content="([^"]+)"/)?.[1]
+          || html.match(/<meta[^>]+property="og:video"[^>]+content="([^"]+)"/)?.[1];
+
+        if (videoUrl) {
+          const thumbUrl = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/)?.[1];
+          const title = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/)?.[1];
+          console.log(`[TikTok] Success via kktiktok OG meta (${Date.now() - startTime}ms)`);
           return [{
             type: "video",
-            url: videoMatch[1],
+            url: videoUrl,
+            thumbUrl,
+            title,
+            sourcePath: "kktiktok-og",
           }];
         }
       }
-    } catch (e) {
-      console.warn("kktiktok fallback error:", e);
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(error);
+      if (errorMessage === "ANTI_BOT_BLOCKED") {
+        throw error;
+      }
+      console.warn("kktiktok fallback failed:", errorMessage);
     }
 
-    return [];
-  } catch (error) {
-    console.error("Error in extractTikTok:", error);
-    throw error; // Rethrow to let store.ts catch it and log detailed warning
+    throw new Error("MEDIA_NOT_FOUND");
+  } catch (error: unknown) {
+    const errorMessage = getErrorMessage(error);
+    if (["PRIVATE_POST", "ANTI_BOT_BLOCKED", "SHORT_URL_RESOLVE_FAILED", "MEDIA_NOT_FOUND"].includes(errorMessage)) {
+      throw error;
+    }
+    console.error("Error in extractTikTok:", errorMessage);
+    throw error;
   }
 }

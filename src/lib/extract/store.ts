@@ -1,16 +1,14 @@
-import type { ExtractJob, Platform } from "./types";
-import { extractTelegram, type TelegramMedia } from "./telegram";
-import { extractTwitter, type TwitterMedia } from "./twitter";
-import { extractInstagram, type InstagramMedia } from "./instagram";
-import { extractTikTok, type TikTokMedia } from "./tiktok";
+﻿import type { ExtractJob, Platform, ExtractionMedia } from "./types";
+import { extractTelegram } from "./telegram";
+import { extractTwitter } from "./twitter";
+import { extractInstagram } from "./instagram";
+import { extractTikTok } from "./tiktok";
 import { extractReddit } from "./reddit";
 import { extractPinterest } from "./pinterest";
 import { extractBluesky } from "./bluesky";
-import { extractLemon8 } from "./lemon8";
 import { extractBilibili } from "./bilibili";
-import { extractDiscord } from "./discord";
-import { extractThreads } from "./threads";
 import { extractFacebook } from "./facebook";
+import { extractWithBrowser } from "./browser";
 import { getDb } from "@/lib/db/d1";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
@@ -18,41 +16,40 @@ function nowIso(): string {
   return new Date().toISOString();
 }
 
-/**
- * Normalizes a URL by stripping tracking parameters and ensuring consistent format.
- */
 function normalizeUrl(url: string, platform: Platform): string {
   try {
     const u = new URL(url.trim());
-    u.protocol = 'https:'; // Force https
-    
-    // Remove common trackers
-    const trackers = ['s', 't', 'ref', 'utm_source', 'utm_medium', 'utm_campaign', 'feature'];
-    trackers.forEach(t => u.searchParams.delete(t));
+    u.protocol = "https:";
 
-    // Platform-specific normalization
-    if (platform === 'twitter') {
-      // Remove trailing slash and query entirely for status URLs
-      if (u.pathname.includes('/status/')) {
-        u.search = ''; 
+    const trackers = ["s", "t", "ref", "utm_source", "utm_medium", "utm_campaign", "feature"];
+    trackers.forEach((t) => u.searchParams.delete(t));
+
+    if (platform === "twitter") {
+      if (u.hostname === "x.com") u.hostname = "twitter.com";
+      const statusMatch = u.pathname.match(/\/status\/(\d+)/i);
+      if (statusMatch) {
+        u.pathname = `/status/${statusMatch[1]}`;
+        u.search = "";
       }
-    } else if (platform === 'tiktok' || platform === 'lemon8' || platform === 'facebook') {
-      // TikTok, Lemon8, and Facebook often have many trackers
-      if (platform === 'facebook') {
-        const kept = ['v'];
+    } else if (platform === "tiktok" || platform === "lemon8" || platform === "facebook") {
+      if (platform === "facebook") {
+        const kept = ["v"];
         const currentParams = Array.from(u.searchParams.keys());
-        currentParams.forEach(k => {
+        currentParams.forEach((k) => {
           if (!kept.includes(k)) u.searchParams.delete(k);
         });
       } else {
-        u.search = '';
+        u.search = "";
       }
-    } else if (platform === 'reddit') {
-      // Normalize reddit URLs (remove search, consolidate domains)
-      u.search = '';
-      if (u.hostname === 'old.reddit.com') u.hostname = 'www.reddit.com';
-    } else if (platform === 'threads') {
-      u.search = '';
+    } else if (platform === "reddit") {
+      u.search = "";
+      if (u.hostname === "old.reddit.com") u.hostname = "www.reddit.com";
+    } else if (platform === "threads") {
+      u.search = "";
+    } else if (platform === "bilibili") {
+      u.search = "";
+      // Strip trailing slash and ensure www.bilibili.com
+      if (u.hostname === "bilibili.com") u.hostname = "www.bilibili.com";
     }
 
     return u.toString().toLowerCase().replace(/\/$/, "");
@@ -61,39 +58,25 @@ function normalizeUrl(url: string, platform: Platform): string {
   }
 }
 
-/**
- * Generates a deterministic Job ID based on the normalized URL.
- * Uses a simple prefix and a truncated part of the URL (or hash if available).
- */
 async function getDeterministicJobId(platform: Platform, sourceUrl: string): Promise<string> {
   const normalized = normalizeUrl(sourceUrl, platform);
-  
-  // Use a hash for the final ID to avoid length issues and special characters
   const encoder = new TextEncoder();
   const data = encoder.encode(normalized);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   return `job_${platform}_${hashHex.substring(0, 16)}`;
 }
 
-/**
- * Persists or updates a job in D1.
- */
-async function saveJobToDb(job: ExtractJob, locale: string = 'en'): Promise<void> {
+async function saveJobToDb(job: ExtractJob, locale: string = "en"): Promise<void> {
   const db = await getDb();
   const resultPayload = JSON.stringify({
     media: job.media,
     warnings: job.warnings,
   });
 
-  // Extract first thumbnail URL for easier access in gallery lists
-  const firstThumb = job.media.find(m => m.thumbUrl)?.thumbUrl || null;
-
-  // Telegram bundle jobs should not be public by default if they have media.
-  // We want only individual "accessed" media to appear.
-  const isPublic = job.platform === 'telegram' ? 0 : 1;
+  const firstThumb = job.media.find((m) => m.thumbUrl)?.thumbUrl || null;
+  const isPublic = job.platform === "telegram" ? 0 : 1;
 
   await db.prepare(
     `INSERT INTO extractor_jobs (id, platform, source_url, status, progress, result_payload, thumbnail_url, is_public, created_at, updated_at, locale)
@@ -121,7 +104,65 @@ async function saveJobToDb(job: ExtractJob, locale: string = 'en'): Promise<void
   ).run();
 }
 
-export async function createJob(platform: Platform, sourceUrl: string, locale: string = 'en'): Promise<ExtractJob> {
+function mapExtractionError(errorMsg: string): string {
+  if (errorMsg === "PRIVATE_POST" || errorMsg === "PRIVATE_OR_RESTRICTED") {
+    return "This content appears to be private. We can only download public posts.";
+  }
+  if (errorMsg === "INVALID_X_URL") {
+    return "The provided X/Twitter URL is invalid.";
+  }
+  if (errorMsg === "POST_NOT_FOUND") {
+    return "The post could not be found. It may have been deleted or is unavailable.";
+  }
+  if (errorMsg === "BOT_CHALLENGED" || errorMsg === "ANTI_BOT_BLOCKED") {
+    return "We encountered a temporary restriction from the platform. Please try again later.";
+  }
+  if (errorMsg === "MEDIA_NOT_FOUND") {
+    return "No downloadable media was found in this post.";
+  }
+  if (errorMsg === "SHORT_URL_RESOLVE_FAILED") {
+    return "We could not resolve the short URL for this post.";
+  }
+  if (errorMsg === "RATE_LIMITED") {
+    return "The upstream platform temporarily rate-limited extraction. Please try again later.";
+  }
+  if (errorMsg === "DOWNLOAD_EXPIRED" || errorMsg === "DIRECT_URL_EXPIRED") {
+    return "The media link expired before download could complete. Please retry.";
+  }
+  if (errorMsg === "LOGIN_WALL") {
+    return "This content currently requires login and is not supported.";
+  }
+  if (errorMsg === "VIDEO_URL_NOT_RESOLVED" || errorMsg === "CID_NOT_RESOLVED") {
+    return "A downloadable video URL could not be resolved for this post.";
+  }
+  if (errorMsg === "MESSAGE_NOT_FOUND") {
+    return "The Telegram post could not be found. It may have been deleted.";
+  }
+  if (errorMsg === "PIN_NOT_FOUND") {
+    return "The Pinterest pin could not be found or is unavailable.";
+  }
+  if (errorMsg === "PIN_DATA_NOT_FOUND") {
+    return "Pinterest did not expose downloadable media data for this pin.";
+  }
+  if (errorMsg === "UNSUPPORTED_URL") {
+    return "This link format is not supported right now.";
+  }
+  if (errorMsg === "UPSTREAM_TEMPORARY_FAILURE") {
+    return "The upstream platform temporarily failed to return the media. Please try again later.";
+  }
+  if (errorMsg === "ACCESS_DENIED") {
+    return "The media URL is no longer accessible with the current Discord permissions or signature.";
+  }
+  if (errorMsg === "REGION_RESTRICTED") {
+    return "This content is not available in the current region.";
+  }
+  if (errorMsg === "AGE_GATED") {
+    return "This content is age-restricted and is not supported.";
+  }
+  return "An internal error occurred during extraction. Please try again later.";
+}
+
+export async function createJob(platform: Platform, sourceUrl: string, locale: string = "en"): Promise<ExtractJob> {
   const now = nowIso();
   const id = await getDeterministicJobId(platform, sourceUrl);
 
@@ -137,46 +178,80 @@ export async function createJob(platform: Platform, sourceUrl: string, locale: s
     updatedAt: now,
   };
 
-  // Initial persist
+  const existingJob = await getJob(id);
+  if (existingJob) {
+    const updatedAt = new Date(existingJob.updatedAt).getTime();
+    const nowTime = Date.now();
+
+    if (existingJob.status === "completed" && (nowTime - updatedAt) < 24 * 60 * 60 * 1000) {
+      console.log(`[Store] Cache hit (Success) for ${id}`);
+      return existingJob;
+    }
+
+    if (existingJob.status === "failed" && (nowTime - updatedAt) < 10 * 60 * 1000) {
+      console.log(`[Store] Cache hit (Failed) for ${id}`);
+      return existingJob;
+    }
+  }
+
   await saveJobToDb(job, locale);
 
-  // Background Extraction using waitUntil
   const cloudflare = await getCloudflareContext();
   if (cloudflare && cloudflare.ctx && cloudflare.ctx.waitUntil) {
     cloudflare.ctx.waitUntil((async () => {
+      const processingJob = { ...job, status: "processing" as const, progress: 10, updatedAt: nowIso() };
+
       try {
-        // Update to processing
-        const processingJob = { ...job, status: "processing" as const, progress: 10, updatedAt: nowIso() };
+        console.log(`[Store] Starting extraction for ${id} (${platform})`);
         await saveJobToDb(processingJob);
 
-        let results: Array<TelegramMedia | TwitterMedia | InstagramMedia | TikTokMedia> = [];
-        if (platform === "telegram") {
-          results = await extractTelegram(sourceUrl);
-        } else if (platform === "twitter") {
-          results = await extractTwitter(sourceUrl);
-        } else if (platform === "instagram") {
-          results = await extractInstagram(sourceUrl);
-        } else if (platform === "tiktok") {
-          results = await extractTikTok(sourceUrl);
-        } else if (platform === "reddit") {
-          results = await extractReddit(sourceUrl);
-        } else if (platform === "pinterest") {
-          results = await extractPinterest(sourceUrl);
-        } else if (platform === "bluesky") {
-          results = await extractBluesky(sourceUrl);
-        } else if (platform === "lemon8") {
-          results = await extractLemon8(sourceUrl);
-        } else if (platform === "bilibili") {
-          results = await extractBilibili(sourceUrl);
-        } else if (platform === "discord") {
-          results = await extractDiscord(sourceUrl);
-        } else if (platform === "threads") {
-          results = await extractThreads(sourceUrl);
-        } else if (platform === "facebook") {
-          results = await extractFacebook(sourceUrl);
-        }
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error("Extraction timed out after 25 seconds")), 25000);
+        });
 
-        if (results && results.length > 0) {
+        let results: ExtractionMedia[] = [];
+
+        await Promise.race([
+          (async () => {
+            if (platform === "telegram") {
+              results = await extractTelegram(sourceUrl) as ExtractionMedia[];
+            } else if (platform === "twitter") {
+              results = await extractTwitter(sourceUrl) as ExtractionMedia[];
+            } else if (platform === "instagram") {
+              results = await extractInstagram(sourceUrl) as ExtractionMedia[];
+            } else if (platform === "tiktok") {
+              results = await extractTikTok(sourceUrl) as ExtractionMedia[];
+            } else if (platform === "reddit") {
+              results = await extractReddit(sourceUrl);
+              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
+            } else if (platform === "pinterest") {
+              results = await extractPinterest(sourceUrl);
+              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
+            } else if (platform === "bluesky") {
+              results = await extractBluesky(sourceUrl);
+              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
+            } else if (platform === "lemon8") {
+              results = await extractWithBrowser(sourceUrl);
+            } else if (platform === "bilibili") {
+              results = await extractBilibili(sourceUrl);
+              if (results.length === 0) {
+                results = (await extractWithBrowser(sourceUrl)).filter((item) => item.type === "video");
+              }
+            } else if (platform === "discord") {
+              results = await extractWithBrowser(sourceUrl);
+            } else if (platform === "threads") {
+              results = await extractWithBrowser(sourceUrl);
+            } else if (platform === "facebook") {
+              results = await extractFacebook(sourceUrl) as ExtractionMedia[];
+              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
+            }
+          })(),
+          timeoutPromise,
+        ]);
+
+        console.log(`[Store] Extraction results for ${id}: ${results.length} items`);
+
+        if (results.length > 0) {
           const completed: ExtractJob = {
             ...processingJob,
             status: "completed",
@@ -184,17 +259,18 @@ export async function createJob(platform: Platform, sourceUrl: string, locale: s
             media: results.map((res) => ({
               mediaId: `m_${crypto.randomUUID()}`,
               type: res.type,
-              quality: "original",
-              downloadUrl: res.url,
+              quality: res.quality || "original",
+              url: res.url,
+              downloadUrl: res.downloadUrl || res.url,
               expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
               thumbUrl: res.thumbUrl,
+              title: res.title,
+              sourcePath: res.sourcePath,
             })),
             updatedAt: nowIso(),
           };
           await saveJobToDb(completed);
         } else {
-          // If the extraction returned empty without throwing, it's usually because 
-          // nothing was found (private account, deleted post, or unsupported format)
           await saveJobToDb({
             ...processingJob,
             status: "failed",
@@ -204,21 +280,22 @@ export async function createJob(platform: Platform, sourceUrl: string, locale: s
         }
       } catch (error: unknown) {
         console.error("Extraction error:", error);
-        
-        let userMessage = "An internal error occurred during extraction. Please try again later.";
-        
-        // Categorize errors based on message or type if available
-        const errorStr = String(error).toLowerCase();
-        if (errorStr.includes("private") || errorStr.includes("login")) {
-          userMessage = "This content appears to be private or requires login. We can only download public posts.";
-        } else if (errorStr.includes("404") || errorStr.includes("not found")) {
-          userMessage = "The post could not be found. It may have been deleted.";
-        } else if (errorStr.includes("timeout") || errorStr.includes("fetch failed")) {
-          userMessage = "The extraction service timed out or is temporarily unavailable. Please try again in a few minutes.";
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        let userMessage = mapExtractionError(errorMsg);
+
+        if (userMessage === "An internal error occurred during extraction. Please try again later.") {
+          const errorStr = errorMsg.toLowerCase();
+          if (errorStr.includes("private") || errorStr.includes("login")) {
+            userMessage = "This content requires login or is private. Only public posts are supported.";
+          } else if (errorStr.includes("404") || errorStr.includes("not found")) {
+            userMessage = "The post could not be found. It may have been deleted.";
+          } else if (errorStr.includes("timeout") || errorStr.includes("fetch failed")) {
+            userMessage = "The service timed out. Please try again later.";
+          }
         }
 
         await saveJobToDb({
-          ...job,
+          ...processingJob,
           status: "failed",
           warnings: [userMessage],
           updatedAt: nowIso(),
@@ -262,16 +339,11 @@ export async function getJob(jobId: string): Promise<ExtractJob | undefined> {
   };
 }
 
-/**
- * Increments the access count for a job and updates its visibility window.
- * For Telegram, it creates a specific "gallery entry" job if a media index is provided.
- */
-export async function recordAccess(jobId: string, locale: string = 'en', mediaIndex?: number): Promise<void> {
+export async function recordAccess(jobId: string, locale: string = "en", mediaIndex?: number): Promise<void> {
   const db = await getDb();
   const now = nowIso();
-  const today = new Date().toISOString().split('T')[0];
-  
-  // Base access record
+  const today = new Date().toISOString().split("T")[0];
+
   await db.prepare(
     `UPDATE extractor_jobs 
      SET access_count = access_count + 1, 
@@ -279,7 +351,6 @@ export async function recordAccess(jobId: string, locale: string = 'en', mediaIn
      WHERE id = ?`
   ).bind(now, jobId).run();
 
-  // Update daily stats for trending
   await db.prepare(
     `INSERT INTO job_stats (job_id, locale, date, count)
      VALUES (?, ?, ?, 1)
@@ -287,20 +358,15 @@ export async function recordAccess(jobId: string, locale: string = 'en', mediaIn
        count = job_stats.count + 1`
   ).bind(jobId, locale, today).run();
 
-  // Telegram specialized gallery logic: 
-  // If a media index is specified, we ensure a "public" entry exists for this specific media.
   if (mediaIndex !== undefined) {
     const original = await getJob(jobId);
-    if (original && original.platform === 'telegram' && original.media[mediaIndex]) {
+    if (original && original.platform === "telegram" && original.media[mediaIndex]) {
       const media = original.media[mediaIndex];
       const galleryId = `gal_${jobId}_${mediaIndex}`;
-      
-      // We use a separate ID to allow multiple media from one job to appear independently
-      // We copy the payload but focus it on this media for the gallery
       const payload = JSON.stringify({
         media: [media],
         warnings: [],
-        sourceJobId: jobId
+        sourceJobId: jobId,
       });
 
       await db.prepare(
@@ -325,4 +391,13 @@ export async function recordAccess(jobId: string, locale: string = 'en', mediaIn
     }
   }
 }
+
+
+
+
+
+
+
+
+
 

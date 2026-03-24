@@ -1,10 +1,27 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import type { Platform } from '@/lib/extract/types';
 import { Locale } from '@/lib/i18n/ui';
 import { trackEvent } from '@/lib/analytics/gtag';
+import React from 'react';
+import { TiktokIcon, TwitterXIcon, RedditIcon, FacebookIcon, TelegramIcon, PinterestIcon, ThreadsIcon, BlueskyIcon, BilibiliIcon, DiscordIcon, Lemon8Icon } from '@/components/platform-icons';
+
+const PlatformIconMap: Partial<Record<Platform, React.FC<{ className?: string }>>> = {
+  tiktok: TiktokIcon,
+  twitter: TwitterXIcon,
+  reddit: RedditIcon,
+  facebook: FacebookIcon,
+  telegram: TelegramIcon,
+  pinterest: PinterestIcon,
+  threads: ThreadsIcon,
+  bluesky: BlueskyIcon,
+  bilibili: BilibiliIcon,
+  discord: DiscordIcon,
+  lemon8: Lemon8Icon,
+};
 
 export interface GalleryItem {
   id: string;
@@ -36,10 +53,47 @@ function formatDuration(sec?: number): string {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-/**
- * Hook to determine the number of columns based on window width.
- * Returns 2 for mobile-first/SSR, then updates after mount.
- */
+function getPlatformBadgeClass(platform: Platform): string {
+  if (platform === 'tiktok') return 'bg-black border border-white/10';
+  if (platform === 'twitter') return 'bg-black';
+  if (platform === 'reddit') return 'bg-orange-600';
+  if (platform === 'facebook') return 'bg-blue-600';
+  if (platform === 'telegram') return 'bg-blue-500';
+  if (platform === 'pinterest') return 'bg-red-600';
+  if (platform === 'threads') return 'bg-slate-900';
+  if (platform === 'bluesky') return 'bg-blue-400';
+  if (platform === 'lemon8') return 'bg-yellow-400';
+  if (platform === 'bilibili') return 'bg-pink-400';
+  return 'bg-indigo-500';
+}
+
+function ThumbnailImage({
+  src,
+  className,
+}: {
+  src: string;
+  className: string;
+}) {
+  const [imageSrc, setImageSrc] = useState(src);
+
+  useEffect(() => {
+    setImageSrc(src);
+  }, [src]);
+
+  return (
+    <Image
+      src={imageSrc}
+      alt="Video Thumbnail"
+      width={640}
+      height={360}
+      unoptimized
+      className={className}
+      loading="lazy"
+      onError={() => setImageSrc('/placeholder-video.png')}
+    />
+  );
+}
+
 function useColumnCount(dense?: boolean) {
   const [columnCount, setColumnCount] = useState(dense ? 4 : 2);
 
@@ -71,17 +125,17 @@ function useColumnCount(dense?: boolean) {
   return columnCount;
 }
 
-export function GallerySection({ 
-  platform, 
-  locale, 
-  title, 
-  id = 'gallery', 
-  initialItems, 
-  type = 'recent', 
+export function GallerySection({
+  platform,
+  locale,
+  title,
+  id = 'gallery',
+  initialItems,
+  type = 'recent',
   limit = 8,
   layout = 'grid',
   hideMeta = true,
-  dense = false
+  dense = false,
 }: GallerySectionProps) {
   const router = useRouter();
   const [items, setItems] = useState<GalleryItem[]>(initialItems || []);
@@ -107,26 +161,23 @@ export function GallerySection({
         setLoading(false);
       }
     }
-    if (!initialItems) fetchGallery();
+
+    fetchGallery();
   }, [platform, initialItems, type, limit]);
 
   const columnCount = useColumnCount(dense);
-
-  // Split items into columns for manual masonry layout
-  const columns = Array.from({ length: columnCount }, (_, i) =>
-    items.filter((_, index) => index % columnCount === i)
-  );
+  const columns = Array.from({ length: columnCount }, (_, i) => items.filter((_, index) => index % columnCount === i));
 
   if (loading) {
     const skeletonClasses = layout === 'carousel'
-      ? "flex overflow-hidden gap-4 px-2 sm:px-0"
-      : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 sm:gap-4 px-2 sm:px-0";
-    
+      ? 'flex overflow-hidden gap-4 px-2 sm:px-0'
+      : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 sm:gap-4 px-2 sm:px-0';
+
     return (
       <div className={`mt-12 w-full animate-pulse ${skeletonClasses}`}>
         {[...Array(limit)].map((_, i) => (
-          <div 
-            key={i} 
+          <div
+            key={i}
             className={`aspect-[16/9] bg-slate-100 dark:bg-slate-800 rounded-lg ${layout === 'carousel' ? 'flex-none w-[200px] sm:w-[260px]' : ''}`}
           ></div>
         ))}
@@ -137,23 +188,20 @@ export function GallerySection({
   if (items.length === 0) return null;
 
   const containerClasses = layout === 'carousel'
-    ? "flex overflow-x-auto gap-4 pb-6 px-2 sm:px-0 snap-x snap-mandatory scrollbar-hide -mx-2 sm:mx-0"
+    ? 'flex overflow-x-auto gap-4 pb-6 px-2 sm:px-0 snap-x snap-mandatory scrollbar-hide -mx-2 sm:mx-0'
     : layout === 'masonry'
-    ? `flex flex-row ${dense ? 'gap-1.5 sm:gap-3' : 'gap-3 sm:gap-4'} px-2 sm:px-0`
-    : dense
-    ? "grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-1.5 sm:gap-3 px-2 sm:px-0"
-    : "grid grid-cols-3 md:grid-cols-5 gap-2 sm:gap-4 px-2 sm:px-0";
+      ? `flex flex-row ${dense ? 'gap-1.5 sm:gap-3' : 'gap-3 sm:gap-4'} px-2 sm:px-0`
+      : dense
+        ? 'grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-1.5 sm:gap-3 px-2 sm:px-0'
+        : 'grid grid-cols-3 md:grid-cols-5 gap-2 sm:gap-4 px-2 sm:px-0';
 
   return (
     <section id={id} className={`mt-12 scroll-mt-[80px] ${layout === 'carousel' ? 'overflow-hidden' : ''}`}>
       <h2 className="text-xl font-extrabold mb-5 text-center text-slate-900 dark:text-slate-50 tracking-tight">{title}</h2>
       <div className={containerClasses} style={layout === 'carousel' ? { scrollbarWidth: 'none', msOverflowStyle: 'none' } : {}}>
-        <style dangerouslySetInnerHTML={{ __html: `
-          .scrollbar-hide::-webkit-scrollbar { display: none; }
-        ` }} />
-        
+        <style dangerouslySetInnerHTML={{ __html: '.scrollbar-hide::-webkit-scrollbar { display: none; }' }} />
+
         {layout === 'masonry' ? (
-          // Manual Masonry Rendering (Column-based for staggered heights)
           columns.map((col, colIdx) => (
             <div key={colIdx} className={`flex-1 flex flex-col ${dense ? 'gap-1.5 sm:gap-3' : 'gap-3 sm:gap-4'}`}>
               {col.map((item) => {
@@ -186,53 +234,23 @@ export function GallerySection({
                     className="group relative bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer will-change-transform hover:-translate-y-1"
                   >
                     <div className="h-auto relative overflow-hidden bg-slate-50 dark:bg-slate-950">
-                      <img
+                      <ThumbnailImage
                         src={item.thumbnail_url}
-                        alt="Video Thumbnail"
                         className="w-full h-auto object-cover transition duration-300 group-hover:scale-105"
-                        loading="lazy"
-                        onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-video.png'; }}
                       />
-                      
+
                       <div className="absolute bottom-1 right-1 flex items-center gap-1">
                         {!hideMeta && (
                           <div className="bg-white/95 dark:bg-slate-900/95 px-1 py-0.5 rounded-sm text-[9px] font-bold shadow-sm border border-slate-200/50 flex items-center gap-1 tabular-nums mr-0.5">
                             <span className="w-1.5 h-1.5 bg-green-500 rounded-full shadow-[0_0_2px_rgba(34,197,94,0.4)]"></span>
-                            {item.access_count > 1000 ? `${(item.access_count/1000).toFixed(1)}k` : item.access_count}
+                            {item.access_count > 1000 ? `${(item.access_count / 1000).toFixed(1)}k` : item.access_count}
                           </div>
                         )}
-                        {showIcons && item.platform === 'twitter' && (
-                          <div className="bg-black rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm">
-                            <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24">
-                              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-                            </svg>
-                          </div>
-                        )}
-                        {showIcons && item.platform === 'tiktok' && (
-                          <div className="bg-black rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm border border-white/10">
-                            <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24">
-                              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"></path>
-                            </svg>
-                          </div>
-                        )}
-                        {showIcons && item.platform === 'telegram' && (
-                          <div className="bg-blue-500 rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm">
-                            <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24">
-                              <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path>
-                            </svg>
-                          </div>
-                        )}
-                        {showIcons && ['reddit', 'pinterest', 'threads', 'bluesky', 'lemon8', 'bilibili', 'discord'].includes(item.platform) && (
-                          <div className={`${
-                            item.platform === 'reddit' ? 'bg-orange-600' :
-                            item.platform === 'pinterest' ? 'bg-red-600' :
-                            item.platform === 'threads' ? 'bg-slate-900' :
-                            item.platform === 'bluesky' ? 'bg-blue-400' :
-                            item.platform === 'lemon8' ? 'bg-yellow-400' :
-                            item.platform === 'bilibili' ? 'bg-pink-400' :
-                            'bg-indigo-500'
-                          } rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm`}>
-                             <span className="text-white text-[8px] font-black">{item.platform.slice(0, 2).toUpperCase()}</span>
+                        {showIcons && (
+                          <div className={`${getPlatformBadgeClass(item.platform)} rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm`}>
+                            {PlatformIconMap[item.platform]
+                              ? React.createElement(PlatformIconMap[item.platform]!, { className: 'w-2.5 h-2.5 text-white' })
+                              : <span className="text-white text-[8px] font-black">{item.platform.slice(0, 2).toUpperCase()}</span>}
                           </div>
                         )}
                         {!hideMeta && (
@@ -248,7 +266,6 @@ export function GallerySection({
             </div>
           ))
         ) : (
-          // Standard Grid / Carousel Rendering
           items.map((item) => {
             const resultHref = `/result/${item.id}?locale=${locale}`;
             const onCardClick = () => {
@@ -276,58 +293,26 @@ export function GallerySection({
                     onCardClick();
                   }
                 }}
-                className={`group relative bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer will-change-transform snap-start hover:-translate-y-1 ${
-                  layout === 'carousel' ? 'flex-none w-[200px] sm:w-[260px]' : ''
-                }`}
+                className={`group relative bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer will-change-transform snap-start hover:-translate-y-1 ${layout === 'carousel' ? 'flex-none w-[200px] sm:w-[260px]' : ''}`}
               >
                 <div className="aspect-[16/9] relative overflow-hidden bg-slate-50 dark:bg-slate-950">
-                  <img
+                  <ThumbnailImage
                     src={item.thumbnail_url}
-                    alt="Video Thumbnail"
                     className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
-                    loading="lazy"
-                    onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-video.png'; }}
                   />
-                  
+
                   <div className="absolute bottom-1 right-1 flex items-center gap-1">
                     {!hideMeta && (
                       <div className="bg-white/95 dark:bg-slate-900/95 px-1 py-0.5 rounded-sm text-[9px] font-bold shadow-sm border border-slate-200/50 flex items-center gap-1 tabular-nums mr-0.5">
                         <span className="w-1.5 h-1.5 bg-green-500 rounded-full shadow-[0_0_2px_rgba(34,197,94,0.4)]"></span>
-                        {item.access_count > 1000 ? `${(item.access_count/1000).toFixed(1)}k` : item.access_count}
+                        {item.access_count > 1000 ? `${(item.access_count / 1000).toFixed(1)}k` : item.access_count}
                       </div>
                     )}
-                    {showIcons && item.platform === 'twitter' && (
-                      <div className="bg-black rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm">
-                        <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24">
-                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-                        </svg>
-                      </div>
-                    )}
-                    {showIcons && item.platform === 'tiktok' && (
-                      <div className="bg-black rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm border border-white/10">
-                        <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24">
-                          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"></path>
-                        </svg>
-                      </div>
-                    )}
-                    {showIcons && item.platform === 'telegram' && (
-                      <div className="bg-blue-500 rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm">
-                        <svg className="w-2.5 h-2.5 text-white fill-current" viewBox="0 0 24 24">
-                          <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path>
-                        </svg>
-                      </div>
-                    )}
-                    {showIcons && ['reddit', 'pinterest', 'threads', 'bluesky', 'lemon8', 'bilibili', 'discord'].includes(item.platform) && (
-                      <div className={`${
-                        item.platform === 'reddit' ? 'bg-orange-600' :
-                        item.platform === 'pinterest' ? 'bg-red-600' :
-                        item.platform === 'threads' ? 'bg-slate-900' :
-                        item.platform === 'bluesky' ? 'bg-blue-400' :
-                        item.platform === 'lemon8' ? 'bg-yellow-400' :
-                        item.platform === 'bilibili' ? 'bg-pink-400' :
-                        'bg-indigo-500'
-                      } rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm`}>
-                         <span className="text-white text-[8px] font-black">{item.platform.slice(0, 2).toUpperCase()}</span>
+                    {showIcons && (
+                      <div className={`${getPlatformBadgeClass(item.platform)} rounded-sm px-1 py-0.5 flex items-center justify-center shadow-sm`}>
+                        {PlatformIconMap[item.platform]
+                          ? React.createElement(PlatformIconMap[item.platform]!, { className: 'w-2.5 h-2.5 text-white' })
+                          : <span className="text-white text-[8px] font-black">{item.platform.slice(0, 2).toUpperCase()}</span>}
                       </div>
                     )}
                     {!hideMeta && (

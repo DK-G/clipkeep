@@ -1,4 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+﻿# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
 node_modules
@@ -37,3 +37,13 @@ next-env.d.ts
 
 # Open Next
 .open-next/
+
+# local debug artifacts
+debug_output_video*.txt
+ld_json_*.txt
+pinterest_*.json
+pinterest_*.html
+debug_pinterest.py
+verify_*.py
+test-*.js
+test_*.log

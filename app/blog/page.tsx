@@ -9,7 +9,7 @@ type Props = {
 
 function toBlogLocale(input: string | null | undefined): BlogLocale {
   const n = normalizeLocale(input);
-  if (n === 'es' || n === 'ar' || n === 'ja') return n;
+  if (n === 'es' || n === 'ar' || n === 'ja' || n === 'pt' || n === 'fr' || n === 'de' || n === 'tr' || n === 'id' || n === 'hi') return n;
   return 'en';
 }
 
@@ -38,6 +38,42 @@ const categoryLabel: Record<BlogLocale, { twitter: string; tiktok: string; teleg
     telegram: 'Telegram',
     comparison: '比較 / セキュリティ',
   },
+  pt: {
+    twitter: 'Twitter',
+    tiktok: 'TikTok',
+    telegram: 'Telegram',
+    comparison: 'Comparação / Segurança',
+  },
+  fr: {
+    twitter: 'Twitter',
+    tiktok: 'TikTok',
+    telegram: 'Telegram',
+    comparison: 'Comparaison / Sécurité',
+  },
+  de: {
+    twitter: 'Twitter',
+    tiktok: 'TikTok',
+    telegram: 'Telegram',
+    comparison: 'Vergleich / Sicherheit',
+  },
+  tr: {
+    twitter: 'Twitter',
+    tiktok: 'TikTok',
+    telegram: 'Telegram',
+    comparison: 'Karşılaştırma / Güvenlik',
+  },
+  id: {
+    twitter: 'Twitter',
+    tiktok: 'TikTok',
+    telegram: 'Telegram',
+    comparison: 'Perbandingan / Keamanan',
+  },
+  hi: {
+    twitter: 'Twitter',
+    tiktok: 'TikTok',
+    telegram: 'Telegram',
+    comparison: 'तुलना / सुरक्षा',
+  },
 };
 
 const pageText: Record<BlogLocale, { title: string; subtitle: string; listName: string }> = {
@@ -61,6 +97,36 @@ const pageText: Record<BlogLocale, { title: string; subtitle: string; listName: 
     subtitle: '日英・西・亜言語対応のキーワード解説記事。',
     listName: 'ClipKeep SEO ブログ記事一覧',
   },
+  pt: {
+    title: 'Blog SEO do ClipKeep',
+    subtitle: 'Artigos orientados por palavras-chave com versões em inglês, português, espanhol, árabe e japonês.',
+    listName: 'Artigos do blog SEO do ClipKeep',
+  },
+  fr: {
+    title: 'Blog SEO de ClipKeep',
+    subtitle: 'Articles axés sur les mots-clés avec versions en anglais, français, portugais, espagnol, arabe et japonais.',
+    listName: 'Articles du blog SEO de ClipKeep',
+  },
+  de: {
+    title: 'ClipKeep SEO-Blog',
+    subtitle: 'Keyword-orientierte Artikel mit Versionen auf Englisch, Deutsch, Französisch, Portugiesisch, Spanisch, Arabisch und Japanisch.',
+    listName: 'ClipKeep SEO-Blogartikel',
+  },
+  tr: {
+    title: 'ClipKeep SEO Blogu',
+    subtitle: 'İngilizce, Türkçe, Almanca, Fransızca, Portekizce, İspanyolca, Arapça ve Japonca sürümlere sahip anahtar kelime odaklı yazılar.',
+    listName: 'ClipKeep SEO Blog Yazıları',
+  },
+  id: {
+    title: 'Blog SEO ClipKeep',
+    subtitle: 'Artikel berbasis kata kunci dengan versi bahasa Inggris, Indonesia, Turki, Jerman, Prancis, Portugis, Spanyol, Arab, dan Jepang.',
+    listName: 'Artikel Blog SEO ClipKeep',
+  },
+  hi: {
+    title: 'ClipKeep SEO ब्लॉग',
+    subtitle: 'कीवर्ड-आधारित लेख, जिनके अंग्रेज़ी, हिंदी, इंडोनेशियाई, तुर्की, जर्मन, फ़्रेंच, पुर्तगाली, स्पैनिश, अरबी और जापानी संस्करण उपलब्ध हैं।',
+    listName: 'ClipKeep SEO ब्लॉग लेख',
+  },
 };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
@@ -81,6 +147,10 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         ja: `${base}${path}?locale=ja`,
         es: `${base}${path}?locale=es`,
         ar: `${base}${path}?locale=ar`,
+        pt: `${base}${path}?locale=pt`,
+        fr: `${base}${path}?locale=fr`,
+        de: `${base}${path}?locale=de`,
+        tr: `${base}${path}?locale=tr`,
         'x-default': `${base}${path}`,
       },
     },

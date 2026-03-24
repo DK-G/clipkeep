@@ -4,6 +4,7 @@ import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
 import { createJob } from "@/lib/extract/store";
 import { checkExtractRateLimit, getClientKey } from "@/lib/rate-limit/extract";
+import { verifyTurnstileToken } from "@/lib/security/turnstile";
 import type { Platform } from "@/lib/extract/types";
 import type { Locale } from "@/lib/i18n/ui";
 
@@ -11,12 +12,14 @@ type PrepareBody = {
   url?: string;
   platform?: string;
   locale?: Locale;
+  turnstileToken?: string;
 };
 
 function normalizePlatform(raw: string): Platform | null {
   const value = raw.toLowerCase();
   if (value === "x") return "twitter";
-  if (value === "twitter" || value === "telegram" || value === "tiktok" || value === "instagram") return value;
+  const validPlatforms = ["telegram", "twitter", "tiktok", "instagram", "reddit", "pinterest", "facebook", "threads", "bluesky", "lemon8", "bilibili", "discord"];
+  if (validPlatforms.includes(value)) return value as Platform;
   return null;
 }
 
@@ -88,6 +91,33 @@ export async function POST(request: Request) {
     });
   }
 
+  // Verify Turnstile Token
+  const token = body.turnstileToken;
+  if (!token) {
+    return failure({
+      status: 403,
+      requestId,
+      error: {
+        code: "TURNSTILE_MISSING",
+        message: "Turnstile token is required for this action.",
+        details: {},
+      },
+    });
+  }
+
+  const isHuman = await verifyTurnstileToken(token);
+  if (!isHuman) {
+    return failure({
+      status: 403,
+      requestId,
+      error: {
+        code: "TURNSTILE_FAILED",
+        message: "Bot detection triggered. Please refresh and try again.",
+        details: {},
+      },
+    });
+  }
+
   const url = body.url?.trim() ?? "";
   const platformRaw = body.platform?.trim() ?? "";
   const platform = normalizePlatform(platformRaw);
@@ -112,7 +142,7 @@ export async function POST(request: Request) {
       locale: body.locale,
       error: {
         code: "UNSUPPORTED_PLATFORM",
-        message: "Supported platforms are telegram, twitter, tiktok, instagram",
+        message: "Supported platforms are telegram, twitter, tiktok, instagram, reddit, pinterest, facebook, threads, bluesky, lemon8, bilibili, discord",
         details: { platform: platformRaw },
       },
     });

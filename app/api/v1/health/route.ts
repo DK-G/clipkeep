@@ -1,6 +1,8 @@
-import { evaluateDegraded } from "@/lib/degraded/evaluator";
+﻿import { evaluateDegraded } from "@/lib/degraded/evaluator";
 import { getRequestId } from "@/lib/api/request-id";
 import { success } from "@/lib/api/response";
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const requestId = await getRequestId();
@@ -20,3 +22,4 @@ export async function GET() {
     },
   });
 }
+

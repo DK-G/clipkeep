@@ -26,7 +26,9 @@ export type ApiErrorBody = {
     | "DB_ERROR"
     | "MISSING_PLATFORM"
     | "MISSING_JOB_ID"
-    | "TRACKING_ERROR";
+    | "TRACKING_ERROR"
+    | "TURNSTILE_MISSING"
+    | "TURNSTILE_FAILED";
   message: string;
   details: Record<string, unknown>;
 };
