@@ -1,8 +1,9 @@
-# ClipKeep SEO 100-Page Blueprint (P2-18, revised)
+﻿# ClipKeep SEO 100-Page Blueprint (P2-18, revised)
 
 ## 1. Goal
 - Build a scalable SEO page system focused on Telegram first, then Twitter.
 - Structure: Downloader hub + HowTo + Not Working + FAQ + Locale expansion.
+- Current locale model uses canonical slugs plus query-based locale switching (`?locale=xx`), not locale-prefixed path trees.
 
 ## 2. Allocation (100 pages)
 - Telegram: 40 pages
@@ -17,8 +18,9 @@
 - FAQ pages: `/{platform}-video-downloader-faq{-topic}`
 - Use `twitter` in slug (not `x`) for search demand alignment.
 - Locale:
-  - EN base: `/<slug>`
-  - AR localized: `/ar/<slug>`
+  - Canonical base: `/<slug>`
+  - Localized rendering: `/<slug>?locale={locale}`
+  - Supported locales: `en`, `ja`, `ar`, `es`, `pt`, `fr`, `id`, `hi`, `de`, `tr`
 
 ## 4. Page Inventory (100)
 
@@ -147,4 +149,4 @@
 - FAQ section
 - Internal links (>=2)
 - Extractor CTA above the fold
-- Locale parity (EN/AR)
+- Locale parity for the primary supported locales in production, with at minimum `en`, `ja`, `ar`, `es`, `pt`, `fr`, `id`, `hi`, `de`, `tr` checked for metadata integrity

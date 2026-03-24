@@ -1,4 +1,4 @@
-﻿# Arabic UI Checklist（EN/AR, RTL）
+﻿# Arabic UI Checklist (RTL / Multilingual Site)
 
 ## 目的
 - アラビア語UIの可読性と操作性を本番品質まで引き上げる。
@@ -19,9 +19,10 @@
 - 表示フォントで可読性問題なし。
 
 ## SEO/i18n
-- `hreflang` が `en` / `ar` で正しい。
+- `hreflang` が `ar` を含む全対応 locale と整合している。
 - `canonical` が重複しない。
 - ARページのtitle/descriptionが適切。
+- `?locale=ar` の切替後も JSON-LD / OGP / Twitter card が崩れない。
 
 ## 合格条件
 - 重大な翻訳漏れ0件。
