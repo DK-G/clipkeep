@@ -115,18 +115,29 @@ export default async function TikTokDownloaderPage({ searchParams }: Props) {
             'text': item.a
           }
         }))
+      },
+      {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': menu.downloads,
+            'item': 'https://clipkeep.net/'
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': t.title,
+            'item': `https://clipkeep.net/download-tiktok-video?locale=${locale}`
+          }
+        ]
       }
     ]
   };
 
   return (
     <>
-      <BreadcrumbSchema 
-        items={[
-          { name: menu.downloads, item: '/' },
-          { name: t.title, item: `/download-tiktok-video?locale=${locale}` }
-        ]}
-      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -3,7 +3,6 @@ import { Suspense } from 'react';
 import { normalizeLocale, resultText, menuText } from '@/lib/i18n/ui';
 import { getJob } from '@/lib/extract/store';
 import { ResultClient } from '@/components/result-client';
-import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import type { ExtractionResult } from '@/lib/api/types';
 
 interface Props {
@@ -70,32 +69,52 @@ export default async function ResultPage({ params, searchParams }: Props) {
     warnings: job.warnings || [],
   } : null;
 
-  const videoSchema = initialData?.status === 'completed' ? {
+  const jsonLd = initialData?.status === 'completed' ? {
     '@context': 'https://schema.org',
-    '@type': 'VideoObject',
-    'name': initialData.title || `Video from ${initialData.platform}`,
-    'description': initialData.title || 'Viral video extracted via ClipKeep.',
-    'thumbnailUrl': initialData.thumbnail_url,
-    'uploadDate': job?.createdAt || new Date().toISOString(),
-    'contentUrl': `https://clipkeep.net/result/${jobId}`,
-    'embedUrl': `https://clipkeep.net/result/${jobId}`,
+    '@graph': [
+      {
+        '@type': 'VideoObject',
+        'name': initialData.title || `Video from ${initialData.platform}`,
+        'description': initialData.title || 'Viral video extracted via ClipKeep.',
+        'thumbnailUrl': initialData.thumbnail_url,
+        'uploadDate': job?.createdAt || new Date().toISOString(),
+        'contentUrl': `https://clipkeep.net/result/${jobId}`,
+        'embedUrl': `https://clipkeep.net/result/${jobId}`,
+      },
+      {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': menu.downloads,
+            'item': 'https://clipkeep.net/'
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': initialData?.platform ? `${initialData.platform.toUpperCase()} Downloader` : 'Downloader',
+            'item': `https://clipkeep.net/download-${initialData?.platform || 'tiktok'}-video?locale=${locale}`
+          },
+          {
+            '@type': 'ListItem',
+            'position': 3,
+            'name': initialData?.title || 'Result',
+            'item': `https://clipkeep.net/result/${jobId}?locale=${locale}`
+          }
+        ]
+      }
+    ]
   } : null;
 
-  const breadcrumbs = [
-    { name: menu.downloads, item: '/' },
-    { name: initialData?.platform ? `${initialData.platform.toUpperCase()} Downloader` : 'Downloader', item: `/download-${initialData?.platform || 'tiktok'}-video?locale=${locale}` },
-    { name: initialData?.title || 'Result', item: `/result/${jobId}?locale=${locale}` }
-  ];
-
-  return (
-    <>
-      <BreadcrumbSchema items={breadcrumbs} />
-      {videoSchema && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(videoSchema) }}
-        />
-      )}
+    return (
+      <>
+        {jsonLd && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+        )}
       <Suspense fallback={<div className="min-h-screen flex items-center justify-center p-12 text-slate-600">{t.loading}...</div>}>
         <ResultClient jobId={jobId} locale={locale} initialData={initialData} />
       </Suspense>

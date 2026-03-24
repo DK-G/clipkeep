@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { SnsDownloaderClient } from '@/components/downloaders/sns-downloader-client';
 import { bilibiliText, normalizeLocale, menuText } from '@/lib/i18n/ui';
-import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -115,18 +114,29 @@ export default async function Page({ searchParams }: Props) {
             'text': item.a
           }
         }))
+      },
+      {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': menu.downloads,
+            'item': 'https://clipkeep.net/'
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': t.title,
+            'item': `https://clipkeep.net/download-bilibili-video?locale=${locale}`
+          }
+        ]
       }
     ]
   };
 
   return (
     <>
-      <BreadcrumbSchema 
-        items={[
-          { name: menu.downloads, item: '/' },
-          { name: t.title, item: `/download-bilibili-video?locale=${locale}` }
-        ]}
-      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

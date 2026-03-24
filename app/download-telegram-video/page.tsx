@@ -1,9 +1,38 @@
 
-import { normalizeLocale } from '@/lib/i18n/ui';
+import { normalizeLocale, menuText } from '@/lib/i18n/ui';
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ locale?: string }> }) {
   const sp = await searchParams;
   const locale = normalizeLocale(sp.locale);
+  const menu = menuText[locale];
+  
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        'name': 'Under Maintenance | ClipKeep',
+        'url': `https://clipkeep.net/download-telegram-video?locale=${locale}`
+      },
+      {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': menu.downloads,
+            'item': 'https://clipkeep.net/'
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': 'Telegram',
+            'item': `https://clipkeep.net/download-telegram-video?locale=${locale}`
+          }
+        ]
+      }
+    ]
+  };
   
   const messages = {
     en: "This service is currently under maintenance or temporarily disabled.",
@@ -12,7 +41,12 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
   const msg = messages[locale as keyof typeof messages] || messages.en;
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center p-6">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="min-h-[60vh] flex items-center justify-center p-6">
       <div className="max-w-md w-full p-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl text-center">
         <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
           <span className="text-2xl">⚠️</span>
@@ -24,5 +58,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ l
         </a>
       </div>
     </div>
+    </>
   );
 }
