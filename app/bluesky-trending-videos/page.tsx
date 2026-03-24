@@ -1,4 +1,4 @@
-import { normalizeLocale, homeText } from '@/lib/i18n/ui';
+﻿import { normalizeLocale, homeText } from '@/lib/i18n/ui';
 import { getGalleryMetadata } from '@/lib/metadata-helper';
 import { GalleryPageContent } from '@/components/gallery-page-content';
 import { Metadata } from 'next';
@@ -25,3 +25,4 @@ export default async function Page({ searchParams }: Props) {
     </Suspense>
   );
 }
+

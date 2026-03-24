@@ -1,7 +1,8 @@
-import { Suspense } from 'react';
+﻿import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { SnsDownloaderClient } from '@/components/downloaders/sns-downloader-client';
 import { discordText, normalizeLocale, menuText } from '@/lib/i18n/ui';
+import { SITE_URL } from '@/lib/site-url';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -27,7 +28,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = discordText[locale];
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = '/download-discord-video';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
@@ -70,7 +71,7 @@ export default async function Page({ searchParams }: Props) {
   const t = discordText[locale];
   const menu = menuText[locale];
 
-  const websiteUrl = `https://clipkeep.net/download-discord-video?locale=${locale}`;
+  const websiteUrl = `${SITE_URL}/download-discord-video?locale=${locale}`;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -122,13 +123,13 @@ export default async function Page({ searchParams }: Props) {
             '@type': 'ListItem',
             'position': 1,
             'name': menu.downloads,
-            'item': 'https://clipkeep.net/'
+            'item': `${SITE_URL}/`
           },
           {
             '@type': 'ListItem',
             'position': 2,
             'name': t.title,
-            'item': `https://clipkeep.net/download-discord-video?locale=${locale}`
+            'item': `${SITE_URL}/download-discord-video?locale=${locale}`
           }
         ]
       }
@@ -147,3 +148,6 @@ export default async function Page({ searchParams }: Props) {
     </>
   );
 }
+
+
+
