@@ -1,8 +1,8 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Platform } from '@/lib/extract/types';
+import type { Platform as ExtractPlatform } from '@/lib/extract/types';
 import { Locale, galleryPages, menuText } from '@/lib/i18n/ui';
 import { GallerySection, GalleryItem } from '@/components/gallery-section';
 import { SEOContent } from '@/components/seo-content';
@@ -10,8 +10,10 @@ import { VideoSchema } from '@/components/video-schema';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import { SITE_URL } from '@/lib/site-url';
 
+type GalleryPlatform = ExtractPlatform | 'instagram';
+
 interface GalleryPageContentProps {
-  platform: Platform;
+  platform: GalleryPlatform;
   locale: Locale;
   type: 'trending' | 'latest';
 }
@@ -23,7 +25,7 @@ const ctaText: Record<
     nextSteps: string;
     tryDownloader: string;
     downloaderBody: string;
-    openDownloader: (platform: Platform) => string;
+    openDownloader: (platform: GalleryPlatform) => string;
     exploreMore: string;
     exploreBody: string;
     openRelated: (type: 'trending' | 'latest', rankings: string, latest: string) => string;
@@ -131,13 +133,14 @@ const ctaText: Record<
   },
 };
 
-function downloaderPath(platform: Platform): string {
+function downloaderPath(platform: GalleryPlatform): string {
   if (platform === 'twitter') return '/download-twitter-video';
   if (platform === 'telegram') return '/download-telegram-video';
+  if (platform === 'instagram') return '/download-instagram-video';
   return '/download-tiktok-video';
 }
 
-function oppositeFeed(type: 'trending' | 'latest', platform: Platform): string {
+function oppositeFeed(type: 'trending' | 'latest', platform: GalleryPlatform): string {
   const base = `/${platform}`;
   return type === 'trending' ? `${base}-latest-videos` : `${base}-trending-videos`;
 }

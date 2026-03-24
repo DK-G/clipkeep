@@ -1,4 +1,4 @@
-﻿import { evaluateDegraded } from "@/lib/degraded/evaluator";
+import { evaluateDegraded } from "@/lib/degraded/evaluator";
 import { recordExtractAttempt } from "@/lib/degraded/state";
 import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
@@ -18,7 +18,7 @@ type PrepareBody = {
 function normalizePlatform(raw: string): Platform | null {
   const value = raw.toLowerCase();
   if (value === "x") return "twitter";
-  const validPlatforms = ["telegram", "twitter", "tiktok", "instagram", "reddit", "pinterest", "facebook", "threads", "bluesky", "lemon8", "bilibili", "discord"];
+  const validPlatforms = ["telegram", "twitter", "tiktok", "reddit", "pinterest", "facebook", "threads", "bluesky", "lemon8", "bilibili", "discord"];
   if (validPlatforms.includes(value)) return value as Platform;
   return null;
 }

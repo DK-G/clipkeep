@@ -1,7 +1,6 @@
-﻿import type { ExtractJob, Platform, ExtractionMedia } from "./types";
+import type { ExtractJob, Platform, ExtractionMedia } from "./types";
 import { extractTelegram } from "./telegram";
 import { extractTwitter } from "./twitter";
-import { extractInstagram } from "./instagram";
 import { extractTikTok } from "./tiktok";
 import { extractReddit } from "./reddit";
 import { extractPinterest } from "./pinterest";
@@ -216,10 +215,7 @@ export async function createJob(platform: Platform, sourceUrl: string, locale: s
             if (platform === "telegram") {
               results = await extractTelegram(sourceUrl) as ExtractionMedia[];
             } else if (platform === "twitter") {
-              results = await extractTwitter(sourceUrl) as ExtractionMedia[];
-            } else if (platform === "instagram") {
-              results = await extractInstagram(sourceUrl) as ExtractionMedia[];
-            } else if (platform === "tiktok") {
+              results = await extractTwitter(sourceUrl) as ExtractionMedia[];            } else if (platform === "tiktok") {
               results = await extractTikTok(sourceUrl) as ExtractionMedia[];
             } else if (platform === "reddit") {
               results = await extractReddit(sourceUrl);

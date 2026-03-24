@@ -1,15 +1,15 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import type { Platform } from '@/lib/extract/types';
+import type { Platform as ExtractPlatform } from '@/lib/extract/types';
 import { Locale } from '@/lib/i18n/ui';
 import { trackEvent } from '@/lib/analytics/gtag';
 import React from 'react';
 import { TiktokIcon, TwitterXIcon, RedditIcon, FacebookIcon, TelegramIcon, PinterestIcon, ThreadsIcon, BlueskyIcon, BilibiliIcon, DiscordIcon, Lemon8Icon } from '@/components/platform-icons';
 
-const PlatformIconMap: Partial<Record<Platform, React.FC<{ className?: string }>>> = {
+const PlatformIconMap: Partial<Record<ExtractPlatform, React.FC<{ className?: string }>>> = {
   tiktok: TiktokIcon,
   twitter: TwitterXIcon,
   reddit: RedditIcon,
@@ -25,7 +25,7 @@ const PlatformIconMap: Partial<Record<Platform, React.FC<{ className?: string }>
 
 export interface GalleryItem {
   id: string;
-  platform: Platform;
+  platform: ExtractPlatform;
   source_url: string;
   thumbnail_url: string;
   access_count: number;
@@ -33,8 +33,10 @@ export interface GalleryItem {
   duration_sec?: number;
 }
 
+type GalleryPlatform = ExtractPlatform | 'instagram';
+
 interface GallerySectionProps {
-  platform: Platform | 'all';
+  platform: GalleryPlatform | 'all';
   locale: Locale;
   title: string;
   id?: string;
@@ -53,7 +55,7 @@ function formatDuration(sec?: number): string {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-function getPlatformBadgeClass(platform: Platform): string {
+function getPlatformBadgeClass(platform: ExtractPlatform): string {
   if (platform === 'tiktok') return 'bg-black border border-white/10';
   if (platform === 'twitter') return 'bg-black';
   if (platform === 'reddit') return 'bg-orange-600';
