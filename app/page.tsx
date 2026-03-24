@@ -1,10 +1,11 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { normalizeLocale } from '@/lib/i18n/ui';
 import { DiscoverySection } from '@/components/discovery-section';
 import { GallerySection } from '@/components/gallery-section';
 import { ExtractorForm } from '@/components/extractor-form';
 import { TiktokIcon, TwitterXIcon, RedditIcon, FacebookIcon, TelegramIcon, PinterestIcon, ThreadsIcon, BlueskyIcon, BilibiliIcon, DiscordIcon, Lemon8Icon } from '@/components/platform-icons';
+import { SITE_URL } from '@/lib/site-url';
 
 type HomeProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -13,7 +14,7 @@ type HomeProps = {
 export async function generateMetadata({ searchParams }: HomeProps): Promise<Metadata> {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const url = `${base}/${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
   const meta: Record<string, { title: string; description: string }> = {
@@ -335,7 +336,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = translations[locale] || translations.en;
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const url = `${base}/${locale !== 'en' ? `?locale=${locale}` : ''}`;
   const homeJsonLd = {
     '@context': 'https://schema.org',
@@ -494,3 +495,5 @@ export default async function HomePage({ searchParams }: HomeProps) {
     </main>
   );
 }
+
+

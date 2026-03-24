@@ -1,5 +1,9 @@
 ﻿param(
   [string]$DatabaseName = "clipkeep-db",
+  [string]$ConfigPath = ".\wrangler.production.toml",
+  [string]$ExpectedWorkerName = "clipkeep-web",
+  [string]$WebBaseUrl = "https://clipkeep.net",
+  [string]$ApiBaseUrl = "https://clipkeep.net/api/v1",
   [switch]$SkipD1,
   [switch]$VerboseLog
 )
@@ -13,16 +17,34 @@ function Run-Step {
   )
 
   Write-Host "==> $Name"
-  & $Action
-  if ($LASTEXITCODE -ne 0) {
+  try {
+    & $Action
+    Write-Host "PASS: $Name"
+  } catch {
     Write-Host "FAIL: $Name"
-    exit $LASTEXITCODE
+    Write-Host $_.Exception.Message
+    exit 1
   }
-  Write-Host "PASS: $Name"
 }
 
-Run-Step -Name "Production smoke check" -Action {
-  powershell -ExecutionPolicy Bypass -File .\scripts\prod_release_check.ps1
+Run-Step -Name "Wrangler config target check" -Action {
+  if (-not (Test-Path -LiteralPath $ConfigPath)) {
+    throw "Missing wrangler config: $ConfigPath"
+  }
+
+  $content = Get-Content -LiteralPath $ConfigPath -Raw
+  if ($content -notmatch 'name\s*=\s*"([^"]+)"') {
+    throw "Unable to read worker name from $ConfigPath"
+  }
+
+  $workerName = $Matches[1]
+  if ($workerName -ne $ExpectedWorkerName) {
+    throw "Worker name mismatch. expected=$ExpectedWorkerName actual=$workerName"
+  }
+}
+
+Run-Step -Name "Release smoke check" -Action {
+  powershell -ExecutionPolicy Bypass -File .\scripts\prod_release_check.ps1 -WebBaseUrl $WebBaseUrl -ApiBaseUrl $ApiBaseUrl
 }
 
 if (-not $SkipD1) {
@@ -33,14 +55,11 @@ if (-not $SkipD1) {
     }
 
     if ([string]::IsNullOrWhiteSpace($output)) {
-      Write-Host "Unable to read migration status output."
-      exit 1
+      throw "Unable to read migration status output."
     }
 
     if ($output -match "(?i)\bpending\b|\bnot applied\b|\bunapplied\b") {
-      Write-Host "Found unapplied migrations in remote D1."
-      Write-Host $output
-      exit 1
+      throw "Found unapplied migrations in remote D1.`n$output"
     }
   }
 }

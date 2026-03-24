@@ -1,13 +1,14 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Script from 'next/script';
 import { HeaderShell } from '@/components/header-shell';
 import { Footer } from '@/components/footer';
 import { LocaleUpdater } from '@/components/locale-updater';
+import { SITE_URL } from '@/lib/site-url';
 
 import './globals.css';
  
-const siteUrl = 'https://clipkeep.net';
+const siteUrl = SITE_URL;
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
  
 export const metadata: Metadata = {
@@ -107,16 +108,13 @@ export default function RootLayout({
         {children}
         <Footer />
 
-        {/* Monetag: In-Page Push */}
         <Script id="monetag-in-page-push" strategy="afterInteractive">
           {`(function(s){s.dataset.zone='10760541',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
         </Script>
-        {/* Monetag: Vignette */}
         <Script id="monetag-vignette" strategy="afterInteractive">
           {`(function(s){s.dataset.zone='10760542',s.src='https://izcle.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
         </Script>
 
-        {/* Cloudflare Turnstile */}
         <Script 
           src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" 
           strategy="afterInteractive"
@@ -125,3 +123,4 @@ export default function RootLayout({
     </html>
   );
 }
+

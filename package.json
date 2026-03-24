@@ -1,41 +1,48 @@
-{
-    "name": "clipkeep",
-    "private": true,
-    "version": "0.1.0",
-    "scripts": {
-        "dev": "next dev",
-        "build": "node --max-old-space-size=4096 ./node_modules/next/dist/bin/next build",
-        "cf:build": "opennextjs-cloudflare build",
-        "start": "next start",
-        "lint": "next lint",
-        "typecheck": "tsc --noEmit",
-        "d1:migrate:local": "wrangler d1 migrations apply clipkeep-db --local",
-        "d1:migrate:remote": "wrangler d1 migrations apply clipkeep-db --remote",
-        "cf:deploy": "npm run cf:build && wrangler deploy",
-        "deploy": "npm run cf:deploy",
-        "build:verbose": "next build",
-        "check:prod": "powershell -ExecutionPolicy Bypass -File .\\scripts\\prod_release_check.ps1",
-        "check:release": "powershell -ExecutionPolicy Bypass -File .\\scripts\\release_gate.ps1"
-    },
-    "dependencies": {
-        "@cloudflare/puppeteer": "^1.0.6",
-        "next": "15.2.9",
-        "react": "19.0.0",
-        "react-dom": "19.0.0"
-    },
-    "devDependencies": {
-        "@cloudflare/workers-types": "^4.20260313.1",
-        "@opennextjs/cloudflare": "^1.17.1",
-        "@tailwindcss/postcss": "^4.2.1",
-        "@types/node": "22.10.1",
-        "@types/react": "19.0.2",
-        "@types/react-dom": "19.0.2",
-        "autoprefixer": "^10.4.27",
-        "eslint": "9.19.0",
-        "eslint-config-next": "15.2.9",
-        "postcss": "^8.5.8",
-        "tailwindcss": "^4.2.1",
-        "typescript": "5.7.2",
-        "wrangler": "4.34.0"
-    }
+﻿{
+    "name":  "clipkeep",
+    "private":  true,
+    "version":  "0.1.0",
+    "scripts":  {
+                    "dev":  "next dev",
+                    "build":  "node --max-old-space-size=4096 ./node_modules/next/dist/bin/next build",
+                    "cf:build":  "opennextjs-cloudflare build",
+                    "start":  "next start",
+                    "lint":  "next lint",
+                    "typecheck":  "tsc --noEmit",
+                    "d1:migrate:local":  "wrangler d1 migrations apply clipkeep-db --local",
+                    "d1:migrate:remote":  "wrangler d1 migrations apply clipkeep-db --remote",
+                    "cf:deploy":  "npm run cf:build \u0026\u0026 wrangler deploy",
+                    "deploy":  "npm run deploy:prod",
+                    "build:verbose":  "next build",
+                    "check:prod":  "powershell -ExecutionPolicy Bypass -File .\\scripts\\prod_release_check.ps1",
+                    "check:release":  "powershell -ExecutionPolicy Bypass -File .\\scripts\\release_gate.ps1",
+                    "cf:deploy:prod":  "npm run cf:build \u0026\u0026 wrangler deploy -c wrangler.production.toml",
+                    "cf:deploy:test":  "npm run cf:build \u0026\u0026 wrangler deploy -c wrangler.test.toml",
+                    "deploy:prod":  "npm run cf:deploy:prod",
+                    "deploy:test":  "npm run cf:deploy:test",
+                    "check:test":  "powershell -ExecutionPolicy Bypass -File .\\\\scripts\\\\prod_release_check.ps1 -WebBaseUrl https://clipkeep-web-test.liminality-3110.workers.dev -ApiBaseUrl https://clipkeep-web-test.liminality-3110.workers.dev/api/v1",
+                    "check:release:prod":  "powershell -ExecutionPolicy Bypass -File .\\\\scripts\\\\release_gate.ps1 -ConfigPath .\\\\wrangler.production.toml -ExpectedWorkerName clipkeep-web -WebBaseUrl https://clipkeep.net -ApiBaseUrl https://clipkeep.net/api/v1",
+                    "check:release:test":  "powershell -ExecutionPolicy Bypass -File .\\\\scripts\\\\release_gate.ps1 -ConfigPath .\\\\wrangler.test.toml -ExpectedWorkerName clipkeep-web-test -WebBaseUrl https://clipkeep-web-test.liminality-3110.workers.dev -ApiBaseUrl https://clipkeep-web-test.liminality-3110.workers.dev/api/v1 -SkipD1"
+                },
+    "dependencies":  {
+                         "@cloudflare/puppeteer":  "^1.0.6",
+                         "next":  "15.2.9",
+                         "react":  "19.0.0",
+                         "react-dom":  "19.0.0"
+                     },
+    "devDependencies":  {
+                            "@cloudflare/workers-types":  "^4.20260313.1",
+                            "@opennextjs/cloudflare":  "^1.17.1",
+                            "@tailwindcss/postcss":  "^4.2.1",
+                            "@types/node":  "22.10.1",
+                            "@types/react":  "19.0.2",
+                            "@types/react-dom":  "19.0.2",
+                            "autoprefixer":  "^10.4.27",
+                            "eslint":  "9.19.0",
+                            "eslint-config-next":  "15.2.9",
+                            "postcss":  "^8.5.8",
+                            "tailwindcss":  "^4.2.1",
+                            "typescript":  "5.7.2",
+                            "wrangler":  "4.34.0"
+                        }
 }

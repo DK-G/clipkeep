@@ -1,4 +1,5 @@
-import { GalleryItem } from './gallery-section';
+﻿import { GalleryItem } from './gallery-section';
+import { SITE_URL } from '@/lib/site-url';
 
 interface VideoSchemaProps {
   items: GalleryItem[];
@@ -10,19 +11,19 @@ export function VideoSchema({ items }: VideoSchemaProps) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    'itemListElement': items.map((item, index) => ({
+    itemListElement: items.map((item, index) => ({
       '@type': 'ListItem',
-      'position': index + 1,
-      'item': {
+      position: index + 1,
+      item: {
         '@type': 'VideoObject',
-        'name': `Video ${item.id} from ${new URL(item.source_url).hostname}`,
-        'description': `Viral video extracted via ClipKeep.`,
-        'thumbnailUrl': item.thumbnail_url,
-        'uploadDate': item.created_at || '2024-03-12T00:00:00Z',
-        'contentUrl': `https://clipkeep.net/result/${item.id}`,
-        'embedUrl': `https://clipkeep.net/result/${item.id}`,
-      }
-    }))
+        name: `Video ${item.id} from ${new URL(item.source_url).hostname}`,
+        description: 'Viral video extracted via ClipKeep.',
+        thumbnailUrl: item.thumbnail_url,
+        uploadDate: item.created_at || '2024-03-12T00:00:00Z',
+        contentUrl: `${SITE_URL}/result/${item.id}`,
+        embedUrl: `${SITE_URL}/result/${item.id}`,
+      },
+    })),
   };
 
   return (

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { GallerySection, GalleryItem } from '@/components/gallery-section';
 import { SEOContent } from '@/components/seo-content';
 import { VideoSchema } from '@/components/video-schema';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
+import { SITE_URL } from '@/lib/site-url';
 
 interface GalleryPageContentProps {
   platform: Platform;
@@ -165,7 +166,7 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
 
   const toolHref = `${downloaderPath(platform)}?locale=${locale}`;
   const feedHref = `${oppositeFeed(type, platform)}?locale=${locale}`;
-  const baseUrl = 'https://clipkeep.net';
+  const baseUrl = SITE_URL;
   const pagePath = `/${platform}-${type}-videos${locale === 'en' ? '' : `?locale=${locale}`}`;
   const collectionJsonLd = {
     '@context': 'https://schema.org',
@@ -234,3 +235,5 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
     </main>
   );
 }
+
+

@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Locale, menuText } from '@/lib/i18n/ui';
+import { SITE_URL } from '@/lib/site-url';
 
 interface SideMenuProps {
   isOpen: boolean;
@@ -34,7 +35,7 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale }: SideMenuProps)
 
   const isActive = (href: string) => {
     try {
-      const url = new URL(href, 'https://clipkeep.net');
+      const url = new URL(href, SITE_URL);
       return pathname === url.pathname;
     } catch {
       return false;
@@ -260,3 +261,5 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale }: SideMenuProps)
     </>
   );
 }
+
+

@@ -1,9 +1,10 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { normalizeLocale, resultText, menuText } from '@/lib/i18n/ui';
 import { getJob } from '@/lib/extract/store';
 import { ResultClient } from '@/components/result-client';
 import type { ExtractionResult } from '@/lib/api/types';
+import { SITE_URL } from '@/lib/site-url';
 
 interface Props {
   params: Promise<{ jobId: string }>;
@@ -23,7 +24,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
   const title = job.media[0]?.title || `Video from ${job.platform}`;
   const description = `Download this ${job.platform} video extracted via ClipKeep. High quality links available.`;
-  const thumb = job.media[0]?.thumbUrl || 'https://clipkeep.net/icon.png';
+  const thumb = job.media[0]?.thumbUrl || `${SITE_URL}/icon.png`;
 
   return {
     title: `${title} | ClipKeep`,
@@ -78,8 +79,8 @@ export default async function ResultPage({ params, searchParams }: Props) {
         'description': initialData.title || 'Viral video extracted via ClipKeep.',
         'thumbnailUrl': initialData.thumbnail_url,
         'uploadDate': job?.createdAt || new Date().toISOString(),
-        'contentUrl': `https://clipkeep.net/result/${jobId}`,
-        'embedUrl': `https://clipkeep.net/result/${jobId}`,
+        'contentUrl': `${SITE_URL}/result/${jobId}`,
+        'embedUrl': `${SITE_URL}/result/${jobId}`,
       },
       {
         '@type': 'BreadcrumbList',
@@ -88,19 +89,19 @@ export default async function ResultPage({ params, searchParams }: Props) {
             '@type': 'ListItem',
             'position': 1,
             'name': menu.downloads,
-            'item': 'https://clipkeep.net/'
+            'item': `${SITE_URL}/`
           },
           {
             '@type': 'ListItem',
             'position': 2,
             'name': initialData?.platform ? `${initialData.platform.toUpperCase()} Downloader` : 'Downloader',
-            'item': `https://clipkeep.net/download-${initialData?.platform || 'tiktok'}-video?locale=${locale}`
+            'item': `${SITE_URL}/download-${initialData?.platform || 'tiktok'}-video?locale=${locale}`
           },
           {
             '@type': 'ListItem',
             'position': 3,
             'name': initialData?.title || 'Result',
-            'item': `https://clipkeep.net/result/${jobId}?locale=${locale}`
+            'item': `${SITE_URL}/result/${jobId}?locale=${locale}`
           }
         ]
       }
@@ -121,3 +122,6 @@ export default async function ResultPage({ params, searchParams }: Props) {
     </>
   );
 }
+
+
+

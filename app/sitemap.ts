@@ -1,8 +1,9 @@
-import { keywordArticles } from '@/lib/blog/keyword-articles';
+﻿import { keywordArticles } from '@/lib/blog/keyword-articles';
 import type { MetadataRoute } from 'next';
+import { SITE_URL } from '@/lib/site-url';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const now = new Date();
   const allLocales = ['', '?locale=ja', '?locale=ar', '?locale=es', '?locale=pt', '?locale=fr', '?locale=id', '?locale=hi', '?locale=de', '?locale=tr'];
   const solutionLocales = ['', '?locale=ar', '?locale=ja'];
@@ -16,9 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/download-telegram-video', priority: 0.9, changeFrequency: 'daily' as const, locales: allLocales },
     { path: '/download-twitter-video', priority: 0.9, changeFrequency: 'daily' as const, locales: allLocales },
     { path: '/download-tiktok-video', priority: 0.8, changeFrequency: 'weekly' as const, locales: allLocales },
-    { path: '/download-instagram-video', priority: 0.8, changeFrequency: 'weekly' as const, locales: allLocales },
-    { path: '/blog', priority: 0.8, changeFrequency: 'daily' as const, locales: ['', '?locale=ja', '?locale=es', '?locale=ar'] },
-
+    { path: '/blog', priority: 0.8, changeFrequency: 'daily' as const, locales: allLocales },
     { path: '/blog/guide-to-media-archiving', priority: 0.9, changeFrequency: 'monthly' as const, locales: allLocales },
     { path: '/legal/terms', priority: 0.5, changeFrequency: 'monthly' as const, locales: allLocales },
     { path: '/legal/privacy', priority: 0.5, changeFrequency: 'monthly' as const, locales: allLocales },
@@ -27,16 +26,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/telegram-trending-videos', priority: 0.7, changeFrequency: 'daily' as const, locales: allLocales },
     { path: '/twitter-trending-videos', priority: 0.7, changeFrequency: 'daily' as const, locales: allLocales },
     { path: '/tiktok-trending-videos', priority: 0.7, changeFrequency: 'daily' as const, locales: allLocales },
-    { path: '/instagram-trending-videos', priority: 0.7, changeFrequency: 'daily' as const, locales: allLocales },
   ];
-
 
   const blogKeywordRoutes = keywordArticles.map((a) => ({
     path: `/blog/${a.slug}`,
     priority: 0.7,
     changeFrequency: 'weekly' as const,
-    locales: ['', '?locale=es', '?locale=ar'],
+    locales: allLocales,
   }));
+
   const sitemapEntries: MetadataRoute.Sitemap = [];
 
   for (const route of [...routes, ...blogKeywordRoutes]) {
@@ -52,3 +50,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return sitemapEntries;
 }
+
