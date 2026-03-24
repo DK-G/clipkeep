@@ -1,5 +1,13 @@
 # Change Log（開発概要 + diff.mdスナップショット）
 
+## 2026-03-25（CL-0064） 広告配信ロジックのリファクタリングと Cloudflare 対応
+
+### 概要
+- **広告読み込みの標準化**: Monetag のインライン関数による挿入を廃止し、Next.js の `next/script` コンポーネントに統一。ブラウザの追跡防止機能による誤ブロックを抑制。
+- **Cloudflare Rocket Loader 対策**: すべての広告および解析スクリプトに `data-cfasync="false"` を追加し、Cloudflare 経由での配信安定性を向上。
+- **AdSense の最適化**: 通常の `<script>` タグを `next/script` (`afterInteractive`) に移行し、ハイドレーションの安定性を確保。
+- **解析スクリプトの強化**: Google Analytics の初期化コードにも `data-cfasync="false"` を適用。
+
 ## 2026-03-24（CL-0063） Rich Results (Schema.org) の強化と結果ページの SEO 改善
 
 ### 概要

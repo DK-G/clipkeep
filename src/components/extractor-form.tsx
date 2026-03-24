@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { FormEvent, useMemo, useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -93,12 +93,23 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
 
+  const [localStatus, setLocalStatus] = useState<string | null>(null);
+
   const l = homeText[locale];
+
+  const updateStatus = (message: string, helpSlug: string | null = null, retryAfterSec: number | undefined = undefined) => {
+    if (onStatusChange) {
+      onStatusChange(message, helpSlug, retryAfterSec);
+    } else {
+      setLocalStatus(message);
+    }
+  };
 
   const activePlatform = detectedPlatform || initialPlatform;
 
   const handleUrlChange = (url: string) => {
     setSourceUrl(url);
+    if (localStatus) setLocalStatus(null);
     if (!url) {
       setDetectedPlatform(null);
       return;
@@ -118,9 +129,15 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
       if (window.turnstile && turnstileContainerRef.current && !widgetIdRef.current) {
         widgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
           sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA',
-          callback: (token: string) => setTurnstileToken(token),
+          callback: (token: string) => {
+            setTurnstileToken(token);
+            setLocalStatus(null);
+          },
           'expired-callback': () => setTurnstileToken(null),
-          'error-callback': () => setTurnstileToken(null),
+          'error-callback': () => {
+            setTurnstileToken(null);
+            updateStatus('Turnstile Error. Please try again.');
+          },
           theme: 'auto',
           size: 'normal',
         });
@@ -145,7 +162,8 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitting(true);
-    if (onStatusChange) onStatusChange(l.creatingJob, null, undefined);
+    setLocalStatus(null);
+    updateStatus(l.creatingJob);
 
     trackEvent('extract_submit', { platform: activePlatform, locale });
 
@@ -164,25 +182,28 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
       const payload = (await res.json()) as PrepareSuccess | ApiError;
 
       if (!res.ok || !('data' in payload)) {
-        if ('error' in payload && payload.error.code === 'SERVICE_DEGRADED') {
-          if (onStatusChange) {
-            onStatusChange(
+        if ('error' in payload) {
+          if (payload.error.code === 'SERVICE_DEGRADED') {
+            updateStatus(
               l.degradedMessage,
               payload.error.details?.helpPageSlug ?? 'extractor-temporary-limited',
               payload.error.details?.retryAfterSec
             );
+            trackEvent('extract_submit_degraded', { platform: activePlatform, locale });
+            return;
           }
-          trackEvent('extract_submit_degraded', { platform: activePlatform, locale });
+          
+          updateStatus(payload.error.message || l.invalidRequest);
           return;
         }
 
-        if (onStatusChange) onStatusChange(l.invalidRequest, null, undefined);
+        updateStatus(l.invalidRequest);
         return;
       }
 
       router.push(`/result/${payload.data.jobId}?locale=${locale}`);
     } catch {
-      if (onStatusChange) onStatusChange(l.networkError, null, undefined);
+      updateStatus(l.networkError);
     } finally {
       setSubmitting(false);
       // Reset Turnstile after each attempt
@@ -248,6 +269,15 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
           )}
         </button>
       </div>
+
+      {localStatus && (
+        <div className="mt-4 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+          <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          {localStatus}
+        </div>
+      )}
 
       <div className="mt-4 flex justify-center">
         <div ref={turnstileContainerRef} />
