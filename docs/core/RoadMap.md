@@ -2,7 +2,7 @@
 
 ## 現在地
 - 現在フェーズ: Phase 2（Tool MVP 実装）
-- 直近ゴール: Telegram / X の安定運用と Solution導線の改善。
+- 直近ゴール: 抽出安定化、deploy安全化、Solution導線の改善。
 
 ## Phase 1: 基本設計とMVP仕様確定
 - [x] MVP境界の確定（Telegram/X先行、TikTok後回し）
@@ -18,11 +18,14 @@
 - [x] URL検証、候補取得、保存導線のUI実装
 - [x] 失敗時エラー導線（原因別）実装
 - [x] 手動テストケース整備（正常/異常）
+- [x] test / prod deploy profile 分離
+- [x] release gate への Worker名チェック追加
+- [x] metadata / JSON-LD の基準URLを環境変数化
 
 ## Phase 3: AISO Solution Layer
 - [x] 問題解決ページテンプレート実装（How-to / Not working）
 - [x] 内部リンク構造とSEO見出し設計の反映
-- [x] 多言語運用（EN/AR）と更新運用フロー定義
+- [x] 多言語運用（10言語）と更新運用フロー定義
 - [ ] CTA導線のAB観測ポイント定義
 - [x] SEOページ設計を 100ページ構成まで拡張
 
@@ -39,7 +42,8 @@
 - [ ] TikTok degraded時のfallback導線検証 [S]
 
 ### 優先度P3（仕上げ）
-- [ ] TikTok向け API統合テストケース追加 [M]`r`n- [x] RateLimit DO Worker雛形作成（Phase4前に本番適用可能） [M]
+- [ ] TikTok向け API統合テストケース追加 [M]
+- [x] RateLimit DO Worker雛形作成（Phase4前に本番適用可能） [M]
 - [ ] TikTok向け E2Eケース追加 [M]
 - [ ] TikTok SEO波次（20ページ）初版 [M]
 
@@ -54,9 +58,14 @@
 - EN/ARの主要TikTokクエリに対する解決ページが接続される。
 
 ## MVP の完了条件
-- EN/AR で Telegram/X 抽出導線が稼働する。
+- 主要ロケールで Telegram/X 抽出導線が稼働する。
 - 主要問題ページが抽出導線と接続される。
 - degraded モードの動作基準が定義・検証済みである。
+- test / prod のデプロイ事故を release gate で防げる。
+
+## Current Constraints
+- Instagram は廃止済みで、maintenance placeholder + noindex のみ維持する。
+- 本番反映は `deploy:prod`、検証は `deploy:test` を使う。
 
 ## Epic Overview
 
