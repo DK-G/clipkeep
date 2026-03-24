@@ -18,11 +18,11 @@ const sectionLabels: Record<Locale, { realtime: string; about: string }> = {
   ja: { realtime: 'リアルタイム', about: 'について' },
   es: { realtime: 'En tiempo real', about: 'Acerca de' },
   pt: { realtime: 'Em tempo real', about: 'Sobre' },
-  fr: { realtime: 'En temps reel', about: 'A propos' },
+  fr: { realtime: 'En temps réel', about: 'À propos' },
   id: { realtime: 'Waktu nyata', about: 'Tentang' },
   hi: { realtime: 'रीयल टाइम', about: 'जानकारी' },
   de: { realtime: 'Echtzeit', about: 'Info' },
-  tr: { realtime: 'Gercek zamanli', about: 'Hakkinda' },
+  tr: { realtime: 'Gerçek zamanlı', about: 'Hakkında' },
 };
 
 export function SnsDownloaderClient({ platform, locale, dict: t }: SnsDownloaderClientProps) {

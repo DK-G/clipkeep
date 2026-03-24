@@ -164,9 +164,32 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
 
   const toolHref = `${downloaderPath(platform)}?locale=${locale}`;
   const feedHref = `${oppositeFeed(type, platform)}?locale=${locale}`;
+  const baseUrl = 'https://clipkeep.net';
+  const pagePath = `/${platform}-${type}-videos${locale === 'en' ? '' : `?locale=${locale}`}`;
+  const collectionJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        name: dict.title,
+        description: dict.description,
+        url: `${baseUrl}${pagePath}`,
+      },
+      {
+        '@type': 'ItemList',
+        name: dict.title,
+        itemListElement: items.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          url: `${baseUrl}/result/${item.id}${locale === 'en' ? '' : `?locale=${locale}`}`,
+        })),
+      },
+    ],
+  };
 
   return (
     <main className="max-w-5xl mx-auto px-4 py-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }} />
       <VideoSchema items={items} />
 
       <div className="text-center mb-12">

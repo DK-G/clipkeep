@@ -2,19 +2,32 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Locale, homeText, normalizeLocale } from '@/lib/i18n/ui';
+import { Locale, homeText, normalizeLocale, localeNativeLabels } from '@/lib/i18n/ui';
+
+const currentBadgeText: Record<Locale, string> = {
+  en: 'Current',
+  ar: 'الحالية',
+  ja: '現在',
+  es: 'Actual',
+  pt: 'Atual',
+  fr: 'Actuelle',
+  id: 'Saat ini',
+  hi: 'वर्तमान',
+  de: 'Aktuell',
+  tr: 'Geçerli',
+};
 
 const languageOptions: Array<{ code: Locale; label: string }> = [
-  { code: 'en', label: 'English' },
-  { code: 'ar', label: 'العربية' },
-  { code: 'ja', label: '日本語' },
-  { code: 'es', label: 'Español' },
-  { code: 'pt', label: 'Português' },
-  { code: 'fr', label: 'Français' },
-  { code: 'id', label: 'Indonesia' },
-  { code: 'hi', label: 'हिंदी' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'tr', label: 'Türkçe' },
+  { code: 'en', label: localeNativeLabels.en },
+  { code: 'ar', label: localeNativeLabels.ar },
+  { code: 'ja', label: localeNativeLabels.ja },
+  { code: 'es', label: localeNativeLabels.es },
+  { code: 'pt', label: localeNativeLabels.pt },
+  { code: 'fr', label: localeNativeLabels.fr },
+  { code: 'id', label: localeNativeLabels.id },
+  { code: 'hi', label: localeNativeLabels.hi },
+  { code: 'de', label: localeNativeLabels.de },
+  { code: 'tr', label: localeNativeLabels.tr },
 ];
 
 export function LanguageSwitcher() {
@@ -93,7 +106,7 @@ export function LanguageSwitcher() {
                     }`}
                   >
                     <span>{lang.label}</span>
-                    {active && <span className="text-xs text-blue-600 dark:text-blue-400">Current</span>}
+                    {active && <span className="text-xs text-blue-600 dark:text-blue-400">{currentBadgeText[currentLocale]}</span>}
                   </button>
                 </li>
               );

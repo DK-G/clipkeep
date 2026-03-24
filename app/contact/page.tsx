@@ -62,8 +62,49 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default async function ContactPage({ searchParams }: Props) {
   const sp = await searchParams;
-  const localeParam = typeof sp.locale === 'string' ? sp.locale : undefined;
+  const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
+  const base = 'https://clipkeep.net';
+  const path = '/contact';
+  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
-  return <ContactContentClient localeParam={localeParam} />;
+  const titles: Record<string, string> = {
+    en: 'Contact Us',
+    ja: 'お問い合わせ',
+    ar: 'اتصل بنا',
+    es: 'Contacto',
+    pt: 'Contato',
+    fr: 'Contact',
+    id: 'Kontak',
+    hi: 'संपर्क',
+    de: 'Kontakt',
+    tr: 'İletişim',
+  };
+
+  const descriptions: Record<string, string> = {
+    en: 'Contact the ClipKeep team for support, feedback, or DMCA inquiries.',
+    ja: 'サポート、フィードバック、またはDMCAに関するお問い合わせはClipKeepチームまでご連絡ください。',
+    ar: 'تواصل مع فريق ClipKeep للحصول على الدعم أو إرسال الملاحظات أو الاستفسار عن طلبات DMCA.',
+    es: 'Ponte en contacto con el equipo de ClipKeep para soporte, comentarios o consultas relacionadas con DMCA.',
+    pt: 'Entre em contato com a equipe do ClipKeep para suporte, feedback ou solicitações de DMCA.',
+    fr: 'Contactez l\'équipe ClipKeep pour le support, les retours ou les demandes DMCA.',
+    id: 'Hubungi tim ClipKeep untuk dukungan, masukan, atau permintaan DMCA.',
+    hi: 'सहायता, फीडबैक या DMCA संबंधी प्रश्नों के लिए ClipKeep टीम से संपर्क करें।',
+    de: 'Kontaktieren Sie das ClipKeep-Team für Support, Feedback oder DMCA-Anfragen.',
+    tr: 'Destek, geri bildirim veya DMCA talepleri için ClipKeep ekibiyle iletişime geçin.',
+  };
+
+  const pageJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: titles[locale] || titles.en,
+    description: descriptions[locale] || descriptions.en,
+    url,
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd) }} />
+      <ContactContentClient localeParam={typeof sp.locale === 'string' ? sp.locale : undefined} />
+    </>
+  );
 }
-

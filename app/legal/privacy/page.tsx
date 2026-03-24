@@ -44,6 +44,17 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         tr: `${base}${path}?locale=tr`,
       },
     },
+    openGraph: {
+      title: t.title,
+      description: descriptions[locale] || descriptions.en,
+      url,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t.title,
+      description: descriptions[locale] || descriptions.en,
+    },
   };
 }
 

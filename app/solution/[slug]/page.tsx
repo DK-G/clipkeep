@@ -31,12 +31,24 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     allLocales.map((l) => [l, `${base}${path}${l === 'en' ? '' : `?locale=${l}`}`]),
   );
 
+  const description = page.sections[0]?.body || 'ClipKeep solution guide.';
   return {
     title: page.title,
-    description: page.sections[0]?.body || 'ClipKeep solution guide.',
+    description,
     alternates: {
       canonical: url,
       languages,
+    },
+    openGraph: {
+      title: page.title,
+      description,
+      url,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.title,
+      description,
     },
   };
 }
@@ -51,5 +63,22 @@ export default async function Page({ params, searchParams }: Props) {
     notFound();
   }
 
-  return <SolutionContentClient data={page} locale={locale} />;
+  const base = 'https://clipkeep.net';
+  const path = `/solution/${slug}`;
+  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
+  const description = page.sections[0]?.body || 'ClipKeep solution guide.';
+  const pageJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: page.title,
+    description,
+    url,
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd) }} />
+      <SolutionContentClient data={page} locale={locale} />
+    </>
+  );
 }

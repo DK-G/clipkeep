@@ -8,8 +8,22 @@ interface DownloadItemProps {
   locale: Locale;
 }
 
+const mediaTypeLabels: Record<Locale, Record<string, string>> = {
+  en: { video: 'Video', image: 'Image', audio: 'Audio', file: 'File' },
+  ar: { video: 'فيديو', image: 'صورة', audio: 'صوت', file: 'ملف' },
+  ja: { video: '動画', image: '画像', audio: '音声', file: 'ファイル' },
+  es: { video: 'Video', image: 'Imagen', audio: 'Audio', file: 'Archivo' },
+  pt: { video: 'Vídeo', image: 'Imagem', audio: 'Áudio', file: 'Arquivo' },
+  fr: { video: 'Vidéo', image: 'Image', audio: 'Audio', file: 'Fichier' },
+  id: { video: 'Video', image: 'Gambar', audio: 'Audio', file: 'Berkas' },
+  hi: { video: 'वीडियो', image: 'छवि', audio: 'ऑडियो', file: 'फ़ाइल' },
+  de: { video: 'Video', image: 'Bild', audio: 'Audio', file: 'Datei' },
+  tr: { video: 'Video', image: 'Görsel', audio: 'Ses', file: 'Dosya' },
+};
+
 export function DownloadItem({ variant, locale }: DownloadItemProps) {
   const t = resultText[locale];
+  const mediaLabels = mediaTypeLabels[locale] || mediaTypeLabels.en;
 
   const formatSize = (bytes?: number) => {
     if (!bytes) return '';
@@ -31,7 +45,7 @@ export function DownloadItem({ variant, locale }: DownloadItemProps) {
     <div className="flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow">
       <div className="flex flex-col">
         <span className="text-sm font-medium text-gray-900 dark:text-slate-100 uppercase">
-          {variant.type}
+          {mediaLabels[variant.type] || variant.type}
         </span>
         <span className="text-xs text-gray-500 dark:text-slate-400">
           {getLabel()}

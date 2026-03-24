@@ -7,6 +7,20 @@ import { discoveryText, DiscoveryDict } from '@/lib/i18n/discovery';
 import type { GalleryItem } from './gallery-section';
 import { trackEvent } from '@/lib/analytics/gtag';
 
+const discoveryUiText: Record<Locale, { badge: string; fallbackTitle: string; thumbnailAlt: string }> = {
+  en: { badge: 'Discover', fallbackTitle: 'Discovery', thumbnailAlt: 'Thumbnail' },
+  ar: { badge: 'اكتشف', fallbackTitle: 'الاستكشاف', thumbnailAlt: 'صورة مصغرة' },
+  ja: { badge: '発見', fallbackTitle: 'おすすめ', thumbnailAlt: 'サムネイル' },
+  es: { badge: 'Descubrir', fallbackTitle: 'Descubrimiento', thumbnailAlt: 'Miniatura' },
+  pt: { badge: 'Descobrir', fallbackTitle: 'Descobertas', thumbnailAlt: 'Miniatura' },
+  fr: { badge: 'Découvrir', fallbackTitle: 'Découverte', thumbnailAlt: 'Miniature' },
+  id: { badge: 'Temukan', fallbackTitle: 'Penemuan', thumbnailAlt: 'Thumbnail' },
+  hi: { badge: 'खोजें', fallbackTitle: 'खोज', thumbnailAlt: 'थंबनेल' },
+  de: { badge: 'Entdecken', fallbackTitle: 'Entdecken', thumbnailAlt: 'Vorschaubild' },
+  tr: { badge: 'Keşfet', fallbackTitle: 'Keşif', thumbnailAlt: 'Küçük görsel' },
+};
+
+
 export function DiscoverySection({ locale }: { locale: Locale }) {
   const router = useRouter();
   const [data, setData] = useState<{ pattern: keyof DiscoveryDict; items: GalleryItem[] } | null>(null);
@@ -42,12 +56,13 @@ export function DiscoverySection({ locale }: { locale: Locale }) {
 
   if (!data || data.items.length === 0) return null;
 
-  const title = discoveryText[locale][data.pattern] || 'Discovery';
+  const ui = discoveryUiText[locale] || discoveryUiText.en;
+  const title = discoveryText[locale][data.pattern] || ui.fallbackTitle;
 
   return (
     <section className="mt-16 border-t border-slate-100 dark:border-slate-800 pt-12 px-2 sm:px-0 scroll-mt-[100px]">
       <div className="flex flex-col items-center mb-6">
-         <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400 mb-1">Discover</span>
+         <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400 mb-1">{ui.badge}</span>
          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-50 tracking-tight text-center">{title}</h2>
       </div>
       
@@ -82,7 +97,7 @@ export function DiscoverySection({ locale }: { locale: Locale }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.thumbnail_url}
-                  alt="Thumbnail"
+                  alt={ui.thumbnailAlt}
                   className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
                   loading="lazy"
                   onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-video.png'; }}

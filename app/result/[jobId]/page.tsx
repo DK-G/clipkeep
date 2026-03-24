@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { normalizeLocale, resultText, localeDir } from '@/lib/i18n/ui';
+import { normalizeLocale, resultText, localeDir, Locale } from '@/lib/i18n/ui';
 import type { ApiSuccess, ApiFailure, ExtractionResult } from '@/lib/api/types';
 import type { Platform } from '@/lib/extract/types';
 import { AdsterraNative } from '@/components/ads/native-banner';
@@ -14,11 +14,25 @@ function XIcon() { return <svg className="w-5 h-5 fill-current" viewBox="0 0 24 
 function TiktokIcon() { return <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"></path></svg>; }
 function TelegramIcon() { return <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path></svg>; }
 
+const suspenseLoadingText: Record<Locale, string> = {
+  en: 'Loading...',
+  ar: 'جارٍ التحميل...',
+  ja: '読み込み中...',
+  es: 'Cargando...',
+  pt: 'Carregando...',
+  fr: 'Chargement...',
+  id: 'Memuat...',
+  hi: 'लोड हो रहा है...',
+  de: 'Wird geladen...',
+  tr: 'Yükleniyor...',
+};
 
 
 export default function ResultPage() {
+  const searchParams = useSearchParams();
+  const locale = normalizeLocale(searchParams.get('locale'));
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">{suspenseLoadingText[locale]}</div>}>
       <ResultContent />
     </Suspense>
   );
@@ -122,7 +136,7 @@ function ResultContent() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img 
                       src={data.thumbnail_url || '/placeholder-video.png'} 
-                      alt="Preview" 
+                      alt={t.mediaTitle} 
                       className="w-full h-full object-cover"
                     />
                     {data.status === 'processing' && (

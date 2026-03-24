@@ -34,7 +34,13 @@ export function getGalleryMetadata(type: string, platform: string, localeStr: st
     openGraph: {
       title: dict.title,
       description: dict.description,
+      url,
       type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: dict.title,
+      description: dict.description,
     },
   };
 }

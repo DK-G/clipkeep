@@ -27,35 +27,35 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
     },
     ar: {
       title: 'مركز مطور SNS',
-      description: 'ClipKeep هو المركز الرئيسي لأدوات تنزيل Twitter و Telegram و TikTok و Instagram والتصنيفات الأسبوعية والتنزيلات الحديثة।',
+      description: 'مركز ClipKeep لأدوات تنزيل Bilibili وBluesky وDiscord وFacebook وLemon8 وPinterest وReddit وThreads وTikTok وTwitter.',
     },
     es: {
       title: 'Centro de Descarga de Redes Sociales',
-      description: 'Hub de ClipKeep para Twitter, Telegram, TikTok e Instagram, con ranking semanal y descargas recientes।',
+      description: 'Centro de ClipKeep para herramientas de descarga de Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok y Twitter.',
     },
     pt: {
       title: 'Central de Downloads de Redes Sociais',
-      description: 'Hub do ClipKeep para Twitter, Telegram, TikTok e Instagram, com ranking semanal e downloads recentes।',
+      description: 'Central do ClipKeep para ferramentas de download de Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok e Twitter.',
     },
     fr: {
       title: 'Hub de Téléchargement SNS',
-      description: 'Hub ClipKeep pour Twitter, Telegram, TikTok et Instagram, avec classement hebdomadaire et téléchargements récents।',
+      description: 'Hub ClipKeep pour les outils de téléchargement Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok et Twitter.',
     },
     id: {
       title: 'Hub Pengunduh SNS',
-      description: 'Hub ClipKeep untuk Twitter, Telegram, TikTok, dan Instagram, dengan peringkat mingguan dan unduhan terbaru।',
+      description: 'Hub ClipKeep untuk alat unduh Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok, dan Twitter.',
     },
     hi: {
       title: 'SNS डाउनलोडर हब',
-      description: 'ट्विटर, टेलीग्राम, टिकटॉक और इंस्टाग्राम डाउनलोडर टूल्स, साप्ताहिक रैंकिंग और हाल के डाउनलोड के लिए क्लिपकीप हब।',
+      description: 'Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok और Twitter डाउनलोड टूल्स के लिए ClipKeep हब।',
     },
     de: {
       title: 'SNS Downloader Hub',
-      description: 'ClipKeep Hub für Twitter, Telegram, TikTok und Instagram Downloader, wöchentliches Ranking und aktuelle Downloads।',
+      description: 'ClipKeep Hub für Downloader-Tools von Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok und Twitter.',
     },
     tr: {
       title: 'SNS İndirici Merkezi',
-      description: 'Reddit, Pinterest, Threads, Bluesky, TikTok ve Twitter indirici araçları için ClipKeep merkezi.',
+      description: 'Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok ve Twitter indirici araçları için ClipKeep merkezi.',
     }
   };
 
@@ -93,6 +93,20 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
     },
   };
 }
+
+const supportedPlatforms = [
+  'Bilibili',
+  'Bluesky',
+  'Discord',
+  'Facebook',
+  'Lemon8',
+  'Pinterest',
+  'Reddit',
+  'Telegram',
+  'Threads',
+  'TikTok',
+  'Twitter',
+];
 
 const translations: Record<string, Record<string, string>> = {
   en: {
@@ -321,9 +335,32 @@ export default async function HomePage({ searchParams }: HomeProps) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = translations[locale] || translations.en;
+  const base = 'https://clipkeep.net';
+  const url = `${base}/${locale !== 'en' ? `?locale=${locale}` : ''}`;
+  const homeJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        name: t.welcome,
+        description: t.subtitle,
+        url,
+      },
+      {
+        '@type': 'ItemList',
+        name: 'ClipKeep Supported Platforms',
+        itemListElement: supportedPlatforms.map((name, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name,
+        })),
+      },
+    ],
+  };
 
   return (
     <main className="max-w-[1400px] mx-auto py-12 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }} />
       <div className="text-center mb-10">
         <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-4">
           {t.welcome}

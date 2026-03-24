@@ -10,13 +10,26 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = faqText[locale];
+  const descriptions: Record<string, string> = {
+    en: 'Find answers to common questions about ClipKeep, our media extraction tool, and supported platforms.',
+    ja: 'ClipKeep の使い方、対応プラットフォーム、抽出時の注意点に関するよくある質問をまとめています。',
+    ar: 'اعثر على إجابات للأسئلة الشائعة حول ClipKeep والمنصات المدعومة وخطوات استخراج الوسائط.',
+    es: 'Encuentra respuestas a preguntas frecuentes sobre ClipKeep, las plataformas compatibles y el proceso de extracción.',
+    pt: 'Encontre respostas para dúvidas comuns sobre o ClipKeep, as plataformas compatíveis e o processo de extração.',
+    fr: 'Retrouvez les réponses aux questions fréquentes sur ClipKeep, les plateformes prises en charge et le processus d’extraction.',
+    id: 'Temukan jawaban atas pertanyaan umum tentang ClipKeep, platform yang didukung, dan proses ekstraksi.',
+    hi: 'ClipKeep, समर्थित प्लेटफ़ॉर्म और एक्सट्रैक्शन प्रक्रिया से जुड़े सामान्य सवालों के जवाब देखें।',
+    de: 'Hier finden Sie Antworten auf häufige Fragen zu ClipKeep, unterstützten Plattformen und dem Extraktionsablauf.',
+    tr: 'ClipKeep, desteklenen platformlar ve çıkarma süreci hakkında sık sorulan soruların yanıtlarını bulun.',
+  };
+
   const base = 'https://clipkeep.net';
   const path = '/faq';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
   return {
     title: t.title,
-    description: 'Find answers to common questions about ClipKeep, our media extraction tool, and supported platforms.',
+    description: descriptions[locale] || descriptions.en,
     alternates: {
       canonical: url,
       languages: {
@@ -31,6 +44,17 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         de: `${base}${path}?locale=de`,
         tr: `${base}${path}?locale=tr`,
       },
+    },
+    openGraph: {
+      title: t.title,
+      description: descriptions[locale] || descriptions.en,
+      url,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t.title,
+      description: descriptions[locale] || descriptions.en,
     },
   };
 }
