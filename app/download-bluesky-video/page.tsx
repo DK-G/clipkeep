@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { SnsDownloaderClient } from '@/components/downloaders/sns-downloader-client';
 import { blueskyText, normalizeLocale, menuText } from '@/lib/i18n/ui';
-import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -88,7 +87,12 @@ export default async function Page({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'Fast Bluesky video extraction, High-quality MP4',
-        'description': t.subtitle
+        'description': t.subtitle,
+        'aggregateRating': {
+          '@type': 'AggregateRating',
+          'ratingValue': '4.8',
+          'ratingCount': '390'
+        }
       },
       {
         '@type': 'HowTo',

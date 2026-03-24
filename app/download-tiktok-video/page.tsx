@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { TikTokDownloaderClient } from '@/components/downloaders/tiktok-downloader-client';
 import { tiktokText, normalizeLocale, menuText } from '@/lib/i18n/ui';
-import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

@@ -1,5 +1,6 @@
-'use client';
+﻿'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -109,10 +110,13 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
            <div className="sticky top-24">
               <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none">
                  <div className="aspect-video sm:aspect-[4/5] relative bg-slate-100 dark:bg-slate-950">
-                    <img 
-                      src={data.thumbnail_url || '/placeholder-video.png'} 
-                      alt={t.mediaTitle} 
-                      className="w-full h-full object-cover"
+                    <Image
+                      src={data.thumbnail_url || '/placeholder-video.png'}
+                      alt={t.mediaTitle}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                      sizes="(min-width: 1024px) 40vw, 100vw"
                     />
                     {data.status === 'processing' && (
                       <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-8 text-center">
@@ -199,3 +203,4 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
     </div>
   );
 }
+
