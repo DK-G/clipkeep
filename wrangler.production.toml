@@ -20,8 +20,8 @@ NEXT_PUBLIC_GA_ID = "G-EDYDTJMPK6"
 RATE_LIMIT_DO_ENDPOINT = "https://clipkeep-rate-limit.liminality-3110.workers.dev"
 RATE_LIMIT_LIMIT = "30"
 RATE_LIMIT_WINDOW_MS = "60000"
-NEXT_PUBLIC_TURNSTILE_SITE_KEY = "1x00000000000000000000AA"  # Placeholder (Testing Key)
-TURNSTILE_SECRET_KEY = "1x0000000000000000000000000000000AA"  # Placeholder (Testing Key)
+# Turnstile keys must be provided in the production Worker environment.
+# Do not place testing placeholders in the production profile.
 
 browser_rendering = { binding = "BROWSER" }
 
