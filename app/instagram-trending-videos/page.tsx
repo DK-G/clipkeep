@@ -4,8 +4,6 @@ import { getGalleryMetadata } from '@/lib/metadata-helper';
 import { GalleryPageContent } from '@/components/gallery-page-content';
 import { Suspense } from 'react';
 
-export const metadata: Metadata = { robots: { index: false, follow: false } };
-
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
@@ -13,7 +11,10 @@ interface Props {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const sp = await searchParams;
   const locale = (sp.locale as string) || 'en';
-  return getGalleryMetadata('trending', 'instagram', locale);
+  return {
+    ...getGalleryMetadata('trending', 'instagram', locale),
+    robots: { index: false, follow: false },
+  };
 }
  
 export default async function Page({ searchParams }: Props) {
