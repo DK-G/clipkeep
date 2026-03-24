@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /**
  * Adsterra SocialBar and Popunder scripts.
@@ -8,3 +8,4 @@
 export function AdsterraAds() {
   return null;
 }
+

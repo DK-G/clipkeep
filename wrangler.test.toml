@@ -1,4 +1,4 @@
-﻿name = "clipkeep-web-test"
+name = "clipkeep-web-test"
 main = ".open-next/worker.js"
 compatibility_date = "2026-03-22"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]

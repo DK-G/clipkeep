@@ -25,3 +25,4 @@ export function DegradedBanner({ locale, reason, helpSlug = 'extractor-temporary
     </section>
   );
 }
+

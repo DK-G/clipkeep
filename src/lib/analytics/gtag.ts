@@ -12,3 +12,4 @@ export function trackEvent(name: string, params: Record<string, unknown> = {}): 
 }
 
 export {};
+

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /**
  * Adsterra Native Banners.
@@ -8,3 +8,4 @@
 export function AdsterraNative() {
   return null;
 }
+
