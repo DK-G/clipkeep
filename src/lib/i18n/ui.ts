@@ -1,4 +1,4 @@
-﻿export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
+export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
 
 export function normalizeLocale(value: string | null | undefined): Locale {
   const v = value?.toLowerCase();
@@ -277,7 +277,7 @@ export const homeText: Record<Locale, HomeDict> = {
     pinterestTitle: "محمل فيديوهات Pinterest",
     pinterestDesc: "قم بتنزيل دبابيس الفيديو والصور عالية الجودة.",
     threadsTitle: "محمل فيديوهات Threads",
-    threadsDesc: "أرشف فيديوهات ووسائط من منشورات Threads (Instagram).",
+    threadsDesc: "أرشف فيديوهات ووسائط من منشورات Threads.",
     blueskyTitle: "محمل فيديوهات Bluesky",
     blueskyDesc: "احفظ الفيديوهات والصور من شبكة Bluesky الاجتماعية.",
     lemon8Title: "محمل فيديوهات Lemon8",
@@ -3808,7 +3808,7 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     trendingThreads: {
       title: "Trending Threads Videos",
       subtitle: "Viral moments and top media from Threads.",
-      description: "Discover the most talked-about videos on Threads (Instagram) today.",
+      description: "Discover the most talked-about videos on Threads today.",
     },
     latestBluesky: {
       title: "Latest Bluesky Downloads",
@@ -3925,7 +3925,7 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     },
     trendingThreads: {
       title: "Threads トレンド動画",
-      description: "Threads (Instagram) で現在話題のバイラル動画を探索しましょう。",
+      description: "Threads で現在話題のバイラル動画を探索しましょう。",
       subtitle: "今Threadsで最も注目されているメディア"
     },
     latestBluesky: {
@@ -4208,7 +4208,7 @@ const faqBaseEn: FAQDict = {
     },
     {
       question: 'Which platforms are supported now?',
-      answer: 'Current priority support is Telegram and X (Twitter). TikTok and Instagram pages exist, with behavior varying by source conditions.',
+      answer: 'Current active support covers Telegram, X (Twitter), TikTok, Reddit, Pinterest, Facebook, Threads, Bluesky, Lemon8, Bilibili, and Discord. Instagram remains maintenance-only.',
     },
     {
       question: 'Do I need an account?',
@@ -4286,7 +4286,7 @@ export const faqText: Record<Locale, FAQDict> = {
       },
       {
         question: '¿Qué plataformas están soportadas ahora?',
-        answer: 'La prioridad de soporte actual es Telegram y X (Twitter). También existen páginas para TikTok e Instagram, con comportamiento variable según la fuente.',
+        answer: 'El soporte activo actual cubre Telegram, X (Twitter), TikTok, Reddit, Pinterest, Facebook, Threads, Bluesky, Lemon8, Bilibili y Discord. Instagram permanece solo en mantenimiento.',
       },
       {
         question: '¿Necesito una cuenta?',
