@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Script from 'next/script';
 import { HeaderShell } from '@/components/header-shell';
@@ -81,10 +81,12 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        <script
-          async
+        <Script
+          id="adsense-init"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5877075056686035"
+          strategy="afterInteractive"
           crossOrigin="anonymous"
+          data-cfasync="false"
         />
         <Suspense fallback={null}>
           <LocaleUpdater />
@@ -92,8 +94,8 @@ export default function RootLayout({
 
         {gaId && (
           <>
-            <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
-            <Script id="ga-init" strategy="afterInteractive">
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" data-cfasync="false" />
+            <Script id="ga-init" strategy="afterInteractive" data-cfasync="false">
               {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} window.gtag = gtag; gtag('js', new Date()); gtag('config', '${gaId}');`}
             </Script>
           </>
@@ -108,12 +110,20 @@ export default function RootLayout({
         {children}
         <Footer />
 
-        <Script id="monetag-in-page-push" strategy="afterInteractive">
-          {`(function(s){s.dataset.zone='10760541',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
-        </Script>
-        <Script id="monetag-vignette" strategy="afterInteractive">
-          {`(function(s){s.dataset.zone='10760542',s.src='https://izcle.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
-        </Script>
+        <Script 
+          id="monetag-in-page-push" 
+          src="https://nap5k.com/tag.min.js"
+          data-zone="10760541"
+          strategy="afterInteractive"
+          data-cfasync="false"
+        />
+        <Script 
+          id="monetag-vignette" 
+          src="https://izcle.com/vignette.min.js"
+          data-zone="10760542"
+          strategy="afterInteractive"
+          data-cfasync="false"
+        />
 
         <Script 
           src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" 
