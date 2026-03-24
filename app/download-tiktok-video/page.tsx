@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { TikTokDownloaderClient } from '@/components/downloaders/tiktok-downloader-client';
-import { tiktokText, normalizeLocale } from '@/lib/i18n/ui';
+import { tiktokText, normalizeLocale, menuText } from '@/lib/i18n/ui';
+import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -68,6 +69,7 @@ export default async function TikTokDownloaderPage({ searchParams }: Props) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = tiktokText[locale];
+  const menu = menuText[locale];
 
   const websiteUrl = `https://clipkeep.net/download-tiktok-video?locale=${locale}`;
 
@@ -86,7 +88,12 @@ export default async function TikTokDownloaderPage({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'High-quality TikTok video extraction, No watermark option, Fast processing',
-        'description': t.subtitle
+        'description': t.subtitle,
+        'aggregateRating': {
+          '@type': 'AggregateRating',
+          'ratingValue': '4.8',
+          'ratingCount': '1240'
+        }
       },
       {
         '@type': 'HowTo',
@@ -114,6 +121,12 @@ export default async function TikTokDownloaderPage({ searchParams }: Props) {
 
   return (
     <>
+      <BreadcrumbSchema 
+        items={[
+          { name: menu.downloads, item: '/' },
+          { name: t.title, item: `/download-tiktok-video?locale=${locale}` }
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

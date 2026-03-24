@@ -7,6 +7,7 @@ import { Locale, galleryPages, menuText } from '@/lib/i18n/ui';
 import { GallerySection, GalleryItem } from '@/components/gallery-section';
 import { SEOContent } from '@/components/seo-content';
 import { VideoSchema } from '@/components/video-schema';
+import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 
 interface GalleryPageContentProps {
   platform: Platform;
@@ -189,6 +190,12 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
 
   return (
     <main className="max-w-5xl mx-auto px-4 py-8">
+      <BreadcrumbSchema 
+        items={[
+          { name: type === 'trending' ? menu.rankings : menu.latest, item: '/' },
+          { name: dict.title, item: pagePath }
+        ]}
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }} />
       <VideoSchema items={items} />
 

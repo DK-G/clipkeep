@@ -1,0 +1,201 @@
+{
+  "reportId": 1774347289883,
+  "timestamp": "2026-03-24T10:14:49.883Z",
+  "totalCases": 15,
+  "results": [
+    {
+      "platform": "Bilibili",
+      "label": "Normal Video",
+      "url": "https://www.bilibili.com/video/BV1N94y1b7TJ/",
+      "startTime": "2026-03-24T10:14:49.884Z",
+      "success": true,
+      "warnings": [],
+      "durationMs": 495,
+      "mediaCount": 1,
+      "media": [
+        {
+          "type": "video",
+          "url": "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/56/38/1303813856/1303813856-1-192.mp4?e=ig8euxZM...",
+          "title": "【Conan Gray】柯灰报平安啦 在好好养病！｜TikTok更新：jokes aside thank u for the well wishes ️"
+        }
+      ]
+    },
+    {
+      "platform": "Bilibili",
+      "label": "HQ-Required (Possible resolution gate)",
+      "url": "https://www.bilibili.com/video/BV1it411p7An",
+      "startTime": "2026-03-24T10:14:50.380Z",
+      "success": false,
+      "warnings": [],
+      "durationMs": 158,
+      "error": "CID_NOT_RESOLVED"
+    },
+    {
+      "platform": "Bilibili",
+      "label": "Deleted/Unavailable",
+      "url": "https://www.bilibili.com/video/BV17x411p7XX",
+      "startTime": "2026-03-24T10:14:50.537Z",
+      "success": true,
+      "warnings": [
+        "Expected error code MEDIA_NOT_FOUND, got CID_NOT_RESOLVED"
+      ],
+      "durationMs": 150,
+      "error": "CID_NOT_RESOLVED"
+    },
+    {
+      "platform": "Pinterest",
+      "label": "Single Image Pin",
+      "url": "https://www.pinterest.com/pin/546905948512544265/",
+      "startTime": "2026-03-24T10:14:50.687Z",
+      "success": true,
+      "warnings": [],
+      "durationMs": 413,
+      "mediaCount": 1,
+      "media": [
+        {
+          "type": "image",
+          "url": "https://i.pinimg.com/originals/8d/db/a4/8ddba424b1b8abc241da7fb86ba99051.jpg...",
+          "title": "Pin by succha2.0 on m. | Chakra healing meditation, Chakra health, Chakra meditation"
+        }
+      ]
+    },
+    {
+      "platform": "Pinterest",
+      "label": "Video Pin",
+      "url": "https://www.pinterest.com/pin/768145280229407952/",
+      "startTime": "2026-03-24T10:14:51.101Z",
+      "success": true,
+      "warnings": [],
+      "durationMs": 398,
+      "mediaCount": 1,
+      "media": [
+        {
+          "type": "video",
+          "url": "https://v1.pinimg.com/videos/mc/720p/01/04/46/01044641c687d1169775dffdb7e61f35.mp4...",
+          "title": "Dinner recipe ideas #recipes #healthyfood #cooking #yummy #delicious #food #foodie #easyrecipe [Video] | Easy meals, Cooking recipes for dinner, Lunch snacks"
+        }
+      ]
+    },
+    {
+      "platform": "Pinterest",
+      "label": "Idea/Story Pin (Multi-page)",
+      "url": "https://www.pinterest.com/pin/582653283069150341/",
+      "startTime": "2026-03-24T10:14:51.500Z",
+      "success": false,
+      "warnings": [],
+      "durationMs": 802,
+      "error": "PIN_DATA_NOT_FOUND"
+    },
+    {
+      "platform": "Pinterest",
+      "label": "Login-wall / Standard Pin",
+      "url": "https://www.pinterest.com/pin/110197022131979313/",
+      "startTime": "2026-03-24T10:14:52.302Z",
+      "success": false,
+      "warnings": [],
+      "durationMs": 742,
+      "error": "PIN_DATA_NOT_FOUND"
+    },
+    {
+      "platform": "TikTok",
+      "label": "Normal Video",
+      "url": "https://www.tiktok.com/@yua_mikami/video/7612150311897042184",
+      "startTime": "2026-03-24T10:14:53.044Z",
+      "success": true,
+      "warnings": [],
+      "durationMs": 549,
+      "mediaCount": 1,
+      "media": [
+        {
+          "type": "video",
+          "url": "https://v16m.tiktokcdn-us.com/5934d77377eef8eb8eb9eff3c2b1ccf9/69c2b887/video/tos/alisg/tos-alisg-pv...",
+          "title": "久しぶりのチア制服👶🏻"
+        }
+      ]
+    },
+    {
+      "platform": "TikTok",
+      "label": "Slideshow (Carousel)",
+      "url": "https://www.tiktok.com/@kiara6400/video/7462002597401922864",
+      "startTime": "2026-03-24T10:14:53.593Z",
+      "success": false,
+      "warnings": [],
+      "durationMs": 914,
+      "error": "MEDIA_NOT_FOUND"
+    },
+    {
+      "platform": "TikTok",
+      "label": "Private/Unavailable",
+      "url": "https://www.tiktok.com/@tiktokedits/video/7191398246323490054",
+      "startTime": "2026-03-24T10:14:54.507Z",
+      "success": true,
+      "warnings": [],
+      "durationMs": 1931,
+      "error": "MEDIA_NOT_FOUND"
+    },
+    {
+      "platform": "Reddit",
+      "label": "Single Image Post",
+      "url": "https://www.reddit.com/r/MadeMeSmile/comments/1s12ng6/",
+      "startTime": "2026-03-24T10:14:56.438Z",
+      "success": true,
+      "warnings": [],
+      "durationMs": 2447,
+      "mediaCount": 1,
+      "media": [
+        {
+          "type": "image",
+          "url": "https://i.redd.it/4nax1rhszoqg1.jpeg...",
+          "title": "🥹"
+        }
+      ]
+    },
+    {
+      "platform": "Reddit",
+      "label": "Gallery (Multi-image)",
+      "url": "https://www.reddit.com/r/aww/comments/1fmfv2z/this_little_guy_is_too_cute/",
+      "startTime": "2026-03-24T10:14:58.885Z",
+      "success": false,
+      "warnings": [],
+      "durationMs": 1476,
+      "error": "MEDIA_NOT_FOUND"
+    },
+    {
+      "platform": "Reddit",
+      "label": "Native Video (v.redd.it)",
+      "url": "https://www.reddit.com/r/Unexpected/comments/1gzjr3a/screw_it/",
+      "startTime": "2026-03-24T10:15:00.361Z",
+      "success": false,
+      "warnings": [],
+      "durationMs": 1226,
+      "error": "MEDIA_NOT_FOUND"
+    },
+    {
+      "platform": "Reddit",
+      "label": "NSFW (Age Gate)",
+      "url": "https://www.reddit.com/r/NSFW_GIF/comments/kbcykr/our_rules_are_on_the_sidebar_read_all_of_them/",
+      "startTime": "2026-03-24T10:15:01.587Z",
+      "success": false,
+      "warnings": [],
+      "durationMs": 1016,
+      "error": "AGE_GATED"
+    },
+    {
+      "platform": "Reddit",
+      "label": "Deleted/Removed Post",
+      "url": "https://www.reddit.com/r/PakistanGoneeHorny/comments/1s1y5y5/",
+      "startTime": "2026-03-24T10:15:02.603Z",
+      "success": true,
+      "warnings": [
+        "Expected error code MEDIA_NOT_FOUND, got AGE_GATED"
+      ],
+      "durationMs": 1595,
+      "error": "AGE_GATED"
+    }
+  ],
+  "summary": {
+    "successCount": 8,
+    "failureCount": 7,
+    "passRate": "53.3%"
+  }
+}

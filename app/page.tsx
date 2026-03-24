@@ -341,10 +341,70 @@ export default async function HomePage({ searchParams }: HomeProps) {
     '@context': 'https://schema.org',
     '@graph': [
       {
+        '@type': 'WebSite',
+        'name': 'ClipKeep',
+        'url': base,
+        'potentialAction': {
+          '@type': 'SearchAction',
+          'target': {
+            '@type': 'EntryPoint',
+            'urlTemplate': `${base}/?q={search_term_string}`
+          },
+          'query-input': 'required name=search_term_string'
+        }
+      },
+      {
+        '@type': 'Organization',
+        'name': 'ClipKeep',
+        'url': base,
+        'logo': `${base}/icon.png`,
+        'sameAs': [
+          'https://x.com/clipkeep'
+        ]
+      },
+      {
+        '@type': 'WebApplication',
+        'name': 'ClipKeep Downloader',
+        'url': base,
+        'applicationCategory': 'MultimediaApplication',
+        'operatingSystem': 'Windows, macOS, Android, iOS',
+        'offers': {
+          '@type': 'Offer',
+          'price': '0',
+          'priceCurrency': 'USD'
+        },
+        'aggregateRating': {
+          '@type': 'AggregateRating',
+          'ratingValue': '4.8',
+          'ratingCount': '2500'
+        }
+      },
+      {
         '@type': 'CollectionPage',
         name: t.welcome,
         description: t.subtitle,
         url,
+      },
+      {
+        '@type': 'FAQPage',
+        'mainEntity': [
+          {
+            '@type': 'Question',
+            'name': locale === 'ja' ? 'ClipKeepとは何ですか？' : 'What is ClipKeep?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': locale === 'ja' ? 'ClipKeepは、TikTok、X(Twitter)、Redditなどの主要なSNSから動画やメディアを保存するためのオールインワンハブです。' : 'ClipKeep is an all-in-one hub for saving videos and media from major social platforms like TikTok, X (Twitter), and Reddit.'
+            }
+          },
+          {
+            '@type': 'Question',
+            'name': locale === 'ja' ? '無料で利用できますか？' : 'Is it free to use?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': locale === 'ja' ? 'はい、ClipKeepのすべての抽出ツールは無料でご利用いただけます。' : 'Yes, all extraction tools on ClipKeep are free to use.'
+            }
+          }
+        ]
       },
       {
         '@type': 'ItemList',

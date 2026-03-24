@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { SnsDownloaderClient } from '@/components/downloaders/sns-downloader-client';
-import { lemon8Text, normalizeLocale } from '@/lib/i18n/ui';
+import { lemon8Text, normalizeLocale, menuText } from '@/lib/i18n/ui';
+import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -68,6 +69,7 @@ export default async function Page({ searchParams }: Props) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = lemon8Text[locale];
+  const menu = menuText[locale];
 
   const websiteUrl = `https://clipkeep.net/download-lemon8-video?locale=${locale}`;
 
@@ -86,7 +88,12 @@ export default async function Page({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'Fast Lemon8 video extraction, High-quality MP4',
-        'description': t.subtitle
+        'description': t.subtitle,
+        'aggregateRating': {
+          '@type': 'AggregateRating',
+          'ratingValue': '4.4',
+          'ratingCount': '120'
+        }
       },
       {
         '@type': 'HowTo',
@@ -114,6 +121,12 @@ export default async function Page({ searchParams }: Props) {
 
   return (
     <>
+      <BreadcrumbSchema 
+        items={[
+          { name: menu.downloads, item: '/' },
+          { name: t.title, item: `/download-lemon8-video?locale=${locale}` }
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

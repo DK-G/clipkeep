@@ -1,0 +1,44 @@
+﻿Starting extraction logic verification...
+
+--- Testing [Bilibili]: https://www.bilibili.com/video/BV1N94y1b7TJ/ ---
+[Bilibili] Got BVID=BV1N94y1b7TJ, CID=1303813856 from API
+✅ Success! Found 1 media items.
+[
+  {
+    "type": "video",
+    "url": "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/56/38/1303813856/1303813856-1-192.mp4?e=ig8euxZM2rNcNbRVhbdVhwdlhWdghwdVhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&platform=html5&mid=0&nbs=1&uipk=5&os=cosovbv&oi=2233499779&deadline=1774308798&trid=474be5a14c064fa2ac8d31a24f5af94h&gen=playurlv3&og=cos&upsig=e3506a56a6149b798bb8b4148cbf8f33&uparams=e,platform,mid,nbs,uipk,os,oi,deadline,trid,gen,og&bvc=vod&nettype=0&bw=866245&f=h_0_0&agrr=1&buvid=&build=0&dl=0&orderid=0,1",
+    "quality": "1080p",
+    "thumbUrl": "http://i1.hdslb.com/bfs/archive/21e77699a68d5091b178c6b92d75913ec97f10e8.jpg",
+    "title": "【Conan Gray】柯灰报平安啦 在好好养病！｜TikTok更新：jokes aside thank u for the well wishes ️",
+    "sourcePath": "bilibili-playurl-api"
+  }
+]
+
+--- Testing [Pinterest (Image)]: https://www.pinterest.com/pin/546905948512544265/ ---
+npx : [Pinterest] Extraction error: PIN_DATA_NOT_FOUND
+At line:1 char:1
++ npx tsx scripts/verify_extractors.mjs > debug_output.
+txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([Pinteres 
+   t] Ext..._DATA_NOT_FOUND:String) [], RemoteExcepti  
+  on
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+❌ Failed: PIN_DATA_NOT_FOUND
+
+--- Testing [Pinterest (Video)]: https://www.pinterest.com/pin/1013450353612503251/ ---
+[Pinterest] Extraction error: PIN_DATA_NOT_FOUND
+❌ Failed: PIN_DATA_NOT_FOUND
+
+--- Testing [TikTok]: https://www.tiktok.com/@khaby.lame/video/6978309196929150213 ---
+[TikTok] Resolved URL: https://www.tiktok.com/@khaby.lame/video/6978309196929150213
+❌ Failed: MEDIA_NOT_FOUND
+
+--- Testing [Reddit]: https://www.reddit.com/r/aww/comments/1fmfv2z/this_little_guy_is_too_cute/ ---
+[Reddit] Starting extraction for: https://www.reddit.com/r/aww/comments/1fmfv2z/this_little_guy_is_too_cute/
+Reddit extraction failed: MEDIA_NOT_FOUND
+❌ Failed: MEDIA_NOT_FOUND
+
+Verification complete: 1/5 platforms successful.

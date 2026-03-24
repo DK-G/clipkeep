@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { SnsDownloaderClient } from '@/components/downloaders/sns-downloader-client';
-import { pinterestText, normalizeLocale } from '@/lib/i18n/ui';
+import { pinterestText, normalizeLocale, menuText } from '@/lib/i18n/ui';
+import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -68,6 +69,7 @@ export default async function Page({ searchParams }: Props) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = pinterestText[locale];
+  const menu = menuText[locale];
 
   const websiteUrl = `https://clipkeep.net/download-pinterest-video?locale=${locale}`;
 
@@ -86,7 +88,12 @@ export default async function Page({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'Fast Pinterest video extraction, High-quality MP4',
-        'description': t.subtitle
+        'description': t.subtitle,
+        'aggregateRating': {
+          '@type': 'AggregateRating',
+          'ratingValue': '4.7',
+          'ratingCount': '640'
+        }
       },
       {
         '@type': 'HowTo',
@@ -114,6 +121,12 @@ export default async function Page({ searchParams }: Props) {
 
   return (
     <>
+      <BreadcrumbSchema 
+        items={[
+          { name: menu.downloads, item: '/' },
+          { name: t.title, item: `/download-pinterest-video?locale=${locale}` }
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -1,0 +1,85 @@
+﻿Starting Rigorous Layered Verification for ClipKeep...
+
+[Bilibili] Normal Video: https://www.bilibili.com/video/BV1N94y1b7TJ/
+[Bilibili] Got BVID=BV1N94y1b7TJ, CID=1303813856 from API
+✅ Success! (1 items, 495ms)
+
+[Bilibili] HQ-Required (Possible resolution gate): https://www.bilibili.com/video/BV1it411p7An
+❌ Extraction failed: CID_NOT_RESOLVED (158ms)
+
+[Bilibili] Deleted/Unavailable: https://www.bilibili.com/video/BV17x411p7XX
+⚠️  Failed as expected but wrong error code: CID_NOT_RESOLVED (expected MEDIA_NOT_FOUND)
+
+[Pinterest] Single Image Pin: https://www.pinterest.com/pin/546905948512544265/
+[Pinterest] Trying PinResource API for ID: 546905948512544265
+✅ Success! (1 items, 413ms)
+
+[Pinterest] Video Pin: https://www.pinterest.com/pin/768145280229407952/
+[Pinterest] Trying PinResource API for ID: 768145280229407952
+✅ Success! (1 items, 398ms)
+
+[Pinterest] Idea/Story Pin (Multi-page): https://www.pinterest.com/pin/582653283069150341/
+[Pinterest] Trying PinResource API for ID: 582653283069150341
+[Pinterest] Falling back to HTML parsing for: https://www.pinterest.com/pin/582653283069150341/
+npx : [Pinterest] Extraction error: PIN_DATA_NOT_FOUND
+At line:1 char:1
++ npx tsx scripts/verify_extractors.mjs > artifacts/las
+t_run.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([Pinteres 
+   t] Ext..._DATA_NOT_FOUND:String) [], RemoteExcepti  
+  on
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+❌ Extraction failed: PIN_DATA_NOT_FOUND (802ms)
+
+[Pinterest] Login-wall / Standard Pin: https://www.pinterest.com/pin/110197022131979313/
+[Pinterest] Trying PinResource API for ID: 110197022131979313
+[Pinterest] Falling back to HTML parsing for: https://www.pinterest.com/pin/110197022131979313/
+[Pinterest] Extraction error: PIN_DATA_NOT_FOUND
+❌ Extraction failed: PIN_DATA_NOT_FOUND (742ms)
+
+[TikTok] Normal Video: https://www.tiktok.com/@yua_mikami/video/7612150311897042184
+[TikTok] Resolved URL: https://www.tiktok.com/@yua_mikami/video/7612150311897042184
+[TikTok] Success via TikWM Video (549ms)
+✅ Success! (1 items, 549ms)
+
+[TikTok] Slideshow (Carousel): https://www.tiktok.com/@kiara6400/video/7462002597401922864
+[TikTok] Resolved URL: https://www.tiktok.com/@kiara6400/video/7462002597401922864
+❌ Extraction failed: MEDIA_NOT_FOUND (914ms)
+
+[TikTok] Private/Unavailable: https://www.tiktok.com/@tiktokedits/video/7191398246323490054
+[TikTok] Resolved URL: https://www.tiktok.com/@tiktokedits/video/7191398246323490054
+✅ Failed as expected: MEDIA_NOT_FOUND (1931ms)
+
+[Reddit] Single Image Post: https://www.reddit.com/r/MadeMeSmile/comments/1s12ng6/
+[Reddit] Starting extraction for: https://www.reddit.com/r/MadeMeSmile/comments/1s12ng6/
+[Reddit] Success via JSON API Single Image (2447ms)
+✅ Success! (1 items, 2447ms)
+
+[Reddit] Gallery (Multi-image): https://www.reddit.com/r/aww/comments/1fmfv2z/this_little_guy_is_too_cute/
+[Reddit] Starting extraction for: https://www.reddit.com/r/aww/comments/1fmfv2z/this_little_guy_is_too_cute/
+Reddit extraction failed: MEDIA_NOT_FOUND
+❌ Extraction failed: MEDIA_NOT_FOUND (1476ms)
+
+[Reddit] Native Video (v.redd.it): https://www.reddit.com/r/Unexpected/comments/1gzjr3a/screw_it/
+[Reddit] Starting extraction for: https://www.reddit.com/r/Unexpected/comments/1gzjr3a/screw_it/
+Reddit extraction failed: MEDIA_NOT_FOUND
+❌ Extraction failed: MEDIA_NOT_FOUND (1226ms)
+
+[Reddit] NSFW (Age Gate): https://www.reddit.com/r/NSFW_GIF/comments/kbcykr/our_rules_are_on_the_sidebar_read_all_of_them/
+[Reddit] Starting extraction for: https://www.reddit.com/r/NSFW_GIF/comments/kbcykr/our_rules_are_on_the_sidebar_read_all_of_them/
+Reddit extraction failed: AGE_GATED
+❌ Extraction failed: AGE_GATED (1016ms)
+
+[Reddit] Deleted/Removed Post: https://www.reddit.com/r/PakistanGoneeHorny/comments/1s1y5y5/
+[Reddit] Starting extraction for: https://www.reddit.com/r/PakistanGoneeHorny/comments/1s1y5y5/
+Reddit extraction failed: AGE_GATED
+⚠️  Failed as expected but wrong error code: AGE_GATED (expected MEDIA_NOT_FOUND)
+
+--- Verification Summary ---
+Overall Pass Rate: 53.3% (8/15)
+Detailed JSON report saved to: C:\dev\portfolio\web\clipkeep\artifacts\verification-report.json
+
+Some tests did not pass fully. Review the console logs or JSON report.

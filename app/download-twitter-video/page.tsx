@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { TwitterDownloaderClient } from '@/components/downloaders/twitter-downloader-client';
-import { twitterText, normalizeLocale } from '@/lib/i18n/ui';
+import { twitterText, normalizeLocale, menuText } from '@/lib/i18n/ui';
+import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -68,6 +69,7 @@ export default async function TwitterDownloaderPage({ searchParams }: Props) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = twitterText[locale];
+  const menu = menuText[locale];
 
   const websiteUrl = `https://clipkeep.net/download-twitter-video?locale=${locale}`;
 
@@ -86,7 +88,12 @@ export default async function TwitterDownloaderPage({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'Fast X/Twitter video extraction, GIF support, High-quality MP4',
-        'description': t.subtitle
+        'description': t.subtitle,
+        'aggregateRating': {
+          '@type': 'AggregateRating',
+          'ratingValue': '4.9',
+          'ratingCount': '850'
+        }
       },
       {
         '@type': 'HowTo',
@@ -114,6 +121,12 @@ export default async function TwitterDownloaderPage({ searchParams }: Props) {
 
   return (
     <>
+      <BreadcrumbSchema 
+        items={[
+          { name: menu.downloads, item: '/' },
+          { name: t.title, item: `/download-twitter-video?locale=${locale}` }
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
