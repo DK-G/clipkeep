@@ -1,4 +1,4 @@
-import type { ExtractionMedia } from "./types";
+﻿import type { ExtractionMedia } from "./types";
 
 interface RedditListingResponse {
   data?: {
@@ -223,3 +223,4 @@ export async function extractReddit(url: string): Promise<ExtractionMedia[]> {
     throw error;
   }
 }
+

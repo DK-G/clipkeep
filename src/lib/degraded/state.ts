@@ -58,3 +58,4 @@ export function setDegradedFlag(isDegraded: boolean): void {
   state.isDegraded = isDegraded;
   state.degradedEnteredAt = isDegraded ? Date.now() : null;
 }
+

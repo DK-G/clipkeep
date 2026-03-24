@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Utility for extracting TikTok media without watermarks using public APIs/Fixers.
  */
 
@@ -229,3 +229,4 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
     throw error;
   }
 }
+

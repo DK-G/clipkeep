@@ -1,4 +1,4 @@
-import { getDb } from "@/lib/db/d1";
+﻿import { getDb } from "@/lib/db/d1";
 import { success, failure } from "@/lib/api/response";
 import { getRequestId } from "@/lib/api/request-id";
 
@@ -63,3 +63,4 @@ export async function GET(request: Request) {
     });
   }
 }
+

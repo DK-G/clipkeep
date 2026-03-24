@@ -1,4 +1,4 @@
-import type { ExtractionMedia } from "./types";
+﻿import type { ExtractionMedia } from "./types";
 
 interface PinterestImageCandidate {
   url?: string;
@@ -418,3 +418,4 @@ export async function extractPinterest(pinUrl: string): Promise<ExtractionMedia[
     throw error;
   }
 }
+

@@ -98,3 +98,4 @@ export async function extractFacebook(url: string): Promise<ExtractionMedia[]> {
     throw error;
   }
 }
+

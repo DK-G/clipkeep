@@ -98,3 +98,4 @@ export async function extractDiscord(url: string): Promise<ExtractionMedia[]> {
     throw error;
   }
 }
+

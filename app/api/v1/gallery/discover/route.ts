@@ -1,4 +1,4 @@
-import { success } from "@/lib/api/response";
+﻿import { success } from "@/lib/api/response";
 import { getRequestId } from "@/lib/api/request-id";
 const PATTERNS: string[] = [
   'trendingX', 'latestX',
@@ -29,3 +29,4 @@ export async function GET() {
     },
   });
 }
+

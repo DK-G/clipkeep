@@ -1,4 +1,4 @@
-import type { D1Database } from "@cloudflare/workers-types";
+﻿import type { D1Database } from "@cloudflare/workers-types";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 /**
@@ -18,3 +18,4 @@ export async function getDb(): Promise<D1Database> {
 
   return db;
 }
+

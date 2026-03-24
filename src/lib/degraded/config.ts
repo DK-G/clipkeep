@@ -14,3 +14,4 @@ export function isManualOverrideEnabled(): boolean {
   const value = (process.env.DEGRADED_FORCE ?? "").toLowerCase();
   return value === "true" || value === "1" || value === "yes";
 }
+

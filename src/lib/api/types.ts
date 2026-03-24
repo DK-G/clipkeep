@@ -1,4 +1,4 @@
-import type { Locale } from "@/lib/i18n/ui";
+﻿import type { Locale } from "@/lib/i18n/ui";
 
 export type ApiMeta = {
   requestId: string;
@@ -60,3 +60,4 @@ export interface ExtractionResult {
   thumbnail_url?: string;
   warnings: string[];
 }
+

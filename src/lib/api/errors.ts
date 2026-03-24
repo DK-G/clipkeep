@@ -18,3 +18,4 @@ export function toInternalError(): ApiErrorBody {
     details: {},
   };
 }
+

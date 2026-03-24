@@ -92,3 +92,4 @@ export function findSolutionPage(slug: string, locale: Locale): SolutionPage | u
   return pages.find((p) => p.slug === slug && p.locale === locale)
     ?? pages.find((p) => p.slug === slug && p.locale === "en");
 }
+

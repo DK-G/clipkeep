@@ -1,4 +1,4 @@
-import { recordAccess } from "@/lib/extract/store";
+﻿import { recordAccess } from "@/lib/extract/store";
 import { success, failure } from "@/lib/api/response";
 import { getRequestId } from "@/lib/api/request-id";
 
@@ -37,3 +37,4 @@ export async function POST(
     });
   }
 }
+

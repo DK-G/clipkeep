@@ -196,3 +196,4 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
 
   throw new Error(lastError);
 }
+

@@ -1,4 +1,4 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
+﻿import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 /**
  * Verifies a Cloudflare Turnstile token using the siteverify API.
@@ -47,3 +47,4 @@ export async function verifyTurnstileToken(token: string, ip?: string): Promise<
     return false;
   }
 }
+

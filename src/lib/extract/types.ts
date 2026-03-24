@@ -1,4 +1,4 @@
-export type Platform = "telegram" | "twitter" | "tiktok" | "instagram" | "reddit" | "pinterest" | "facebook" | "threads" | "bluesky" | "lemon8" | "bilibili" | "discord";
+﻿export type Platform = "telegram" | "twitter" | "tiktok" | "instagram" | "reddit" | "pinterest" | "facebook" | "threads" | "bluesky" | "lemon8" | "bilibili" | "discord";
 export type JobStatus = "queued" | "processing" | "completed" | "failed";
 
 export type ExtractionMedia = {
@@ -25,3 +25,4 @@ export type ExtractJob = {
   createdAt: string;
   updatedAt: string;
 };
+

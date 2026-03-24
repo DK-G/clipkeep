@@ -1,4 +1,4 @@
-const DEFAULT_WINDOW_MS = 60000;
+﻿const DEFAULT_WINDOW_MS = 60000;
 const DEFAULT_LIMIT = 30;
 
 type Bucket = {
@@ -81,3 +81,4 @@ export function getClientKey(request: Request): string {
 
   return 'unknown';
 }
+

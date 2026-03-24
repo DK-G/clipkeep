@@ -1,4 +1,4 @@
-import type { ExtractionMedia } from "./types";
+﻿import type { ExtractionMedia } from "./types";
 
 interface BilibiliViewResponse {
   code?: number;
@@ -149,3 +149,4 @@ export async function extractBilibili(url: string): Promise<ExtractionMedia[]> {
     throw error;
   }
 }
+

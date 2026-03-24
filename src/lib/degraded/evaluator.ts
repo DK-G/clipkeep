@@ -79,3 +79,4 @@ export function evaluateDegraded(): DegradedSnapshot {
     metrics: { errorRatio: ratio, queueWaitP95Ms: p95, activeJobs: active },
   };
 }
+

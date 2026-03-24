@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Utility for extracting Instagram media using public fixers/proxies.
  */
 
@@ -96,3 +96,4 @@ export async function extractInstagram(sourceUrl: string): Promise<InstagramMedi
     throw error;
   }
 }
+
