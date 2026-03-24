@@ -1,66 +1,85 @@
-﻿# Cloudflare本番セットアップ手順（ClipKeep）
+﻿# Cloudflare Production Setup
 
-## 0. 前提
-- 対象リポジトリ: `C:\dev\portfolio\web\clipkeep`
-- 本番ドメインが取得済み
-- CloudflareアカウントとWranglerログイン済み
+## Purpose
+- Define the current production deployment baseline for ClipKeep.
+- Avoid target mix-ups between `clipkeep-web` and `clipkeep-web-test`.
 
-## 1. Cloudflare Pagesプロジェクト作成
-1. Cloudflare Dashboard > Workers & Pages > Create application > Pages > Connect to Git。
-2. 対象リポジトリを選択し、Production branch を `main`（または `prod`）に設定。
-3. Build設定:
-- Framework preset: `Next.js`
-- Build command: `npm run build`
-- Build output: 自動検出（Next.js）
+## Current Assumption
+- Runtime: Cloudflare Workers via OpenNext
+- Production worker config: `wrangler.production.toml`
+- Test worker config: `wrangler.test.toml`
 
-## 2. D1本番DB作成
-1. Dashboard > Storage & Databases > D1 > Create database。
-2. DB名を `clipkeep-db` として作成。
-3. `database_id` を控える。
-4. `wrangler.toml` の D1 binding (`DB`) に本番 `database_id` を設定。
+## 1. Preconditions
+- Repository: `C:\dev\portfolio\web\clipkeep`
+- Cloudflare account and Wrangler login are ready
+- Production domain is already connected
+- D1 database `clipkeep-db` exists
 
-## 3. 本番マイグレーション適用
-```powershell
-cd C:\dev\portfolio\web\clipkeep
-npm run d1:migrate:remote
-```
-- 実行後、主要テーブルが作成されていることを確認。
+## 2. Production Config Files
+- `wrangler.production.toml`
+  - Worker name: `clipkeep-web`
+  - `NEXT_PUBLIC_SITE_URL=https://clipkeep.net`
+- `wrangler.test.toml`
+  - Worker name: `clipkeep-web-test`
+  - `NEXT_PUBLIC_SITE_URL=https://clipkeep-web-test.liminality-3110.workers.dev`
 
-## 4. Secrets / Environment Variables設定
-Pages > Settings > Environment variables で Production に設定:
-- `RATE_LIMIT_DO_ENDPOINT` = デプロイ済みDO Worker URL
-- `NEXT_PUBLIC_SITE_URL` = `https://<本番ドメイン>`
-- `NEXT_PUBLIC_GA_ID` = `G-XXXXXXXXXX`（導入時）
+Do not switch targets by editing `wrangler.toml` manually.
 
-必要に応じて Wrangler Secret:
+## 3. Required Environment Values
+- `RATE_LIMIT_DO_ENDPOINT`
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_GA_ID`
+- Turnstile keys
+
+If secrets are not managed in config, set them with Wrangler:
 ```powershell
 npx wrangler secret put <KEY>
 ```
 
-## 5. ドメイン接続
-1. Pages project > Custom domains で本番ドメインを追加。
-2. `apex` / `www` のどちらを正規化するか決め、301統一。
-3. SSL/TLS が `Full (strict)` で有効化されていることを確認。
+## 4. Production Migration
+```powershell
+cd C:\dev\portfolio\web\clipkeep
+npm run d1:migrate:remote
+```
 
-## 6. デプロイ確認チェック
-- `/` が200
-- `/solution/<slug>` が200
-- `POST /api/v1/extract/prepare` が202または429
-- `GET /api/v1/solution-pages/<slug>?locale=en` が200
-- `GET /api/v1/solution-pages/<missing>` が404
+## 5. Production Release Flow
+1. Validate target and smoke check:
+```powershell
+npm run check:release:prod
+```
+2. Deploy production worker:
+```powershell
+npm run deploy:prod
+```
+3. Verify:
+- `https://clipkeep.net/` returns `200`
+- `https://clipkeep.net/api/v1/health` returns `200`
+- metadata / canonical / JSON-LD point to `clipkeep.net`
 
-## 7. リリース直後チェック（30分）
-- 5xx率の急上昇がない
-- 429率が異常高騰していない
-- statusページの導線が有効
-- 主要イベント（extract_submit / extract_completed / solution_view）が計測される
+## 6. Test Release Flow
+1. Validate target:
+```powershell
+npm run check:release:test
+```
+2. Deploy test worker:
+```powershell
+npm run deploy:test
+```
 
-## 8. ロールバック最低手順
-1. Pagesで直前の安定デプロイを再アクティブ化。
-2. 必要に応じて `RATE_LIMIT_DO_ENDPOINT` を既知安定版へ戻す。
-3. statusページで障害告知を更新。
+## 7. Post-Deploy Checks
+- Home page loads
+- Key downloader pages load
+- Gallery APIs return `200`
+- status page is reachable
+- metadata / Open Graph / Twitter / JSON-LD use the expected domain
 
-## 参考
-- `docs/infra/d1_migration.md`
-- `docs/infra/rate_limit_do_setup.md`
-- `docs/infra/external_prerequisites.md`
+## 8. Rollback
+1. Re-deploy the last known good commit to the same target
+2. Re-run the release gate
+3. Update status page if user-facing degradation exists
+
+## References
+- [docs/infra/deployment_profiles.md](C:\dev\portfolio\web\clipkeep\docs\infra\deployment_profiles.md)
+- [docs/ops/release_flow.md](C:\dev\portfolio\web\clipkeep\docs\ops\release_flow.md)
+- [docs/infra/d1_migration.md](C:\dev\portfolio\web\clipkeep\docs\infra\d1_migration.md)
+- [docs/infra/rate_limit_do_setup.md](C:\dev\portfolio\web\clipkeep\docs\infra\rate_limit_do_setup.md)
