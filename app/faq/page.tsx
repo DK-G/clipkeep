@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { normalizeLocale, faqText, localeDir } from '@/lib/i18n/ui';
+import { SITE_URL } from '@/lib/site-url';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -23,7 +24,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     tr: 'ClipKeep, desteklenen platformlar ve çıkarma süreci hakkında sık sorulan soruların yanıtlarını bulun.',
   };
 
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = '/faq';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
@@ -109,4 +110,6 @@ export default async function FAQPage({ searchParams }: Props) {
     </main>
   );
 }
+
+
 

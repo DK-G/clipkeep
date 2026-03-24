@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useRouter } from 'next/navigation';
 import { solutionText, localeDir, type Locale } from '@/lib/i18n/ui';
@@ -50,3 +50,4 @@ export function SolutionContentClient({ data, locale }: Props) {
     </div>
   );
 }
+

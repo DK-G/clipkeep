@@ -1,6 +1,7 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { StatusContentClient } from '@/components/status-content-client';
 import { normalizeLocale, statusText } from '@/lib/i18n/ui';
+import { SITE_URL } from '@/lib/site-url';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -10,7 +11,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = statusText[locale];
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = '/status';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
@@ -50,7 +51,7 @@ export default async function StatusPage({ searchParams }: Props) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = statusText[locale];
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = '/status';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
@@ -69,3 +70,4 @@ export default async function StatusPage({ searchParams }: Props) {
     </>
   );
 }
+

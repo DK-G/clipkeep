@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { SolutionContentClient } from '@/components/solution-content-client';
 import { findSolutionPage } from '@/lib/solution-pages/store';
 import { normalizeLocale, type Locale } from '@/lib/i18n/ui';
+import { SITE_URL } from '@/lib/site-url';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -23,7 +24,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const page = findSolutionPage(slug, locale);
   if (!page) return {};
 
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = `/solution/${slug}`;
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
@@ -63,7 +64,7 @@ export default async function Page({ params, searchParams }: Props) {
     notFound();
   }
 
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = `/solution/${slug}`;
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
   const description = page.sections[0]?.body || 'ClipKeep solution guide.';
@@ -82,3 +83,5 @@ export default async function Page({ params, searchParams }: Props) {
     </>
   );
 }
+
+

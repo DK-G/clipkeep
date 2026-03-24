@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 interface SEOContentProps {
   content: string;
@@ -61,4 +61,5 @@ export function SEOContent({ content }: SEOContentProps) {
 
   return <div className="mt-16 p-8 bg-gray-50 rounded-3xl border border-gray-100 max-w-4xl mx-auto">{renderContent(content)}</div>;
 }
+
 

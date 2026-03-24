@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { ExtractorForm } from '@/components/extractor-form';
@@ -110,4 +110,5 @@ export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps
     </main>
   );
 }
+
 

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Locale, resultText } from '@/lib/i18n/ui';
 import type { MediaVariant } from '@/lib/api/types';
@@ -67,3 +67,4 @@ export function DownloadItem({ variant, locale }: DownloadItemProps) {
     </div>
   );
 }
+

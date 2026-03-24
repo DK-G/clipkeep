@@ -1,4 +1,4 @@
-import { Locale } from './ui';
+﻿import { Locale } from './ui';
 
 export type DiscoveryDict = {
   trendingX: string;
@@ -124,3 +124,4 @@ export const discoveryText: Record<Locale, DiscoveryDict> = {
     globalTrending: "Küresel Trend Merkezi"
   }
 };
+

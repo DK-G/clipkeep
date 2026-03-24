@@ -1,4 +1,4 @@
-export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
+﻿export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
 
 export function normalizeLocale(value: string | null | undefined): Locale {
   const v = value?.toLowerCase();
@@ -4785,3 +4785,4 @@ export const facebookText: Record<Locale, PlatformPageDict> = {
     trendingTitle: "Facebook Trendleri"
   },
 };
+

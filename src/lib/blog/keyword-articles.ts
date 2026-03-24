@@ -1,4 +1,4 @@
-export type BlogLocale = 'en' | 'es' | 'ar' | 'ja' | 'pt' | 'fr' | 'de' | 'tr' | 'id' | 'hi';
+﻿export type BlogLocale = 'en' | 'es' | 'ar' | 'ja' | 'pt' | 'fr' | 'de' | 'tr' | 'id' | 'hi';
 
 export type KeywordCategory = 'twitter' | 'tiktok' | 'telegram' | 'comparison';
 

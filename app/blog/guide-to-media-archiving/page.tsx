@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { localeDir, normalizeLocale, type Locale } from '@/lib/i18n/ui';
+import { SITE_URL } from '@/lib/site-url';
 
 type BlogSection = {
   heading: string;
@@ -605,7 +606,7 @@ const blogMeta: Record<Locale, { title: string; description: string }> = {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = '/blog/guide-to-media-archiving';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
   const meta = blogMeta[locale] ?? blogMeta.en;
@@ -692,4 +693,6 @@ export default async function MediaArchivingGuidePage({ searchParams }: Props) {
     </main>
   );
 }
+
+
 

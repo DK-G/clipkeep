@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { statusText, normalizeLocale, localeDir } from '@/lib/i18n/ui';
@@ -46,3 +46,4 @@ export function StatusContentClient({ localeParam }: Props) {
     </main>
   );
 }
+

@@ -204,3 +204,4 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
   );
 }
 
+

@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { keywordArticles, type BlogLocale } from '@/lib/blog/keyword-articles';
 import { normalizeLocale } from '@/lib/i18n/ui';
+import { SITE_URL } from '@/lib/site-url';
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -133,7 +134,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const sp = await searchParams;
   const locale = toBlogLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = pageText[locale];
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = '/blog';
   const url = `${base}${path}${locale === 'en' ? '' : `?locale=${locale}`}`;
 
@@ -162,7 +163,7 @@ export default async function BlogIndexPage({ searchParams }: Props) {
   const locale = toBlogLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = pageText[locale];
   const q = locale === 'en' ? '' : `?locale=${locale}`;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://clipkeep.net';
+  const siteUrl = SITE_URL;
 
   const itemListJsonLd = {
     '@context': 'https://schema.org',
@@ -208,3 +209,8 @@ export default async function BlogIndexPage({ searchParams }: Props) {
     </main>
   );
 }
+
+
+
+
+

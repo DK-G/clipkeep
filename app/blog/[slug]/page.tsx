@@ -1,9 +1,10 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BlogCtaLink } from '@/components/blog-cta-link';
 import { notFound } from 'next/navigation';
 import { getKeywordArticle, getRelatedKeywordArticles, keywordArticles, type BlogLocale } from '@/lib/blog/keyword-articles';
 import { normalizeLocale } from '@/lib/i18n/ui';
+import { SITE_URL } from '@/lib/site-url';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -1027,7 +1028,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   }
 
   const kw = article.keyword[locale];
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = `/blog/${article.slug}`;
   const url = `${base}${path}${locale === 'en' ? '' : `?locale=${locale}`}`;
 
@@ -1221,6 +1222,8 @@ export default async function BlogKeywordPage({ params, searchParams }: Props) {
     </main>
   );
 }
+
+
 
 
 

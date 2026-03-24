@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from 'next';
 import { ContactContentClient } from '@/components/contact-content-client';
 import { normalizeLocale } from '@/lib/i18n/ui';
+import { SITE_URL } from '@/lib/site-url';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -9,7 +10,7 @@ interface Props {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = '/contact';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
@@ -63,7 +64,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 export default async function ContactPage({ searchParams }: Props) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
-  const base = 'https://clipkeep.net';
+  const base = SITE_URL;
   const path = '/contact';
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
@@ -108,3 +109,4 @@ export default async function ContactPage({ searchParams }: Props) {
     </>
   );
 }
+

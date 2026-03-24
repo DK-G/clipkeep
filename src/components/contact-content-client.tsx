@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { contactText, normalizeLocale, localeDir } from '@/lib/i18n/ui';
 
@@ -50,3 +50,4 @@ export function ContactContentClient({ localeParam }: Props) {
     </main>
   );
 }
+

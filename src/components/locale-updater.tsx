@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -18,3 +18,4 @@ export function LocaleUpdater() {
 
   return null;
 }
+

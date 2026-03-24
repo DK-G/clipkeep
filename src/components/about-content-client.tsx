@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { aboutText, normalizeLocale, localeDir } from '@/lib/i18n/ui';
 
@@ -36,3 +36,4 @@ export function AboutContentClient({ localeParam }: Props) {
     </main>
   );
 }
+

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { trackEvent } from '@/lib/analytics/gtag';
@@ -32,5 +32,6 @@ export function BlogCtaLink({ href, className, children, locale, slug, ctaType, 
     </Link>
   );
 }
+
 
 

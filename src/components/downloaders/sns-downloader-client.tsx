@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { ExtractorForm, Platform } from '@/components/extractor-form';
@@ -112,3 +112,4 @@ export function SnsDownloaderClient({ platform, locale, dict: t }: SnsDownloader
     </main>
   );
 }
+
