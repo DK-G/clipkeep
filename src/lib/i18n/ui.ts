@@ -103,6 +103,7 @@ type ResultDict = {
   unknownAuthor: string;
   warningsTitle: string;
   recommendedClips: string;
+  sourcePost: string;
 };
 
 type SolutionDict = {
@@ -1782,6 +1783,7 @@ export const resultText: Record<Locale, ResultDict> = {
     unknownAuthor: "Unknown Author",
     warningsTitle: "Extraction Warnings",
     recommendedClips: "Recommended Clips",
+    sourcePost: "Post",
   },
   ar: {
     title: "نتيجة الاستخراج",
@@ -1818,6 +1820,7 @@ export const resultText: Record<Locale, ResultDict> = {
     unknownAuthor: "مؤلف غير معروف",
     warningsTitle: "تحذيرات الاستخراج",
     recommendedClips: "مقاطع مقترحة",
+    sourcePost: "منشور",
   },
   ja: {
     title: "抽出結果",
@@ -1854,6 +1857,7 @@ export const resultText: Record<Locale, ResultDict> = {
     unknownAuthor: "不明な投稿者",
     warningsTitle: "抽出に関する警告",
     recommendedClips: "おすすめクリップ",
+    sourcePost: "ポスト",
   },
   es: {
     title: "Resultado de ClipKeep",
@@ -1890,6 +1894,7 @@ export const resultText: Record<Locale, ResultDict> = {
     unknownAuthor: "Autor desconocido",
     warningsTitle: "Advertencias de extracción",
     recommendedClips: "Clips recomendados",
+    sourcePost: "Post",
   },
   pt: {
     title: "Resultado do ClipKeep",
@@ -1926,6 +1931,7 @@ export const resultText: Record<Locale, ResultDict> = {
     unknownAuthor: "Autor desconhecido",
     warningsTitle: "Avisos de extração",
     recommendedClips: "Clips recomendados",
+    sourcePost: "Post",
   },
   fr: {
     title: "Résultat ClipKeep",
@@ -1962,6 +1968,7 @@ export const resultText: Record<Locale, ResultDict> = {
     unknownAuthor: "Auteur inconnu",
     warningsTitle: "Avertissements d'extraction",
     recommendedClips: "Clips recommandés",
+    sourcePost: "Post",
   },
   id: {
     title: "Hasil ClipKeep",
@@ -1998,6 +2005,7 @@ export const resultText: Record<Locale, ResultDict> = {
     unknownAuthor: "Penulis Tidak Dikenal",
     warningsTitle: "Peringatan Ekstraksi",
     recommendedClips: "Klip yang Direkomendasikan",
+    sourcePost: "Post",
   },
   hi: {
     title: "ClipKeep परिणाम",
@@ -2034,6 +2042,7 @@ export const resultText: Record<Locale, ResultDict> = {
     unknownAuthor: "अज्ञात लेखक",
     warningsTitle: "निष्कर्षण चेतावनियाँ",
     recommendedClips: "अनुशंसित क्लिप",
+    sourcePost: "पोस्ट",
   },
   de: {
     title: "ClipKeep Ergebnis",
@@ -2070,6 +2079,7 @@ export const resultText: Record<Locale, ResultDict> = {
     unknownAuthor: "Unbekannter Autor",
     warningsTitle: "Extraktionswarnungen",
     recommendedClips: "Empfohlene Clips",
+    sourcePost: "Post",
   },
   tr: {
     title: "ClipKeep Sonucu",
@@ -2106,6 +2116,7 @@ export const resultText: Record<Locale, ResultDict> = {
     unknownAuthor: "Bilinmeyen Yazar",
     warningsTitle: "Ayıklama Uyarıları",
     recommendedClips: "Önerilen Klipler",
+    sourcePost: "Gönderi",
   }
 };
 

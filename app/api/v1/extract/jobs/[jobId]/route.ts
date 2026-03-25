@@ -1,4 +1,4 @@
-﻿import { getRequestId } from "@/lib/api/request-id";
+import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
 import { getJob } from "@/lib/extract/store";
 
@@ -37,6 +37,7 @@ export async function GET(_request: Request, context: Context) {
           type: m.type,
           thumbUrl: m.thumbUrl,
         })),
+        source_url: job.sourceUrl,
         warnings: job.warnings,
       },
     });
@@ -50,6 +51,7 @@ export async function GET(_request: Request, context: Context) {
       status: job.status,
       progress: job.progress,
       variants: [],
+      source_url: job.sourceUrl,
       warnings: job.warnings || [],
     },
   });

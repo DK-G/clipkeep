@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { normalizeLocale, resultText, menuText } from '@/lib/i18n/ui';
 import { getJob } from '@/lib/extract/store';
@@ -67,6 +67,7 @@ export default async function ResultPage({ params, searchParams }: Props) {
     author_name: job.media[0]?.title || undefined, // Fallback
     title: job.media[0]?.title || undefined,
     thumbnail_url: job.media[0]?.thumbUrl || undefined,
+    source_url: job.sourceUrl,
     warnings: job.warnings || [],
   } : null;
 

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 
 // We allow custom classNames to be passed so the icons can be large in the hero, and tiny in the gallery badges.
 export const TiktokIcon = ({ className = "w-6 h-6 sm:w-7 sm:h-7 text-white" }: { className?: string }) => (
@@ -66,4 +66,23 @@ export const Lemon8Icon = ({ className = "w-6 h-6 sm:w-7 sm:h-7 text-white" }: {
     <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.3 14h-2.1v-1.9h-2.4V16H8.7v-2.1c0-2.8 2.3-5.1 5.1-5.1V6.7C9.3 6.7 5.7 10.3 5.7 14.8v4.2h10.6v-5z" />
   </svg>
 );
+
+import { Platform } from '@/lib/extract/types';
+
+export const PlatformIcon = ({ platform, className }: { platform: Platform; className?: string }) => {
+  switch (platform) {
+    case 'tiktok': return <TiktokIcon className={className} />;
+    case 'twitter': return <TwitterXIcon className={className} />;
+    case 'reddit': return <RedditIcon className={className} />;
+    case 'facebook': return <FacebookIcon className={className} />;
+    case 'telegram': return <TelegramIcon className={className} />;
+    case 'pinterest': return <PinterestIcon className={className} />;
+    case 'discord': return <DiscordIcon className={className} />;
+    case 'bilibili': return <BilibiliIcon className={className} />;
+    case 'bluesky': return <BlueskyIcon className={className} />;
+    case 'threads': return <ThreadsIcon className={className} />;
+    case 'lemon8': return <Lemon8Icon className={className} />;
+    default: return null;
+  }
+};
 

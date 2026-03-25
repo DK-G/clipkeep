@@ -20,8 +20,8 @@ NEXT_PUBLIC_GA_ID = "G-EDYDTJMPK6"
 RATE_LIMIT_DO_ENDPOINT = "https://clipkeep-rate-limit.liminality-3110.workers.dev"
 RATE_LIMIT_LIMIT = "30"
 RATE_LIMIT_WINDOW_MS = "60000"
-# Turnstile keys must be provided in the production Worker environment.
-# Do not place testing placeholders in the production profile.
+NEXT_PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAACvkzgdZA8KipZXs"
+# TURNSTILE_SECRET_KEY is managed as a Secret in Cloudflare Dashboard (e.g. turnsite_key)
 
 browser_rendering = { binding = "BROWSER" }
 

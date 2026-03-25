@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,10 +10,7 @@ import type { Platform } from '@/lib/extract/types';
 import { AdsterraNative } from '@/components/ads/native-banner';
 import { DownloadItem } from '@/components/download-item';
 import { GallerySection } from '@/components/gallery-section';
-
-function XIcon() { return <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>; }
-function TiktokIcon() { return <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"></path></svg>; }
-function TelegramIcon() { return <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.762 5.319-1.056 6.887-.125.664-.371.887-.607.909-.513.048-.903-.337-1.4-.663-.777-.51-1.215-.828-1.967-1.323-.869-.57-.306-.883.19-.139 1.3 1.95 2.394 3.606 3.774 5.679.155.234.305.454.455.67.149.222.284.423.415.617.13.194.25.372.361.534.111.162.213.31.305.441.254.364.57 1.258.113 1.875l.136-.182zm-4.962 0zM12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"></path></svg>; }
+import { PlatformIcon } from '@/components/platform-icons';
 
 interface ResultClientProps {
   jobId: string;
@@ -61,6 +58,26 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
     fetchResult();
     return () => clearTimeout(pollInterval);
   }, [jobId, t.errorTitle, data?.status]);
+
+  // Record access once job is completed
+  useEffect(() => {
+    if (data?.status !== 'completed' || !jobId) return;
+
+    // Use a sessionStorage flag to avoid double-counting in the same session tab
+    const storageKey = `recorded_${jobId}`;
+    if (sessionStorage.getItem(storageKey)) return;
+
+    const recordAccess = async () => {
+      try {
+        await fetch(`/api/v1/gallery/access/${jobId}?locale=${locale}`, { method: 'POST' });
+        sessionStorage.setItem(storageKey, 'true');
+      } catch (err) {
+        console.error('Failed to record access:', err);
+      }
+    };
+
+    recordAccess();
+  }, [jobId, data?.status, locale]);
 
   if (loading && !data) {
     return (
@@ -128,11 +145,9 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
                  
                  <div className="p-4 sm:p-6 border-t border-slate-100 dark:border-slate-800">
                     <div className="flex items-center gap-3 mb-3">
-                       <div className="bg-slate-900 dark:bg-slate-800 p-2 rounded-lg text-white">
-                          {data.platform === 'twitter' && <XIcon />}
-                          {data.platform === 'tiktok' && <TiktokIcon />}
-                          {data.platform === 'telegram' && <TelegramIcon />}
-                       </div>
+                        <div className="bg-slate-900 dark:bg-slate-800 p-2 rounded-lg text-white">
+                           <PlatformIcon platform={data.platform as Platform} className="w-5 h-5" />
+                        </div>
                        <div>
                           <p className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight truncate max-w-[200px]">
                             {data.author_name || t.unknownAuthor}
@@ -165,6 +180,8 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
                   key={idx}
                   variant={variant}
                   locale={locale}
+                  sourceUrl={data.source_url}
+                  platform={data.platform as Platform}
                 />
               ))}
            </div>
