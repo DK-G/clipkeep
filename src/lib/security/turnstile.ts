@@ -1,18 +1,15 @@
-﻿import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 /**
  * Verifies a Cloudflare Turnstile token using the siteverify API.
  */
 export async function verifyTurnstileToken(token: string, ip?: string): Promise<boolean> {
   const cloudflare = await getCloudflareContext();
-  const env = cloudflare?.env as { TURNSTILE_SECRET_KEY?: string };
-  const secret = env?.TURNSTILE_SECRET_KEY;
+  const env = cloudflare?.env as { TURNSTILE_SECRET_KEY?: string; turnsite_key?: string; turnstile_key?: string };
+  const secret = env?.TURNSTILE_SECRET_KEY || env?.turnsite_key || env?.turnstile_key;
   
   if (!secret) {
-    console.error("TURNSTILE_SECRET_KEY is not configured in the environment.");
-    // For testing/bootstrap, we might want to return true IF NO KEY IS FOUND, 
-    // but in production we MUST return false.
-    // For now, let's keep it strict.
+    console.error("TURNSTILE_SECRET_KEY (or turnsite_key) is not configured in the environment.");
     return false;
   }
 
