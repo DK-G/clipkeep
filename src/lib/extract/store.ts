@@ -7,6 +7,8 @@ import { extractPinterest } from "./pinterest";
 import { extractBluesky } from "./bluesky";
 import { extractBilibili } from "./bilibili";
 import { extractFacebook } from "./facebook";
+import { extractDiscord } from "./discord";
+import { extractLemon8 } from "./lemon8";
 import { extractThreads } from "./threads";
 import { extractWithBrowser } from "./browser";
 import { getDb } from "@/lib/db/d1";
@@ -228,14 +230,16 @@ export async function createJob(platform: Platform, sourceUrl: string, locale: s
               results = await extractBluesky(sourceUrl);
               if (results.length === 0) results = await extractWithBrowser(sourceUrl);
             } else if (platform === "lemon8") {
-              results = await extractWithBrowser(sourceUrl);
+              results = await extractLemon8(sourceUrl);
+              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
             } else if (platform === "bilibili") {
               results = await extractBilibili(sourceUrl);
               if (results.length === 0) {
                 results = (await extractWithBrowser(sourceUrl)).filter((item) => item.type === "video");
               }
             } else if (platform === "discord") {
-              results = await extractWithBrowser(sourceUrl);
+              results = await extractDiscord(sourceUrl);
+              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
             } else if (platform === "threads") {
               results = await extractThreads(sourceUrl);
               if (results.length === 0) results = await extractWithBrowser(sourceUrl);

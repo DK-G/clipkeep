@@ -142,7 +142,7 @@ export async function POST(request: Request) {
       locale: body.locale,
       error: {
         code: "UNSUPPORTED_PLATFORM",
-        message: "Supported platforms are telegram, twitter, tiktok, instagram, reddit, pinterest, facebook, threads, bluesky, lemon8, bilibili, discord",
+        message: "Supported platforms are telegram, twitter, tiktok, reddit, pinterest, facebook, threads, bluesky, lemon8, bilibili, discord",
         details: { platform: platformRaw },
       },
     });

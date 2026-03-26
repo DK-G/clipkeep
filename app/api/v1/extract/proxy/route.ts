@@ -18,11 +18,11 @@ export async function GET(req: NextRequest) {
     "twimg.com", "fxtwitter.com", "vxtwitter.com", "twitfix.com",
     "ddinstagram.com", "cdninstagram.com", "fbcdn.net", "fna.fbcdn.net",
     "tikwm.com", "tiktokv.com", "tiktok.com", "tiktokcdn.com", "tiktokcdn-us.com", "kktiktok.com",
-    "redd.it", "redditstatic.com", "reddit.com", "rxddit.com",
+    "redd.it", "redditstatic.com", "reddit.com", "rxddit.com", "v.redd.it", "i.redd.it",
     "pinimg.com", "pinterest.com",
     "bsky.social", "bsky.network", "bsky.app",
     "byteimg.com", "lemon8-app.com",
-    "hdslb.com", "bilibili.com",
+    "hdslb.com", "bilibili.com", "bilivideo.com",
     "discordapp.net", "discordapp.com", "discord.com",
     "threads.net", "threads.com"
   ];

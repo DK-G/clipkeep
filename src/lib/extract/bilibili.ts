@@ -15,6 +15,7 @@ interface BilibiliPlayUrlResponse {
   data?: {
     durl?: Array<{
       url?: string;
+      backup_url?: string[];
     }>;
   };
 }
@@ -127,14 +128,15 @@ export async function extractBilibili(url: string): Promise<ExtractionMedia[]> {
       }
 
       const durl = data.data?.durl?.[0];
-      if (durl?.url) {
+      const resolvedVideoUrl = durl?.url || durl?.backup_url?.[0];
+      if (resolvedVideoUrl) {
         return [{
           type: "video",
-          url: durl.url,
+          url: resolvedVideoUrl,
           quality: "1080p",
           thumbUrl,
           title,
-          sourcePath: "bilibili-playurl-api",
+          sourcePath: durl?.url ? "bilibili-playurl-api" : "bilibili-playurl-backup",
         }];
       }
     }

@@ -8,8 +8,8 @@ const ALLOWED_HOSTS: Record<Platform, string[]> = {
   bilibili: ["bilibili.com", "www.bilibili.com", "b23.tv"],
   threads: ["threads.net", "www.threads.net", "threads.com", "www.threads.com"],
   bluesky: ["bsky.app", "www.bsky.app"],
-  lemon8: ["lemon8-app.com", "www.lemon8-app.com"],
-  facebook: ["facebook.com", "www.facebook.com", "fb.watch"],
+  lemon8: ["lemon8-app.com", "www.lemon8-app.com", "v.lemon8-app.com"],
+  facebook: ["facebook.com", "www.facebook.com", "m.facebook.com", "fb.com", "fb.watch"],
   telegram: ["t.me", "telegram.me"],
   discord: ["discord.com", "cdn.discordapp.com", "media.discordapp.net"],
 };

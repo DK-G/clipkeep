@@ -53,7 +53,7 @@ const platformPatterns: Record<string, RegExp> = {
   telegram: /t\.me\//i,
   twitter: /(x|twitter)\.com\//i,
   tiktok: /tiktok\.com\//i,
-  reddit: /reddit\.com\/(r|user|comments)/i,
+  reddit: /(reddit\.com\/(r|user|comments)|redd\.it\/)/i,
   pinterest: /(pinterest\.com\/pin\/|pin\.it\/)/i,
   threads: /threads\.(com|net)\//i,
   bluesky: /bsky\.app\/profile\//i,
@@ -229,9 +229,9 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
             placeholder={
               activePlatform === 'telegram' ? 'https://t.me/...' : 
               activePlatform === 'twitter' ? 'https://x.com/...' :
-              activePlatform === 'reddit' ? 'https://reddit.com/...' :
+              activePlatform === 'reddit' ? 'https://reddit.com/r/... or https://redd.it/...' :
               activePlatform === 'pinterest' ? 'https://pinterest.com/...' :
-              activePlatform === 'threads' ? 'https://threads.net/...' :
+              activePlatform === 'threads' ? 'https://threads.com/@user/post/...' :
               activePlatform === 'bluesky' ? 'https://bsky.app/...' :
               activePlatform === 'lemon8' ? 'https://lemon8-app.com/...' :
               activePlatform === 'bilibili' ? 'https://bilibili.com/...' :

@@ -160,9 +160,8 @@ function pickBestVideo(videoList: unknown): PinterestVideoCandidate | null {
     if (!bestAny || (video.height || 0) > (bestAny.height || 0)) {
       bestAny = video;
     }
-    // Relaxed .mp4 check to allow HLS (.m3u8) as fallback
-    const isMp4 = /\.mp4(\?|$)/i.test(video.url);
-    if ((isMp4 || /\.m3u8(\?|$)/i.test(video.url)) && (!bestMp4 || (video.height || 0) > (bestMp4.height || 0))) {
+        const isMp4 = /\.mp4(\?|$)/i.test(video.url);
+    if (isMp4 && (!bestMp4 || (video.height || 0) > (bestMp4.height || 0))) {
       bestMp4 = video;
     }
   }
@@ -352,7 +351,11 @@ async function extractViaPinResource(pinId: string): Promise<ExtractionMedia[]> 
       const data = (await res.json()) as PinterestPinResourceResponse;
       const pinData = data.resource_response?.data;
       if (pinData && typeof pinData === "object") {
-        return extractFromPinCandidate(pinData as Record<string, unknown>);
+        const extracted = extractFromPinCandidate(pinData as Record<string, unknown>);
+        if (extracted.length > 0) {
+          return extracted;
+        }
+        console.warn(`[Pinterest] PinResource returned no downloadable MP4/image for pin ${pinId}`);
       }
     }
   } catch (error) {
