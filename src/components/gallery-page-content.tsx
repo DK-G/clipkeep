@@ -8,9 +8,10 @@ import { GallerySection, GalleryItem } from '@/components/gallery-section';
 import { SEOContent } from '@/components/seo-content';
 import { VideoSchema } from '@/components/video-schema';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
+import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SITE_URL } from '@/lib/site-url';
 
-type GalleryPlatform = ExtractPlatform | 'instagram';
+export type GalleryPlatform = ExtractPlatform | 'instagram';
 
 interface GalleryPageContentProps {
   platform: GalleryPlatform;
@@ -141,8 +142,8 @@ function downloaderPath(platform: GalleryPlatform): string {
 }
 
 function oppositeFeed(type: 'trending' | 'latest', platform: GalleryPlatform): string {
-  const base = `/${platform}`;
-  return type === 'trending' ? `${base}-latest-videos` : `${base}-trending-videos`;
+  const targetType = type === 'trending' ? 'latest' : 'trending';
+  return `/${targetType}/${platform}`;
 }
 
 export function GalleryPageContent({ platform, locale, type }: GalleryPageContentProps) {
@@ -170,7 +171,7 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
   const toolHref = `${downloaderPath(platform)}?locale=${locale}`;
   const feedHref = `${oppositeFeed(type, platform)}?locale=${locale}`;
   const baseUrl = SITE_URL;
-  const pagePath = `/${platform}-${type}-videos${locale === 'en' ? '' : `?locale=${locale}`}`;
+  const pagePath = `/${type}/${platform}${locale === 'en' ? '' : `?locale=${locale}`}`;
   const collectionJsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -199,6 +200,13 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
           { name: type === 'trending' ? menu.rankings : menu.latest, item: '/' },
           { name: dict.title, item: pagePath }
         ]}
+      />
+      <Breadcrumbs 
+        items={[
+          { label: type === 'trending' ? menu.rankings : menu.latest, href: `/${type}?locale=${locale}` },
+          { label: dict.title }
+        ]} 
+        locale={locale} 
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }} />
       <VideoSchema items={items} />

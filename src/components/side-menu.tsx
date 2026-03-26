@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -108,35 +108,11 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale }: SideMenuProps)
       ],
     },
     {
-      id: 'rankings',
-      title: t.rankings,
+      id: 'discovery',
+      title: t.globalHub || "Discovery",
       items: [
-        { label: t.bilibili, href: `/bilibili-trending-videos?locale=${locale}` },
-        { label: t.bluesky, href: `/bluesky-trending-videos?locale=${locale}` },
-        { label: t.discord, href: `/discord-trending-videos?locale=${locale}` },
-        { label: t.facebook, href: `/facebook-trending-videos?locale=${locale}` },
-        { label: t.lemon8, href: `/lemon8-trending-videos?locale=${locale}` },
-        { label: t.pinterest, href: `/pinterest-trending-videos?locale=${locale}` },
-        { label: t.reddit, href: `/reddit-trending-videos?locale=${locale}` },
-        { label: t.threads, href: `/threads-trending-videos?locale=${locale}` },
-        { label: t.tiktok, href: `/tiktok-trending-videos?locale=${locale}` },
-        { label: t.twitter, href: `/twitter-trending-videos?locale=${locale}` },
-      ],
-    },
-    {
-      id: 'latest',
-      title: t.latest,
-      items: [
-        { label: t.bilibili, href: `/bilibili-latest-videos?locale=${locale}` },
-        { label: t.bluesky, href: `/bluesky-latest-videos?locale=${locale}` },
-        { label: t.discord, href: `/discord-latest-videos?locale=${locale}` },
-        { label: t.facebook, href: `/facebook-latest-videos?locale=${locale}` },
-        { label: t.lemon8, href: `/lemon8-latest-videos?locale=${locale}` },
-        { label: t.pinterest, href: `/pinterest-latest-videos?locale=${locale}` },
-        { label: t.reddit, href: `/reddit-latest-videos?locale=${locale}` },
-        { label: t.threads, href: `/threads-latest-videos?locale=${locale}` },
-        { label: t.tiktok, href: `/tiktok-latest-videos?locale=${locale}` },
-        { label: t.twitter, href: `/twitter-latest-videos?locale=${locale}` },
+        { label: t.rankings, href: `/trending?locale=${locale}` },
+        { label: t.latest, href: `/latest?locale=${locale}` },
       ],
     },
     {

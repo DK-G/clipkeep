@@ -18,6 +18,13 @@ export const metadata: Metadata = {
     template: '%s | ClipKeep',
   },
   description: 'ClipKeep is an SNS media extraction hub focused on practical workflows and solution guidance.',
+  manifest: '/manifest.json',
+  themeColor: '#6366f1',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'ClipKeep',
+  },
   alternates: {
     canonical: '/',
   },

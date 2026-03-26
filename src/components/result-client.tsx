@@ -11,6 +11,8 @@ import { AdsterraNative } from '@/components/ads/native-banner';
 import { DownloadItem } from '@/components/download-item';
 import { GallerySection } from '@/components/gallery-section';
 import { PlatformIcon } from '@/components/platform-icons';
+import { useHistory } from '@/hooks/use-history';
+import { usePlatformUsage } from '@/hooks/use-platform-usage';
 
 interface ResultClientProps {
   jobId: string;
@@ -23,9 +25,12 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
   const t = resultText[locale] || resultText.en;
   const dir = localeDir(locale);
 
+  const { addToHistory } = useHistory();
+  const { recordPlatformUse } = usePlatformUsage();
   const [data, setData] = useState<ExtractionResult | null>(initialData);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(!initialData || (initialData.status !== 'completed' && initialData.status !== 'failed'));
+  
 
   useEffect(() => {
     if (!jobId || (data?.status === 'completed' || data?.status === 'failed')) return;
@@ -71,13 +76,27 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
       try {
         await fetch(`/api/v1/gallery/access/${jobId}?locale=${locale}`, { method: 'POST' });
         sessionStorage.setItem(storageKey, 'true');
+        
+        // Also add to local history
+        if (data) {
+          if (data.platform) {
+            recordPlatformUse(data.platform);
+          }
+          addToHistory({
+            id: jobId,
+            platform: data.platform,
+            thumbnail_url: data.thumbnail_url || '',
+            title: data.title || '',
+            created_at: new Date().toISOString()
+          });
+        }
       } catch (err) {
         console.error('Failed to record access:', err);
       }
     };
 
     recordAccess();
-  }, [jobId, data?.status, locale]);
+  }, [jobId, data?.status, locale, addToHistory, recordPlatformUse, data]);
 
   if (loading && !data) {
     return (

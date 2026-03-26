@@ -1,4 +1,4 @@
-﻿import { Metadata } from 'next';
+import { Metadata } from 'next';
 import { galleryPages, normalizeLocale } from '@/lib/i18n/ui';
 import { SITE_URL } from '@/lib/site-url';
 
@@ -10,7 +10,7 @@ export function getGalleryMetadata(type: string, platform: string, localeStr: st
   if (!dict) return {};
 
   const base = SITE_URL;
-  const path = `/${platform}-${type}-videos`;
+  const path = platform === 'all' ? `/${type}` : `/${type}/${platform}`;
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
   
   return {

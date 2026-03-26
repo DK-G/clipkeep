@@ -55,6 +55,8 @@ type HomeDict = {
   tiktokDesc: string;
   globalTrending: string;
   globalTrendingSubtitle: string;
+  recentDownloadsSubtitle?: string;
+  viewAllLatest?: string;
   redditTitle: string;
   redditDesc: string;
   pinterestTitle: string;
@@ -71,6 +73,8 @@ type HomeDict = {
   discordDesc: string;
   facebookTitle: string;
   facebookDesc: string;
+  historyTitle: string;
+  clearHistory: string;
 };
 
 type ResultDict = {
@@ -159,6 +163,8 @@ type MenuDict = {
   downloads: string;
   rankings: string;
   latest: string;
+  latestPageSubtitle?: string;
+  loadingLabel?: string;
   language: string;
   more: string;
   bilibili: string;
@@ -247,7 +253,9 @@ export const homeText: Record<Locale, HomeDict> = {
     discordTitle: "Discord Media Saver",
     discordDesc: "Save videos and images shared via Discord CDN links.",
     facebookTitle: "Facebook Downloader",
-    facebookDesc: "Save Facebook videos and stories."
+    facebookDesc: "Save Facebook videos and stories.",
+    historyTitle: "Your Recent Downloads",
+    clearHistory: "Clear History"
   },
   ar: {
     title: "أداة ClipKeep",
@@ -288,7 +296,9 @@ export const homeText: Record<Locale, HomeDict> = {
     discordTitle: "حافظ وسائط Discord",
     discordDesc: "احفظ الفيديوهات والصور المشاركة عبر روابط Discord CDN.",
     facebookTitle: "محمل فيسبوك",
-    facebookDesc: "حفظ فيديوهات وقصص فيسبوك."
+    facebookDesc: "حفظ فيديوهات وقصص فيسبوك.",
+    historyTitle: "سجل التنزيلات الأخير",
+    clearHistory: "مسح السجل"
   },
   ja: {
     title: "SNS動画ダウンローダー",
@@ -329,7 +339,9 @@ export const homeText: Record<Locale, HomeDict> = {
     discordTitle: "Discord メディア保存",
     discordDesc: "Discord CDN経由で共有された動画や画像を保存します。",
     facebookTitle: "Facebook 保存",
-    facebookDesc: "Facebookの動画やストーリーを保存します。"
+    facebookDesc: "Facebookの動画やストーリーを保存します。",
+    historyTitle: "最近のダウンロード履歴",
+    clearHistory: "履歴を削除"
   },
   es: {
     title: "ClipKeep Extractor",
@@ -370,7 +382,9 @@ export const homeText: Record<Locale, HomeDict> = {
     discordTitle: "Guardador de medios de Discord",
     discordDesc: "Guarda videos e imágenes compartidos vía enlaces CDN de Discord.",
     facebookTitle: "Descargador de Facebook",
-    facebookDesc: "Guarda videos y reels de Facebook."
+    facebookDesc: "Guarda videos y reels de Facebook.",
+    historyTitle: "Tus descargas recientes",
+    clearHistory: "Borrar historial"
   },
   pt: {
     title: "ClipKeep Extractor",
@@ -411,7 +425,9 @@ export const homeText: Record<Locale, HomeDict> = {
     discordTitle: "Protetor de mídia do Discord",
     discordDesc: "Salve vídeos e imagens compartilhados via links CDN do Discord.",
     facebookTitle: "Downloader do Facebook",
-    facebookDesc: "Salve vídeos e stories do Facebook."
+    facebookDesc: "Salve vídeos e stories do Facebook.",
+    historyTitle: "Seus downloads recentes",
+    clearHistory: "Limpar histórico"
   },
   fr: {
     title: "ClipKeep Extractor",
@@ -452,7 +468,9 @@ export const homeText: Record<Locale, HomeDict> = {
     discordTitle: "Sauveur de médias Discord",
     discordDesc: "Enregistrez les vidéos et les images partagées via les liens Discord CDN.",
     facebookTitle: "Téléchargeur Facebook",
-    facebookDesc: "Enregistrez des vidéos et stories Facebook."
+    facebookDesc: "Enregistrez des vidéos et stories Facebook.",
+    historyTitle: "Vos téléchargements récents",
+    clearHistory: "Effacer l'historique"
   },
   id: {
     title: "ClipKeep Extractor",
@@ -493,7 +511,9 @@ export const homeText: Record<Locale, HomeDict> = {
     discordTitle: "Penyimpan Media Discord",
     discordDesc: "Simpan video dan gambar yang dibagikan melalui tautan Discord CDN.",
     facebookTitle: "Pengunduh Facebook",
-    facebookDesc: "Simpan video dan cerita Facebook."
+    facebookDesc: "Simpan video dan cerita Facebook.",
+    historyTitle: "Unduhan Terakhir Anda",
+    clearHistory: "Hapus Riwayat"
   },
   hi: {
     title: "ClipKeep एक्सट्रैक्टर",
@@ -534,7 +554,9 @@ export const homeText: Record<Locale, HomeDict> = {
     discordTitle: "Discord मीडिया सेवर",
     discordDesc: "Discord CDN लिंक के माध्यम से साझा किए गए वीडियो और चित्र सहेजें।",
     facebookTitle: "फेसबुक डाउनलोडर",
-    facebookDesc: "फेसबुक वीडियो और कहानियां सहेजें।"
+    facebookDesc: "फेसबुक वीडियो और कहानियां सहेजें।",
+    historyTitle: "आपके हालिया डाउनलोड",
+    clearHistory: "इतिहास साफ़ करें"
   },
   de: {
     title: "ClipKeep Extractor",
@@ -575,7 +597,9 @@ export const homeText: Record<Locale, HomeDict> = {
     discordTitle: "Discord Media Saver",
     discordDesc: "Speichern Sie Videos und Bilder, die über Discord CDN-Links geteilt werden.",
     facebookTitle: "Facebook Downloader",
-    facebookDesc: "Facebook-Videos und Stories speichern."
+    facebookDesc: "Facebook-Videos und Stories speichern.",
+    historyTitle: "Ihre letzten Downloads",
+    clearHistory: "Verlauf löschen"
   },
   tr: {
     title: "ClipKeep Ayıklayıcı",
@@ -616,7 +640,9 @@ export const homeText: Record<Locale, HomeDict> = {
     discordTitle: "Discord Medya Kaydedici",
     discordDesc: "Discord CDN bağlantıları aracılığıyla paylaşılan videoları ve resimleri kaydedin.",
     facebookTitle: "Facebook İndirici",
-    facebookDesc: "Facebook videolarını ve hikayelerini kaydedin."
+    facebookDesc: "Facebook videolarını ve hikayelerini kaydedin.",
+    historyTitle: "Son İndirmeleriniz",
+    clearHistory: "Geçmişi Temizle"
   }
 };
 
@@ -3700,7 +3726,7 @@ export const menuText: Record<Locale, MenuDict> = {
     faq: "FAQ",
     privacy: "गोपनीयता नीति",
     contact: "सहायता केंद्र",
-    globalHub: "ग्लोबल हub",
+    globalHub: "ग्लोबल हब",
     globalTrend: "ग्लोबल ट्रेंड"
   },
   de: {
@@ -3755,6 +3781,16 @@ export const menuText: Record<Locale, MenuDict> = {
 
 export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
   en: {
+    trendingAll: {
+      title: "Global Trending Videos",
+      subtitle: "Discover the most popular clips across all platforms.",
+      description: "Watch trending videos from TikTok, Twitter, Reddit, and more in one place.",
+    },
+    latestAll: {
+      title: "Latest Global Downloads",
+      subtitle: "See what people are extracting right now.",
+      description: "A real-time feed of the latest media being archived on ClipKeep.",
+    },
     trendingTwitter: {
       title: "Trending Twitter (X) Videos",
       subtitle: "Watch the most popular videos on Twitter today.",
@@ -3873,6 +3909,16 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     }
   },
   ja: {
+    trendingAll: {
+      title: "グローバルトレンド動画",
+      subtitle: "すべてのプラットフォームで人気のクリップを発見しましょう。",
+      description: "TikTok、Twitter、Redditなどからトレンド動画を1つの場所でチェックできます。",
+    },
+    latestAll: {
+      title: "最新のグローバル抽出",
+      subtitle: "今まさに保存されているコンテンツを確認しましょう。",
+      description: "ClipKeepでアーカイブされている最新メディアをリアルタイムフィードで表示します。",
+    },
     trendingTwitter: {
       title: "Twitter (X) トレンド動画",
       subtitle: "現在、Twitterで最も人気のある動画をチェック。",
@@ -3991,6 +4037,16 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     }
   },
   ar: {
+    trendingAll: {
+      title: "فيديوهات رائجة عالمياً",
+      subtitle: "اكتشف المقاطع الأكثر شعبية عبر جميع المنصات.",
+      description: "شاهد فيديوهات تيك توك وتويتر وريديت وغيرها الرائجة في مكان واحد.",
+    },
+    latestAll: {
+      title: "أحدث التنزيلات العالمية",
+      subtitle: "شاهد ما استخرجه المستخدمون للتو.",
+      description: "خلاصة حية لأحدث الوسائط التي تمت أرشفتها على كليبي كيب.",
+    },
     trendingTwitter: { title: "فيديوهات تويتر (X) الرائجة", subtitle: "شاهد أشهر فيديوهات تويتر اليوم.", description: "اكتشف المقاطع المنتشرة وأخبار تويتر." },
     trendingTiktok: { title: "فيديوهات تيك توك الرائجة", subtitle: "أشهر مقاطع تيك توك من حول العالم.", description: "تابع أحدث صيحات تيك توك." },
     trendingTelegram: { title: "وسائط تيليجرام الرائجة", subtitle: "الفيديوهات والملفات الشهيرة من قنوات تيليجرام.", description: "استكشف الوسائط الأكثر تحميلاً." },
@@ -4015,6 +4071,16 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     trendingFacebook: { title: "فيديوهات فيسبوك الرائجة", subtitle: "أشهر الريلز والقصص على فيسبوك.", description: "اكتشف الرائج في مجتمعات فيسبوك اليوم." }
   },
   es: {
+    trendingAll: {
+      title: "Videos de Tendencia Global",
+      subtitle: "Descubre los clips más populares en todas las plataformas.",
+      description: "Mira videos de tendencia de TikTok, Twitter, Reddit y más en un solo lugar.",
+    },
+    latestAll: {
+      title: "Últimas Descargas Globales",
+      subtitle: "Mira lo que la gente está extrayendo ahora mismo.",
+      description: "Un feed en tiempo real de los últimos medios archivados en ClipKeep.",
+    },
     trendingTwitter: { title: "Tendencias de Twitter (X)", subtitle: "Mira los videos más populares de Twitter hoy.", description: "Descubre clips virales y noticias de Twitter (X)." },
     trendingTiktok: { title: "Tendencias de TikTok", subtitle: "Clips virales de TikTok de todo el mundo.", description: "Mantente al día con lo más popular." },
     trendingTelegram: { title: "Tendencias de Telegram", subtitle: "Videos y archivos populares de canales de Telegram.", description: "Explora los archivos más descargados." },
@@ -4039,6 +4105,16 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     trendingFacebook: { title: "Tendencias de Facebook", subtitle: "Reels e historias virales de Facebook.", description: "Descubre lo que es tendencia en Facebook hoy." }
   },
   pt: {
+    trendingAll: {
+      title: "Vídeos de Tendência Global",
+      subtitle: "Descubra os clipes mais populares em todas as plataformas.",
+      description: "Assista a vídeos de tendência do TikTok, Twitter, Reddit e muito mais em um só lugar.",
+    },
+    latestAll: {
+      title: "Últimos Downloads Globais",
+      subtitle: "Veja o que as pessoas estão extraindo agora.",
+      description: "Um feed em tempo real das últimas mídias arquivadas no ClipKeep.",
+    },
     trendingTwitter: { title: "Tendências do Twitter (X)", subtitle: "Veja os vídeos mais populares do Twitter hoje.", description: "Descubra clipes virais e notícias do Twitter (X)." },
     trendingTiktok: { title: "Tendências do TikTok", subtitle: "Clipes virais do TikTok de todo o mundo.", description: "Fique por dentro do que é popular." },
     trendingTelegram: { title: "Tendências do Telegram", subtitle: "Vídeos e arquivos populares de canais do Telegram.", description: "Explore as mídias mais baixadas." },
@@ -4063,6 +4139,16 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     trendingFacebook: { title: "Tendências do Facebook", subtitle: "Reels e stories virais do Facebook.", description: "Descubra o que é tendência no Facebook hoje." }
   },
   fr: {
+    trendingAll: {
+      title: "Vidéos Tendances Mondiales",
+      subtitle: "Découvrez les clips les plus populaires sur toutes les plateformes.",
+      description: "Regardez les vidéos tendances de TikTok, Twitter, Reddit et plus en un seul endroit.",
+    },
+    latestAll: {
+      title: "Derniers Téléchargements Mondiaux",
+      subtitle: "Voyez ce que les gens extraient en ce moment.",
+      description: "Un flux en temps réel des derniers médias archivés sur ClipKeep.",
+    },
     trendingTwitter: { title: "Tendances Twitter (X)", subtitle: "Regardez les vidéos Twitter les plus populaires.", description: "Découvrez les clips viraux et l'actualité de Twitter (X)." },
     trendingTiktok: { title: "Tendances TikTok", subtitle: "Clips viraux TikTok du monde entier.", description: "Restez au courant des nouveautés." },
     trendingTelegram: { title: "Tendances Telegram", subtitle: "Vidéos et fichiers populaires des canaux Telegram.", description: "Explorez les médias les plus téléchargés." },
@@ -4087,6 +4173,16 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     trendingFacebook: { title: "Tendances Facebook", subtitle: "Reels et stories virals de Facebook.", description: "Découvrez ce qui est tendance sur Facebook aujourd'hui." }
   },
   id: {
+    trendingAll: {
+      title: "Video Tren Global",
+      subtitle: "Temukan klip paling populer di semua platform.",
+      description: "Tonton video tren dari TikTok, Twitter, Reddit, dan lainnya di satu tempat.",
+    },
+    latestAll: {
+      title: "Unduhan Global Terbaru",
+      subtitle: "Lihat apa yang sedang diekstrak orang saat ini.",
+      description: "Umpan waktu nyata dari media terbaru yang diarsipkan di ClipKeep.",
+    },
     trendingTwitter: { title: "Tren Video Twitter (X)", subtitle: "Tonton video Twitter paling populer hari ini.", description: "Temukan klip viral dan berita Twitter (X)." },
     trendingTiktok: { title: "Tren Video TikTok", subtitle: "Klip viral TikTok dari seluruh dunia.", description: "Tetap update dengan tren terbaru." },
     trendingTelegram: { title: "Tren Media Telegram", subtitle: "Video dan file populer dari saluran Telegram.", description: "Jelajahi media yang paling banyak diunduh." },
@@ -4135,6 +4231,16 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     trendingFacebook: { title: "ट्रेंडिंग Facebook वीडियो", subtitle: "Facebook पर वायरल रील और कहानियां।", description: "देखें कि आज Facebook समुदायों में क्या ट्रेंड कर रहा है।" }
   },
   de: {
+    trendingAll: {
+      title: "Globale Trend-Videos",
+      subtitle: "Entdecke die beliebtesten Clips auf allen Plattformen.",
+      description: "Sieh dir Trend-Videos von TikTok, Twitter, Reddit und mehr an einem Ort an.",
+    },
+    latestAll: {
+      title: "Neueste globale Downloads",
+      subtitle: "Sieh dir an, was die Leute gerade extrahieren.",
+      description: "Ein Echtzeit-Feed der neuesten auf ClipKeep archivierten Medien.",
+    },
     trendingTwitter: { title: "Trending Twitter (X) Videos", subtitle: "Die beliebtesten Twitter-Videos von heute.", description: "Entdecke virale Clips und Twitter-News." },
     trendingTiktok: { title: "Trending TikTok Videos", subtitle: "Virale TikTok-Clips aus aller Welt.", description: "Bleib über aktuelle Trends informiert." },
     trendingTelegram: { title: "Trending Telegram Medien", subtitle: "Beliebte Videos von Telegram-Kanälen.", description: "Entdecke die meistgeladenen Dateien." },
@@ -4159,6 +4265,16 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     trendingFacebook: { title: "Trending Facebook Videos", subtitle: "Virale Reels und Storys auf Facebook.", description: "Sieh dir an, was in den Facebook-Communities trendet." }
   },
   tr: {
+    trendingAll: {
+      title: "Küresel Trend Videolar",
+      subtitle: "Tüm platformlardaki en popüler klipleri keşfedin.",
+      description: "TikTok, Twitter, Reddit ve daha fazlasındaki trend videoları tek bir yerden izleyin.",
+    },
+    latestAll: {
+      title: "En Son Küresel İndirmeler",
+      subtitle: "İnsanların şu anda ne ayıkladığını görün.",
+      description: "ClipKeep'te arşivlenen en son medyaların gerçek zamanlı akışı.",
+    },
     trendingTwitter: { title: "Popüler Twitter (X) Videoları", subtitle: "Bugün Twitter'daki en popüler videolar.", description: "Viral klipleri ve popüler Twitter haberlerini keşfedin." },
     trendingTiktok: { title: "Popüler TikTok Videoları", subtitle: "Dünyanın her yerinden viral TikTok videoları.", description: "En son trendlerden haberdar olun." },
     trendingTelegram: { title: "Popüler Telegram Medyaları", subtitle: "Telegram kanallarındaki popüler dosyalar.", description: "En çok indirilen medyaları keşfedin." },
@@ -4308,12 +4424,138 @@ export const faqText: Record<Locale, FAQDict> = {
     contactSupport: 'Contactar soporte',
     contactText: 'Si tu pregunta no aparece aquí, contáctanos desde la página de contacto.',
   },
-  pt: { ...faqBaseEn, title: 'Perguntas Frequentes', lastUpdated: 'Última atualização: 2026-03-19' },
-  fr: { ...faqBaseEn, title: 'Questions Fréquentes', lastUpdated: 'Dernière mise à jour: 2026-03-19' },
-  id: { ...faqBaseEn, title: 'Pertanyaan Umum', lastUpdated: 'Pembaruan terakhir: 2026-03-19' },
-  hi: { ...faqBaseEn, title: 'सामान्य प्रश्न', lastUpdated: 'अंतिम अपडेट: 2026-03-19' },
-  de: { ...faqBaseEn, title: 'Häufige Fragen', lastUpdated: 'Zuletzt aktualisiert: 2026-03-19' },
-  tr: { ...faqBaseEn, title: 'Sık Sorulan Sorular', lastUpdated: 'Son güncelleme: 2026-03-19' },
+  pt: {
+    ...faqBaseEn,
+    title: 'Perguntas Frequentes',
+    lastUpdated: 'Última atualização: 2026-03-19',
+    items: [
+      {
+        question: 'O que é o ClipKeep?',
+        answer: 'O ClipKeep é uma ferramenta web para extrair links de mídia de páginas SNS suportadas para fluxos de arquivamento pessoal.',
+      },
+      {
+        question: 'Quais plataformas são suportadas agora?',
+        answer: 'O suporte ativo atual cobre Telegram, X (Twitter), TikTok, Reddit, Pinterest, Facebook, Threads, Bluesky, Lemon8, Bilibili e Discord. O Instagram permanece apenas em manutenção.',
+      },
+      {
+        question: 'Preciso de uma conta?',
+        answer: 'Não. Você pode usar o fluxo de extração sem criar uma conta.',
+      },
+    ],
+    stillQuestions: 'Ainda tem dúvidas?',
+    contactSupport: 'Contatar Suporte',
+    contactText: 'Se a sua pergunta não estiver coberta aqui, entre em contato conosco através da página de contato.',
+  },
+  fr: {
+    ...faqBaseEn,
+    title: 'Questions Fréquentes',
+    lastUpdated: 'Dernière mise à jour: 2026-03-19',
+    items: [
+      {
+        question: 'Qu\'est-ce que ClipKeep ?',
+        answer: 'ClipKeep est un outil web permettant d\'extraire des liens multimédias à partir de pages SNS prises en charge pour des flux d\'archivage personnels.',
+      },
+      {
+        question: 'Quelles plateformes sont prises en charge actuellement ?',
+        answer: 'Le support actif actuel couvre Telegram, X (Twitter), TikTok, Reddit, Pinterest, Facebook, Threads, Bluesky, Lemon8, Bilibili et Discord. Instagram reste en mode maintenance uniquement.',
+      },
+      {
+        question: 'Ai-je besoin d\'un compte ?',
+        answer: 'Non. Vous pouvez utiliser le flux d\'extraction sans créer de compte.',
+      },
+    ],
+    stillQuestions: 'Vous avez encore des questions ?',
+    contactSupport: 'Contacter le Support',
+    contactText: 'Si votre question n\'est pas traitée ici, veuillez nous contacter via la page de contact.',
+  },
+  id: {
+    ...faqBaseEn,
+    title: 'Pertanyaan Umum',
+    lastUpdated: 'Pembaruan terakhir: 2026-03-19',
+    items: [
+      {
+        question: 'Apa itu ClipKeep?',
+        answer: 'ClipKeep adalah alat web untuk mengekstrak tautan media dari halaman SNS yang didukung untuk alur kerja pengarsipan pribadi.',
+      },
+      {
+        question: 'Platform mana saja yang didukung sekarang?',
+        answer: 'Dukungan aktif saat ini mencakup Telegram, X (Twitter), TikTok, Reddit, Pinterest, Facebook, Threads, Bluesky, Lemon8, Bilibili, dan Discord. Instagram tetap hanya untuk pemeliharaan.',
+      },
+      {
+        question: 'Apakah saya memerlukan akun?',
+        answer: 'Tidak. Anda dapat menggunakan alur ekstraksi tanpa membuat akun.',
+      },
+    ],
+    stillQuestions: 'Masih punya pertanyaan?',
+    contactSupport: 'Hubungi Dukungan',
+    contactText: 'Jika pertanyaan Anda tidak tercakup di sini, silakan hubungi kami melalui halaman kontak.',
+  },
+  hi: {
+    ...faqBaseEn,
+    title: 'सामान्य प्रश्न',
+    lastUpdated: 'अंतिम अपडेट: 2026-03-19',
+    items: [
+      {
+        question: 'ClipKeep क्या है?',
+        answer: 'ClipKeep व्यक्तिगत आर्काइविंग वर्कफ़्लो के लिए समर्थित SNS पेजों से मीडिया लिंक निकालने का एक वेब टूल है।',
+      },
+      {
+        question: 'अभी कौन से प्लेटफॉर्म समर्थित हैं?',
+        answer: 'वर्तमान सक्रिय समर्थन में टेलीग्राम, X (ट्विटर), टिकटॉक, Reddit, Pinterest, फेसबुक, Threads, Bluesky, Lemon8, Bilibili और Discord शामिल हैं। इंस्टाग्राम केवल रखरखाव मोड में है।',
+      },
+      {
+        question: 'क्या मुझे एक खाते की आवश्यकता है?',
+        answer: 'नहीं। आप खाता बनाए बिना निष्कर्षण प्रवाह का उपयोग कर सकते हैं।',
+      },
+    ],
+    stillQuestions: 'अभी भी प्रश्न हैं?',
+    contactSupport: 'सहायता से संपर्क करें',
+    contactText: 'यदि आपका प्रश्न यहाँ शामिल नहीं है, तो कृपया संपर्क पृष्ठ के माध्यम से हमसे संपर्क करें।',
+  },
+  de: {
+    ...faqBaseEn,
+    title: 'Häufige Fragen',
+    lastUpdated: 'Zuletzt aktualisiert: 2026-03-19',
+    items: [
+      {
+        question: 'Was ist ClipKeep?',
+        answer: 'ClipKeep ist ein Webtool zum Extrahieren von Medienlinks von unterstützten SNS-Seiten für persönliche Archivierungs-Workflows.',
+      },
+      {
+        question: 'Welche Plattformen werden derzeit unterstützt?',
+        answer: 'Derzeit werden Telegram, X (Twitter), TikTok, Reddit, Pinterest, Facebook, Threads, Bluesky, Lemon8, Bilibili und Discord aktiv unterstützt. Instagram befindet sich im Wartungsmodus.',
+      },
+      {
+        question: 'Benötige ich ein Konto?',
+        answer: 'Nein. Sie können den Extraktionsflow nutzen, ohne ein Konto zu erstellen.',
+      },
+    ],
+    stillQuestions: 'Haben Sie noch Fragen?',
+    contactSupport: 'Support kontaktieren',
+    contactText: 'Wenn Ihre Frage hier nicht beantwortet wird, kontaktieren Sie uns bitte über die Kontaktseite.',
+  },
+  tr: {
+    ...faqBaseEn,
+    title: 'Sık Sorulan Sorular',
+    lastUpdated: 'Son güncelleme: 2026-03-19',
+    items: [
+      {
+        question: 'ClipKeep nedir?',
+        answer: 'ClipKeep, kişisel arşivleme iş akışları için desteklenen SNS sayfalarından medya bağlantılarını ayıklamaya yarayan bir web aracıdır.',
+      },
+      {
+        question: 'Şu an hangi platformlar destekleniyor?',
+        answer: 'Şu anki aktif destek Telegram, X (Twitter), TikTok, Reddit, Pinterest, Facebook, Threads, Bluesky, Lemon8, Bilibili ve Discord\'u kapsamaktadır. Instagram yalnızca bakım modundadır.',
+      },
+      {
+        question: 'Bir hesaba ihtiyacım var mı?',
+        answer: 'Hayır. Herhangi bir hesap oluşturmadan ayıklama akışını kullanabilirsiniz.',
+      },
+    ],
+    stillQuestions: 'Hâlâ sorularınız mı var?',
+    contactSupport: 'Destekle İletişime Geç',
+    contactText: 'Eğer sorunuz burada yer almıyorsa, lütfen iletişim sayfası üzerinden bizimle iletişime geçin.',
+  },
 };
 
 function localizeLegalTitle(locale: Locale, key: 'privacy' | 'terms' | 'cookies' | 'dmca'): string {
@@ -4379,29 +4621,42 @@ function legalByLocale(locale: Locale) {
   const fallback = legalBaseEn;
   const current = localizedSections[locale];
 
+  const lastUpdatedMap: Record<Locale, string> = {
+    en: 'Last updated: 2026-03-19',
+    ar: 'آخر تحديث: 2026-03-19',
+    ja: '最終更新: 2026-03-19',
+    es: 'Última actualización: 2026-03-19',
+    pt: 'Última atualização: 2026-03-19',
+    fr: 'Dernière mise à jour: 2026-03-19',
+    id: 'Pembaruan terakhir: 2026-03-19',
+    hi: 'अंतिम अपडेट: 2026-03-19',
+    de: 'Zuletzt aktualisiert: 2026-03-19',
+    tr: 'Son güncelleme: 2026-03-19',
+  };
+
   return {
     privacy: {
       ...fallback.privacy,
       title: localizeLegalTitle(locale, 'privacy'),
-      lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : fallback.privacy.lastUpdated,
+      lastUpdated: lastUpdatedMap[locale],
       sections: current?.privacy ?? fallback.privacy.sections,
     },
     terms: {
       ...fallback.terms,
       title: localizeLegalTitle(locale, 'terms'),
-      lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : fallback.terms.lastUpdated,
+      lastUpdated: lastUpdatedMap[locale],
       sections: current?.terms ?? fallback.terms.sections,
     },
     cookies: {
       ...fallback.cookies,
       title: localizeLegalTitle(locale, 'cookies'),
-      lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : fallback.cookies.lastUpdated,
+      lastUpdated: lastUpdatedMap[locale],
       sections: current?.cookies ?? fallback.cookies.sections,
     },
     dmca: {
       ...fallback.dmca,
       title: localizeLegalTitle(locale, 'dmca'),
-      lastUpdated: locale === 'ja' ? '最終更新: 2026-03-19' : fallback.dmca.lastUpdated,
+      lastUpdated: lastUpdatedMap[locale],
       sections: current?.dmca ?? fallback.dmca.sections,
     },
   };

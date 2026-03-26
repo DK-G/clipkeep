@@ -1,0 +1,25 @@
+# Programmatic SEO Redirects for Platform Hubs
+/bilibili-trending-videos /trending/bilibili 301
+/bilibili-latest-videos /latest/bilibili 301
+/bluesky-trending-videos /trending/bluesky 301
+/bluesky-latest-videos /latest/bluesky 301
+/discord-trending-videos /trending/discord 301
+/discord-latest-videos /latest/discord 301
+/facebook-trending-videos /trending/facebook 301
+/facebook-latest-videos /latest/facebook 301
+/instagram-trending-videos /trending/instagram 301
+/instagram-latest-videos /latest/instagram 301
+/lemon8-trending-videos /trending/lemon8 301
+/lemon8-latest-videos /latest/lemon8 301
+/pinterest-trending-videos /trending/pinterest 301
+/pinterest-latest-videos /latest/pinterest 301
+/reddit-trending-videos /trending/reddit 301
+/reddit-latest-videos /latest/reddit 301
+/telegram-trending-videos /trending/telegram 301
+/telegram-latest-videos /latest/telegram 301
+/threads-trending-videos /trending/threads 301
+/threads-latest-videos /latest/threads 301
+/tiktok-trending-videos /trending/tiktok 301
+/tiktok-latest-videos /latest/tiktok 301
+/twitter-trending-videos /trending/twitter 301
+/twitter-latest-videos /latest/twitter 301

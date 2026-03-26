@@ -1,10 +1,11 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { ExtractorForm, Platform } from '@/components/extractor-form';
 import { Locale, localeDir, PlatformPageDict } from '@/lib/i18n/ui';
 import { AdsterraNative } from '@/components/ads/native-banner';
 import { GallerySection } from '@/components/gallery-section';
+import { Breadcrumbs } from '@/components/breadcrumbs';
 
 interface SnsDownloaderClientProps {
   platform: Platform;
@@ -39,6 +40,7 @@ export function SnsDownloaderClient({ platform, locale, dict: t }: SnsDownloader
 
   return (
     <main dir={dir} className="max-w-4xl mx-auto px-6 py-12">
+      <Breadcrumbs items={[{ label: t.title }]} locale={locale} />
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-gray-900 dark:text-slate-50 mb-4">{t.title}</h1>
         <p className="text-xl text-slate-700 dark:text-slate-300 max-w-2xl mx-auto italic">

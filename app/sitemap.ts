@@ -1,4 +1,4 @@
-﻿import { keywordArticles } from '@/lib/blog/keyword-articles';
+import { keywordArticles } from '@/lib/blog/keyword-articles';
 import type { MetadataRoute } from 'next';
 import { SITE_URL } from '@/lib/site-url';
 
@@ -23,10 +23,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/legal/privacy', priority: 0.5, changeFrequency: 'monthly' as const, locales: allLocales },
     { path: '/legal/dmca', priority: 0.5, changeFrequency: 'monthly' as const, locales: allLocales },
     { path: '/solution/telegram-video-downloader-not-working', priority: 0.8, changeFrequency: 'weekly' as const, locales: solutionLocales },
-    { path: '/telegram-trending-videos', priority: 0.7, changeFrequency: 'daily' as const, locales: allLocales },
-    { path: '/twitter-trending-videos', priority: 0.7, changeFrequency: 'daily' as const, locales: allLocales },
-    { path: '/tiktok-trending-videos', priority: 0.7, changeFrequency: 'daily' as const, locales: allLocales },
   ];
+  
+  const platforms = [
+    'tiktok', 'twitter', 'reddit', 'facebook', 'telegram', 
+    'pinterest', 'threads', 'bluesky', 'bilibili', 'discord', 'lemon8'
+  ];
+
+  const galleryRoutes = platforms.flatMap(platform => [
+    { path: `/trending/${platform}`, priority: 0.7, changeFrequency: 'daily' as const, locales: allLocales },
+    { path: `/latest/${platform}`, priority: 0.7, changeFrequency: 'daily' as const, locales: allLocales }
+  ]);
 
   const blogKeywordRoutes = keywordArticles.map((a) => ({
     path: `/blog/${a.slug}`,
@@ -37,7 +44,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const sitemapEntries: MetadataRoute.Sitemap = [];
 
-  for (const route of [...routes, ...blogKeywordRoutes]) {
+  for (const route of [...routes, ...galleryRoutes, ...blogKeywordRoutes]) {
     for (const locale of route.locales) {
       sitemapEntries.push({
         url: `${base}${route.path}${locale}`,

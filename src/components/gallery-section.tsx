@@ -33,7 +33,7 @@ export interface GalleryItem {
   duration_sec?: number;
 }
 
-type GalleryPlatform = ExtractPlatform | 'instagram';
+export type GalleryPlatform = ExtractPlatform | 'instagram';
 
 interface GallerySectionProps {
   platform: GalleryPlatform | 'all';

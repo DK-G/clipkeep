@@ -1,0 +1,19 @@
+{
+  "name": "ClipKeep - Video Downloader",
+  "short_name": "ClipKeep",
+  "description": "Safe, fast, and anonymous video downloader for TikTok, X/Twitter, Reddit, and 10+ platforms.",
+  "start_url": "/?utm_source=pwa",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

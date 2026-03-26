@@ -42,7 +42,7 @@ const baseArticles: Array<{
   { slug: 'twitter-save-visible-ja', category: 'twitter', en: 'twitter 保存 ばれる？', toolPath: '/download-twitter-video', supportPath: '/legal/privacy' },
   { slug: 'twitter-video-download-private-account', category: 'twitter', en: 'twitter video download private account', toolPath: '/download-twitter-video', supportPath: '/legal/terms' },
   { slug: 'twitter-video-download-without-login', category: 'twitter', en: 'twitter video download without login', toolPath: '/download-twitter-video', supportPath: '/legal/terms' },
-  { slug: 'twitter-video-downloader-2026', category: 'twitter', en: 'twitter video downloader 2026', toolPath: '/download-twitter-video', supportPath: '/twitter-trending-videos' },
+  { slug: 'twitter-video-downloader-2026', category: 'twitter', en: 'twitter video downloader 2026', toolPath: '/download-twitter-video', supportPath: '/trending/twitter' },
   { slug: 'tiktok-video-download-no-watermark', category: 'tiktok', en: 'tiktok video download no watermark', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
   { slug: 'tiktok-downloader-without-watermark-online', category: 'tiktok', en: 'tiktok downloader without watermark online', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
   { slug: 'tiktok-video-save-method-ja', category: 'tiktok', en: 'tiktok 動画 保存 方法', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
@@ -52,11 +52,11 @@ const baseArticles: Array<{
   { slug: 'save-tiktok-video-iphone', category: 'tiktok', en: 'save tiktok video iphone', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
   { slug: 'tiktok-video-download-android', category: 'tiktok', en: 'tiktok video download android', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
   { slug: 'tiktok-downloader-safe', category: 'tiktok', en: 'tiktok downloader safe', toolPath: '/download-tiktok-video', supportPath: '/legal/privacy' },
-  { slug: 'tiktok-video-downloader-free', category: 'tiktok', en: 'tiktok video downloader free', toolPath: '/download-tiktok-video', supportPath: '/tiktok-trending-videos' },
+  { slug: 'tiktok-video-downloader-free', category: 'tiktok', en: 'tiktok video downloader free', toolPath: '/download-tiktok-video', supportPath: '/trending/tiktok' },
   { slug: 'tiktok-video-download-private', category: 'tiktok', en: 'tiktok video download private', toolPath: '/download-tiktok-video', supportPath: '/legal/terms' },
   { slug: 'tiktok-save-visible-ja', category: 'tiktok', en: 'tiktok 保存 バレる？', toolPath: '/download-tiktok-video', supportPath: '/legal/privacy' },
   { slug: 'how-to-save-tiktok-without-watermark', category: 'tiktok', en: 'how to save tiktok without watermark', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
-  { slug: 'tiktok-video-downloader-2026', category: 'tiktok', en: 'tiktok video downloader 2026', toolPath: '/download-tiktok-video', supportPath: '/tiktok-trending-videos' },
+  { slug: 'tiktok-video-downloader-2026', category: 'tiktok', en: 'tiktok video downloader 2026', toolPath: '/download-tiktok-video', supportPath: '/trending/tiktok' },
   { slug: 'tiktok-video-link-download', category: 'tiktok', en: 'tiktok video link download', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
   { slug: 'telegram-video-download', category: 'telegram', en: 'telegram video download', toolPath: '/download-telegram-video', supportPath: '/solution/telegram-video-downloader-not-working' },
   { slug: 'telegram-video-downloader-online', category: 'telegram', en: 'telegram video downloader online', toolPath: '/download-telegram-video', supportPath: '/solution/telegram-video-downloader-not-working' },
@@ -68,8 +68,8 @@ const baseArticles: Array<{
   { slug: 'telegram-video-download-link', category: 'telegram', en: 'telegram video download link', toolPath: '/download-telegram-video', supportPath: '/solution/telegram-video-downloader-not-working' },
   { slug: 'telegram-save-visible-ja', category: 'telegram', en: 'telegram 保存 バレる？', toolPath: '/download-telegram-video', supportPath: '/legal/privacy' },
   { slug: 'telegram-video-download-bot-safe', category: 'telegram', en: 'telegram video download bot safe', toolPath: '/download-telegram-video', supportPath: '/legal/privacy' },
-  { slug: 'best-twitter-video-downloader-2026', category: 'comparison', en: 'best twitter video downloader 2026', toolPath: '/download-twitter-video', supportPath: '/twitter-trending-videos' },
-  { slug: 'best-tiktok-downloader-without-watermark', category: 'comparison', en: 'best tiktok downloader without watermark', toolPath: '/download-tiktok-video', supportPath: '/tiktok-trending-videos' },
+  { slug: 'best-twitter-video-downloader-2026', category: 'comparison', en: 'best twitter video downloader 2026', toolPath: '/download-twitter-video', supportPath: '/trending/twitter' },
+  { slug: 'best-tiktok-downloader-without-watermark', category: 'comparison', en: 'best tiktok downloader without watermark', toolPath: '/download-tiktok-video', supportPath: '/trending/tiktok' },
   { slug: 'safest-video-downloader-sites', category: 'comparison', en: 'safest video downloader sites', toolPath: '/download-twitter-video', supportPath: '/legal/privacy' },
   { slug: 'twitter-video-downloader-not-working', category: 'comparison', en: 'twitter video downloader not working', toolPath: '/download-twitter-video', supportPath: '/solution/twitter-video-downloader-not-working' },
   { slug: 'tiktok-downloader-not-working', category: 'comparison', en: 'tiktok downloader not working', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
@@ -529,3 +529,4 @@ export function getKeywordArticle(slug: string): KeywordArticle | undefined {
 export function getRelatedKeywordArticles(slug: string, category: KeywordCategory, limit = 3): KeywordArticle[] {
   return keywordArticles.filter((a) => a.category === category && a.slug !== slug).slice(0, limit);
 }
+

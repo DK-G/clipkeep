@@ -1,11 +1,14 @@
 ﻿import type { Metadata } from 'next';
-import Link from 'next/link';
 import { normalizeLocale } from '@/lib/i18n/ui';
 import { DiscoverySection } from '@/components/discovery-section';
 import { GallerySection } from '@/components/gallery-section';
+import { HistorySection } from '@/components/history-section';
+import { PlatformShortcuts } from '@/components/platform-shortcuts';
 import { ExtractorForm } from '@/components/extractor-form';
-import { TiktokIcon, TwitterXIcon, RedditIcon, FacebookIcon, TelegramIcon, PinterestIcon, ThreadsIcon, BlueskyIcon, BilibiliIcon, DiscordIcon, Lemon8Icon } from '@/components/platform-icons';
+import { TrendingHubSection } from '@/components/trending-hub-section';
 import { SITE_URL } from '@/lib/site-url';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 type HomeProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -130,7 +133,9 @@ const translations: Record<string, Record<string, string>> = {
     notes: "Platform Stability Notes",
     noteBody: "We constantly update our extractors to match platform changes. Most extractions take less than 10 seconds.",
     globalTrending: "Global Trending Hub",
-    globalTrendingSubtitle: "Discover popular clips across all platforms."
+    globalTrendingSubtitle: "Discover popular clips across all platforms.",
+    recentDownloadsSubtitle: "Explore the latest media successfully cached by our users worldwide.",
+    viewAllLatest: "View All Latest"
   },
   ja: {
     welcome: "ClipKeep へようこそ",
@@ -152,7 +157,9 @@ const translations: Record<string, Record<string, string>> = {
     notes: "安定性について",
     noteBody: "プラットフォームの仕様変更に合わせて常に更新しています。ほとんどの抽出は10秒以内に完了します。",
     globalTrending: "グローバルトレンドハブ",
-    globalTrendingSubtitle: "すべてのプラットフォームから人気のクリップを公開。"
+    globalTrendingSubtitle: "すべてのプラットフォームから人気のクリップを公開。",
+    recentDownloadsSubtitle: "ユーザーにより直近で正常に保存されたメディアをまとめて確認できます。",
+    viewAllLatest: "最新一覧を見る"
   },
   ar: {
     welcome: "مرحبًا بك في ClipKeep",
@@ -174,7 +181,9 @@ const translations: Record<string, Record<string, string>> = {
     notes: "ملاحظات استقرار المنصة",
     noteBody: "نحن نقوم باستمرار بتحديث المستخرجات الخاصة بنا لتناسب تغييرات المنصة। تستغرق معظم عمليات الاستخراج أقل من 10 ثوانٍ।",
     globalTrending: "مركز الترند العالمي",
-    globalTrendingSubtitle: "اكتشف المقاطع الشائعة عبر جميع المنصات."
+    globalTrendingSubtitle: "اكتشف المقاطع الشائعة عبر جميع المنصات.",
+    recentDownloadsSubtitle: "استعرض أحدث الوسائط التي تم حفظها بنجاح بواسطة المستخدمين.",
+    viewAllLatest: "عرض أحدث العناصر"
   },
   es: {
     welcome: "Bienvenido a ClipKeep",
@@ -196,7 +205,9 @@ const translations: Record<string, Record<string, string>> = {
     notes: "Notas de Estabilidad",
     noteBody: "Actualizamos constantemente nuestros extractores। La mayoría de las extracciones tardan menos de 10 segundos।",
     globalTrending: "Hub de tendencias globales",
-    globalTrendingSubtitle: "Descubre clips populares en todas las plataformas."
+    globalTrendingSubtitle: "Descubre clips populares en todas las plataformas.",
+    recentDownloadsSubtitle: "Explora los medios guardados recientemente por nuestros usuarios en todo el mundo.",
+    viewAllLatest: "Ver todo lo reciente"
   },
   pt: {
     welcome: "Bem-vindo ao ClipKeep",
@@ -218,7 +229,9 @@ const translations: Record<string, Record<string, string>> = {
     notes: "Notas de Estabilidade",
     noteBody: "Atualizamos constantemente nossos extratores। A maioria das extrações leva menos de 10 segundos।",
     globalTrending: "Hub de tendências globais",
-    globalTrendingSubtitle: "Descubra clipes populares em todas as plataformas."
+    globalTrendingSubtitle: "Descubra clipes populares em todas as plataformas.",
+    recentDownloadsSubtitle: "Explore as mídias salvas recentemente por usuários do mundo todo.",
+    viewAllLatest: "Ver tudo em latest"
   },
   fr: {
     welcome: "Bienvenue sur ClipKeep",
@@ -240,7 +253,9 @@ const translations: Record<string, Record<string, string>> = {
     notes: "Notes sur la Stabilité",
     noteBody: "Nous mettons à jour nos extracteurs régulièrement। La plupart des extractions prennent moins de 10 secondes。",
     globalTrending: "Hub des tendances mondiales",
-    globalTrendingSubtitle: "Découvrez les clips populaires sur toutes les plateformes."
+    globalTrendingSubtitle: "Découvrez les clips populaires sur toutes les plateformes.",
+    recentDownloadsSubtitle: "Explorez les médias récemment sauvegardés par nos utilisateurs dans le monde.",
+    viewAllLatest: "Voir tout dans Latest"
   },
   id: {
     welcome: "Selamat datang di ClipKeep",
@@ -262,7 +277,9 @@ const translations: Record<string, Record<string, string>> = {
     notes: "Catatan Stabilitas Platform",
     noteBody: "Kami terus memperbarui ekstraktor kami। Sebagian besar ekstraksi memakan waktu kurang dari 10 detik。",
     globalTrending: "Pusat Tren Global",
-    globalTrendingSubtitle: "Temukan klip populer di semua platform."
+    globalTrendingSubtitle: "Temukan klip populer di semua platform.",
+    recentDownloadsSubtitle: "Jelajahi media terbaru yang berhasil disimpan oleh pengguna kami di seluruh dunia.",
+    viewAllLatest: "Lihat semua yang terbaru"
   },
   hi: {
     welcome: "क्लिपकीप में आपका स्वागत है",
@@ -284,7 +301,9 @@ const translations: Record<string, Record<string, string>> = {
     notes: "प्लेटफॉर्म स्थिरता नोट्स",
     noteBody: "हम प्लेटफॉर्म परिवर्तन के अनुसार अपने एक्सट्रैक्टर्स को लगातार अपडेट करते हैं। अधिकांश निष्कर्षण 10 सेकंड से कम समय लेते हैं।",
     globalTrending: "वैश्विक ट्रेंडिंग हब",
-    globalTrendingSubtitle: "सभी प्लेटफार्मों पर लोकप्रिय क्लिप खोजें।"
+    globalTrendingSubtitle: "सभी प्लेटफार्मों पर लोकप्रिय क्लिप खोजें।",
+    recentDownloadsSubtitle: "दुनिया भर के उपयोगकर्ताओं द्वारा हाल ही में सफलतापूर्वक सहेजे गए मीडिया को देखें।",
+    viewAllLatest: "सभी नवीनतम देखें"
   },
   de: {
     welcome: "Willkommen bei ClipKeep",
@@ -306,7 +325,9 @@ const translations: Record<string, Record<string, string>> = {
     notes: "Stabilitätshinweise",
     noteBody: "Wir aktualisieren unsere Extraktoren ständig। Die meisten Extraktionen dauern weniger als 10 Sekunden。",
     globalTrending: "Globaler Trend-Hub",
-    globalTrendingSubtitle: "Entdecken Sie beliebte Clips auf allen Plattformen。"
+    globalTrendingSubtitle: "Entdecken Sie beliebte Clips auf allen Plattformen。",
+    recentDownloadsSubtitle: "Entdecken Sie Medien, die von unseren Nutzern weltweit zuletzt erfolgreich gespeichert wurden.",
+    viewAllLatest: "Alle neuesten anzeigen"
   },
   tr: {
     welcome: "ClipKeep'e Hoş Geldiniz",
@@ -328,7 +349,9 @@ const translations: Record<string, Record<string, string>> = {
     notes: "Platform Kararlılık Notları",
     noteBody: "Platform değişikliklerine uyum sağlamak için araçlarımızı sürekli güncelliyoruz। Çoğu işlem 10 saniyeden kısa sürer।",
     globalTrending: "Küresel Trend Merkezi",
-    globalTrendingSubtitle: "Tüm platformlardaki popüler klipleri keşfedin。"
+    globalTrendingSubtitle: "Tüm platformlardaki popüler klipleri keşfedin。",
+    recentDownloadsSubtitle: "Kullanıcılarımız tarafından yakın zamanda başarıyla kaydedilen medyaları keşfedin.",
+    viewAllLatest: "Tüm yenileri gör"
   }
 };
 
@@ -433,56 +456,41 @@ export default async function HomePage({ searchParams }: HomeProps) {
         <div className="mb-12 dynamic-glow relative z-10 w-full max-w-3xl mx-auto">
           <ExtractorForm locale={locale} hero={true} />
         </div>
+
+        <HistorySection locale={locale} />
       </div>
 
       <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-20 max-w-4xl mx-auto">
-         {[
-           { name: t.tiktok, id: 'tiktok', color: 'bg-slate-950', icon: TiktokIcon },
-           { name: t.twitter, id: 'twitter', color: 'bg-slate-900', icon: TwitterXIcon },
-           { name: t.reddit, id: 'reddit', color: 'bg-orange-600', icon: RedditIcon },
-           { name: t.facebook, id: 'facebook', color: 'bg-blue-600', icon: FacebookIcon },
-           { name: t.telegram, id: 'telegram', color: 'bg-blue-400', icon: TelegramIcon },
-           { name: t.pinterest, id: 'pinterest', color: 'bg-red-600', icon: PinterestIcon },
-           { name: t.threads, id: 'threads', color: 'bg-slate-900', icon: ThreadsIcon },
-           { name: t.bluesky, id: 'bluesky', color: 'bg-blue-400', icon: BlueskyIcon },
-           { name: t.bilibili, id: 'bilibili', color: 'bg-pink-400', icon: BilibiliIcon },
-           { name: t.discord, id: 'discord', color: 'bg-indigo-500', icon: DiscordIcon },
-           { name: t.lemon8, id: 'lemon8', color: 'bg-yellow-400', icon: Lemon8Icon },
-         ].map((p) => {
-           const Icon = p.icon;
-           return (
-           <Link 
-             key={p.id}
-             href={`/download-${p.id}-video${locale !== 'en' ? `?locale=${locale}` : ''}`} 
-             title={p.name}
-             className="group flex flex-col items-center gap-2"
-           >
-              <div className={`w-12 h-12 flex items-center justify-center rounded-2xl ${p.color} shadow-sm group-hover:shadow-lg transition-all duration-300 transform group-hover:-translate-y-1 group-hover:scale-110 ring-4 ring-transparent group-hover:ring-${p.color.replace('bg-', '')}/20`}>
-                <Icon />
-              </div>
-              <span className="text-[11px] font-bold text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                {p.name}
-              </span>
-           </Link>
-         )})}
+        <PlatformShortcuts locale={locale} labels={t} />
       </div>
 
-      <div className="mb-16">
-        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-2 flex items-center">
-          <span className="w-1.5 h-6 bg-indigo-600 rounded-full mr-3 shadow-[0_0_8px_rgba(79,70,229,0.4)]"></span>
-          {t.globalTrending || "Trending Hub"}
-        </h2>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 ml-4.5">
-          {t.globalTrendingSubtitle}
-        </p>
-        <GallerySection platform="all" type="trending" locale={locale} layout="masonry" dense={false} limit={8} id="trending-hub" title="" hideMeta={false} />
-      </div>
+      <TrendingHubSection 
+        locale={locale} 
+        title={t.globalTrending || "Trending Hub"}
+        subtitle={t.globalTrendingSubtitle}
+      />
 
-      <div className="mb-16">
-        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50 mb-8 flex items-center">
-          <span className="w-1.5 h-6 bg-blue-600 rounded-full mr-3"></span>
-          {t.recentDownloads || "Recent Downloads"}
-        </h2>
+      <div className="mb-20">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-50 flex items-center mb-2">
+              <span className="w-1.5 h-8 bg-blue-600 rounded-full mr-3 shadow-[0_0_8px_rgba(37,99,235,0.4)]"></span>
+              {t.recentDownloads || "Recent Downloads"}
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base ml-4.5">
+              {t.recentDownloadsSubtitle || "Explore the latest media successfully cached by our users worldwide."}
+            </p>
+          </div>
+          
+          <Link 
+            href={`/latest?locale=${locale}`}
+            className="group flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm hover:underline ml-4.5 sm:ml-0"
+          >
+            {t.viewAllLatest || "View All Latest"}
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+        
         <GallerySection platform="all" locale={locale} type="recent" limit={8} hideMeta={false} layout="masonry" id="recent-downloads" title="" />
       </div>
 
@@ -495,5 +503,6 @@ export default async function HomePage({ searchParams }: HomeProps) {
     </main>
   );
 }
+
 
 
