@@ -118,14 +118,6 @@ export default function RootLayout({
           data-cfasync="false"
         />
         <Script 
-          id="monetag-vignette" 
-          src="https://izcle.com/vignette.min.js"
-          data-zone="10760542"
-          strategy="afterInteractive"
-          data-cfasync="false"
-        />
-
-        <Script 
           src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" 
           strategy="afterInteractive"
         />
