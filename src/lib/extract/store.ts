@@ -7,6 +7,7 @@ import { extractPinterest } from "./pinterest";
 import { extractBluesky } from "./bluesky";
 import { extractBilibili } from "./bilibili";
 import { extractFacebook } from "./facebook";
+import { extractThreads } from "./threads";
 import { extractWithBrowser } from "./browser";
 import { getDb } from "@/lib/db/d1";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
@@ -236,7 +237,8 @@ export async function createJob(platform: Platform, sourceUrl: string, locale: s
             } else if (platform === "discord") {
               results = await extractWithBrowser(sourceUrl);
             } else if (platform === "threads") {
-              results = await extractWithBrowser(sourceUrl);
+              results = await extractThreads(sourceUrl);
+              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
             } else if (platform === "facebook") {
               results = await extractFacebook(sourceUrl) as ExtractionMedia[];
               if (results.length === 0) results = await extractWithBrowser(sourceUrl);

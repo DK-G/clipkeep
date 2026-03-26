@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
 import Script from 'next/script';
 import { HeaderShell } from '@/components/header-shell';
@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   },
   description: 'ClipKeep is an SNS media extraction hub focused on practical workflows and solution guidance.',
   manifest: '/manifest.json',
-  themeColor: '#6366f1',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -55,6 +54,10 @@ export const metadata: Metadata = {
       'google-adsense-account': 'ca-pub-5877075056686035',
     },
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#6366f1',
 };
  
 const websiteJsonLd = {

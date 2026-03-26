@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     "byteimg.com", "lemon8-app.com",
     "hdslb.com", "bilibili.com",
     "discordapp.net", "discordapp.com", "discord.com",
-    "threads.net"
+    "threads.net", "threads.com"
   ];
   if (!allowedDomains.some(domain => url.includes(domain))) {
     return new NextResponse("Invalid URL domain", { status: 403 });

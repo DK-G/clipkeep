@@ -6,7 +6,7 @@ const ALLOWED_HOSTS: Record<Platform, string[]> = {
   reddit: ["reddit.com", "www.reddit.com", "old.reddit.com", "redd.it"],
   pinterest: ["pinterest.com", "www.pinterest.com", "pin.it"],
   bilibili: ["bilibili.com", "www.bilibili.com", "b23.tv"],
-  threads: ["threads.net", "www.threads.net"],
+  threads: ["threads.net", "www.threads.net", "threads.com", "www.threads.com"],
   bluesky: ["bsky.app", "www.bsky.app"],
   lemon8: ["lemon8-app.com", "www.lemon8-app.com"],
   facebook: ["facebook.com", "www.facebook.com", "fb.watch"],
