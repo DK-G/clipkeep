@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useMemo, useState, useRef, useEffect } from 'react';
+import { FormEvent, useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { homeText, Locale } from '@/lib/i18n/ui';
 import { trackEvent } from '@/lib/analytics/gtag';
@@ -97,13 +97,13 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
 
   const l = homeText[locale];
 
-  const updateStatus = (message: string, helpSlug: string | null = null, retryAfterSec: number | undefined = undefined) => {
+  const updateStatus = useCallback((message: string, helpSlug: string | null = null, retryAfterSec: number | undefined = undefined) => {
     if (onStatusChange) {
       onStatusChange(message, helpSlug, retryAfterSec);
     } else {
       setLocalStatus(message);
     }
-  };
+  }, [onStatusChange]);
 
   const activePlatform = detectedPlatform || initialPlatform;
 
@@ -153,7 +153,7 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
         widgetIdRef.current = null;
       }
     };
-  }, []);
+  }, [updateStatus]);
 
   const canSubmit = useMemo(() => {
     return !!sourceUrl && !submitting && !!turnstileToken;
