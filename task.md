@@ -1,17 +1,17 @@
-﻿# 作業タスクリスト: ClipKeep
+# 作業タスクリスト: ClipKeep
 
 ## 作業中 (In Progress)
-- [ ] Phase1-1 Hero対応SNS表示
-- [ ] Phase1-2 カード全体クリック対応
-- [ ] Phase1-3 カード情報強化（badge / duration / download count）
-- [ ] Phase1-4 スマホUI最適化
-
-## 未着手 (To Do)
-- [ ] Phase2 SEO構造化（H2/H3 / 内部リンク / generateMetadata）
-- [ ] Phase3 PV増加構造（Time filter / Similar Videos）
-- [ ] Phase4 信頼性強化（About/Contact）
-- [ ] Phase5 広告最適化（最終）
-- [ ] Phase4 TikTokバックログのP1項目から着手
+- [x] Phase 1: Local Download History
+    - [x] Create `useHistory` custom hook
+    - [x] Build `HistorySection` component
+    - [x] Integrate history saving in `ResultClient`
+    - [x] Add multilingual support in `ui.ts`
+- [x] Phase 2: Dynamic Platform Shortcuts
+    - [x] Create `usePlatformUsage` hook
+    - [x] Build `PlatformShortcuts` client component
+    - [x] Replace hardcoded links on homepage
+    - [x] Integrate usage tracking in `ResultClient`
+- [/] Phase 3: Programmatic SEO (Trending Pages)
 
 ## 完了 (Done)
 - [x] P2-29: AdSense運用ルール適用（フッター法務導線 + Privacy更新 + 運用チェックシート）

@@ -91,9 +91,13 @@ export async function POST(request: Request) {
     });
   }
 
+  const url = body.url?.trim() ?? "";
+  const demoUrl = 'https://www.tiktok.com/@tiktok/video/7460937381265411370';
+  const isDemo = url === demoUrl;
+
   // Verify Turnstile Token
   const token = body.turnstileToken;
-  if (!token) {
+  if (!token && !isDemo) {
     return failure({
       status: 403,
       requestId,
@@ -105,20 +109,20 @@ export async function POST(request: Request) {
     });
   }
 
-  const isHuman = await verifyTurnstileToken(token);
-  if (!isHuman) {
-    return failure({
-      status: 403,
-      requestId,
-      error: {
-        code: "TURNSTILE_FAILED",
-        message: "Bot detection triggered. Please refresh and try again.",
-        details: {},
-      },
-    });
+  if (token) {
+    const isHuman = await verifyTurnstileToken(token);
+    if (!isHuman && !isDemo) {
+      return failure({
+        status: 403,
+        requestId,
+        error: {
+          code: "TURNSTILE_FAILED",
+          message: "Bot detection triggered. Please refresh and try again.",
+          details: {},
+        },
+      });
+    }
   }
-
-  const url = body.url?.trim() ?? "";
   const platformRaw = body.platform?.trim() ?? "";
   const platform = normalizePlatform(platformRaw);
 

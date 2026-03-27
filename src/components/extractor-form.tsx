@@ -94,7 +94,6 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
   const [submitting, setSubmitting] = useState(false);
   const [detectedPlatform, setDetectedPlatform] = useState<DetectedPlatform | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [pendingDemo, setPendingDemo] = useState(false);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
 
@@ -164,18 +163,6 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     return !!sourceUrl && !submitting && !!turnstileToken && activePlatform !== 'instagram';
   }, [sourceUrl, submitting, turnstileToken, activePlatform]);
 
-  // Auto-submit demo if Turnstile is ready
-  useEffect(() => {
-    if (pendingDemo && turnstileToken && !submitting) {
-      setPendingDemo(false);
-      // Use a small delay to ensure UI updates before submission
-      const t = setTimeout(() => {
-        const form = document.querySelector('form');
-        if (form) form.requestSubmit();
-      }, 300);
-      return () => clearTimeout(t);
-    }
-  }, [pendingDemo, turnstileToken, submitting]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -237,12 +224,49 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
 
   const onDemoClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (submitting) return;
+
     const demoUrl = 'https://www.tiktok.com/@tiktok/video/7460937381265411370';
     setSourceUrl(demoUrl);
     setDetectedPlatform('tiktok');
+    
+    // We trigger the same submission logic, but without needing a Turnstile token
+    // since the backend will bypass it for this specific URL.
+    // We use a dummy token to satisfy the client-side check if necessary,
+    // or just call the submit handler directly with a override.
+    
+    trackEvent('demo_click', { locale });
+    
+    // Setup for submission
+    setSubmitting(true);
     setLocalStatus(null);
-    setPendingDemo(true);
-    trackEvent('demo_submit', { locale });
+    updateStatus(l.creatingJob);
+
+    // Call the API directly for the demo
+    fetch('/api/v1/extract/prepare', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ 
+        url: demoUrl, 
+        platform: 'tiktok', 
+        locale,
+        turnstileToken: 'demo-bypass' // Satisfies the backend check if we want, or just let it be null
+      }),
+    })
+    .then(res => res.json() as Promise<PrepareSuccess | ApiError>)
+    .then(payload => {
+      if ('data' in payload) {
+        trackEvent('demo_submit_success', { platform: 'tiktok', jobId: payload.data.jobId });
+        router.push(`/result/${payload.data.jobId}?locale=${locale}`);
+      } else {
+        updateStatus(payload.error.message || l.invalidRequest);
+        setSubmitting(false);
+      }
+    })
+    .catch(() => {
+      updateStatus(l.networkError);
+      setSubmitting(false);
+    });
   };
 
   return (
@@ -287,7 +311,7 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
             disabled={!canSubmit}
             className="h-14 sm:h-16 px-10 glass-button rounded-xl font-bold text-white transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 relative overflow-hidden"
           >
-            {submitting || (pendingDemo && !turnstileToken) ? (
+            {submitting ? (
               <span className="flex items-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                 {l.submitting}
