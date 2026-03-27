@@ -16,6 +16,10 @@ function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
+function buildProxyDownloadUrl(url: string): string {
+  return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
+}
+
 function parseBlueskyUrl(inputUrl: string): BlueskyUrlParts {
   const parsed = new URL(inputUrl.trim());
   parsed.protocol = "https:";
@@ -138,6 +142,7 @@ async function extractViaPublicApi(handle: string, postId: string): Promise<Extr
     return [{
       type: "video",
       url: found.videoUrl,
+      downloadUrl: buildProxyDownloadUrl(found.videoUrl),
       thumbUrl: found.thumbUrl || found.imageUrl,
       title: found.title,
       sourcePath: "bluesky-public-api-video",
@@ -148,6 +153,7 @@ async function extractViaPublicApi(handle: string, postId: string): Promise<Extr
     return [{
       type: "image",
       url: found.imageUrl,
+      downloadUrl: buildProxyDownloadUrl(found.imageUrl),
       thumbUrl: found.thumbUrl || found.imageUrl,
       title: found.title,
       sourcePath: "bluesky-public-api-image",
@@ -202,6 +208,7 @@ async function extractViaHtml(normalizedUrl: string): Promise<ExtractionMedia[]>
     return [{
       type: "video",
       url: videoUrl,
+      downloadUrl: buildProxyDownloadUrl(videoUrl),
       thumbUrl,
       title,
       sourcePath: "bluesky-og-video",
@@ -212,6 +219,7 @@ async function extractViaHtml(normalizedUrl: string): Promise<ExtractionMedia[]>
     return [{
       type: "image",
       url: thumbUrl,
+      downloadUrl: buildProxyDownloadUrl(thumbUrl),
       thumbUrl,
       title,
       sourcePath: "bluesky-og-image",

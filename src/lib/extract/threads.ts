@@ -1,7 +1,25 @@
-﻿import type { ExtractionMedia } from "./types";
+import type { ExtractionMedia } from "./types";
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+function buildProxyDownloadUrl(url: string): string {
+  return "/api/v1/extract/proxy?url=" + encodeURIComponent(url) + "&dl=1";
+}
+
+function findMeta(html: string, key: string): string | null {
+  const patterns = [
+    new RegExp(`<meta[^>]*(?:property|name)=["']${key}["'][^>]*content=["']([^"']+)["'][^>]*>`, "i"),
+    new RegExp(`<meta[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["']${key}["'][^>]*>`, "i"),
+  ];
+
+  for (const pattern of patterns) {
+    const match = html.match(pattern);
+    if (match?.[1]) return match[1];
+  }
+
+  return null;
 }
 
 function normalizeThreadsUrl(inputUrl: string): string {
@@ -53,15 +71,19 @@ export async function extractThreads(url: string): Promise<ExtractionMedia[]> {
       throw new Error("PRIVATE_OR_RESTRICTED");
     }
 
-    const videoUrl = html.match(/<meta[^>]+property="og:video"[^>]+content="([^"]+)"/)?.[1];
-    const thumbUrl = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/)?.[1];
-    const title = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/)?.[1];
+    const videoUrl =
+      findMeta(html, "og:video") ||
+      findMeta(html, "og:video:url") ||
+      findMeta(html, "og:video:secure_url");
+    const thumbUrl = findMeta(html, "og:image") || findMeta(html, "twitter:image");
+    const title = findMeta(html, "og:title") || findMeta(html, "twitter:title") || undefined;
 
     if (videoUrl) {
       return [{
         type: "video",
         url: videoUrl,
-        thumbUrl,
+        downloadUrl: buildProxyDownloadUrl(videoUrl),
+        thumbUrl: thumbUrl || undefined,
         title,
         sourcePath: "threads-og-video",
       }];
@@ -71,7 +93,8 @@ export async function extractThreads(url: string): Promise<ExtractionMedia[]> {
       return [{
         type: "image",
         url: thumbUrl,
-        thumbUrl,
+        downloadUrl: buildProxyDownloadUrl(thumbUrl),
+        thumbUrl: thumbUrl || undefined,
         title,
         sourcePath: "threads-og-image",
       }];
@@ -83,4 +106,3 @@ export async function extractThreads(url: string): Promise<ExtractionMedia[]> {
     throw error;
   }
 }
-

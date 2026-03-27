@@ -1,5 +1,9 @@
 ﻿import type { ExtractionMedia } from "./types";
 
+function buildProxyDownloadUrl(url: string): string {
+  return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
+}
+
 interface BilibiliViewResponse {
   code?: number;
   data?: {
@@ -44,8 +48,6 @@ export async function extractBilibili(url: string): Promise<ExtractionMedia[]> {
       throw new Error("CID_NOT_RESOLVED");
     }
 
-    // Step 1: Use the web-interface/view API to get video metadata (cid, thumb, title)
-    // This avoids scraping the HTML page which is often a CAPTCHA bot-detection page.
     const viewRes = await fetch(
       `https://api.bilibili.com/x/web-interface/view?bvid=${bvid}`,
       {
@@ -90,11 +92,10 @@ export async function extractBilibili(url: string): Promise<ExtractionMedia[]> {
 
     console.log(`[Bilibili] Got BVID=${bvid}, CID=${cid} from API`);
 
-    // Step 2: Use the playurl API to get the video stream URL
     const apiParams = new URLSearchParams({
       bvid,
       cid: String(cid),
-      qn: "80", // 1080p; falls back gracefully
+      qn: "80",
       otype: "json",
       platform: "html5",
       high_quality: "1",
@@ -133,6 +134,7 @@ export async function extractBilibili(url: string): Promise<ExtractionMedia[]> {
         return [{
           type: "video",
           url: resolvedVideoUrl,
+          downloadUrl: buildProxyDownloadUrl(resolvedVideoUrl),
           quality: "1080p",
           thumbUrl,
           title,
@@ -151,4 +153,3 @@ export async function extractBilibili(url: string): Promise<ExtractionMedia[]> {
     throw error;
   }
 }
-

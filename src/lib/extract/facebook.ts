@@ -1,5 +1,9 @@
 ﻿import type { ExtractionMedia } from "./types";
 
+function buildProxyDownloadUrl(url: string): string {
+  return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
+}
+
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
@@ -83,9 +87,11 @@ export async function extractFacebook(url: string): Promise<ExtractionMedia[]> {
     const title = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/)?.[1];
 
     if (videoUrl) {
+      const decodedVideoUrl = decodeEscapedUrl(videoUrl);
       return [{
         type: "video",
-        url: decodeEscapedUrl(videoUrl),
+        url: decodedVideoUrl,
+        downloadUrl: buildProxyDownloadUrl(decodedVideoUrl),
         thumbUrl,
         title,
         sourcePath: "facebook-og-video",
@@ -98,4 +104,3 @@ export async function extractFacebook(url: string): Promise<ExtractionMedia[]> {
     throw error;
   }
 }
-

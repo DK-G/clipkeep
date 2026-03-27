@@ -16,6 +16,10 @@ function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
+function buildProxyDownloadUrl(url: string): string {
+  return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
+}
+
 function decodeHtml(value: string): string {
   return value
     .replace(/&quot;/g, '"')
@@ -146,7 +150,6 @@ function pickBestVideo(videoList: unknown): PinterestVideoCandidate | null {
 
   const list = videoList as Record<string, unknown>;
   let bestMp4: PinterestVideoCandidate | null = null;
-  let bestAny: PinterestVideoCandidate | null = null;
 
   for (const candidate of Object.values(list)) {
     if (!candidate || typeof candidate !== "object") {
@@ -156,17 +159,13 @@ function pickBestVideo(videoList: unknown): PinterestVideoCandidate | null {
     if (!video.url) {
       continue;
     }
-
-    if (!bestAny || (video.height || 0) > (bestAny.height || 0)) {
-      bestAny = video;
-    }
         const isMp4 = /\.mp4(\?|$)/i.test(video.url);
     if (isMp4 && (!bestMp4 || (video.height || 0) > (bestMp4.height || 0))) {
       bestMp4 = video;
     }
   }
 
-  return bestMp4 || bestAny;
+  return bestMp4;
 }
 
 function extractFromPinCandidate(pin: Record<string, unknown>): ExtractionMedia[] {
@@ -196,6 +195,7 @@ function extractFromPinCandidate(pin: Record<string, unknown>): ExtractionMedia[
         media.push({
           type: "video",
           url: pageVideo.url,
+          downloadUrl: buildProxyDownloadUrl(pageVideo.url),
           quality: pageVideo.height ? `${pageVideo.height}p` : "high",
           title,
           thumbUrl: pickBestImage(pageRecord.images)?.url || mainImage?.url,
@@ -210,6 +210,7 @@ function extractFromPinCandidate(pin: Record<string, unknown>): ExtractionMedia[
         media.push({
           type: "image",
           url: pageImage.url,
+          downloadUrl: buildProxyDownloadUrl(pageImage.url),
           quality: pageImage.width ? `${pageImage.width}w` : "original",
           title,
           thumbUrl: pageImage.url,
@@ -229,6 +230,7 @@ function extractFromPinCandidate(pin: Record<string, unknown>): ExtractionMedia[
             media.push({
               type: "video",
               url: blockVideo.url,
+              downloadUrl: buildProxyDownloadUrl(blockVideo.url),
               quality: blockVideo.height ? `${blockVideo.height}p` : "high",
               title,
               thumbUrl: mainImage?.url,
@@ -240,6 +242,7 @@ function extractFromPinCandidate(pin: Record<string, unknown>): ExtractionMedia[
               media.push({
                 type: "image",
                 url: blockImage.url,
+                downloadUrl: buildProxyDownloadUrl(blockImage.url),
                 quality: blockImage.width ? `${blockImage.width}w` : "original",
                 title,
                 thumbUrl: blockImage.url,
@@ -261,6 +264,7 @@ function extractFromPinCandidate(pin: Record<string, unknown>): ExtractionMedia[
         media.push({
           type: "video",
           url: bestVideo.url,
+          downloadUrl: buildProxyDownloadUrl(bestVideo.url),
           quality: bestVideo.height ? `${bestVideo.height}p` : "high",
           title,
           thumbUrl: mainImage?.url,
@@ -273,6 +277,7 @@ function extractFromPinCandidate(pin: Record<string, unknown>): ExtractionMedia[
       media.push({
         type: "image",
         url: mainImage.url,
+        downloadUrl: buildProxyDownloadUrl(mainImage.url),
         quality: mainImage.width ? `${mainImage.width}w` : "original",
         title,
         thumbUrl: mainImage.url,

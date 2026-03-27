@@ -1,5 +1,9 @@
 ﻿import type { ExtractionMedia } from "./types";
 
+function buildProxyDownloadUrl(url: string): string {
+  return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
+}
+
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
@@ -66,6 +70,7 @@ export async function extractLemon8(url: string): Promise<ExtractionMedia[]> {
       return [{
         type: "video",
         url: videoUrl,
+        downloadUrl: buildProxyDownloadUrl(videoUrl),
         thumbUrl,
         title,
         sourcePath: "lemon8-og-video",
@@ -76,6 +81,7 @@ export async function extractLemon8(url: string): Promise<ExtractionMedia[]> {
       return [{
         type: "image",
         url: thumbUrl,
+        downloadUrl: buildProxyDownloadUrl(thumbUrl),
         thumbUrl,
         title,
         sourcePath: "lemon8-og-image",
@@ -88,4 +94,3 @@ export async function extractLemon8(url: string): Promise<ExtractionMedia[]> {
     throw error;
   }
 }
-

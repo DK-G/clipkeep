@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     "twimg.com", "video.twimg.com", "pbs.twimg.com", "fxtwitter.com", "vxtwitter.com", "twitfix.com", "fixupx.com",
     "ddinstagram.com", "cdninstagram.com", "fbcdn.net", "fna.fbcdn.net",
     "tikwm.com", "tiktokv.com", "tiktok.com", "tiktokcdn.com", "tiktokcdn-us.com", "kktiktok.com",
-    "redd.it", "redditstatic.com", "reddit.com", "rxddit.com", "v.redd.it", "i.redd.it",
+    "redd.it", "redditstatic.com", "reddit.com", "rxddit.com", "spedit.com", "v.redd.it", "i.redd.it", "preview.redd.it", "external-preview.redd.it", "redditmedia.com",
     "pinimg.com", "pinterest.com",
     "bsky.social", "bsky.network", "bsky.app",
     "byteimg.com", "lemon8-app.com",
