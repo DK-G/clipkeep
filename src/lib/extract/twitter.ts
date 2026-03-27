@@ -1,6 +1,7 @@
 ﻿export interface TwitterMedia {
   type: "video" | "audio" | "image";
   url: string;
+  downloadUrl?: string;
   thumbUrl?: string;
   sourcePath?: "api" | "direct" | "fixer";
 }
@@ -20,6 +21,10 @@ interface FXTwitterResponse {
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+function buildProxyDownloadUrl(url: string): string {
+  return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
 }
 
 /**
@@ -89,10 +94,10 @@ async function scrapeFixer(url: string): Promise<TwitterMedia[]> {
   const thumbUrl = findMeta(html, "og:image") || findMeta(html, "twitter:image");
 
   if (videoUrl) {
-    return [{ type: "video", url: videoUrl, thumbUrl: thumbUrl || undefined, sourcePath: "fixer" }];
+    return [{ type: "video", url: videoUrl, downloadUrl: buildProxyDownloadUrl(videoUrl), thumbUrl: thumbUrl || undefined, sourcePath: "fixer" }];
   }
   if (thumbUrl) {
-    return [{ type: "image", url: thumbUrl, sourcePath: "fixer" }];
+    return [{ type: "image", url: thumbUrl, downloadUrl: buildProxyDownloadUrl(thumbUrl), sourcePath: "fixer" }];
   }
 
   return [];
@@ -127,6 +132,7 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
         return data.tweet.media.all.map((media) => ({
           type: media.type === "video" || media.type === "gif" ? "video" : "image",
           url: media.url,
+          downloadUrl: buildProxyDownloadUrl(media.url),
           thumbUrl: media.thumbnail_url || undefined,
           sourcePath: "api",
         }));
@@ -159,9 +165,9 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
       throw new Error("POST_NOT_FOUND");
     }
 
-    if (directRes.ok && directRes.url.includes("twimg.com")) {
+    if (directRes.ok && (directRes.url.includes("twimg.com") || directRes.url.includes("video.twimg.com") || directRes.url.includes("pbs.twimg.com"))) {
       console.log(`[Twitter] Success via Direct path (${Date.now() - startTime}ms)`);
-      return [{ type: "video", url: directRes.url, sourcePath: "direct" }];
+      return [{ type: "video", url: directRes.url, downloadUrl: buildProxyDownloadUrl(directRes.url), sourcePath: "direct" }];
     }
   } catch (error: unknown) {
     const errorMessage = getErrorMessage(error);

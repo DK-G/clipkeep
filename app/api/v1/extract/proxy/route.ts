@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   // Security: Only allow proxying for known SNS CDN domains
   const allowedDomains = [
     "telesco.pe", "telegram.org", 
-    "twimg.com", "fxtwitter.com", "vxtwitter.com", "twitfix.com",
+    "twimg.com", "video.twimg.com", "pbs.twimg.com", "fxtwitter.com", "vxtwitter.com", "twitfix.com", "fixupx.com",
     "ddinstagram.com", "cdninstagram.com", "fbcdn.net", "fna.fbcdn.net",
     "tikwm.com", "tiktokv.com", "tiktok.com", "tiktokcdn.com", "tiktokcdn-us.com", "kktiktok.com",
     "redd.it", "redditstatic.com", "reddit.com", "rxddit.com", "v.redd.it", "i.redd.it",
