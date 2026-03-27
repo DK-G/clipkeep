@@ -257,7 +257,11 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     .then(payload => {
       if ('data' in payload) {
         trackEvent('demo_submit_success', { platform: 'tiktok', jobId: payload.data.jobId });
-        router.push(`/result/${payload.data.jobId}?locale=${locale}`);
+        // We add a small artificial delay of 1.2s to ensure the user SEES the loading "演出"
+        // as the backend might return instantly for the cached/pinned demo.
+        setTimeout(() => {
+          router.push(`/result/${payload.data.jobId}?locale=${locale}`);
+        }, 1200);
       } else {
         updateStatus(payload.error.message || l.invalidRequest);
         setSubmitting(false);

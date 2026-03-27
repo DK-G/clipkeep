@@ -166,6 +166,21 @@ export async function POST(request: Request) {
   }
 
   try {
+    // Force the deterministic Job ID for the demo to ensure consistency across environments
+    const demoJobId = 'job_tiktok_7c1de28c9edb807c';
+    if (isDemo) {
+      return success({
+        status: 202,
+        requestId,
+        locale: body.locale,
+        data: {
+          jobId: demoJobId,
+          status: 'queued',
+          pollAfterMs: 1200,
+        },
+      });
+    }
+
     const job = await createJob(platform, url, body.locale || 'en');
     recordExtractAttempt({ upstreamFailed: false, queueWaitMs: 0 });
 
