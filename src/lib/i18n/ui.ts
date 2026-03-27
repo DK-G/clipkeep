@@ -1,4 +1,4 @@
-export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
+﻿export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
 
 export function normalizeLocale(value: string | null | undefined): Locale {
   const v = value?.toLowerCase();
@@ -55,8 +55,10 @@ type HomeDict = {
   tiktokDesc: string;
   globalTrending: string;
   globalTrendingSubtitle: string;
-  recentDownloadsSubtitle?: string;
-  viewAllLatest?: string;
+  demoButton: string;
+  successRateTikTok: string;
+  successRateX: string;
+  instagramMaintenanceAlternative: string;
   redditTitle: string;
   redditDesc: string;
   pinterestTitle: string;
@@ -108,6 +110,10 @@ type ResultDict = {
   warningsTitle: string;
   recommendedClips: string;
   sourcePost: string;
+  readyToDownload: string;
+  preparingDownload: string;
+  nextActionAnother: string;
+  nextActionPaste: string;
 };
 
 type SolutionDict = {
@@ -226,7 +232,11 @@ export const homeText: Record<Locale, HomeDict> = {
     initialMessage: "Paste a supported post URL and start extraction.",
     creatingJob: "Creating extraction job...",
     degradedMessage: "Extractor is temporarily limited. Please check solution guidance.",
-    invalidRequest: "Request failed. Check URL/platform and try again.",
+    invalidRequest: "Extraction failed. Check URL/platform.",
+    demoButton: "Try Demo",
+    successRateTikTok: "100% Success",
+    successRateX: "95% Success",
+    instagramMaintenanceAlternative: "Instagram is under maintenance. Try TikTok!",
     networkError: "Network error while creating job.",
     helpPage: "Help page",
     supportedTools: "Supported Tools",
@@ -270,6 +280,10 @@ export const homeText: Record<Locale, HomeDict> = {
     creatingJob: "جارٍ إنشاء مهمة الاستخراج...",
     degradedMessage: "الخدمة محدودة مؤقتًا. راجع صفحة الحلول.",
     invalidRequest: "فشل الطلب. تحقق من الرابط/المنصة ثم أعد المحاولة.",
+    instagramMaintenanceAlternative: "إنستغرام تحت الصيانة. جرب تيك توك بدلاً من ذلك!",
+    successRateX: "نجاح %95",
+    successRateTikTok: "نجاح %100",
+    demoButton: "تجربة ديمو",
     networkError: "خطأ شبكة أثناء إنشاء المهمة.",
     helpPage: "صفحة المساعدة",
     supportedTools: "الأدوات المدعومة",
@@ -313,6 +327,10 @@ export const homeText: Record<Locale, HomeDict> = {
     creatingJob: "抽出ジョブを作成中...",
     degradedMessage: "現在抽出機能が制限されています。解決ガイドを確認してください。",
     invalidRequest: "リクエストに失敗しました。URLとプラットフォームを確認してください。",
+    instagramMaintenanceAlternative: "Instagramは現在メンテナンス中です。代わりにTikTokをお試しください！",
+    successRateX: "成功率95%",
+    successRateTikTok: "成功率100%",
+    demoButton: "デモを試す",
     networkError: "ネットワークエラーが発生しました。",
     helpPage: "ヘルプページ",
     supportedTools: "対応ツール",
@@ -356,6 +374,10 @@ export const homeText: Record<Locale, HomeDict> = {
     creatingJob: "Creando tarea de extracción...",
     degradedMessage: "El extractor está limitado temporalmente. Consulte la guía.",
     invalidRequest: "Error. Verifique la URL/plataforma e intente de nuevo.",
+    instagramMaintenanceAlternative: "Instagram en mantenimiento. ¡Prueba TikTok en su lugar!",
+    successRateX: "95% Éxito",
+    successRateTikTok: "100% Éxito",
+    demoButton: "Probar Demo",
     networkError: "Error de red al crear la tarea.",
     helpPage: "Ayuda",
     supportedTools: "Herramientas soportadas",
@@ -399,6 +421,10 @@ export const homeText: Record<Locale, HomeDict> = {
     creatingJob: "Criando tarefa de extração...",
     degradedMessage: "Extrator temporariamente limitado. Verifique a solução.",
     invalidRequest: "Falha na solicitação. Verifique URL/plataforma.",
+    instagramMaintenanceAlternative: "Instagram em manutenção. Tente o TikTok!",
+    successRateX: "95% Sucesso",
+    successRateTikTok: "100% Sucesso",
+    demoButton: "Testar Demo",
     networkError: "Erro de rede ao criar tarefa.",
     helpPage: "Ajuda",
     supportedTools: "Ferramentas suportadas",
@@ -442,6 +468,10 @@ export const homeText: Record<Locale, HomeDict> = {
     creatingJob: "Création de la tâche d'extraction...",
     degradedMessage: "L'extracteur est temporairement limité. Consultez l'aide.",
     invalidRequest: "Échec. Vérifiez l'URL/plateforme et réessayez.",
+    instagramMaintenanceAlternative: "Instagram en maintenance. Essayez TikTok à la place !",
+    successRateX: "95% Succès",
+    successRateTikTok: "100% Succès",
+    demoButton: "Essayer la démo",
     networkError: "Erreur réseau lors de la création de la tâche.",
     helpPage: "Aide",
     supportedTools: "Outils pris en charge",
@@ -485,6 +515,10 @@ export const homeText: Record<Locale, HomeDict> = {
     creatingJob: "Membuat tugas ekstraksi...",
     degradedMessage: "Ekstraktor terbatas sementara. Periksa panduan solusi.",
     invalidRequest: "Permintaan gagal. Periksa URL/platform.",
+    instagramMaintenanceAlternative: "Instagram sedang dalam pemeliharaan. Coba TikTok saja!",
+    successRateX: "95% Berhasil",
+    successRateTikTok: "100% Berhasil",
+    demoButton: "Coba Demo",
     networkError: "Kesalahan jaringan saat membuat tugas.",
     helpPage: "Bantuan",
     supportedTools: "Alat yang didukung",
@@ -528,6 +562,10 @@ export const homeText: Record<Locale, HomeDict> = {
     creatingJob: "एक्सट्रैक्शन कार्य बनाया जा रहा है...",
     degradedMessage: "एक्सट्रैक्टर अस्थायी रूप से सीमित है। समाधान मार्गदर्शिका देखें।",
     invalidRequest: "अनुरोध विफल। URL/प्लेटफॉर्म की जांच करें।",
+    instagramMaintenanceAlternative: "इंस्टाग्राम रखरखाव में है। इसके बजाय टिकटॉक आज़माएं!",
+    successRateX: "95% सफलता",
+    successRateTikTok: "100% सफलता",
+    demoButton: "डेमो आज़माएं",
     networkError: "कार्य बनाते समय नेटवर्क त्रुटि।",
     helpPage: "सहायता",
     supportedTools: "समर्थित उपकरण",
@@ -571,6 +609,10 @@ export const homeText: Record<Locale, HomeDict> = {
     creatingJob: "Aufgabe wird erstellt...",
     degradedMessage: "Eingeschränkt. Bitte Lösungshinweise prüfen.",
     invalidRequest: "Fehlgeschlagen. URL/Plattform prüfen.",
+    instagramMaintenanceAlternative: "Instagram wird gewartet. Probiere stattdessen TikTok!",
+    successRateX: "95% Erfolg",
+    successRateTikTok: "100% Erfolg",
+    demoButton: "Demo testen",
     networkError: "Netzwerkfehler beim Erstellen der Aufgabe.",
     helpPage: "Hilfe",
     supportedTools: "Unterstützte Tools",
@@ -614,6 +656,10 @@ export const homeText: Record<Locale, HomeDict> = {
     creatingJob: "Ayıklama görevi oluşturuluyor...",
     degradedMessage: "Ayıklayıcı geçici olarak sınırlı. Kılavuza bakın.",
     invalidRequest: "İstek başarısız. URL/platformu kontrol edin.",
+    instagramMaintenanceAlternative: "Instagram bakımda. Bunun yerine TikTok'u deneyin!",
+    successRateX: "%95 Başarı",
+    successRateTikTok: "%100 Başarı",
+    demoButton: "Demoyu dene",
     networkError: "Görev oluşturulurken ağ hatası oluştu.",
     helpPage: "Yardım",
     supportedTools: "Desteklenen Araçlar",
@@ -1773,8 +1819,7 @@ export const statusText: Record<Locale, StatusDict> = {
   }
 };
 
-export const resultText: Record<Locale, ResultDict> = {
-  en: {
+export const resultText: Record<Locale, ResultDict> = {  en: {
     title: "Extraction Result",
     jobIdLabel: "Job ID",
     statusLabel: "Status",
@@ -1808,10 +1853,12 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Select your preferred quality from the list below.",
     unknownAuthor: "Unknown Author",
     warningsTitle: "Extraction Warnings",
-    recommendedClips: "Recommended Clips",
-    sourcePost: "Post",
-  },
-  ar: {
+    recommendedClips: "Recommended Clips",    sourcePost: "Post",
+    readyToDownload: "Ready to Download",
+    preparingDownload: "Preparing your download...",
+    nextActionAnother: "Sıradaki videoyu kaydet 👇",
+    nextActionPaste: "Bağlantıyı buraya yapıştır",
+  },  ar: {
     title: "نتيجة الاستخراج",
     jobIdLabel: "معرف المهمة",
     statusLabel: "الحالة",
@@ -1845,10 +1892,12 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "حدد الجودة المفضلة لديك من القائمة أدناه.",
     unknownAuthor: "مؤلف غير معروف",
     warningsTitle: "تحذيرات الاستخراج",
-    recommendedClips: "مقاطع مقترحة",
-    sourcePost: "منشور",
-  },
-  ja: {
+    recommendedClips: "مقاطع مقترحة",    sourcePost: "منشور",
+    readyToDownload: "جاهز للتنزيل",
+    preparingDownload: "جاري تحضير التنزيل...",
+    nextActionAnother: "Guardar el siguiente video 👇",
+    nextActionPaste: "Pegar enlace aquí",
+  },  ja: {
     title: "抽出結果",
     jobIdLabel: "ジョブID",
     statusLabel: "ステータス",
@@ -1882,10 +1931,12 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "以下のリストからご希望の品質を選択してください。",
     unknownAuthor: "不明な投稿者",
     warningsTitle: "抽出に関する警告",
-    recommendedClips: "おすすめクリップ",
-    sourcePost: "ポスト",
-  },
-  es: {
+    recommendedClips: "おすすめクリップ",    sourcePost: "ポスト",
+    readyToDownload: "保存準備完了",
+    preparingDownload: "ダウンロードを準備中...",
+    nextActionAnother: "Guardar el siguiente video 👇",
+    nextActionPaste: "Pegar enlace aquí",
+  },  es: {
     title: "Resultado de ClipKeep",
     jobIdLabel: "ID de trabajo",
     statusLabel: "Estado de extracción",
@@ -1919,10 +1970,12 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Seleccione la calidad preferida de la lista.",
     unknownAuthor: "Autor desconocido",
     warningsTitle: "Advertencias de extracción",
-    recommendedClips: "Clips recomendados",
-    sourcePost: "Post",
-  },
-  pt: {
+    recommendedClips: "Clips recomendados",    sourcePost: "Post",
+    readyToDownload: "Listo para descargar",
+    preparingDownload: "Preparando tu descarga...",
+    nextActionAnother: "Guardar el siguiente video 👇",
+    nextActionPaste: "Pegar enlace aquí",
+  },  pt: {
     title: "Resultado do ClipKeep",
     jobIdLabel: "ID da Tarefa",
     statusLabel: "Status da Extração",
@@ -1956,10 +2009,12 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Selecione a qualidade preferida na lista.",
     unknownAuthor: "Autor desconhecido",
     warningsTitle: "Avisos de extração",
-    recommendedClips: "Clips recomendados",
-    sourcePost: "Post",
-  },
-  fr: {
+    recommendedClips: "Clips recomendados",    sourcePost: "Post",
+    readyToDownload: "Pronto para baixar",
+    preparingDownload: "Preparando tu descarga...",
+    nextActionAnother: "Salvar o próximo vídeo 👇",
+    nextActionPaste: "Colar link aqui",
+  },  fr: {
     title: "Résultat ClipKeep",
     jobIdLabel: "ID de tâche",
     statusLabel: "État de l'extraction",
@@ -1993,10 +2048,12 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Sélectionnez la qualité préférée dans la liste.",
     unknownAuthor: "Auteur inconnu",
     warningsTitle: "Avertissements d'extraction",
-    recommendedClips: "Clips recommandés",
-    sourcePost: "Post",
-  },
-  id: {
+    recommendedClips: "Clips recommandés",    sourcePost: "Post",
+    readyToDownload: "Prêt pour le téléchargement",
+    preparingDownload: "Preparando tu descarga...",
+    nextActionAnother: "Enregistrez la vidéo suivante 👇",
+    nextActionPaste: "Coller le lien ici",
+  },  id: {
     title: "Hasil ClipKeep",
     jobIdLabel: "ID Tugas",
     statusLabel: "Status Ekstraksi",
@@ -2030,10 +2087,12 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Pilih kualitas yang Anda inginkan dari daftar di bawah.",
     unknownAuthor: "Penulis Tidak Dikenal",
     warningsTitle: "Peringatan Ekstraksi",
-    recommendedClips: "Klip yang Direkomendasikan",
-    sourcePost: "Post",
-  },
-  hi: {
+    recommendedClips: "Klip yang Direkomendasikan",    sourcePost: "Post",
+    readyToDownload: "Siap diunduh",
+    preparingDownload: "Preparando tu descarga...",
+    nextActionAnother: "Simpan video berikutnya 👇",
+    nextActionPaste: "Tempel tautan di sini",
+  },  hi: {
     title: "ClipKeep परिणाम",
     jobIdLabel: "कार्य ID",
     statusLabel: "एक्सट्रैक्शन स्थिति",
@@ -2067,10 +2126,12 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "नीचे दी गई सूची से अपनी पसंदीदा गुणवत्ता चुनें।",
     unknownAuthor: "अज्ञात लेखक",
     warningsTitle: "निष्कर्षण चेतावनियाँ",
-    recommendedClips: "अनुशंसित क्लिप",
-    sourcePost: "पोस्ट",
-  },
-  de: {
+    recommendedClips: "अनुशंसित क्लिप",    sourcePost: "पोस्ट",
+    readyToDownload: "डाउनलोड के तैयार",
+    preparingDownload: "Preparando tu descarga...",
+    nextActionAnother: "अगला वीडियो सहेजें 👇",
+    nextActionPaste: "यहाँ लिंक पेस्ट करें",
+  },  de: {
     title: "ClipKeep Ergebnis",
     jobIdLabel: "Job ID",
     statusLabel: "Status",
@@ -2104,8 +2165,11 @@ export const resultText: Record<Locale, ResultDict> = {
     downloadDescription: "Wählen Sie die gewünschte Qualität aus der Liste aus.",
     unknownAuthor: "Unbekannter Autor",
     warningsTitle: "Extraktionswarnungen",
-    recommendedClips: "Empfohlene Clips",
-    sourcePost: "Post",
+    recommendedClips: "Empfohlene Clips",    sourcePost: "Post",
+    readyToDownload: "Bereit zum Download",
+    preparingDownload: "Preparando tu descarga...",
+    nextActionAnother: "Nächstes Video speichern 👇",
+    nextActionPaste: "Link hier einfügen",
   },
   tr: {
     title: "ClipKeep Sonucu",
@@ -2143,6 +2207,10 @@ export const resultText: Record<Locale, ResultDict> = {
     warningsTitle: "Ayıklama Uyarıları",
     recommendedClips: "Önerilen Klipler",
     sourcePost: "Gönderi",
+    readyToDownload: "İndirmeye hazır",
+    preparingDownload: "Preparando tu descarga...",
+    nextActionAnother: "Sıradaki videoyu kaydet 👇",
+    nextActionPaste: "Bağlantıyı buraya yapıştır",
   }
 };
 
@@ -5051,4 +5119,5 @@ export const facebookText: Record<Locale, PlatformPageDict> = {
     trendingTitle: "Facebook Trendleri"
   },
 };
+
 
