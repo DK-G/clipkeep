@@ -1,16 +1,17 @@
-﻿export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
+export type Locale = "en" | "ar" | "ja" | "es" | "pt" | "fr" | "id" | "hi" | "de" | "tr";
 
 export function normalizeLocale(value: string | null | undefined): Locale {
-  const v = value?.toLowerCase();
-  if (v === "ja") return "ja";
-  if (v === "ar") return "ar";
-  if (v === "es") return "es";
-  if (v === "pt") return "pt";
-  if (v === "fr") return "fr";
-  if (v === "id") return "id";
-  if (v === "hi") return "hi";
-  if (v === "de") return "de";
-  if (v === "tr") return "tr";
+  if (!value) return "en";
+  const v = value.toLowerCase();
+  if (v.startsWith("ja")) return "ja";
+  if (v.startsWith("ar")) return "ar";
+  if (v.startsWith("es")) return "es";
+  if (v.startsWith("pt")) return "pt";
+  if (v.startsWith("fr")) return "fr";
+  if (v.startsWith("id")) return "id";
+  if (v.startsWith("hi")) return "hi";
+  if (v.startsWith("de")) return "de";
+  if (v.startsWith("tr")) return "tr";
   return "en";
 }
 
@@ -1857,8 +1858,8 @@ export const resultText: Record<Locale, ResultDict> = {  en: {
     recommendedClips: "Recommended Clips",    sourcePost: "Post",
     readyToDownload: "Ready to Download",
     preparingDownload: "Preparing your download...",
-    nextActionAnother: "Sıradaki videoyu kaydet 👇",
-    nextActionPaste: "Bağlantıyı buraya yapıştır",
+    nextActionAnother: "Save the next video 👇",
+    nextActionPaste: "Paste another link here",
   },  ar: {
     title: "نتيجة الاستخراج",
     jobIdLabel: "معرف المهمة",
@@ -1896,8 +1897,8 @@ export const resultText: Record<Locale, ResultDict> = {  en: {
     recommendedClips: "مقاطع مقترحة",    sourcePost: "منشور",
     readyToDownload: "جاهز للتنزيل",
     preparingDownload: "جاري تحضير التنزيل...",
-    nextActionAnother: "Guardar el siguiente video 👇",
-    nextActionPaste: "Pegar enlace aquí",
+    nextActionAnother: "حفظ الفيديو التالي 👇",
+    nextActionPaste: "ألصق الرابط التالي هنا",
   },  ja: {
     title: "抽出結果",
     jobIdLabel: "ジョブID",
@@ -1935,8 +1936,8 @@ export const resultText: Record<Locale, ResultDict> = {  en: {
     recommendedClips: "おすすめクリップ",    sourcePost: "ポスト",
     readyToDownload: "保存準備完了",
     preparingDownload: "ダウンロードを準備中...",
-    nextActionAnother: "Guardar el siguiente video 👇",
-    nextActionPaste: "Pegar enlace aquí",
+    nextActionAnother: "次の動画を保存する 👇",
+    nextActionPaste: "こちらにリンクを貼り付けてください",
   },  es: {
     title: "Resultado de ClipKeep",
     jobIdLabel: "ID de trabajo",
@@ -2012,7 +2013,7 @@ export const resultText: Record<Locale, ResultDict> = {  en: {
     warningsTitle: "Avisos de extração",
     recommendedClips: "Clips recomendados",    sourcePost: "Post",
     readyToDownload: "Pronto para baixar",
-    preparingDownload: "Preparando tu descarga...",
+    preparingDownload: "Preparando seu download...",
     nextActionAnother: "Salvar o próximo vídeo 👇",
     nextActionPaste: "Colar link aqui",
   },  fr: {
@@ -2051,7 +2052,7 @@ export const resultText: Record<Locale, ResultDict> = {  en: {
     warningsTitle: "Avertissements d'extraction",
     recommendedClips: "Clips recommandés",    sourcePost: "Post",
     readyToDownload: "Prêt pour le téléchargement",
-    preparingDownload: "Preparando tu descarga...",
+    preparingDownload: "Préparation de votre téléchargement...",
     nextActionAnother: "Enregistrez la vidéo suivante 👇",
     nextActionPaste: "Coller le lien ici",
   },  id: {
@@ -2090,7 +2091,7 @@ export const resultText: Record<Locale, ResultDict> = {  en: {
     warningsTitle: "Peringatan Ekstraksi",
     recommendedClips: "Klip yang Direkomendasikan",    sourcePost: "Post",
     readyToDownload: "Siap diunduh",
-    preparingDownload: "Preparando tu descarga...",
+    preparingDownload: "Menyiapkan unduhan Anda...",
     nextActionAnother: "Simpan video berikutnya 👇",
     nextActionPaste: "Tempel tautan di sini",
   },  hi: {
@@ -2129,7 +2130,7 @@ export const resultText: Record<Locale, ResultDict> = {  en: {
     warningsTitle: "निष्कर्षण चेतावनियाँ",
     recommendedClips: "अनुशंसित क्लिप",    sourcePost: "पोस्ट",
     readyToDownload: "डाउनलोड के तैयार",
-    preparingDownload: "Preparando tu descarga...",
+    preparingDownload: "आपका डाउनलोड तैयार किया जा रहा है...",
     nextActionAnother: "अगला वीडियो सहेजें 👇",
     nextActionPaste: "यहाँ लिंक पेस्ट करें",
   },  de: {
@@ -2168,7 +2169,7 @@ export const resultText: Record<Locale, ResultDict> = {  en: {
     warningsTitle: "Extraktionswarnungen",
     recommendedClips: "Empfohlene Clips",    sourcePost: "Post",
     readyToDownload: "Bereit zum Download",
-    preparingDownload: "Preparando tu descarga...",
+    preparingDownload: "Ihr Download wird vorbereitet...",
     nextActionAnother: "Nächstes Video speichern 👇",
     nextActionPaste: "Link hier einfügen",
   },
@@ -2209,7 +2210,7 @@ export const resultText: Record<Locale, ResultDict> = {  en: {
     recommendedClips: "Önerilen Klipler",
     sourcePost: "Gönderi",
     readyToDownload: "İndirmeye hazır",
-    preparingDownload: "Preparando tu descarga...",
+    preparingDownload: "İndirmeniz hazırlanıyor...",
     nextActionAnother: "Sıradaki videoyu kaydet 👇",
     nextActionPaste: "Bağlantıyı buraya yapıştır",
   }

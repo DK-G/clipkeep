@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { FormEvent, useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -94,6 +94,7 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
   const [submitting, setSubmitting] = useState(false);
   const [detectedPlatform, setDetectedPlatform] = useState<DetectedPlatform | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [pendingDemo, setPendingDemo] = useState(false);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
 
@@ -163,6 +164,19 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     return !!sourceUrl && !submitting && !!turnstileToken && activePlatform !== 'instagram';
   }, [sourceUrl, submitting, turnstileToken, activePlatform]);
 
+  // Auto-submit demo if Turnstile is ready
+  useEffect(() => {
+    if (pendingDemo && turnstileToken && !submitting) {
+      setPendingDemo(false);
+      // Use a small delay to ensure UI updates before submission
+      const t = setTimeout(() => {
+        const form = document.querySelector('form');
+        if (form) form.requestSubmit();
+      }, 300);
+      return () => clearTimeout(t);
+    }
+  }, [pendingDemo, turnstileToken, submitting]);
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!canSubmit) return;
@@ -223,10 +237,11 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
 
   const onDemoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    const demoUrl = 'https://www.tiktok.com/@tiktok/video/7332306352012004610';
+    const demoUrl = 'https://www.tiktok.com/@tiktok/video/7460937381265411370';
     setSourceUrl(demoUrl);
     setDetectedPlatform('tiktok');
     setLocalStatus(null);
+    setPendingDemo(true);
     trackEvent('demo_submit', { locale });
   };
 
@@ -270,9 +285,14 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
           <button
             type="submit"
             disabled={!canSubmit}
-            className="h-14 sm:h-16 px-10 glass-button rounded-xl font-bold text-white transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+            className="h-14 sm:h-16 px-10 glass-button rounded-xl font-bold text-white transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 relative overflow-hidden"
           >
-            {submitting ? l.submitting : l.submit}
+            {submitting || (pendingDemo && !turnstileToken) ? (
+              <span className="flex items-center gap-2">
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                {l.submitting}
+              </span>
+            ) : l.submit}
           </button>
         </div>
 

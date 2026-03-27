@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import type { Platform as ExtractPlatform } from '@/lib/extract/types';
-import { Locale } from '@/lib/i18n/ui';
+import { Locale, menuText } from '@/lib/i18n/ui';
 import { trackEvent } from '@/lib/analytics/gtag';
 import React from 'react';
 import { TiktokIcon, TwitterXIcon, RedditIcon, FacebookIcon, TelegramIcon, PinterestIcon, ThreadsIcon, BlueskyIcon, BilibiliIcon, DiscordIcon, Lemon8Icon } from '@/components/platform-icons';
@@ -199,7 +199,18 @@ export function GallerySection({
 
   return (
     <section id={id} className={`mt-12 scroll-mt-[80px] ${layout === 'carousel' ? 'overflow-hidden' : ''}`}>
-      <h2 className="text-xl font-extrabold mb-5 text-center text-slate-900 dark:text-slate-50 tracking-tight">{title}</h2>
+      <div className="flex items-center justify-between mb-5 px-2 sm:px-0">
+        <h2 className="text-xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight">{title}</h2>
+        {type === 'trending' && (
+          <button
+            onClick={() => router.push(`/trending?locale=${locale}`)}
+            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center gap-1 group"
+          >
+            <span>{menuText[locale]?.viewAllTrending || 'View All'}</span>
+            <span className="transition-transform group-hover:translate-x-0.5">→</span>
+          </button>
+        )}
+      </div>
       <div className={containerClasses} style={layout === 'carousel' ? { scrollbarWidth: 'none', msOverflowStyle: 'none' } : {}}>
         <style dangerouslySetInnerHTML={{ __html: '.scrollbar-hide::-webkit-scrollbar { display: none; }' }} />
 
