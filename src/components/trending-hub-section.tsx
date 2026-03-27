@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Locale } from '@/lib/i18n/ui';
+import { Locale, menuText } from '@/lib/i18n/ui';
 import { GallerySection, type GalleryPlatform } from '@/components/gallery-section';
 import { PlatformFilter } from '@/components/platform-filter';
 import { ArrowRight } from 'lucide-react';
@@ -15,6 +15,7 @@ interface TrendingHubSectionProps {
 
 export function TrendingHubSection({ locale, title, subtitle }: TrendingHubSectionProps) {
   const [platform, setPlatform] = useState<string>('all');
+  const t = menuText[locale];
 
   return (
     <div className="mb-20">
@@ -33,7 +34,7 @@ export function TrendingHubSection({ locale, title, subtitle }: TrendingHubSecti
           href={`/trending?locale=${locale}${platform !== 'all' ? `&p=${platform}` : ''}`}
           className="group flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm hover:underline ml-4.5 sm:ml-0"
         >
-          View All Trending
+          {t.viewAllTrending}
           <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>

@@ -169,6 +169,7 @@ type MenuDict = {
   downloads: string;
   rankings: string;
   latest: string;
+  viewAllTrending: string;
   latestPageSubtitle?: string;
   loadingLabel?: string;
   language: string;
@@ -3609,6 +3610,7 @@ export const menuText: Record<Locale, MenuDict> = {
     downloads: "DOWNLOAD",
     rankings: "Trend",
     latest: "Latest",
+    viewAllTrending: "View All Trending",
     language: "LANGUAGE",
     more: "MORE",
     bilibili: "Bilibili Downloader",
@@ -3633,6 +3635,7 @@ export const menuText: Record<Locale, MenuDict> = {
     downloads: "تنزيل",
     rankings: "الرائج",
     latest: "الأحدث",
+    viewAllTrending: "عرض كل الترند",
     language: "اللغة",
     more: "المزيد",
     bilibili: "بليبلي",
@@ -3657,6 +3660,7 @@ export const menuText: Record<Locale, MenuDict> = {
     downloads: "ダウンロード",
     rankings: "トレンド",
     latest: "最新",
+    viewAllTrending: "トレンド一覧を見る",
     language: "言語切り替え",
     more: "その他",
     bilibili: "Bilibili 保存",
@@ -3681,6 +3685,7 @@ export const menuText: Record<Locale, MenuDict> = {
     downloads: "DESCARGAS",
     rankings: "Tendencias",
     latest: "Últimos",
+    viewAllTrending: "Ver todas las tendencias",
     language: "IDIOMA",
     more: "MÁS",
     bilibili: "Descargador de Bilibili",
@@ -3705,6 +3710,7 @@ export const menuText: Record<Locale, MenuDict> = {
     downloads: "DOWNLOADS",
     rankings: "Tendências",
     latest: "Últimos",
+    viewAllTrending: "Ver todas as tendências",
     language: "IDIOMA",
     more: "MAIS",
     bilibili: "Downloader do Bilibili",
@@ -3729,6 +3735,7 @@ export const menuText: Record<Locale, MenuDict> = {
     downloads: "TÉLÉCHARGEMENTS",
     rankings: "Tendances",
     latest: "Récents",
+    viewAllTrending: "Voir toutes les tendances",
     language: "LANGUE",
     more: "PLUS",
     bilibili: "Téléchargeur Bilibili",
@@ -3753,6 +3760,7 @@ export const menuText: Record<Locale, MenuDict> = {
     downloads: "UNDUHAN",
     rankings: "Tren",
     latest: "Terbaru",
+    viewAllTrending: "Lihat semua tren",
     language: "BAHASA",
     more: "LAINNYA",
     bilibili: "Pengunduh Bilibili",
@@ -3777,6 +3785,7 @@ export const menuText: Record<Locale, MenuDict> = {
     downloads: "डाउनलोड",
     rankings: "ट्रेंडिंग",
     latest: "नवीनतम",
+    viewAllTrending: "सभी ट्रेंड देखें",
     language: "भाषा",
     more: "अधिक",
     bilibili: "Bilibili डाउनलोडर",
@@ -3801,6 +3810,7 @@ export const menuText: Record<Locale, MenuDict> = {
     downloads: "DOWNLOADS",
     rankings: "Trends",
     latest: "Neueste",
+    viewAllTrending: "Alle Trends ansehen",
     language: "SPRACHE",
     more: "MEHR",
     bilibili: "Bilibili Downloader",
@@ -3825,6 +3835,7 @@ export const menuText: Record<Locale, MenuDict> = {
     downloads: "İNDİRMELER",
     rankings: "Trend",
     latest: "En Son",
+    viewAllTrending: "Tüm trendleri gör",
     language: "DİL",
     more: "DAHA FAZLA",
     bilibili: "Bilibili İndirici",

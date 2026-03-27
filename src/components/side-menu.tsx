@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Locale, menuText } from '@/lib/i18n/ui';
+import { Locale, localeNativeLabels, menuText } from '@/lib/i18n/ui';
 import { SITE_URL } from '@/lib/site-url';
 
 interface SideMenuProps {
@@ -119,16 +119,16 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale }: SideMenuProps)
       id: 'language',
       title: t.language,
       items: [
-        { label: 'English', href: `${pathname}?locale=en` },
-        { label: 'العربية', href: `${pathname}?locale=ar` },
-        { label: '日本語', href: `${pathname}?locale=ja` },
-        { label: 'Español', href: `${pathname}?locale=es` },
-        { label: 'Português', href: `${pathname}?locale=pt` },
-        { label: 'Français', href: `${pathname}?locale=fr` },
-        { label: 'Indonesia', href: `${pathname}?locale=id` },
-        { label: 'हिंदी', href: `${pathname}?locale=hi` },
-        { label: 'Deutsch', href: `${pathname}?locale=de` },
-        { label: 'Türkçe', href: `${pathname}?locale=tr` },
+                { label: localeNativeLabels.en, href: `${pathname}?locale=en` },
+        { label: localeNativeLabels.ar, href: `${pathname}?locale=ar` },
+        { label: localeNativeLabels.ja, href: `${pathname}?locale=ja` },
+        { label: localeNativeLabels.es, href: `${pathname}?locale=es` },
+        { label: localeNativeLabels.pt, href: `${pathname}?locale=pt` },
+        { label: localeNativeLabels.fr, href: `${pathname}?locale=fr` },
+        { label: localeNativeLabels.id, href: `${pathname}?locale=id` },
+        { label: localeNativeLabels.hi, href: `${pathname}?locale=hi` },
+        { label: localeNativeLabels.de, href: `${pathname}?locale=de` },
+        { label: localeNativeLabels.tr, href: `${pathname}?locale=tr` },
       ],
     },
     {
