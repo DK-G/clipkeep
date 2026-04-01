@@ -8,6 +8,11 @@ export type ExtractionMedia = {
   quality?: string;
   thumbUrl?: string;
   title?: string;
+  text?: string;
+  authorName?: string;
+  authorHandle?: string;
+  publishedAt?: string;
+  groupIndex?: number;
   sourcePath?: string; // e.g., 'api', 'direct', 'fixer'
 };
 
@@ -25,4 +30,3 @@ export type ExtractJob = {
   createdAt: string;
   updatedAt: string;
 };
-

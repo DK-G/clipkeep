@@ -1,10 +1,10 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { trackEvent } from "@/lib/analytics/gtag";
-import { resultText, localeDir, Locale } from "@/lib/i18n/ui";
+import { resultText, localeDir, Locale, menuText } from "@/lib/i18n/ui";
 import type { ApiSuccess, ApiFailure, ExtractionResult } from "@/lib/api/types";
 import type { Platform } from "@/lib/extract/types";
 import { AdsterraNative } from "@/components/ads/native-banner";
@@ -15,7 +15,7 @@ import { useHistory } from "@/hooks/use-history";
 import { usePlatformUsage } from "@/hooks/use-platform-usage";
 import { ExtractorForm } from "@/components/extractor-form";
 import { DownloadGuard } from "@/components/download-guard";
-import { ArrowRight, Link as LinkIcon, Sparkles } from "lucide-react";
+
 
 interface ResultClientProps {
   jobId: string;
@@ -23,8 +23,89 @@ interface ResultClientProps {
   initialData: ExtractionResult | null;
 }
 
+const relatedSectionText: Record<Locale, {
+  trendingBody: (platform: string) => string;
+  trendingLink: string;
+  latestLink: string;
+  latestBody: (platform: string) => string;
+  savedCount: (count: number) => string;
+}> = {
+  en: {
+    trendingBody: (platform) => `More ${platform} clips that are already performing well on ClipKeep.`,
+    trendingLink: 'View all trending',
+    latestLink: 'Browse latest',
+    latestBody: (platform) => `Fresh ${platform} extractions you can open next if you want newer posts instead of top performers.`,
+    savedCount: (count) => `${count} saved`,
+  },
+  ja: {
+    trendingBody: (platform) => `ClipKeepで既に反応の良い${platform}クリップをさらに表示します。`,
+    trendingLink: 'トレンドをすべて見る',
+    latestLink: '最新を見る',
+    latestBody: (platform) => `人気順ではなく新しい投稿を見たい場合は、最新の${platform}抽出を次に開けます。`,
+    savedCount: (count) => `${count}件保存`,
+  },
+  ar: {
+    trendingBody: (platform) => `المزيد من مقاطع ${platform} التي تحقق أداءً جيداً بالفعل على ClipKeep.`,
+    trendingLink: 'عرض جميع الرائج',
+    latestLink: 'تصفح الأحدث',
+    latestBody: (platform) => `أحدث عمليات استخراج ${platform} التي يمكنك فتحها بعد ذلك إذا أردت منشورات أحدث بدلاً من الأعلى أداءً.`,
+    savedCount: (count) => `${count} محفوظ`,
+  },
+  es: {
+    trendingBody: (platform) => `Más clips de ${platform} que ya están funcionando bien en ClipKeep.`,
+    trendingLink: 'Ver todo lo trending',
+    latestLink: 'Ver lo último',
+    latestBody: (platform) => `Extracciones recientes de ${platform} que puedes abrir después si prefieres publicaciones nuevas en lugar de las más vistas.`,
+    savedCount: (count) => `${count} guardados`,
+  },
+  pt: {
+    trendingBody: (platform) => `Mais clipes de ${platform} que já estão performando bem no ClipKeep.`,
+    trendingLink: 'Ver todos os trends',
+    latestLink: 'Ver últimos',
+    latestBody: (platform) => `Extrações recentes de ${platform} para abrir em seguida se você quiser posts mais novos em vez dos mais fortes.`,
+    savedCount: (count) => `${count} salvos`,
+  },
+  fr: {
+    trendingBody: (platform) => `Plus de clips ${platform} qui performent déjà bien sur ClipKeep.`,
+    trendingLink: 'Voir toutes les tendances',
+    latestLink: 'Voir les nouveautés',
+    latestBody: (platform) => `Nouvelles extractions ${platform} à ouvrir ensuite si vous préférez les publications récentes aux contenus les plus performants.`,
+    savedCount: (count) => `${count} enregistrés`,
+  },
+  id: {
+    trendingBody: (platform) => `Lebih banyak klip ${platform} yang sudah berkinerja baik di ClipKeep.`,
+    trendingLink: 'Lihat semua tren',
+    latestLink: 'Lihat terbaru',
+    latestBody: (platform) => `Ekstraksi ${platform} terbaru yang bisa Anda buka berikutnya jika ingin posting baru, bukan yang performanya tertinggi.`,
+    savedCount: (count) => `${count} tersimpan`,
+  },
+  hi: {
+    trendingBody: (platform) => `ClipKeep पर अच्छा प्रदर्शन कर रहे और ${platform} क्लिप देखें।`,
+    trendingLink: 'सभी ट्रेंडिंग देखें',
+    latestLink: 'नए देखें',
+    latestBody: (platform) => `अगर आप टॉप परफॉर्मर की जगह नई पोस्ट देखना चाहते हैं, तो अगली बार ${platform} की ताज़ा एक्सट्रैक्शन खोलें।`,
+    savedCount: (count) => `${count} सेव`,
+  },
+  de: {
+    trendingBody: (platform) => `Mehr ${platform}-Clips, die auf ClipKeep bereits gut performen.`,
+    trendingLink: 'Alle Trends ansehen',
+    latestLink: 'Neueste ansehen',
+    latestBody: (platform) => `Frische ${platform}-Extraktionen, die Sie als Nächstes öffnen können, wenn Sie neuere Posts statt Top-Performer möchten.`,
+    savedCount: (count) => `${count} gespeichert`,
+  },
+  tr: {
+    trendingBody: (platform) => `ClipKeep uzerinde halihazirda iyi performans gosteren daha fazla ${platform} klibi.`,
+    trendingLink: 'Tum trendleri gor',
+    latestLink: 'Yenileri gor',
+    latestBody: (platform) => `En iyi performans gosterenler yerine daha yeni gonderiler istiyorsan sonraki olarak acabilecegin yeni ${platform} cikarmalari.`,
+    savedCount: (count) => `${count} kaydedildi`,
+  },
+};
+
 export function ResultClient({ jobId, locale, initialData }: ResultClientProps) {
   const t = resultText[locale] || resultText.en;
+  const menu = menuText[locale] || menuText.en;
+  const relatedText = relatedSectionText[locale] || relatedSectionText.en;
   const dir = localeDir(locale);
 
   const { addToHistory } = useHistory();
@@ -35,17 +116,15 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
     !initialData || (initialData?.status !== "completed" && initialData?.status !== "failed")
   );
   
-  // Monetization & Retention States
   const [guardActive, setGuardActive] = useState(false);
   const [pendingUrl, setPendingUrl] = useState<string | null>(null);
   const [sessionDownloadCount, setSessionDownloadCount] = useState(0);
   const guardStartRef = useRef<number | null>(null);
 
-  // LTV Optimized Duration Logic
   const getGuardDuration = (count: number) => {
-    if (count < 2) return 1500; // 1-2 DLs
-    if (count < 4) return 2000; // 3-4 DLs
-    return 2500; // 5+ DLs (Capped at 2.5s for LTV)
+    if (count < 2) return 1500;
+    if (count < 4) return 2000;
+    return 2500;
   };
 
   const handleDownloadRequest = (url: string) => {
@@ -84,7 +163,6 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
     }
   };
 
-  // Abandonment tracking
   useEffect(() => {
     return () => {
       if (guardStartRef.current) {
@@ -298,24 +376,23 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
               ))}
             </div>
 
-            {/* Retention: Next Action Module (Phase 3 Optimization) */}
             <div className="mt-12 p-8 bg-blue-600 rounded-3xl text-white shadow-xl shadow-blue-600/20 relative overflow-hidden group">
                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                <div className="relative z-10">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-bold flex items-center gap-2">
-                        <Sparkles className="w-5 h-5 text-blue-200" />
+                        <span aria-hidden="true" className="text-blue-200">✦</span>
                         {t.nextActionAnother}
                     </h3>
                     {sessionDownloadCount > 0 && (
                       <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold border border-white/20">
-                        {sessionDownloadCount} saved
+                        {relatedText.savedCount(sessionDownloadCount)}
                       </span>
                     )}
                   </div>
                   
                   <div className="relative mb-6">
-                    <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300 w-5 h-5" />
+                    <span aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300">🔗</span>
                     <input 
                       type="text" 
                       placeholder="https://..." 
@@ -342,7 +419,7 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
                     className="w-full bg-white text-blue-600 hover:bg-blue-50 py-4 rounded-2xl font-black flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-lg"
                   >
                     {t.nextActionPaste}
-                    <ArrowRight className="w-5 h-5" />
+                    <span aria-hidden="true">→</span>
                   </button>
                </div>
             </div>
@@ -353,20 +430,62 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
           </div>
         </main>
 
-        <div className="mt-16">
-          <GallerySection 
-            platform={data.platform as Platform}
-            locale={locale}
-            title={t.recommendedClips}
-            type="trending"
-            layout="carousel"
-            hideMeta={true}
-            limit={10}
-          />
+        <div className="mt-16 space-y-10">
+          <section className="rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-5 sm:p-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t.recommendedClips}</h2>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                  {relatedText.trendingBody(data.platform)}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3 text-sm font-semibold">
+                <Link href={`/trending/${data.platform}?locale=${locale}`} onClick={() => trackEvent("result_related_click", { locale, platform: data.platform, job_id: jobId, destination_type: "trending", section: "similar" })} className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                  {relatedText.trendingLink}
+                </Link>
+                <Link href={`/latest/${data.platform}?locale=${locale}`} onClick={() => trackEvent("result_related_click", { locale, platform: data.platform, job_id: jobId, destination_type: "latest", section: "similar" })} className="text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100">
+                  {relatedText.latestLink}
+                </Link>
+              </div>
+            </div>
+            <GallerySection 
+              platform={data.platform as Platform}
+              locale={locale}
+              title={t.recommendedClips}
+              type="trending"
+              layout="carousel"
+              hideMeta={true}
+              limit={10}
+              excludeIds={[jobId]}
+            />
+          </section>
+
+          <section className="rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white dark:bg-slate-950/40 p-5 sm:p-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-2xl font-black text-slate-900 dark:text-slate-50">{menu.latest}</h2>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                  {relatedText.latestBody(data.platform)}
+                </p>
+              </div>
+              <Link href={`/latest/${data.platform}?locale=${locale}`} onClick={() => trackEvent("result_related_click", { locale, platform: data.platform, job_id: jobId, destination_type: "latest", section: "latest" })} className="text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                {relatedText.latestLink}
+              </Link>
+            </div>
+            <GallerySection 
+              platform={data.platform as Platform}
+              locale={locale}
+              title={menu.latest}
+              type="recent"
+              layout="carousel"
+              hideMeta={true}
+              limit={10}
+              excludeIds={[jobId]}
+            />
+          </section>
         </div>
       </div>
     </>
   );
 }
-
 

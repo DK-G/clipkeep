@@ -72,6 +72,10 @@ export async function GET(_request: Request, context: Context) {
           thumbUrl: m.thumbUrl,
         })),
         source_url: job.sourceUrl,
+        author_name: job.media[0]?.authorName,
+        author_handle: job.media[0]?.authorHandle,
+        title: job.media[0]?.text || job.media[0]?.title,
+        thumbnail_url: job.media[0]?.thumbUrl,
         warnings: job.warnings,
       },
     });
@@ -90,3 +94,5 @@ export async function GET(_request: Request, context: Context) {
     },
   });
 }
+
+

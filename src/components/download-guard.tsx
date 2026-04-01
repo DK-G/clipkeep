@@ -1,7 +1,6 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
-import { Download, Sparkles, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/analytics/gtag";
 import type { Locale } from "@/lib/i18n/ui";
@@ -52,11 +51,11 @@ export function DownloadGuard({ onComplete, text, duration = 1500, locale = "en"
         <div className="flex flex-col items-center text-center">
           <div className="relative mb-6">
             <div className="absolute inset-0 bg-blue-500/20 rounded-full animate-ping scale-150 opacity-20" />
-            <div className="relative bg-blue-600 text-white p-5 rounded-3xl shadow-lg shadow-blue-600/30">
-              <Download className="w-8 h-8 animate-bounce" />
+            <div className="relative bg-blue-600 text-white p-5 rounded-3xl shadow-lg shadow-blue-600/30 text-3xl leading-none" aria-hidden="true">
+              ⭳
             </div>
-            <div className="absolute -top-2 -right-2 bg-amber-400 text-amber-900 p-1.5 rounded-xl animate-pulse">
-              <Sparkles className="w-4 h-4" />
+            <div className="absolute -top-2 -right-2 bg-amber-400 text-amber-900 p-1.5 rounded-xl animate-pulse text-xs" aria-hidden="true">
+              ✦
             </div>
           </div>
 
@@ -80,15 +79,15 @@ export function DownloadGuard({ onComplete, text, duration = 1500, locale = "en"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="bg-white dark:bg-slate-800 p-2 rounded-xl text-blue-600 shadow-sm group-hover:scale-110 transition-transform">
-                    <TrendingUp className="w-4 h-4" />
+                  <div className="bg-white dark:bg-slate-800 p-2 rounded-xl text-blue-600 shadow-sm group-hover:scale-110 transition-transform" aria-hidden="true">
+                    ↗
                   </div>
                   <div className="text-left">
                     <p className="text-xs font-bold text-slate-900 dark:text-slate-100">{t.popular}</p>
                     <p className="text-[10px] text-slate-500">{t.saving}</p>
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-500 transform group-hover:translate-x-1 transition-all" />
+                <span aria-hidden="true" className="text-slate-300 group-hover:text-blue-500 transform group-hover:translate-x-1 transition-all">→</span>
               </div>
             </Link>
           </div>
@@ -97,9 +96,3 @@ export function DownloadGuard({ onComplete, text, duration = 1500, locale = "en"
     </div>
   );
 }
-
-const ArrowRight = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-  </svg>
-);

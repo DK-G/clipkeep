@@ -267,6 +267,11 @@ export async function createJob(platform: Platform, sourceUrl: string, locale: s
               expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
               thumbUrl: res.thumbUrl,
               title: res.title,
+              text: res.text,
+              authorName: res.authorName,
+              authorHandle: res.authorHandle,
+              publishedAt: res.publishedAt,
+              groupIndex: res.groupIndex,
               sourcePath: res.sourcePath,
             })),
             updatedAt: nowIso(),
@@ -393,6 +398,7 @@ export async function recordAccess(jobId: string, locale: string = "en", mediaIn
     }
   }
 }
+
 
 
 

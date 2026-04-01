@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { normalizeLocale } from '@/lib/i18n/ui';
 import { DiscoverySection } from '@/components/discovery-section';
 import { GallerySection } from '@/components/gallery-section';
@@ -8,7 +8,6 @@ import { ExtractorForm } from '@/components/extractor-form';
 import { TrendingHubSection } from '@/components/trending-hub-section';
 import { SITE_URL } from '@/lib/site-url';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 
 type HomeProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -487,7 +486,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
             className="group flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm hover:underline ml-4.5 sm:ml-0"
           >
             {t.viewAllLatest || "View All Latest"}
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </div>
         

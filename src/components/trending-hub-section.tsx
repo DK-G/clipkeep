@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Locale, menuText } from '@/lib/i18n/ui';
 import { GallerySection, type GalleryPlatform } from '@/components/gallery-section';
 import { PlatformFilter } from '@/components/platform-filter';
-import { ArrowRight } from 'lucide-react';
 
 interface TrendingHubSectionProps {
   locale: Locale;
@@ -29,35 +28,35 @@ export function TrendingHubSection({ locale, title, subtitle }: TrendingHubSecti
             {subtitle}
           </p>
         </div>
-        
-        <Link 
+
+        <Link
           href={`/trending?locale=${locale}${platform !== 'all' ? `&p=${platform}` : ''}`}
           className="group flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm hover:underline ml-4.5 sm:ml-0"
         >
           {t.viewAllTrending}
-          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
         </Link>
       </div>
 
       <div className="mb-8">
-        <PlatformFilter 
-          current={platform} 
-          onChange={setPlatform} 
-          locale={locale} 
+        <PlatformFilter
+          current={platform}
+          onChange={setPlatform}
+          locale={locale}
         />
       </div>
 
-      <GallerySection 
+      <GallerySection
         key={platform}
-        platform={platform as GalleryPlatform} 
-        type="trending" 
-        locale={locale} 
-        layout="masonry" 
-        dense={false} 
-        limit={8} 
-        id="trending-hub" 
-        title="" 
-        hideMeta={false} 
+        platform={platform as GalleryPlatform}
+        type="trending"
+        locale={locale}
+        layout="masonry"
+        dense={false}
+        limit={8}
+        id="trending-hub"
+        title=""
+        hideMeta={false}
       />
     </div>
   );
