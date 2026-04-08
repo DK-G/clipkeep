@@ -1,10 +1,11 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BlogCtaLink } from '@/components/blog-cta-link';
 import { notFound } from 'next/navigation';
 import { getKeywordArticle, getRelatedKeywordArticles, keywordArticles, type BlogLocale } from '@/lib/blog/keyword-articles';
 import { normalizeLocale } from '@/lib/i18n/ui';
 import { SITE_URL } from '@/lib/site-url';
+import { BlogSchema } from '@/components/blog-schema';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -1070,36 +1071,22 @@ export default async function BlogKeywordPage({ params, searchParams }: Props) {
   const comparisonArticle = article.category === 'comparison';
   const problemArticle = isProblemKeyword(article.slug);
 
-  const jsonLdHowTo = {
-    '@context': 'https://schema.org',
-    '@type': 'HowTo',
-    name: kw,
-    description: intro,
-    step: steps.map((s, i) => ({
-      '@type': 'HowToStep',
-      position: i + 1,
-      text: s,
-    })),
-  };
-
-  const jsonLdFaq = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: fails.map((f) => ({
-      '@type': 'Question',
-      name: f,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: articleFaqAnswer(locale, article.slug, article.category),
-      },
-    })),
-  };
+  const articleSteps = article.steps?.[locale] || steps;
+  const articleTips = article.proTips?.[locale];
+  const faqAnswer = articleFaqAnswer(locale, article.slug, article.category);
 
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
+      <BlogSchema 
+        article={article} 
+        locale={locale} 
+        kw={kw} 
+        intro={intro} 
+        steps={articleSteps} 
+        fails={fails} 
+        faqAnswer={faqAnswer} 
+      />
       <article className="rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdHowTo) }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }} />
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-slate-50">{kw}</h1>
         <p className="mt-3 text-gray-700 dark:text-slate-300">{intro}</p>
 
@@ -1120,11 +1107,28 @@ export default async function BlogKeywordPage({ params, searchParams }: Props) {
         <section className="mt-8">
           <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100">{t.steps}</h2>
           <ol className="mt-2 list-decimal pl-5 space-y-1 text-gray-700 dark:text-slate-300">
-            {steps.map((s) => (
+            {articleSteps.map((s) => (
               <li key={s}>{s}</li>
             ))}
           </ol>
         </section>
+
+        {articleTips && (
+          <section className="mt-8 rounded-xl border border-blue-100 bg-blue-50/20 dark:border-slate-800 dark:bg-slate-950/40 p-5">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100 flex items-center gap-2">
+              <span className="text-blue-500">💡</span> 
+              {locale === 'ja' ? 'プロのアドバイス' : locale === 'ar' ? 'نصائح الخبراء' : 'Pro Tips'}
+            </h2>
+            <ul className="mt-3 space-y-2">
+              {articleTips.map((tip, i) => (
+                <li key={i} className="text-gray-700 dark:text-slate-300 text-sm flex gap-2">
+                  <span className="text-blue-400">•</span>
+                  {tip}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <section className="mt-8 rounded-xl border border-blue-200 bg-blue-50/60 dark:border-blue-900 dark:bg-slate-950 p-4">
           <h2 className="text-lg font-bold text-blue-800 dark:text-blue-300">{t.ctaMain}</h2>
