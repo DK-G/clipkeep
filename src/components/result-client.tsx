@@ -141,23 +141,33 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
     setGuardActive(false);
     guardStartRef.current = null;
     if (pendingUrl) {
-      const link = document.createElement("a");
-      link.href = pendingUrl;
-      link.setAttribute("download", "");
-      link.setAttribute("target", "_blank");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const targetUrl = new URL(pendingUrl, window.location.origin);
+      const isSameOrigin = targetUrl.origin === window.location.origin;
+
+      if (isMobile && isSameOrigin) {
+        window.location.assign(targetUrl.toString());
+      } else {
+        const link = document.createElement("a");
+        link.href = targetUrl.toString();
+        link.setAttribute("download", "");
+        link.setAttribute("target", "_blank");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
       const newCount = sessionDownloadCount + 1;
       setSessionDownloadCount(newCount);
-      trackEvent("download_guard_complete", { 
+      trackEvent("download_guard_complete", {
         platform: data?.platform,
         session_download_count: newCount
       });
-      trackEvent("download_actual_start", { 
+      trackEvent("download_actual_start", {
         platform: data?.platform,
-        session_download_count: newCount
+        session_download_count: newCount,
+        mobile: isMobile,
+        same_origin: isSameOrigin
       });
       trackEvent("max_session_depth", { depth: newCount });
     }

@@ -14,7 +14,6 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
 
   const browser = await puppeteer.launch(env.browser_rendering);
   try {
-    // 1. TikTok Trends (Explore page)
     console.log("[AutoTrend] Scraping TikTok Explore...");
     const ttPage = await browser.newPage();
     try {
@@ -29,7 +28,6 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
     }
     await ttPage.close();
 
-    // 2. X (Twitter) Trends via twittrend.jp (Japan Trends)
     console.log("[AutoTrend] Scraping X Trends via twittrend.jp...");
     const xPage = await browser.newPage();
     try {
@@ -66,6 +64,20 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
   };
 }
 
+async function waitForCompletion(jobId: string, attempts = 8, intervalMs = 1500) {
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    const latest = await getJob(jobId);
+    if (latest?.status === "completed") {
+      return latest;
+    }
+    if (latest?.status === "failed") {
+      return latest;
+    }
+  }
+  return undefined;
+}
+
 /**
  * Main automation task: Discover trends and perform extractions.
  */
@@ -76,41 +88,51 @@ export async function runAutoTrendUpdate() {
     const { twitter, tiktok } = await discoverTrends();
     console.log(`[AutoTrend] Discovered ${twitter.length} X and ${tiktok.length} TikTok URLs`);
 
-    const allItems = [];
+    const allItems: Array<{ url: string; platform: "twitter" | "tiktok" }> = [];
     const max = Math.max(twitter.length, tiktok.length);
     for (let i = 0; i < max; i++) {
-      if (twitter[i]) allItems.push({ url: twitter[i], platform: "twitter" as const });
-      if (tiktok[i]) allItems.push({ url: tiktok[i], platform: "tiktok" as const });
+      if (twitter[i]) allItems.push({ url: twitter[i], platform: "twitter" });
+      if (tiktok[i]) allItems.push({ url: tiktok[i], platform: "tiktok" });
     }
 
-    for (const item of allItems) {
-      try {
+    const createdJobs = await Promise.allSettled(
+      allItems.map(async (item) => {
         console.log(`[AutoTrend] Automating extraction for: ${item.url}`);
         const job = await createJob(item.platform, item.url, "ja");
+        return { item, job };
+      })
+    );
 
-        let completed = job.status === "completed" ? job : undefined;
-        for (let attempt = 0; attempt < 8 && !completed; attempt++) {
-          await new Promise((resolve) => setTimeout(resolve, 1500));
-          const latest = await getJob(job.id);
-          if (latest?.status === "completed") {
-            completed = latest;
-            break;
-          }
-          if (latest?.status === "failed") {
-            break;
-          }
-        }
+    const followUps = createdJobs.map(async (result) => {
+      if (result.status !== "fulfilled") {
+        console.error("[AutoTrend] Failed to queue extraction:", result.reason);
+        return;
+      }
 
+      const { item, job } = result.value;
+
+      // Existing completed jobs are cache hits. Leave them untouched.
+      if (job.status === "completed" || job.status === "failed") {
+        console.log(`[AutoTrend] Reused existing ${job.status} job without bump: ${job.id}`);
+        return;
+      }
+
+      try {
+        const completed = await waitForCompletion(job.id);
         if (completed?.status === "completed") {
           await recordAccess(job.id, "ja");
           console.log(`[AutoTrend] Successfully queued and lightly boosted: ${job.id}`);
+        } else if (completed?.status === "failed") {
+          console.warn(`[AutoTrend] Job failed before visibility bump: ${job.id}`);
         } else {
           console.warn(`[AutoTrend] Job did not complete in time for visibility bump: ${job.id}`);
         }
       } catch (e) {
-        console.error(`[AutoTrend] Extraction error for ${item.url}:`, e);
+        console.error(`[AutoTrend] Extraction follow-up error for ${item.url}:`, e);
       }
-    }
+    });
+
+    await Promise.allSettled(followUps);
 
     return { status: "success", processed: allItems.length };
   } catch (error) {
