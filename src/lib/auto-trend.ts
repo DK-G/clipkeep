@@ -2,6 +2,76 @@ import puppeteer from "@cloudflare/puppeteer";
 import { createJob, getJob, recordAccess } from "./extract/store";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
+type TrendPlatform = "twitter" | "tiktok";
+
+function normalizeTwitterUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url.trim());
+    const host = parsed.hostname.toLowerCase();
+    if (!["x.com", "www.x.com", "twitter.com", "www.twitter.com"].includes(host)) {
+      return null;
+    }
+
+    const match = parsed.pathname.match(/^\/([^/]+)\/status\/(\d+)/);
+    if (!match) return null;
+    const [, handle, statusId] = match;
+    return `https://x.com/${handle}/status/${statusId}`;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeTikTokUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url.trim());
+    const host = parsed.hostname.toLowerCase();
+    if (!["tiktok.com", "www.tiktok.com", "m.tiktok.com"].includes(host)) {
+      return null;
+    }
+
+    const match = parsed.pathname.match(/^\/@[^/]+\/video\/(\d+)/);
+    if (!match) return null;
+    parsed.search = "";
+    parsed.hash = "";
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
+function extractMatches(html: string, pattern: RegExp, normalizer: (url: string) => string | null): string[] {
+  const matches = html.match(pattern) ?? [];
+  const normalized = matches
+    .map((raw) => raw.replace(/&amp;/g, "&"))
+    .map((raw) => normalizer(raw))
+    .filter((value): value is string => Boolean(value));
+  return [...new Set(normalized)];
+}
+
+async function getRecentlySeenUrls(platform: TrendPlatform, limit = 120): Promise<Set<string>> {
+  const context = await getCloudflareContext();
+  const env = context.env as { clipkeep_db: D1Database };
+  const result = await env.clipkeep_db
+    .prepare(
+      `SELECT source_url
+       FROM extractor_jobs
+       WHERE platform = ?1
+         AND source_url IS NOT NULL
+       ORDER BY created_at DESC
+       LIMIT ?2`
+    )
+    .bind(platform, limit)
+    .all<{ source_url: string }>();
+
+  return new Set(
+    (result.results ?? [])
+      .map((row) => row.source_url)
+      .filter((value): value is string => Boolean(value))
+      .map((value) => (platform === "twitter" ? normalizeTwitterUrl(value) : normalizeTikTokUrl(value)))
+      .filter((value): value is string => Boolean(value))
+  );
+}
+
 /**
  * Discovers trending URLs from X (Twitter) and TikTok using Puppeteer.
  */
@@ -11,6 +81,10 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
 
   const twitterUrls: string[] = [];
   const tiktokUrls: string[] = [];
+  const [recentTwitterUrls, recentTikTokUrls] = await Promise.all([
+    getRecentlySeenUrls("twitter"),
+    getRecentlySeenUrls("tiktok"),
+  ]);
 
   const browser = await puppeteer.launch(env.browser_rendering);
   try {
@@ -18,10 +92,19 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
     const ttPage = await browser.newPage();
     try {
       await ttPage.goto("https://www.tiktok.com/explore", { waitUntil: "networkidle2", timeout: 30000 });
-      const ttLinks = await ttPage.evaluate(() => {
+      const ttCandidates = await ttPage.evaluate(() => {
         const links = Array.from(document.querySelectorAll('a[href*="/video/"]')) as HTMLAnchorElement[];
-        return [...new Set(links.map((a) => a.href))].slice(0, 5);
+        const hrefs = links.map((a) => a.href);
+        const html = document.documentElement.innerHTML;
+        const regex = /https:\/\/www\.tiktok\.com\/@[^"'\\\s<]+\/video\/\d+/g;
+        const inline = html.match(regex) ?? [];
+        return [...new Set([...hrefs, ...inline])];
       });
+      const ttLinks = ttCandidates
+        .map((url) => normalizeTikTokUrl(url))
+        .filter((value): value is string => Boolean(value))
+        .filter((url) => !recentTikTokUrls.has(url))
+        .slice(0, 18);
       tiktokUrls.push(...ttLinks);
     } catch (e) {
       console.warn("[AutoTrend] TikTok scrape failed:", e);
@@ -41,10 +124,20 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
         if (twitterUrls.length >= 3) break;
         try {
           await xPage.goto(`https://search.yahoo.co.jp/realtime/search?p=${encodeURIComponent(keyword)}&ei=UTF-8`, { waitUntil: "networkidle2", timeout: 15000 });
-          const tweetLinks = await xPage.evaluate(() => {
-            const links = Array.from(document.querySelectorAll('a[href*="/status/"]')) as HTMLAnchorElement[];
-            return [...new Set(links.map((a) => a.href))];
+          const tweetCandidates = await xPage.evaluate(() => {
+            const links = Array.from(document.querySelectorAll("a")) as HTMLAnchorElement[];
+            const hrefs = links.map((a) => a.href);
+            const html = document.documentElement.innerHTML;
+            return { hrefs, html };
           });
+          const tweetLinks = [
+            ...tweetCandidates.hrefs.map((href) => normalizeTwitterUrl(href)).filter((value): value is string => Boolean(value)),
+            ...extractMatches(
+              tweetCandidates.html,
+              /https:\/\/(?:x|twitter)\.com\/[^"'\\\s<]+\/status\/\d+/g,
+              normalizeTwitterUrl
+            ),
+          ].filter((url, index, array) => array.indexOf(url) === index && !recentTwitterUrls.has(url));
           if (tweetLinks.length > 0) twitterUrls.push(tweetLinks[0]);
         } catch (e) {
           console.warn(`[AutoTrend] Failed tweet find for ${keyword}:`, e);
