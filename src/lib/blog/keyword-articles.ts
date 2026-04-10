@@ -1,24 +1,15 @@
-﻿export type BlogLocale = 'en' | 'es' | 'ar' | 'ja' | 'pt' | 'fr' | 'de' | 'tr' | 'id' | 'hi';
+export type BlogLocale = 'en' | 'es' | 'ar' | 'ja' | 'pt' | 'fr' | 'de' | 'tr' | 'id' | 'hi';
 
 export type KeywordCategory = 'twitter' | 'tiktok' | 'telegram' | 'comparison';
 
 export type KeywordArticle = {
   slug: string;
   category: KeywordCategory;
-  keyword: {
-    en: string;
-    es: string;
-    ar: string;
-    ja: string;
-    pt: string;
-    fr: string;
-    de: string;
-    tr: string;
-    id: string;
-    hi: string;
-  };
+  keyword: { [key in BlogLocale]: string };
   toolPath: string;
   supportPath: string;
+  steps?: { [key in BlogLocale]?: string[] };
+  proTips?: { [key in BlogLocale]?: string[] };
 };
 
 const baseArticles: Array<{
@@ -27,11 +18,19 @@ const baseArticles: Array<{
   en: string;
   toolPath: string;
   supportPath: string;
+  steps?: { [key in BlogLocale]?: string[] };
+  proTips?: { [key in BlogLocale]?: string[] };
 }> = [
-  { slug: 'how-to-download-twitter-videos', category: 'twitter', en: 'how to download twitter videos', toolPath: '/download-twitter-video', supportPath: '/solution/twitter-video-downloader-not-working' },
+  { slug: 'how-to-download-twitter-videos', category: 'twitter', en: 'how to download twitter videos', toolPath: '/download-twitter-video', supportPath: '/solution/twitter-video-downloader-not-working',
+    steps: {"en":["Open X and find the video/GIF","Copy the post link","Paste into ClipKeep and click download"],"ja":["X（Twitter）を開き、保存したい動画やGIFの投稿を表示します","共有ボタンから「リンクをコピー」を選択します","ClipKeepの検索窓に貼り付けて、抽出ボタンを押します"]},
+    proTips: {"en":["ClipKeep extracts the highest available resolution automatically.","Works for both public posts and threads."],"ja":["最高画質（HD）を自動で抽出します","公開投稿ならログイン不要で、匿名性を保ったまま安全に保存可能です"]}
+  },
   { slug: 'twitter-video-downloader-online-free', category: 'twitter', en: 'twitter video downloader online free', toolPath: '/download-twitter-video', supportPath: '/solution/twitter-video-downloader-not-working' },
   { slug: 'twitter-video-download-iphone', category: 'twitter', en: 'twitter video download iphone', toolPath: '/download-twitter-video', supportPath: '/solution/twitter-video-downloader-not-working' },
-  { slug: 'twitter-video-save-method-ja', category: 'twitter', en: 'twitter 動画 保存 方法', toolPath: '/download-twitter-video', supportPath: '/solution/twitter-video-downloader-not-working' },
+  { slug: 'twitter-video-save-method-ja', category: 'twitter', en: 'twitter 動画 保存 方法', toolPath: '/download-twitter-video', supportPath: '/solution/twitter-video-downloader-not-working',
+    steps: {"en":["Open X and find the video/GIF","Copy the post link","Paste into ClipKeep and click download"],"ja":["X（Twitter）を開き、保存したい動画やGIFの投稿を表示します","共有ボタンから「リンクをコピー」を選択します","ClipKeepの検索窓に貼り付けて、抽出ボタンを押します"]},
+    proTips: {"en":["ClipKeep extracts the highest available resolution automatically.","Works for both public posts and threads."],"ja":["最高画質（HD）を自動で抽出します","公開投稿ならログイン不要で、匿名性を保ったまま安全に保存可能です"]}
+  },
   { slug: 'twitter-video-save-not-working-ja', category: 'twitter', en: 'twitter 動画 保存 できない', toolPath: '/download-twitter-video', supportPath: '/solution/twitter-video-downloader-not-working' },
   { slug: 'twitter-video-download-android', category: 'twitter', en: 'twitter video download android', toolPath: '/download-twitter-video', supportPath: '/solution/twitter-video-downloader-not-working' },
   { slug: 'twitter-gif-download', category: 'twitter', en: 'twitter gif download', toolPath: '/download-twitter-video', supportPath: '/solution/twitter-video-downloader-not-working' },
@@ -45,7 +44,10 @@ const baseArticles: Array<{
   { slug: 'twitter-video-downloader-2026', category: 'twitter', en: 'twitter video downloader 2026', toolPath: '/download-twitter-video', supportPath: '/trending/twitter' },
   { slug: 'tiktok-video-download-no-watermark', category: 'tiktok', en: 'tiktok video download no watermark', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
   { slug: 'tiktok-downloader-without-watermark-online', category: 'tiktok', en: 'tiktok downloader without watermark online', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
-  { slug: 'tiktok-video-save-method-ja', category: 'tiktok', en: 'tiktok 動画 保存 方法', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
+  { slug: 'tiktok-video-save-method-ja', category: 'tiktok', en: 'tiktok 動画 保存 方法', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited',
+    steps: {"en":["Find the TikTok video you want to save","Tap Share and Copy Link","Paste the link into ClipKeep for watermark-free extraction"],"ja":["TikTokアプリまたはブラウザで動画を開きます","共有アイコンをタップし「リンクをコピー」を選択します","ClipKeepに貼り付けて「ロゴなし」で抽出します"]},
+    proTips: {"en":["Removes TikTok watermark for a clean viewing experience.","Supports HD MP4 format."],"ja":["動画右下のロゴ（透かし）を消去して保存できます","ブラウザ上で完結するため、別途アプリのインストールは不要です"]}
+  },
   { slug: 'tiktok-video-save-not-working-ja', category: 'tiktok', en: 'tiktok 動画 保存 できない', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
   { slug: 'download-tiktok-video-hd', category: 'tiktok', en: 'download tiktok video hd', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
   { slug: 'tiktok-download-mp4', category: 'tiktok', en: 'tiktok download mp4', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
@@ -55,7 +57,10 @@ const baseArticles: Array<{
   { slug: 'tiktok-video-downloader-free', category: 'tiktok', en: 'tiktok video downloader free', toolPath: '/download-tiktok-video', supportPath: '/trending/tiktok' },
   { slug: 'tiktok-video-download-private', category: 'tiktok', en: 'tiktok video download private', toolPath: '/download-tiktok-video', supportPath: '/legal/terms' },
   { slug: 'tiktok-save-visible-ja', category: 'tiktok', en: 'tiktok 保存 バレる？', toolPath: '/download-tiktok-video', supportPath: '/legal/privacy' },
-  { slug: 'how-to-save-tiktok-without-watermark', category: 'tiktok', en: 'how to save tiktok without watermark', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
+  { slug: 'how-to-save-tiktok-without-watermark', category: 'tiktok', en: 'how to save tiktok without watermark', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited',
+    steps: {"en":["Find the TikTok video you want to save","Tap Share and Copy Link","Paste the link into ClipKeep for watermark-free extraction"],"ja":["TikTokアプリまたはブラウザで動画を開きます","共有アイコンをタップし「リンクをコピー」を選択します","ClipKeepに貼り付けて「ロゴなし」で抽出します"]},
+    proTips: {"en":["Removes TikTok watermark for a clean viewing experience.","Supports HD MP4 format."],"ja":["動画右下のロゴ（透かし）を消去して保存できます","ブラウザ上で完結するため、別途アプリのインストールは不要です"]}
+  },
   { slug: 'tiktok-video-downloader-2026', category: 'tiktok', en: 'tiktok video downloader 2026', toolPath: '/download-tiktok-video', supportPath: '/trending/tiktok' },
   { slug: 'tiktok-video-link-download', category: 'tiktok', en: 'tiktok video link download', toolPath: '/download-tiktok-video', supportPath: '/solution/extractor-temporary-limited' },
   { slug: 'telegram-video-download', category: 'telegram', en: 'telegram video download', toolPath: '/download-telegram-video', supportPath: '/solution/telegram-video-downloader-not-working' },
@@ -520,6 +525,8 @@ export const keywordArticles: KeywordArticle[] = baseArticles.map((a) => ({
   },
   toolPath: a.toolPath,
   supportPath: a.supportPath,
+  steps: a.steps,
+  proTips: a.proTips,
 }));
 
 export function getKeywordArticle(slug: string): KeywordArticle | undefined {
