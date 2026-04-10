@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { Platform as ExtractPlatform } from '@/lib/extract/types';
-import { Locale, galleryPages, menuText } from '@/lib/i18n/ui';
+import { Locale, galleryPages, galleryRangeText, menuText } from '@/lib/i18n/ui';
 import { GallerySection, GalleryItem } from '@/components/gallery-section';
 import { SEOContent } from '@/components/seo-content';
 import { VideoSchema } from '@/components/video-schema';
@@ -12,11 +12,13 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SITE_URL } from '@/lib/site-url';
 
 export type GalleryPlatform = ExtractPlatform | 'instagram';
+type TimeRange = 'today' | 'week' | 'month';
 
 interface GalleryPageContentProps {
   platform: GalleryPlatform;
   locale: Locale;
   type: 'trending' | 'latest';
+  range?: TimeRange;
 }
 
 const ctaText: Record<
@@ -146,7 +148,22 @@ function oppositeFeed(type: 'trending' | 'latest', platform: GalleryPlatform): s
   return `/${targetType}/${platform}`;
 }
 
-export function GalleryPageContent({ platform, locale, type }: GalleryPageContentProps) {
+function getRangeCopy(locale: Locale, type: 'trending' | 'latest', range: TimeRange | undefined, fallbackSubtitle: string) {
+  if (!range) return fallbackSubtitle;
+
+  const dict = galleryRangeText[locale] || galleryRangeText.en;
+  if (type === 'trending') {
+    if (range === 'today') return dict.trendingTodaySubtitle;
+    if (range === 'month') return dict.trendingMonthSubtitle;
+    return dict.trendingWeekSubtitle;
+  }
+
+  if (range === 'today') return dict.latestTodaySubtitle;
+  if (range === 'week') return dict.latestWeekSubtitle;
+  return dict.latestMonthSubtitle;
+}
+
+export function GalleryPageContent({ platform, locale, type, range }: GalleryPageContentProps) {
   const pageKey = `${type}${platform.charAt(0).toUpperCase()}${platform.slice(1)}`;
   const dict = galleryPages[locale]?.[pageKey] || galleryPages.en?.[pageKey];
   const menu = menuText[locale] || menuText.en;
@@ -157,28 +174,35 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
   useEffect(() => {
     async function fetchItems() {
       const endpoint = type === 'trending' ? 'trending' : 'recent';
-      const res = await fetch(`/api/v1/gallery/${endpoint}?platform=${platform}&limit=24`);
+      const params = new URLSearchParams({ platform, limit: '24' });
+      if (range) params.set('range', range);
+      const res = await fetch(`/api/v1/gallery/${endpoint}?${params.toString()}`);
       const json = (await res.json()) as { ok: boolean; data: GalleryItem[] };
       if (json.ok) {
         setItems(json.data);
       }
     }
     fetchItems();
-  }, [platform, type]);
+  }, [platform, type, range]);
 
   if (!dict) return <div className="p-20 text-center">{t.pageNotFound}</div>;
 
   const toolHref = `${downloaderPath(platform)}?locale=${locale}`;
   const feedHref = `${oppositeFeed(type, platform)}?locale=${locale}`;
   const baseUrl = SITE_URL;
-  const pagePath = `/${type}/${platform}${locale === 'en' ? '' : `?locale=${locale}`}`;
+  const pageParams = new URLSearchParams();
+  if (locale !== 'en') pageParams.set('locale', locale);
+  if (range) pageParams.set('range', range);
+  const pagePath = `/${type}/${platform}${pageParams.toString() ? `?${pageParams.toString()}` : ''}`;
+  const subtitle = getRangeCopy(locale, type, range, dict.subtitle);
+  const description = getRangeCopy(locale, type, range, dict.description || dict.subtitle);
   const collectionJsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'CollectionPage',
         name: dict.title,
-        description: dict.description,
+        description,
         url: `${baseUrl}${pagePath}`,
       },
       {
@@ -213,7 +237,7 @@ export function GalleryPageContent({ platform, locale, type }: GalleryPageConten
 
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-gray-900 dark:text-slate-50 mb-4">{dict.title}</h1>
-        <p className="text-xl text-gray-500 dark:text-slate-400 max-w-3xl mx-auto">{dict.subtitle}</p>
+        <p className="text-xl text-gray-500 dark:text-slate-400 max-w-3xl mx-auto">{subtitle}</p>
       </div>
 
       <GallerySection

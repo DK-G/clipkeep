@@ -5132,4 +5132,96 @@ export const facebookText: Record<Locale, PlatformPageDict> = {
   },
 };
 
+type GalleryRangeDict = {
+  trendingTodaySubtitle: string;
+  trendingWeekSubtitle: string;
+  trendingMonthSubtitle: string;
+  latestTodaySubtitle: string;
+  latestWeekSubtitle: string;
+  latestMonthSubtitle: string;
+};
+
+export const galleryRangeText: Record<Locale, GalleryRangeDict> = {
+  en: {
+    trendingTodaySubtitle: 'Discover the clips gaining traction across all platforms today.',
+    trendingWeekSubtitle: 'Discover the clips gaining traction across all platforms this week.',
+    trendingMonthSubtitle: 'Discover the clips gaining traction across all platforms this month.',
+    latestTodaySubtitle: 'Browse the most recent extractions published across the platform today.',
+    latestWeekSubtitle: 'Browse the most recent extractions published across the platform this week.',
+    latestMonthSubtitle: 'Browse the most recent extractions published across the platform this month.',
+  },
+  ja: {
+    trendingTodaySubtitle: '今日すべてのプラットフォームで注目を集めているクリップを確認できます。',
+    trendingWeekSubtitle: '今週すべてのプラットフォームで注目を集めているクリップを確認できます。',
+    trendingMonthSubtitle: '今月すべてのプラットフォームで注目を集めているクリップを確認できます。',
+    latestTodaySubtitle: '今日プラットフォーム上で新しく抽出されたクリップを確認できます。',
+    latestWeekSubtitle: '今週プラットフォーム上で新しく抽出されたクリップを確認できます。',
+    latestMonthSubtitle: '今月プラットフォーム上で新しく抽出されたクリップを確認できます。',
+  },
+  ar: {
+    trendingTodaySubtitle: 'اكتشف المقاطع التي تكتسب زخماً عبر جميع المنصات اليوم.',
+    trendingWeekSubtitle: 'اكتشف المقاطع التي تكتسب زخماً عبر جميع المنصات هذا الأسبوع.',
+    trendingMonthSubtitle: 'اكتشف المقاطع التي تكتسب زخماً عبر جميع المنصات هذا الشهر.',
+    latestTodaySubtitle: 'تصفح أحدث الاستخراجات المنشورة على المنصة اليوم.',
+    latestWeekSubtitle: 'تصفح أحدث الاستخراجات المنشورة على المنصة هذا الأسبوع.',
+    latestMonthSubtitle: 'تصفح أحدث الاستخراجات المنشورة على المنصة هذا الشهر.',
+  },
+  es: {
+    trendingTodaySubtitle: 'Descubre los clips que están ganando tracción hoy en todas las plataformas.',
+    trendingWeekSubtitle: 'Descubre los clips que están ganando tracción esta semana en todas las plataformas.',
+    trendingMonthSubtitle: 'Descubre los clips que están ganando tracción este mes en todas las plataformas.',
+    latestTodaySubtitle: 'Explora las extracciones más recientes publicadas hoy en la plataforma.',
+    latestWeekSubtitle: 'Explora las extracciones más recientes publicadas esta semana en la plataforma.',
+    latestMonthSubtitle: 'Explora las extracciones más recientes publicadas este mes en la plataforma.',
+  },
+  pt: {
+    trendingTodaySubtitle: 'Descubra os clipes que estão ganhando tração hoje em todas as plataformas.',
+    trendingWeekSubtitle: 'Descubra os clipes que estão ganhando tração nesta semana em todas as plataformas.',
+    trendingMonthSubtitle: 'Descubra os clipes que estão ganhando tração neste mês em todas as plataformas.',
+    latestTodaySubtitle: 'Veja as extrações mais recentes publicadas hoje na plataforma.',
+    latestWeekSubtitle: 'Veja as extrações mais recentes publicadas nesta semana na plataforma.',
+    latestMonthSubtitle: 'Veja as extrações mais recentes publicadas neste mês na plataforma.',
+  },
+  fr: {
+    trendingTodaySubtitle: 'Découvrez les clips qui gagnent en popularité aujourd’hui sur toutes les plateformes.',
+    trendingWeekSubtitle: 'Découvrez les clips qui gagnent en popularité cette semaine sur toutes les plateformes.',
+    trendingMonthSubtitle: 'Découvrez les clips qui gagnent en popularité ce mois-ci sur toutes les plateformes.',
+    latestTodaySubtitle: 'Parcourez les extractions les plus récentes publiées aujourd’hui sur la plateforme.',
+    latestWeekSubtitle: 'Parcourez les extractions les plus récentes publiées cette semaine sur la plateforme.',
+    latestMonthSubtitle: 'Parcourez les extractions les plus récentes publiées ce mois-ci sur la plateforme.',
+  },
+  id: {
+    trendingTodaySubtitle: 'Temukan klip yang sedang naik hari ini di semua platform.',
+    trendingWeekSubtitle: 'Temukan klip yang sedang naik minggu ini di semua platform.',
+    trendingMonthSubtitle: 'Temukan klip yang sedang naik bulan ini di semua platform.',
+    latestTodaySubtitle: 'Lihat ekstraksi terbaru yang dipublikasikan hari ini di platform.',
+    latestWeekSubtitle: 'Lihat ekstraksi terbaru yang dipublikasikan minggu ini di platform.',
+    latestMonthSubtitle: 'Lihat ekstraksi terbaru yang dipublikasikan bulan ini di platform.',
+  },
+  hi: {
+    trendingTodaySubtitle: 'आज सभी प्लेटफॉर्म पर गति पकड़ रहे क्लिप देखें।',
+    trendingWeekSubtitle: 'इस सप्ताह सभी प्लेटफॉर्म पर गति पकड़ रहे क्लिप देखें।',
+    trendingMonthSubtitle: 'इस महीने सभी प्लेटफॉर्म पर गति पकड़ रहे क्लिप देखें।',
+    latestTodaySubtitle: 'आज प्लेटफॉर्म पर प्रकाशित सबसे हाल की extraction देखें।',
+    latestWeekSubtitle: 'इस सप्ताह प्लेटफॉर्म पर प्रकाशित सबसे हाल की extraction देखें।',
+    latestMonthSubtitle: 'इस महीने प्लेटफॉर्म पर प्रकाशित सबसे हाल की extraction देखें।',
+  },
+  de: {
+    trendingTodaySubtitle: 'Entdecken Sie die Clips, die heute plattformübergreifend an Dynamik gewinnen.',
+    trendingWeekSubtitle: 'Entdecken Sie die Clips, die diese Woche plattformübergreifend an Dynamik gewinnen.',
+    trendingMonthSubtitle: 'Entdecken Sie die Clips, die diesen Monat plattformübergreifend an Dynamik gewinnen.',
+    latestTodaySubtitle: 'Sehen Sie sich die neuesten heute veröffentlichten Extractions auf der Plattform an.',
+    latestWeekSubtitle: 'Sehen Sie sich die neuesten diese Woche veröffentlichten Extractions auf der Plattform an.',
+    latestMonthSubtitle: 'Sehen Sie sich die neuesten diesen Monat veröffentlichten Extractions auf der Plattform an.',
+  },
+  tr: {
+    trendingTodaySubtitle: 'Bugün tüm platformlarda ivme kazanan klipleri keşfedin.',
+    trendingWeekSubtitle: 'Bu hafta tüm platformlarda ivme kazanan klipleri keşfedin.',
+    trendingMonthSubtitle: 'Bu ay tüm platformlarda ivme kazanan klipleri keşfedin.',
+    latestTodaySubtitle: 'Platformda bugün yayımlanan en yeni extraction kayıtlarına göz atın.',
+    latestWeekSubtitle: 'Platformda bu hafta yayımlanan en yeni extraction kayıtlarına göz atın.',
+    latestMonthSubtitle: 'Platformda bu ay yayımlanan en yeni extraction kayıtlarına göz atın.',
+  },
+};
+
 

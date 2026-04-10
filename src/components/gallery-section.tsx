@@ -46,6 +46,7 @@ interface GallerySectionProps {
   layout?: 'grid' | 'carousel' | 'masonry';
   hideMeta?: boolean;
   dense?: boolean;
+  excludeIds?: string[];
 }
 
 function formatDuration(sec?: number): string {
@@ -138,6 +139,7 @@ export function GallerySection({
   layout = 'grid',
   hideMeta = true,
   dense = false,
+  excludeIds = [],
 }: GallerySectionProps) {
   const router = useRouter();
   const [items, setItems] = useState<GalleryItem[]>(initialItems || []);
@@ -167,8 +169,9 @@ export function GallerySection({
     fetchGallery();
   }, [platform, initialItems, type, limit]);
 
+  const filteredItems = items.filter((item) => !excludeIds.includes(item.id));
   const columnCount = useColumnCount(dense);
-  const columns = Array.from({ length: columnCount }, (_, i) => items.filter((_, index) => index % columnCount === i));
+  const columns = Array.from({ length: columnCount }, (_, i) => filteredItems.filter((_, index) => index % columnCount === i));
 
   if (loading) {
     const skeletonClasses = layout === 'carousel'
@@ -187,7 +190,7 @@ export function GallerySection({
     );
   }
 
-  if (items.length === 0) return null;
+  if (filteredItems.length === 0) return null;
 
   const containerClasses = layout === 'carousel'
     ? 'flex overflow-x-auto gap-4 pb-6 px-2 sm:px-0 snap-x snap-mandatory scrollbar-hide -mx-2 sm:mx-0'
@@ -279,7 +282,7 @@ export function GallerySection({
             </div>
           ))
         ) : (
-          items.map((item) => {
+          filteredItems.map((item) => {
             const resultHref = `/result/${item.id}?locale=${locale}`;
             const onCardClick = () => {
               trackEvent('gallery_card_click', {
