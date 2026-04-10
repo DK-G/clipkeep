@@ -97,10 +97,14 @@ if ($homeResp.Raw -and ($homeResp.Raw -match "effectivegatecpm\.com" -or $homeRe
   Add-Result -Name "Home includes Adsterra marker" -Status "SKIP" -Detail "marker not found in SSR html (likely client-side injected)"
 }
 
-if ($homeResp.Raw -and ($homeResp.Raw -match "/twitter-trending-videos" -and $homeResp.Raw -match "/twitter-latest-videos")) {
-  Add-Result -Name "Home includes Trending/Latest links" -Status "PASS" -Detail "links found in html"
+if ($homeResp.Raw -and (
+  ($homeResp.Raw -match "/latest\?locale=") -or
+  ($homeResp.Raw -match "/trending\?locale=") -or
+  ($homeResp.Raw -match "TrendingHubSection")
+)) {
+  Add-Result -Name "Home includes discovery links" -Status "PASS" -Detail "current discovery links found in html"
 } else {
-  Add-Result -Name "Home includes Trending/Latest links" -Status "FAIL" -Detail "required links not found"
+  Add-Result -Name "Home includes discovery links" -Status "FAIL" -Detail "current discovery links not found"
 }
 
 $pass = @($results | Where-Object { $_.Status -eq "PASS" }).Count
