@@ -26,6 +26,19 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: '/',
+    languages: {
+      en: '/',
+      ar: '/?locale=ar',
+      ja: '/?locale=ja',
+      es: '/?locale=es',
+      pt: '/?locale=pt',
+      fr: '/?locale=fr',
+      id: '/?locale=id',
+      hi: '/?locale=hi',
+      de: '/?locale=de',
+      tr: '/?locale=tr',
+      'x-default': '/',
+    },
   },
   openGraph: {
     title: 'ClipKeep',

@@ -13,6 +13,69 @@ type HomeProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+const faqDict: Record<string, { q1: string; a1: string; q2: string; a2: string }> = {
+  en: {
+    q1: 'What is ClipKeep?',
+    a1: 'ClipKeep is an all-in-one hub for saving videos and media from major social platforms like TikTok, X (Twitter), and Reddit.',
+    q2: 'Is it free to use?',
+    a2: 'Yes, all extraction tools on ClipKeep are free to use.',
+  },
+  ja: {
+    q1: 'ClipKeepとは何ですか？',
+    a1: 'ClipKeepは、TikTok、X(Twitter)、Redditなどの主要なSNSから動画やメディアを保存するためのオールインワンハブです。',
+    q2: '無料で利用できますか？',
+    a2: 'はい、ClipKeepのすべての抽出ツールは無料でご利用いただけます。',
+  },
+  ar: {
+    q1: 'ما هو ClipKeep؟',
+    a1: 'هو مركز شامل لحفظ مقاطع الفيديو والوسائط من منصات التواصل الاجتماعي الكبرى مثل TikTok وX (تويتر) وReddit.',
+    q2: 'هل الاستخدام مجاني؟',
+    a2: 'نعم، جميع أدوات الاستخراج في ClipKeep مجانية تماماً.',
+  },
+  es: {
+    q1: '¿Qué es ClipKeep?',
+    a1: 'Es un centro integral para guardar videos y medios de las principales plataformas sociales como TikTok, X (Twitter) y Reddit.',
+    q2: '¿Es de uso gratuito?',
+    a2: 'Sí, todas las herramientas de extracción de ClipKeep son gratuitas.',
+  },
+  pt: {
+    q1: 'O que é o ClipKeep?',
+    a1: 'É um hub central para salvar vídeos e mídias das principais redes sociais como TikTok, X (Twitter) e Reddit.',
+    q2: 'É gratuito?',
+    a2: 'Sim, todas as ferramentas de extração do ClipKeep são gratuitas.',
+  },
+  fr: {
+    q1: "Qu'est-ce que ClipKeep ?",
+    a1: "C'est une plateforme tout-en-un pour sauvegarder des vidéos et des médias depuis les principaux réseaux sociaux comme TikTok, X (Twitter) et Reddit.",
+    q2: 'Est-ce gratuit ?',
+    a2: "Oui, tous les outils d'extraction sur ClipKeep sont gratuits.",
+  },
+  id: {
+    q1: 'Apa itu ClipKeep?',
+    a1: 'ClipKeep adalah pusat lengkap untuk menyimpan video dan media dari platform sosial utama seperti TikTok, X (Twitter), dan Reddit.',
+    q2: 'Apakah gratis?',
+    a2: 'Ya, semua alat ekstraksi di ClipKeep gratis digunakan.',
+  },
+  hi: {
+    q1: 'क्लिपकीप (ClipKeep) क्या है?',
+    a1: 'क्लिपकीप टिकटॉक, एक्स (ट्विटर) और रेडिट जैसे प्रमुख सोशल प्लेटफॉर्म से वीडियो और मीडिया को सहेजने के लिए एक ऑल-इन-वन हब है।',
+    q2: 'क्या यह मुफ़्त है?',
+    a2: 'हाँ, क्लिपकीप पर सभी एक्सट्रैक्शन टूल मुफ़्त हैं।',
+  },
+  de: {
+    q1: 'Was ist ClipKeep?',
+    a1: 'ClipKeep ist der All-in-One-Hub zum Speichern von Videos und Medien von großen sozialen Plattformen wie TikTok, X (Twitter) und Reddit.',
+    q2: 'Ist die Nutzung kostenlos?',
+    a2: 'Ja, alle Extraktions-Tools auf ClipKeep sind kostenlos.',
+  },
+  tr: {
+    q1: 'ClipKeep nedir?',
+    a1: 'ClipKeep, TikTok, X (Twitter) ve Reddit gibi platformlardan medya kaydetmek için hepsi bir arada bir merkezdir.',
+    q2: 'Ücretsiz mi?',
+    a2: "Evet, ClipKeep'teki tüm araçlar tamamen ücretsizdir.",
+  },
+};
+
 export async function generateMetadata({ searchParams }: HomeProps): Promise<Metadata> {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
@@ -358,6 +421,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = translations[locale] || translations.en;
+  const faq = faqDict[locale] || faqDict.en;
   const base = SITE_URL;
   const url = `${base}/${locale !== 'en' ? `?locale=${locale}` : ''}`;
   const homeJsonLd = {
@@ -413,18 +477,18 @@ export default async function HomePage({ searchParams }: HomeProps) {
         'mainEntity': [
           {
             '@type': 'Question',
-            'name': locale === 'ja' ? 'ClipKeepとは何ですか？' : 'What is ClipKeep?',
+            'name': faq.q1,
             'acceptedAnswer': {
               '@type': 'Answer',
-              'text': locale === 'ja' ? 'ClipKeepは、TikTok、X(Twitter)、Redditなどの主要なSNSから動画やメディアを保存するためのオールインワンハブです。' : 'ClipKeep is an all-in-one hub for saving videos and media from major social platforms like TikTok, X (Twitter), and Reddit.'
+              'text': faq.a1,
             }
           },
           {
             '@type': 'Question',
-            'name': locale === 'ja' ? '無料で利用できますか？' : 'Is it free to use?',
+            'name': faq.q2,
             'acceptedAnswer': {
               '@type': 'Answer',
-              'text': locale === 'ja' ? 'はい、ClipKeepのすべての抽出ツールは無料でご利用いただけます。' : 'Yes, all extraction tools on ClipKeep are free to use.'
+              'text': faq.a2,
             }
           }
         ]

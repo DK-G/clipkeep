@@ -10,9 +10,9 @@ import { VideoSchema } from '@/components/video-schema';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SITE_URL } from '@/lib/site-url';
+import type { TimeRange } from '@/components/time-range-filter';
 
 export type GalleryPlatform = ExtractPlatform | 'instagram';
-type TimeRange = 'today' | 'week' | 'month';
 
 interface GalleryPageContentProps {
   platform: GalleryPlatform;
@@ -168,7 +168,6 @@ export function GalleryPageContent({ platform, locale, type, range }: GalleryPag
   const dict = galleryPages[locale]?.[pageKey] || galleryPages.en?.[pageKey];
   const menu = menuText[locale] || menuText.en;
   const t = ctaText[locale] || ctaText.en;
-
   const [items, setItems] = useState<GalleryItem[]>([]);
 
   useEffect(() => {
@@ -178,9 +177,7 @@ export function GalleryPageContent({ platform, locale, type, range }: GalleryPag
       if (range) params.set('range', range);
       const res = await fetch(`/api/v1/gallery/${endpoint}?${params.toString()}`);
       const json = (await res.json()) as { ok: boolean; data: GalleryItem[] };
-      if (json.ok) {
-        setItems(json.data);
-      }
+      if (json.ok) setItems(json.data);
     }
     fetchItems();
   }, [platform, type, range]);
@@ -270,5 +267,3 @@ export function GalleryPageContent({ platform, locale, type, range }: GalleryPag
     </main>
   );
 }
-
-

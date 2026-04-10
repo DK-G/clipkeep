@@ -1,5 +1,5 @@
 name = "clipkeep-web"
-main = ".open-next/worker.js"
+main = "src/worker.ts"
 compatibility_date = "2026-03-22"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 # pages_build_output_dir = ".open-next"
@@ -23,5 +23,8 @@ RATE_LIMIT_WINDOW_MS = "60000"
 NEXT_PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAACvkzgdZA8KipZXs"
 # TURNSTILE_SECRET_KEY is managed as a Secret in Cloudflare Dashboard
 
-browser_rendering = { binding = "BROWSER" }
+[browser]
+binding = "browser_rendering"
 
+[triggers]
+crons = ["0 * * * *"] # Every hour

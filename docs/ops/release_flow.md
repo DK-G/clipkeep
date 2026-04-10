@@ -1,4 +1,4 @@
-# Release Flow
+﻿# Release Flow
 
 ## Goal
 - Make deploy steps deterministic.
@@ -43,3 +43,7 @@ npm run deploy:prod
 ## Notes
 - `wrangler.toml` should be treated as the production baseline, not a toggle switch.
 - Use `wrangler.production.toml` and `wrangler.test.toml` explicitly for releases.
+
+## Windows Note
+- `deploy:test` and `deploy:prod` clear `.next` and `.open-next` before running OpenNext build.
+- This mitigates the Windows-specific `3221225477` crash that can be triggered by stale build artifacts during `opennextjs-cloudflare build`.

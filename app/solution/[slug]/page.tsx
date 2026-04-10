@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { SolutionContentClient } from '@/components/solution-content-client';
 import { findSolutionPage } from '@/lib/solution-pages/store';
@@ -68,17 +68,70 @@ export default async function Page({ params, searchParams }: Props) {
   const path = `/solution/${slug}`;
   const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
   const description = page.sections[0]?.body || 'ClipKeep solution guide.';
-  const pageJsonLd = {
+
+  const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    name: page.title,
-    description,
-    url,
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        name: page.title,
+        description,
+        url,
+      },
+      {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': locale === 'ja' ? 'ホーム' : 'Home',
+            'item': `${base}${locale === 'en' ? '/' : `/?locale=${locale}`}`
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': locale === 'ja' ? '解決策' : 'Solutions',
+            'item': `${base}/faq${locale === 'en' ? '' : `?locale=${locale}`}` // Linking to main FAQ as the parent
+          },
+          {
+            '@type': 'ListItem',
+            'position': 3,
+            'name': page.title,
+            'item': url
+          }
+        ]
+      },
+      {
+        '@type': 'HowTo',
+        'name': page.title,
+        'description': description,
+        'step': page.sections.map((section, index) => ({
+          '@type': 'HowToStep',
+          'position': index + 1,
+          'name': section.heading,
+          'text': section.body,
+          'url': `${url}#${section.id}`
+        }))
+      },
+      {
+        '@type': 'FAQPage',
+        'mainEntity': [
+          {
+            '@type': 'Question',
+            'name': page.title,
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': page.sections.map(s => s.body).join(' ')
+            }
+          }
+        ]
+      }
+    ]
   };
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SolutionContentClient data={page} locale={locale} />
     </>
   );

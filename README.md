@@ -1,4 +1,4 @@
-﻿# ClipKeep
+# ClipKeep
 
 ClipKeep is an SNS media extraction hub focused on SEO/AISO discoverability and safe, community-driven metadata.
 
@@ -13,11 +13,11 @@ ClipKeep is an SNS media extraction hub focused on SEO/AISO discoverability and 
 - Infra: Cloudflare Pages, D1, Durable Objects
 
 ## Current Phase
-- Phase 2完了（API/UI/E2E）
+- 立ち上げ段階 / 改善継続中
 
 ## Core Docs
 - `docs/INDEX.md`: 全ドキュメント索引
 - `docs/core/plan.md`: Master specification
 - `docs/core/RoadMap.md`: Phase roadmap and epics
 - `task.md`: Executable task backlog (daily)
-- `diff.md`: Latest change report
+- `memo.md`: Notes and investigations
