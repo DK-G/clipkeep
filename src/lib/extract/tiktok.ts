@@ -5,6 +5,7 @@
 export type TikTokMedia = {
   type: "video" | "image";
   url: string;
+  downloadUrl?: string;
   thumbUrl?: string;
   title?: string;
   sourcePath?: string;
@@ -36,6 +37,10 @@ type LovetikResponse = {
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+function buildProxyDownloadUrl(url: string): string {
+  return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
 }
 
 /**
@@ -99,6 +104,7 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
             return data.data.images.map(imageUrl => ({
               type: "image",
               url: imageUrl,
+              downloadUrl: buildProxyDownloadUrl(imageUrl),
               thumbUrl: data.data?.cover,
               title: data.data?.title,
               sourcePath: "tikwm-slideshow",
@@ -112,6 +118,7 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
             return [{
               type: "video",
               url: videoUrl,
+              downloadUrl: buildProxyDownloadUrl(videoUrl),
               thumbUrl: data.data.cover,
               title: data.data.title,
               sourcePath: "tikwm-video",
@@ -154,6 +161,7 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
             .map((l) => ({
               type: "image" as const,
               url: l.a,
+              downloadUrl: buildProxyDownloadUrl(l.a),
               thumbUrl: data.cover,
               title: data.desc,
               sourcePath: "lovetik-image",
@@ -170,6 +178,7 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
             return [{
               type: "video",
               url: video.a,
+              downloadUrl: buildProxyDownloadUrl(video.a),
               thumbUrl: data.cover,
               title: data.desc,
               sourcePath: "lovetik-video",
@@ -205,6 +214,7 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
           return [{
             type: "video",
             url: videoUrl,
+            downloadUrl: buildProxyDownloadUrl(videoUrl),
             thumbUrl,
             title,
             sourcePath: "kktiktok-og",
