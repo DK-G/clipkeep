@@ -213,9 +213,15 @@ export async function runAutoTrendUpdate() {
 
       const { item, job } = result.value;
 
-      // Existing completed jobs are cache hits. Leave them untouched.
-      if (job.status === "completed" || job.status === "failed") {
-        console.log(`[AutoTrend] Reused existing ${job.status} job without bump: ${job.id}`);
+      // Cache-hit completed jobs should still receive a light visibility bump.
+      if (job.status === "completed") {
+        await recordAccess(job.id, "ja");
+        console.log(`[AutoTrend] Reused existing completed job with access bump: ${job.id}`);
+        return;
+      }
+
+      if (job.status === "failed") {
+        console.log(`[AutoTrend] Reused existing failed job without bump: ${job.id}`);
         return;
       }
 

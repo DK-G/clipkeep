@@ -23,14 +23,14 @@ export async function GET(request: Request) {
     const db = await getDb();
     const startDate = getStartDate(range);
     const { results } = await db.prepare(
-      `SELECT id, platform, source_url, thumbnail_url, access_count, created_at
+      `SELECT id, platform, source_url, thumbnail_url, access_count, created_at, last_accessed_at
        FROM extractor_jobs
        WHERE ${platform === 'all' ? '1=1' : 'platform = ?'}
          AND status = 'completed'
          AND is_public = 1
          AND thumbnail_url IS NOT NULL
          AND created_at >= ?
-       ORDER BY created_at DESC
+       ORDER BY COALESCE(last_accessed_at, created_at) DESC
        LIMIT ? OFFSET ?`
     ).bind(...[
       ...(platform === 'all' ? [] : [platform]),
