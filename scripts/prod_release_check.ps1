@@ -124,8 +124,17 @@ Assert-StatusIn -Name "HEAD d.fxtwitter.com/i/status/20 => 2xx/3xx/4xx" -Expecte
 $telegramEmbedHealth = Invoke-Req -Method GET -Url "https://t.me/durov/1?embed=1"
 Assert-StatusIn -Name "GET t.me/durov/1?embed=1 => 2xx/3xx/4xx" -ExpectedList @(200, 301, 302, 307, 308, 400, 404) -Response $telegramEmbedHealth
 
+$telegramEmbedSingleHealth = Invoke-Req -Method GET -Url "https://t.me/durov/1?embed=1&single=1"
+Assert-StatusIn -Name "GET t.me/durov/1?embed=1&single=1 => 2xx/3xx/4xx" -ExpectedList @(200, 301, 302, 307, 308, 400, 404) -Response $telegramEmbedSingleHealth
+
 $telegramProxyProbe = Invoke-Req -Method HEAD -Url "$ApiBaseUrl/extract/proxy?url=https%3A%2F%2Ftelesco.pe%2Ffile%2Fdoes-not-exist&dl=1"
 Assert-StatusIn -Name "HEAD /api/v1/extract/proxy (telesco.pe probe) => 2xx/4xx/5xx" -ExpectedList @(200, 401, 403, 404, 410, 429, 500) -Response $telegramProxyProbe
+
+$telegramProxyInlineProbe = Invoke-Req -Method HEAD -Url "$ApiBaseUrl/extract/proxy?url=https%3A%2F%2Ftelesco.pe%2Ffile%2Fdoes-not-exist"
+Assert-StatusIn -Name "HEAD /api/v1/extract/proxy (no dl param) => 2xx/4xx/5xx" -ExpectedList @(200, 401, 403, 404, 410, 429, 500) -Response $telegramProxyInlineProbe
+
+$proxyRejectProbe = Invoke-Req -Method GET -Url "$ApiBaseUrl/extract/proxy?url=https%3A%2F%2Fexample.com%2F"
+Assert-Status -Name "GET /api/v1/extract/proxy (disallowed domain) => 403" -Expected 403 -Response $proxyRejectProbe
 
 $threadsHealth = Invoke-Req -Method GET -Url "https://www.threads.com/@zuck/post/CuPoFQ7L0r5"
 Assert-StatusIn -Name "GET www.threads.com/@zuck/post/... => 2xx/3xx/4xx" -ExpectedList @(200, 301, 302, 307, 308, 400, 401, 403, 404, 429) -Response $threadsHealth

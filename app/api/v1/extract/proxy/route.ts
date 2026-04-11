@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
     }
 
     const contentType = response.headers.get("content-type") || "application/octet-stream";
-    const isDownload = searchParams.get("dl") === "1" || true;
+    const isDownload = searchParams.get("dl") === "1";
 
     const headersConfig: Record<string, string> = {
       "Content-Type": contentType,
@@ -108,4 +108,3 @@ export async function GET(req: NextRequest) {
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
-

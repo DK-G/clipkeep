@@ -26,8 +26,13 @@ function getErrorMessage(error: unknown): string {
 export function normalizeTelegramUrl(url: string): string {
   const parsed = new URL(url.trim());
   parsed.protocol = "https:";
+  const host = parsed.hostname.toLowerCase();
 
-  if (parsed.hostname === "telegram.me") {
+  if (host !== "t.me" && host !== "telegram.me") {
+    throw new Error("UNSUPPORTED_URL");
+  }
+
+  if (host === "telegram.me") {
     parsed.hostname = "t.me";
   }
 
@@ -40,8 +45,8 @@ export function normalizeTelegramUrl(url: string): string {
   }
 
   parsed.pathname = parsed.pathname.replace(/\/$/, "");
-
-  if (parsed.pathname.startsWith("/c/") || parsed.pathname === "" || parsed.pathname.split("/").filter(Boolean).length < 2) {
+  const match = parsed.pathname.match(/^\/([A-Za-z0-9_]{5,})\/(\d+)$/);
+  if (!match || parsed.pathname.startsWith("/c/")) {
     throw new Error("UNSUPPORTED_URL");
   }
 
@@ -137,6 +142,9 @@ export async function extractTelegram(sourceUrl: string): Promise<TelegramMedia[
       },
     });
 
+    if (response.status === 429) {
+      throw new Error("RATE_LIMITED");
+    }
     if (response.status === 403 || response.status === 401) {
       throw new Error("PRIVATE_OR_RESTRICTED");
     }
@@ -149,6 +157,9 @@ export async function extractTelegram(sourceUrl: string): Promise<TelegramMedia[
 
     const html = await response.text();
     const lowerHtml = html.toLowerCase();
+    if (lowerHtml.includes("too many requests") || lowerHtml.includes("retry later")) {
+      throw new Error("RATE_LIMITED");
+    }
     if (lowerHtml.includes("post not found") || lowerHtml.includes("message not found")) {
       throw new Error("MESSAGE_NOT_FOUND");
     }
@@ -218,6 +229,45 @@ export async function extractTelegram(sourceUrl: string): Promise<TelegramMedia[
     }
 
     if (mediaItems.length === 0) {
+      const ogVideoUrl = html.match(/<meta[^>]+property="og:video(?::url|:secure_url)?"[^>]+content="([^"]+)"/i)?.[1];
+      if (ogVideoUrl) {
+        const mediaUrl = decodeHtmlUrl(ogVideoUrl);
+        mediaItems.push({
+          type: "video",
+          url: mediaUrl,
+          downloadUrl: buildProxyUrl(mediaUrl),
+          thumbUrl: metadata.thumbUrl,
+          title: metadata.text || metadata.title,
+          text: metadata.text,
+          authorName: metadata.authorName,
+          authorHandle: metadata.authorHandle,
+          publishedAt: metadata.publishedAt,
+          groupIndex: groupIndex++,
+          sourcePath: "telegram-og-video-fallback",
+        });
+      }
+    }
+
+    if (mediaItems.length === 0 && metadata.thumbUrl) {
+      mediaItems.push({
+        type: "image",
+        url: metadata.thumbUrl,
+        downloadUrl: buildProxyUrl(metadata.thumbUrl),
+        thumbUrl: metadata.thumbUrl,
+        title: metadata.text || metadata.title,
+        text: metadata.text,
+        authorName: metadata.authorName,
+        authorHandle: metadata.authorHandle,
+        publishedAt: metadata.publishedAt,
+        groupIndex: groupIndex++,
+        sourcePath: "telegram-og-image-fallback",
+      });
+    }
+
+    if (mediaItems.length === 0) {
+      if (metadata.text || metadata.authorName || metadata.title) {
+        throw new Error("UPSTREAM_FORMAT_CHANGED");
+      }
       throw new Error("MEDIA_NOT_FOUND");
     }
 
