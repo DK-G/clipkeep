@@ -193,8 +193,9 @@ export async function createJob(
     const updatedAt = new Date(existingJob.updatedAt).getTime();
     const nowTime = Date.now();
 
-    if (existingJob.status === "completed" && (nowTime - updatedAt) < 24 * 60 * 60 * 1000) {
-      console.log(`[Store] Cache hit (Success) for ${id}`);
+    if (existingJob.status === "completed") {
+      const ageMinutes = Math.floor((nowTime - updatedAt) / (60 * 1000));
+      console.log(`[Store] Cache hit (Success) for ${id} [age=${ageMinutes}m]`);
       return existingJob;
     }
 
@@ -286,12 +287,21 @@ export async function createJob(
           };
           await saveJobToDb(completed);
         } else {
-          await saveJobToDb({
-            ...processingJob,
-            status: "failed",
-            warnings: ["Media could not be found. The post might be private, deleted, or the URL format is unsupported."],
-            updatedAt: nowIso(),
-          });
+          // Keep previously completed media available if refresh fails.
+          if (existingJob?.status === "completed" && existingJob.media.length > 0) {
+            await saveJobToDb({
+              ...existingJob,
+              warnings: ["Media refresh failed; serving the last successful extraction."],
+              updatedAt: nowIso(),
+            });
+          } else {
+            await saveJobToDb({
+              ...processingJob,
+              status: "failed",
+              warnings: ["Media could not be found. The post might be private, deleted, or the URL format is unsupported."],
+              updatedAt: nowIso(),
+            });
+          }
         }
       } catch (error: unknown) {
         console.error("Extraction error:", error);
@@ -309,12 +319,21 @@ export async function createJob(
           }
         }
 
-        await saveJobToDb({
-          ...processingJob,
-          status: "failed",
-          warnings: [userMessage],
-          updatedAt: nowIso(),
-        });
+        // Keep previously completed media available if refresh errors out.
+        if (existingJob?.status === "completed" && existingJob.media.length > 0) {
+          await saveJobToDb({
+            ...existingJob,
+            warnings: [userMessage],
+            updatedAt: nowIso(),
+          });
+        } else {
+          await saveJobToDb({
+            ...processingJob,
+            status: "failed",
+            warnings: [userMessage],
+            updatedAt: nowIso(),
+          });
+        }
       }
     })());
   }

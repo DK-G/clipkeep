@@ -29,7 +29,7 @@ export async function GET(request: Request) {
          AND status = 'completed'
          AND is_public = 1
          AND thumbnail_url IS NOT NULL
-         AND created_at >= ?
+         AND COALESCE(last_accessed_at, created_at) >= ?
        ORDER BY COALESCE(last_accessed_at, created_at) DESC
        LIMIT ? OFFSET ?`
     ).bind(...[

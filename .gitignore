@@ -47,3 +47,8 @@ debug_pinterest.py
 verify_*.py
 test-*.js
 test_*.log
+build*.log
+probe*.log
+mockserver*.log
+lint_error.log
+/*.txt

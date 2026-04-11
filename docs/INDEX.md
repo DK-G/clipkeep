@@ -55,6 +55,7 @@
 
 ## Operations
 - [docs/ops/release_flow.md](C:\dev\portfolio\web\clipkeep\docs\ops\release_flow.md)
+- [docs/ops/feed_behavior.md](C:\dev\portfolio\web\clipkeep\docs\ops\feed_behavior.md)
 - [docs/ops/post_deploy_execution_plan.md](C:\dev\portfolio\web\clipkeep\docs\ops\post_deploy_execution_plan.md)
 - [docs/ops/weekly_review_playbook.md](C:\dev\portfolio\web\clipkeep\docs\ops\weekly_review_playbook.md)
 - [docs/ops/ga4_weekly_review_template.md](C:\dev\portfolio\web\clipkeep\docs\ops\ga4_weekly_review_template.md)
