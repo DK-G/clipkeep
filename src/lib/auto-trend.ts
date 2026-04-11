@@ -73,6 +73,31 @@ async function getRecentlySeenUrls(platform: TrendPlatform, limit = 120): Promis
   );
 }
 
+async function getFallbackCandidate(platform: TrendPlatform): Promise<string | null> {
+  const context = await getCloudflareContext();
+  const env = context.env as { clipkeep_db: D1Database };
+  const result = await env.clipkeep_db
+    .prepare(
+      `SELECT source_url
+       FROM extractor_jobs
+       WHERE platform = ?1
+         AND status = 'completed'
+         AND is_public = 1
+         AND source_url IS NOT NULL
+       ORDER BY COALESCE(last_accessed_at, created_at) ASC, created_at DESC
+       LIMIT 12`
+    )
+    .bind(platform)
+    .all<{ source_url: string }>();
+
+  const normalizer = platform === "twitter" ? normalizeTwitterUrl : normalizeTikTokUrl;
+  for (const row of result.results ?? []) {
+    const normalized = normalizer(row.source_url);
+    if (normalized) return normalized;
+  }
+  return null;
+}
+
 /**
  * Discovers trending URLs from X (Twitter) and TikTok using Puppeteer.
  */
@@ -100,10 +125,10 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
     try {
       await ttPage.goto("https://www.tiktok.com/explore", { waitUntil: "networkidle2", timeout: 30000 });
       const ttCandidates = await ttPage.evaluate(() => {
-        const links = Array.from(document.querySelectorAll('a[href*="/video/"]')) as HTMLAnchorElement[];
+        const links = Array.from(document.querySelectorAll('a[href*="/video/"], a[href*="/@"]')) as HTMLAnchorElement[];
         const hrefs = links.map((a) => a.href);
         const html = document.documentElement.innerHTML;
-        const regex = /https:\/\/www\.tiktok\.com\/@[^"'\\\s<]+\/video\/\d+/g;
+        const regex = /https:\/\/(?:www\.)?tiktok\.com\/@[^"'\\\s<]+\/video\/\d+/g;
         const inline = html.match(regex) ?? [];
         return [...new Set([...hrefs, ...inline])];
       });
@@ -141,7 +166,7 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
             ...tweetCandidates.hrefs.map((href) => normalizeTwitterUrl(href)).filter((value): value is string => Boolean(value)),
             ...extractMatches(
               tweetCandidates.html,
-              /https:\/\/(?:x|twitter)\.com\/[^"'\\\s<]+\/status\/\d+/g,
+              /https:\/\/(?:www\.)?(?:x|twitter)\.com\/[^"'\\\s<]+\/status\/\d+/g,
               normalizeTwitterUrl
             ),
           ].filter((url, index, array) => array.indexOf(url) === index && !recentTwitterUrls.has(url));
@@ -193,8 +218,18 @@ export async function runAutoTrendUpdate() {
     if (tiktok[0]) allItems.push({ url: tiktok[0], platform: "tiktok" });
 
     if (allItems.length === 0) {
-      console.warn("[AutoTrend] No candidates discovered. Skipping this cycle.");
-      return { status: "success", processed: 0, skipped: true };
+      console.warn("[AutoTrend] No fresh candidates discovered. Falling back to existing public items.");
+      const [fallbackTwitter, fallbackTikTok] = await Promise.all([
+        getFallbackCandidate("twitter"),
+        getFallbackCandidate("tiktok"),
+      ]);
+      if (fallbackTwitter) allItems.push({ url: fallbackTwitter, platform: "twitter" });
+      if (fallbackTikTok) allItems.push({ url: fallbackTikTok, platform: "tiktok" });
+    }
+
+    if (allItems.length === 0) {
+      console.warn("[AutoTrend] No fallback candidates available. Skipping this cycle.");
+      return { status: "success", processed: 0, skipped: true, reason: "no_candidates" };
     }
 
     const createdJobs = await Promise.allSettled(
