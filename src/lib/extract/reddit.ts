@@ -52,13 +52,26 @@ export function normalizeRedditUrl(url: string): string {
     throw new Error("INVALID_REDDIT_URL");
   }
 
+  const trimmedPath = parsed.pathname.replace(/\/$/, "");
+  const isShortPostPath = /^\/[a-z0-9]+$/i.test(trimmedPath);
+  const isFullPostPath = /^\/r\/[a-z0-9_]+\/comments\/[a-z0-9]+(?:\/.*)?$/i.test(trimmedPath)
+    || /^\/comments\/[a-z0-9]+(?:\/.*)?$/i.test(trimmedPath);
+
+  if (isShortHost && !isShortPostPath) {
+    throw new Error("INVALID_REDDIT_URL");
+  }
+  if (isRedditHost && !isFullPostPath) {
+    throw new Error("INVALID_REDDIT_URL");
+  }
+
   if (isShortHost) {
     parsed.search = "";
-    return parsed.toString();
+    return `https://redd.it${trimmedPath}`;
   }
 
   parsed.hostname = "www.reddit.com";
   parsed.search = "";
+  parsed.pathname = trimmedPath || "/";
   return parsed.toString();
 }
 

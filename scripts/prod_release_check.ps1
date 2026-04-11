@@ -88,6 +88,9 @@ Assert-Status -Name "GET /download-telegram-video?locale=$Locale => 200" -Expect
 $downloadThreads = Invoke-Req -Method GET -Url "$WebBaseUrl/download-threads-video?locale=$Locale"
 Assert-Status -Name "GET /download-threads-video?locale=$Locale => 200" -Expected 200 -Response $downloadThreads
 
+$downloadReddit = Invoke-Req -Method GET -Url "$WebBaseUrl/download-reddit-video?locale=$Locale"
+Assert-Status -Name "GET /download-reddit-video?locale=$Locale => 200" -Expected 200 -Response $downloadReddit
+
 $trendingTwitter = Invoke-Req -Method GET -Url "$WebBaseUrl/twitter-trending-videos?locale=$Locale"
 Assert-Status -Name "GET /twitter-trending-videos?locale=$Locale => 200" -Expected 200 -Response $trendingTwitter
 
@@ -99,6 +102,12 @@ Assert-Status -Name "GET /trending/threads?locale=$Locale => 200" -Expected 200 
 
 $latestThreads = Invoke-Req -Method GET -Url "$WebBaseUrl/latest/threads?locale=$Locale"
 Assert-Status -Name "GET /latest/threads?locale=$Locale => 200" -Expected 200 -Response $latestThreads
+
+$trendingReddit = Invoke-Req -Method GET -Url "$WebBaseUrl/trending/reddit?locale=$Locale"
+Assert-Status -Name "GET /trending/reddit?locale=$Locale => 200" -Expected 200 -Response $trendingReddit
+
+$latestReddit = Invoke-Req -Method GET -Url "$WebBaseUrl/latest/reddit?locale=$Locale"
+Assert-Status -Name "GET /latest/reddit?locale=$Locale => 200" -Expected 200 -Response $latestReddit
 
 $health = Invoke-Req -Method GET -Url "$ApiBaseUrl/health"
 Assert-Status -Name "GET /api/v1/health => 200" -Expected 200 -Response $health
@@ -114,6 +123,12 @@ Assert-Status -Name "GET /api/v1/gallery/recent?platform=threads&limit=3 => 200"
 
 $trendingThreadsApi = Invoke-Req -Method GET -Url "$ApiBaseUrl/gallery/trending?platform=threads&limit=3"
 Assert-Status -Name "GET /api/v1/gallery/trending?platform=threads&limit=3 => 200" -Expected 200 -Response $trendingThreadsApi
+
+$recentRedditApi = Invoke-Req -Method GET -Url "$ApiBaseUrl/gallery/recent?platform=reddit&limit=3"
+Assert-Status -Name "GET /api/v1/gallery/recent?platform=reddit&limit=3 => 200" -Expected 200 -Response $recentRedditApi
+
+$trendingRedditApi = Invoke-Req -Method GET -Url "$ApiBaseUrl/gallery/trending?platform=reddit&limit=3"
+Assert-Status -Name "GET /api/v1/gallery/trending?platform=reddit&limit=3 => 200" -Expected 200 -Response $trendingRedditApi
 
 $fxApiHealth = Invoke-Req -Method GET -Url "https://api.fxtwitter.com/i/status/20"
 Assert-StatusIn -Name "GET api.fxtwitter.com/i/status/20 => 2xx/4xx" -ExpectedList @(200, 400, 404) -Response $fxApiHealth
@@ -135,6 +150,12 @@ Assert-StatusIn -Name "HEAD /api/v1/extract/proxy (no dl param) => 2xx/4xx/5xx" 
 
 $proxyRejectProbe = Invoke-Req -Method GET -Url "$ApiBaseUrl/extract/proxy?url=https%3A%2F%2Fexample.com%2F"
 Assert-Status -Name "GET /api/v1/extract/proxy (disallowed domain) => 403" -Expected 403 -Response $proxyRejectProbe
+
+$redditProxyProbe = Invoke-Req -Method HEAD -Url "$ApiBaseUrl/extract/proxy?url=https%3A%2F%2Fv.redd.it%2Fnot-real&dl=1"
+Assert-StatusIn -Name "HEAD /api/v1/extract/proxy (v.redd.it probe) => 2xx/4xx/5xx" -ExpectedList @(200, 401, 403, 404, 410, 429, 500) -Response $redditProxyProbe
+
+$redditUpstreamProbe = Invoke-Req -Method GET -Url "https://www.reddit.com/r/popular/.json?limit=1"
+Assert-StatusIn -Name "GET reddit.com/r/popular/.json?limit=1 => 2xx/3xx/4xx" -ExpectedList @(200, 301, 302, 307, 308, 400, 401, 403, 404, 429) -Response $redditUpstreamProbe
 
 $threadsHealth = Invoke-Req -Method GET -Url "https://www.threads.com/@zuck/post/CuPoFQ7L0r5"
 Assert-StatusIn -Name "GET www.threads.com/@zuck/post/... => 2xx/3xx/4xx" -ExpectedList @(200, 301, 302, 307, 308, 400, 401, 403, 404, 429) -Response $threadsHealth
