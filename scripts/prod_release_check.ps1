@@ -67,6 +67,15 @@ function Assert-Status {
   }
 }
 
+function Assert-StatusIn {
+  param([string]$Name, [int[]]$ExpectedList, [object]$Response)
+  if ($ExpectedList -contains $Response.StatusCode) {
+    Add-Result -Name $Name -Status "PASS" -Detail "status=$($Response.StatusCode)"
+  } else {
+    Add-Result -Name $Name -Status "FAIL" -Detail "expected one-of=$($ExpectedList -join ',') actual=$($Response.StatusCode)"
+  }
+}
+
 $homeResp = Invoke-Req -Method GET -Url "$WebBaseUrl/?locale=$Locale"
 Assert-Status -Name "GET /?locale=$Locale => 200" -Expected 200 -Response $homeResp
 
@@ -90,6 +99,12 @@ Assert-Status -Name "GET /api/v1/gallery/recent?platform=twitter&limit=3 => 200"
 
 $trendingApi = Invoke-Req -Method GET -Url "$ApiBaseUrl/gallery/trending?platform=twitter&limit=3"
 Assert-Status -Name "GET /api/v1/gallery/trending?platform=twitter&limit=3 => 200" -Expected 200 -Response $trendingApi
+
+$fxApiHealth = Invoke-Req -Method GET -Url "https://api.fxtwitter.com/i/status/20"
+Assert-StatusIn -Name "GET api.fxtwitter.com/i/status/20 => 2xx/4xx" -ExpectedList @(200, 400, 404) -Response $fxApiHealth
+
+$fxDirectHealth = Invoke-Req -Method HEAD -Url "https://d.fxtwitter.com/i/status/20"
+Assert-StatusIn -Name "HEAD d.fxtwitter.com/i/status/20 => 2xx/3xx/4xx" -ExpectedList @(200, 301, 302, 307, 308, 400, 404) -Response $fxDirectHealth
 
 if ($homeResp.Raw -and ($homeResp.Raw -match "effectivegatecpm\.com" -or $homeResp.Raw -match "Adsterra")) {
   Add-Result -Name "Home includes Adsterra marker" -Status "PASS" -Detail "marker found in html"

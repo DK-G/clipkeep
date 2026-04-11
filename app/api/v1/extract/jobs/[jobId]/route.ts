@@ -1,7 +1,7 @@
 import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
 import { createJob, getJob } from "@/lib/extract/store";
-import { shouldRefreshTikTokJob } from "@/lib/extract/freshness";
+import { shouldRefreshTikTokJob, shouldRefreshTwitterJob } from "@/lib/extract/freshness";
 
 type Context = {
   params: Promise<{ jobId: string }>;
@@ -67,7 +67,7 @@ export async function GET(_request: Request, context: Context) {
     });
   }
 
-  if (shouldRefreshTikTokJob(job)) {
+  if (shouldRefreshTikTokJob(job) || shouldRefreshTwitterJob(job)) {
     await createJob(job.platform, job.sourceUrl, "en", { forceRefresh: true });
     return success({
       requestId,
@@ -78,7 +78,7 @@ export async function GET(_request: Request, context: Context) {
         progress: 10,
         variants: [],
         source_url: job.sourceUrl,
-        warnings: ["Refreshing expired media links. Please wait a moment."],
+        warnings: ["Refreshing expiring media links. Please wait a moment."],
       },
     });
   }

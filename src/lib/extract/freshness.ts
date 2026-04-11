@@ -2,8 +2,8 @@ import type { ExtractJob } from "./types";
 
 const STALE_SOON_MS = 2 * 60 * 1000;
 
-export function shouldRefreshTikTokJob(job: ExtractJob): boolean {
-  if (job.platform !== "tiktok") return false;
+function shouldRefreshExpiringJob(job: ExtractJob, platforms: ReadonlyArray<ExtractJob["platform"]>): boolean {
+  if (!platforms.includes(job.platform)) return false;
   if (job.status !== "completed") return false;
   if (!job.media || job.media.length === 0) return false;
 
@@ -16,3 +16,10 @@ export function shouldRefreshTikTokJob(job: ExtractJob): boolean {
   });
 }
 
+export function shouldRefreshTikTokJob(job: ExtractJob): boolean {
+  return shouldRefreshExpiringJob(job, ["tiktok"]);
+}
+
+export function shouldRefreshTwitterJob(job: ExtractJob): boolean {
+  return shouldRefreshExpiringJob(job, ["twitter"]);
+}

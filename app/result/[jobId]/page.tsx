@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { normalizeLocale, resultText, menuText } from '@/lib/i18n/ui';
 import { createJob, getJob } from '@/lib/extract/store';
-import { shouldRefreshTikTokJob } from '@/lib/extract/freshness';
+import { shouldRefreshTikTokJob, shouldRefreshTwitterJob } from '@/lib/extract/freshness';
 import { ResultClient } from '@/components/result-client';
 import type { ExtractionResult } from '@/lib/api/types';
 import { SITE_URL } from '@/lib/site-url';
@@ -62,7 +62,7 @@ export default async function ResultPage({ params, searchParams }: Props) {
   const menu = menuText[locale];
   let job = await getJob(jobId);
 
-  if (job && shouldRefreshTikTokJob(job)) {
+  if (job && (shouldRefreshTikTokJob(job) || shouldRefreshTwitterJob(job))) {
     const refreshed = await createJob(job.platform, job.sourceUrl, locale, { forceRefresh: true });
     job = refreshed;
   }

@@ -1,4 +1,6 @@
-﻿export interface TwitterMedia {
+﻿import { isTwitterShortHost, normalizeTwitterInputUrl } from "./twitter-url";
+
+export interface TwitterMedia {
   type: "video" | "audio" | "image";
   url: string;
   downloadUrl?: string;
@@ -17,6 +19,23 @@ interface FXTwitterResponse {
     };
   };
   error?: string;
+}
+
+const PROVIDER_COOLDOWN_MS = 2 * 60 * 1000;
+const providerCooldowns = new Map<string, number>();
+
+function isProviderCoolingDown(provider: string): boolean {
+  const until = providerCooldowns.get(provider);
+  if (!until) return false;
+  if (until <= Date.now()) {
+    providerCooldowns.delete(provider);
+    return false;
+  }
+  return true;
+}
+
+function markProviderBlocked(provider: string): void {
+  providerCooldowns.set(provider, Date.now() + PROVIDER_COOLDOWN_MS);
 }
 
 function getErrorMessage(error: unknown): string {
@@ -45,6 +64,29 @@ export function extractStatusId(sourceUrl: string): string | null {
   }
 }
 
+async function resolveTwitterUrl(input: string): Promise<string> {
+  const normalized = normalizeTwitterInputUrl(input);
+  const host = new URL(normalized).hostname.toLowerCase();
+  if (!isTwitterShortHost(host)) return normalized;
+
+  try {
+    const response = await fetch(normalized, {
+      method: "HEAD",
+      redirect: "follow",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      },
+    });
+
+    if (response.ok) {
+      return normalizeTwitterInputUrl(response.url);
+    }
+  } catch (error: unknown) {
+    console.error("Error resolving X short URL:", getErrorMessage(error));
+  }
+
+  throw new Error("SHORT_URL_RESOLVE_FAILED");
+}
 function findMeta(html: string, key: string): string | null {
   const patterns = [
     new RegExp(`<meta[^>]*(?:property|name)=["']${key}["'][^>]*content=["']([^"']+)["'][^>]*>`, "i"),
@@ -107,18 +149,22 @@ async function scrapeFixer(url: string): Promise<TwitterMedia[]> {
  * Enhanced Twitter/X extraction with path-based fallback and error classification.
  */
 export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]> {
-  const statusId = extractStatusId(sourceUrl);
+  const resolvedUrl = await resolveTwitterUrl(sourceUrl);
+  const statusId = extractStatusId(resolvedUrl);
   if (!statusId) {
     throw new Error("INVALID_X_URL");
   }
 
   const startTime = Date.now();
   console.log(`[Twitter] Starting stabilized extraction for ID: ${statusId}`);
+  let sawBotChallenge = false;
 
-  try {
-    const apiRes = await fetch(`https://api.fxtwitter.com/i/status/${statusId}`);
+  if (!isProviderCoolingDown("fx-api")) try {
+    const apiRes = await fetch(`https://api.fxtwitter.com/i/status/${statusId}`, { cache: "no-store" });
 
     if (apiRes.status === 403 || apiRes.status === 429) {
+      sawBotChallenge = true;
+      markProviderBlocked("fx-api");
       throw new Error("BOT_CHALLENGED");
     }
     if (apiRes.status === 404) {
@@ -148,17 +194,20 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
     }
   } catch (error: unknown) {
     const errorMessage = getErrorMessage(error);
-    if (["BOT_CHALLENGED", "POST_NOT_FOUND", "PRIVATE_OR_RESTRICTED"].includes(errorMessage)) {
+    if (["POST_NOT_FOUND", "PRIVATE_OR_RESTRICTED"].includes(errorMessage)) {
       throw error;
     }
+    if (errorMessage === "BOT_CHALLENGED") sawBotChallenge = true;
     console.error("[Twitter] API path failed:", errorMessage);
   }
 
-  try {
+  if (!isProviderCoolingDown("fx-direct")) try {
     const directUrl = `https://d.fxtwitter.com/i/status/${statusId}`;
     const directRes = await fetch(directUrl, { method: "HEAD", redirect: "follow" });
 
     if (directRes.status === 403 || directRes.status === 429) {
+      sawBotChallenge = true;
+      markProviderBlocked("fx-direct");
       throw new Error("BOT_CHALLENGED");
     }
     if (directRes.status === 404) {
@@ -171,9 +220,10 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
     }
   } catch (error: unknown) {
     const errorMessage = getErrorMessage(error);
-    if (["BOT_CHALLENGED", "POST_NOT_FOUND"].includes(errorMessage)) {
+    if (["POST_NOT_FOUND"].includes(errorMessage)) {
       throw error;
     }
+    if (errorMessage === "BOT_CHALLENGED") sawBotChallenge = true;
     console.error("[Twitter] Direct path failed:", errorMessage);
   }
 
@@ -185,6 +235,8 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
 
   let lastError = "MEDIA_NOT_FOUND";
   for (const candidate of candidates) {
+    const providerKey = `fixer:${candidate}`;
+    if (isProviderCoolingDown(providerKey)) continue;
     try {
       const media = await scrapeFixer(candidate);
       if (media.length > 0) {
@@ -194,12 +246,18 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
       console.warn(`[Twitter] Fixer candidate ${candidate} failed:`, errorMessage);
-      if (["BOT_CHALLENGED", "POST_NOT_FOUND", "PRIVATE_OR_RESTRICTED"].includes(errorMessage)) {
+      if (errorMessage === "BOT_CHALLENGED") {
+        sawBotChallenge = true;
+        markProviderBlocked(providerKey);
+      }
+      if (["POST_NOT_FOUND", "PRIVATE_OR_RESTRICTED"].includes(errorMessage)) {
         lastError = errorMessage;
       }
     }
   }
 
+  if (sawBotChallenge) throw new Error("BOT_CHALLENGED");
   throw new Error(lastError);
 }
+
 
