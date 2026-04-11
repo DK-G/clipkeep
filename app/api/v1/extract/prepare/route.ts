@@ -9,6 +9,7 @@ import type { Platform } from "@/lib/extract/types";
 import type { Locale } from "@/lib/i18n/ui";
 import { normalizeTikTokInputUrl } from "@/lib/extract/tiktok-url";
 import { normalizeTwitterInputUrl } from "@/lib/extract/twitter-url";
+import { normalizeTelegramUrl } from "@/lib/extract/telegram";
 
 type PrepareBody = {
   url?: string;
@@ -196,6 +197,23 @@ export async function POST(request: Request) {
         error: {
           code: "INVALID_URL",
           message: "X URL must be a valid x.com/twitter.com status URL or t.co short link.",
+          details: { url: rawUrl },
+        },
+      });
+    }
+  }
+
+  if (platform === "telegram" && !isDemo) {
+    try {
+      url = normalizeTelegramUrl(url);
+    } catch {
+      return failure({
+        status: 400,
+        requestId,
+        locale: body.locale,
+        error: {
+          code: "INVALID_URL",
+          message: "Telegram URL must be a valid public t.me post URL.",
           details: { url: rawUrl },
         },
       });

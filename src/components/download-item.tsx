@@ -9,10 +9,11 @@ import { trackEvent } from '@/lib/analytics/gtag';
 
 interface DownloadItemProps {
   variant: MediaVariant;
+  variantIndex: number;
   locale: Locale;
   sourceUrl?: string;
   platform: Platform;
-  onDownloadRequest: (url: string) => void;
+  onDownloadRequest: (url: string, index: number) => void;
   isGuarding?: boolean;
 }
 
@@ -29,7 +30,7 @@ const mediaTypeLabels: Record<Locale, Record<string, string>> = {
   tr: { video: 'Video', image: 'Görsel', audio: 'Ses', file: 'Dosya' },
 };
 
-export function DownloadItem({ variant, locale, sourceUrl, platform, onDownloadRequest, isGuarding }: DownloadItemProps) {
+export function DownloadItem({ variant, variantIndex, locale, sourceUrl, platform, onDownloadRequest, isGuarding }: DownloadItemProps) {
   const t = resultText[locale] || resultText.en;
   const mediaLabels = mediaTypeLabels[locale] || mediaTypeLabels.en;
 
@@ -86,7 +87,7 @@ export function DownloadItem({ variant, locale, sourceUrl, platform, onDownloadR
           </a>
         )}
         <button
-          onClick={() => onDownloadRequest(variant.url)}
+          onClick={() => onDownloadRequest(variant.url, variantIndex)}
           disabled={isGuarding}
           className="flex-1 sm:flex-none px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white text-sm font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
         >

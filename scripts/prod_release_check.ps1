@@ -106,6 +106,12 @@ Assert-StatusIn -Name "GET api.fxtwitter.com/i/status/20 => 2xx/4xx" -ExpectedLi
 $fxDirectHealth = Invoke-Req -Method HEAD -Url "https://d.fxtwitter.com/i/status/20"
 Assert-StatusIn -Name "HEAD d.fxtwitter.com/i/status/20 => 2xx/3xx/4xx" -ExpectedList @(200, 301, 302, 307, 308, 400, 404) -Response $fxDirectHealth
 
+$telegramEmbedHealth = Invoke-Req -Method GET -Url "https://t.me/durov/1?embed=1"
+Assert-StatusIn -Name "GET t.me/durov/1?embed=1 => 2xx/3xx/4xx" -ExpectedList @(200, 301, 302, 307, 308, 400, 404) -Response $telegramEmbedHealth
+
+$telegramProxyProbe = Invoke-Req -Method HEAD -Url "$ApiBaseUrl/extract/proxy?url=https%3A%2F%2Ftelesco.pe%2Ffile%2Fdoes-not-exist&dl=1"
+Assert-StatusIn -Name "HEAD /api/v1/extract/proxy (telesco.pe probe) => 2xx/4xx/5xx" -ExpectedList @(200, 401, 403, 404, 410, 429, 500) -Response $telegramProxyProbe
+
 if ($homeResp.Raw -and ($homeResp.Raw -match "effectivegatecpm\.com" -or $homeResp.Raw -match "Adsterra")) {
   Add-Result -Name "Home includes Adsterra marker" -Status "PASS" -Detail "marker found in html"
 } else {

@@ -23,3 +23,7 @@ export function shouldRefreshTikTokJob(job: ExtractJob): boolean {
 export function shouldRefreshTwitterJob(job: ExtractJob): boolean {
   return shouldRefreshExpiringJob(job, ["twitter"]);
 }
+
+export function shouldRefreshTelegramJob(job: ExtractJob): boolean {
+  return shouldRefreshExpiringJob(job, ["telegram"]);
+}

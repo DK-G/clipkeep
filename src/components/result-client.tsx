@@ -117,7 +117,7 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
   );
   
   const [guardActive, setGuardActive] = useState(false);
-  const [pendingUrl, setPendingUrl] = useState<string | null>(null);
+  const [pendingDownload, setPendingDownload] = useState<{ url: string; index: number } | null>(null);
   const [sessionDownloadCount, setSessionDownloadCount] = useState(0);
   const guardStartRef = useRef<number | null>(null);
 
@@ -127,8 +127,8 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
     return 2500;
   };
 
-  const handleDownloadRequest = (url: string) => {
-    setPendingUrl(url);
+  const handleDownloadRequest = (url: string, index: number) => {
+    setPendingDownload({ url, index });
     setGuardActive(true);
     guardStartRef.current = Date.now();
     trackEvent("download_guard_start", { 
@@ -140,9 +140,14 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
   const handleGuardComplete = () => {
     setGuardActive(false);
     guardStartRef.current = null;
-    if (pendingUrl) {
+    if (pendingDownload) {
+      if (data?.platform === 'telegram') {
+        fetch(`/api/v1/gallery/access/${jobId}?locale=${locale}&index=${pendingDownload.index}`, { method: 'POST' })
+          .catch((err) => console.error('Failed to record telegram media access:', err));
+      }
+
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      const targetUrl = new URL(pendingUrl, window.location.origin);
+      const targetUrl = new URL(pendingDownload.url, window.location.origin);
       const isSameOrigin = targetUrl.origin === window.location.origin;
 
       if (isMobile && isSameOrigin) {
@@ -377,11 +382,12 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
                 <DownloadItem 
                   key={idx}
                   variant={variant}
+                  variantIndex={idx}
                   locale={locale}
                   sourceUrl={data.source_url}
                   platform={data.platform as Platform}
                   onDownloadRequest={handleDownloadRequest}
-                  isGuarding={guardActive && pendingUrl === variant.url}
+                  isGuarding={guardActive && pendingDownload?.url === variant.url && pendingDownload?.index === idx}
                 />
               ))}
             </div>
