@@ -27,7 +27,7 @@ function decodeHtml(value: string): string {
     .replace(/\\\//g, "/");
 }
 
-function normalizePinterestUrl(pinUrl: string): string {
+export function normalizePinterestUrl(pinUrl: string): string {
   const parsed = new URL(pinUrl.trim());
   parsed.protocol = "https:";
 

@@ -152,6 +152,9 @@ function mapExtractionError(errorMsg: string): string {
   if (errorMsg === "UPSTREAM_TEMPORARY_FAILURE") {
     return "The upstream platform temporarily failed to return the media. Please try again later.";
   }
+  if (errorMsg === "UPSTREAM_FORMAT_CHANGED") {
+    return "The upstream platform response format changed and media could not be resolved. Please try again later.";
+  }
   if (errorMsg === "ACCESS_DENIED") {
     return "The media URL is no longer accessible with the current Discord permissions or signature.";
   }

@@ -40,19 +40,26 @@ interface RedditPostData {
   removed_by_category?: string | null;
 }
 
-function normalizeRedditUrl(url: string): string {
-  try {
-    const parsed = new URL(url);
-    if (parsed.hostname === "redd.it") {
-      return parsed.toString();
-    }
+export function normalizeRedditUrl(url: string): string {
+  const parsed = new URL(url);
+  const hostname = parsed.hostname.toLowerCase();
+  const isRedditHost = hostname === "reddit.com"
+    || hostname === "www.reddit.com"
+    || hostname === "old.reddit.com";
+  const isShortHost = hostname === "redd.it";
 
-    parsed.hostname = parsed.hostname.replace(/^old\./, "www.");
+  if (!isRedditHost && !isShortHost) {
+    throw new Error("INVALID_REDDIT_URL");
+  }
+
+  if (isShortHost) {
     parsed.search = "";
     return parsed.toString();
-  } catch {
-    return url;
   }
+
+  parsed.hostname = "www.reddit.com";
+  parsed.search = "";
+  return parsed.toString();
 }
 
 function getErrorMessage(error: unknown): string {

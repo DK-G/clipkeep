@@ -27,3 +27,7 @@ export function shouldRefreshTwitterJob(job: ExtractJob): boolean {
 export function shouldRefreshTelegramJob(job: ExtractJob): boolean {
   return shouldRefreshExpiringJob(job, ["telegram"]);
 }
+
+export function shouldRefreshThreadsJob(job: ExtractJob): boolean {
+  return shouldRefreshExpiringJob(job, ["threads"]);
+}

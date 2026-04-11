@@ -10,6 +10,9 @@ import type { Locale } from "@/lib/i18n/ui";
 import { normalizeTikTokInputUrl } from "@/lib/extract/tiktok-url";
 import { normalizeTwitterInputUrl } from "@/lib/extract/twitter-url";
 import { normalizeTelegramUrl } from "@/lib/extract/telegram";
+import { normalizeRedditUrl } from "@/lib/extract/reddit";
+import { normalizePinterestUrl } from "@/lib/extract/pinterest";
+import { normalizeThreadsUrl } from "@/lib/extract/threads";
 
 type PrepareBody = {
   url?: string;
@@ -214,6 +217,57 @@ export async function POST(request: Request) {
         error: {
           code: "INVALID_URL",
           message: "Telegram URL must be a valid public t.me post URL.",
+          details: { url: rawUrl },
+        },
+      });
+    }
+  }
+
+  if (platform === "reddit" && !isDemo) {
+    try {
+      url = normalizeRedditUrl(url);
+    } catch {
+      return failure({
+        status: 400,
+        requestId,
+        locale: body.locale,
+        error: {
+          code: "INVALID_URL",
+          message: "Reddit URL must be a valid public reddit.com or redd.it post URL.",
+          details: { url: rawUrl },
+        },
+      });
+    }
+  }
+
+  if (platform === "pinterest" && !isDemo) {
+    try {
+      url = normalizePinterestUrl(url);
+    } catch {
+      return failure({
+        status: 400,
+        requestId,
+        locale: body.locale,
+        error: {
+          code: "INVALID_URL",
+          message: "Pinterest URL must be a valid public pinterest.com/pin/<id> or pin.it URL.",
+          details: { url: rawUrl },
+        },
+      });
+    }
+  }
+
+  if (platform === "threads" && !isDemo) {
+    try {
+      url = normalizeThreadsUrl(url);
+    } catch {
+      return failure({
+        status: 400,
+        requestId,
+        locale: body.locale,
+        error: {
+          code: "INVALID_URL",
+          message: "Threads URL must be a valid public threads.com/threads.net post URL.",
           details: { url: rawUrl },
         },
       });

@@ -22,7 +22,7 @@ function findMeta(html: string, key: string): string | null {
   return null;
 }
 
-function normalizeThreadsUrl(inputUrl: string): string {
+export function normalizeThreadsUrl(inputUrl: string): string {
   const parsed = new URL(inputUrl.trim());
   parsed.protocol = "https:";
   parsed.search = "";
@@ -52,7 +52,10 @@ export async function extractThreads(url: string): Promise<ExtractionMedia[]> {
       },
     });
 
-    if (response.status === 403 || response.status === 429) {
+    if (response.status === 429) {
+      throw new Error("RATE_LIMITED");
+    }
+    if (response.status === 403) {
       throw new Error("ANTI_BOT_BLOCKED");
     }
     if (response.status === 401) {
@@ -69,6 +72,9 @@ export async function extractThreads(url: string): Promise<ExtractionMedia[]> {
     const lowerHtml = html.toLowerCase();
     if (lowerHtml.includes("login") && lowerHtml.includes("threads")) {
       throw new Error("PRIVATE_OR_RESTRICTED");
+    }
+    if ((lowerHtml.includes("age") && lowerHtml.includes("restricted")) || lowerHtml.includes("age gate")) {
+      throw new Error("AGE_GATED");
     }
 
     const videoUrl =
@@ -98,6 +104,10 @@ export async function extractThreads(url: string): Promise<ExtractionMedia[]> {
         title,
         sourcePath: "threads-og-image",
       }];
+    }
+
+    if (findMeta(html, "og:title") || findMeta(html, "twitter:title")) {
+      throw new Error("UPSTREAM_FORMAT_CHANGED");
     }
 
     throw new Error("MEDIA_NOT_FOUND");

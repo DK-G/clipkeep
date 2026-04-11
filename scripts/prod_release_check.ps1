@@ -85,11 +85,20 @@ Assert-Status -Name "GET /download-twitter-video?locale=$Locale => 200" -Expecte
 $downloadTelegram = Invoke-Req -Method GET -Url "$WebBaseUrl/download-telegram-video?locale=$Locale"
 Assert-Status -Name "GET /download-telegram-video?locale=$Locale => 200" -Expected 200 -Response $downloadTelegram
 
+$downloadThreads = Invoke-Req -Method GET -Url "$WebBaseUrl/download-threads-video?locale=$Locale"
+Assert-Status -Name "GET /download-threads-video?locale=$Locale => 200" -Expected 200 -Response $downloadThreads
+
 $trendingTwitter = Invoke-Req -Method GET -Url "$WebBaseUrl/twitter-trending-videos?locale=$Locale"
 Assert-Status -Name "GET /twitter-trending-videos?locale=$Locale => 200" -Expected 200 -Response $trendingTwitter
 
 $latestTwitter = Invoke-Req -Method GET -Url "$WebBaseUrl/twitter-latest-videos?locale=$Locale"
 Assert-Status -Name "GET /twitter-latest-videos?locale=$Locale => 200" -Expected 200 -Response $latestTwitter
+
+$trendingThreads = Invoke-Req -Method GET -Url "$WebBaseUrl/trending/threads?locale=$Locale"
+Assert-Status -Name "GET /trending/threads?locale=$Locale => 200" -Expected 200 -Response $trendingThreads
+
+$latestThreads = Invoke-Req -Method GET -Url "$WebBaseUrl/latest/threads?locale=$Locale"
+Assert-Status -Name "GET /latest/threads?locale=$Locale => 200" -Expected 200 -Response $latestThreads
 
 $health = Invoke-Req -Method GET -Url "$ApiBaseUrl/health"
 Assert-Status -Name "GET /api/v1/health => 200" -Expected 200 -Response $health
@@ -99,6 +108,12 @@ Assert-Status -Name "GET /api/v1/gallery/recent?platform=twitter&limit=3 => 200"
 
 $trendingApi = Invoke-Req -Method GET -Url "$ApiBaseUrl/gallery/trending?platform=twitter&limit=3"
 Assert-Status -Name "GET /api/v1/gallery/trending?platform=twitter&limit=3 => 200" -Expected 200 -Response $trendingApi
+
+$recentThreadsApi = Invoke-Req -Method GET -Url "$ApiBaseUrl/gallery/recent?platform=threads&limit=3"
+Assert-Status -Name "GET /api/v1/gallery/recent?platform=threads&limit=3 => 200" -Expected 200 -Response $recentThreadsApi
+
+$trendingThreadsApi = Invoke-Req -Method GET -Url "$ApiBaseUrl/gallery/trending?platform=threads&limit=3"
+Assert-Status -Name "GET /api/v1/gallery/trending?platform=threads&limit=3 => 200" -Expected 200 -Response $trendingThreadsApi
 
 $fxApiHealth = Invoke-Req -Method GET -Url "https://api.fxtwitter.com/i/status/20"
 Assert-StatusIn -Name "GET api.fxtwitter.com/i/status/20 => 2xx/4xx" -ExpectedList @(200, 400, 404) -Response $fxApiHealth
@@ -111,6 +126,9 @@ Assert-StatusIn -Name "GET t.me/durov/1?embed=1 => 2xx/3xx/4xx" -ExpectedList @(
 
 $telegramProxyProbe = Invoke-Req -Method HEAD -Url "$ApiBaseUrl/extract/proxy?url=https%3A%2F%2Ftelesco.pe%2Ffile%2Fdoes-not-exist&dl=1"
 Assert-StatusIn -Name "HEAD /api/v1/extract/proxy (telesco.pe probe) => 2xx/4xx/5xx" -ExpectedList @(200, 401, 403, 404, 410, 429, 500) -Response $telegramProxyProbe
+
+$threadsHealth = Invoke-Req -Method GET -Url "https://www.threads.com/@zuck/post/CuPoFQ7L0r5"
+Assert-StatusIn -Name "GET www.threads.com/@zuck/post/... => 2xx/3xx/4xx" -ExpectedList @(200, 301, 302, 307, 308, 400, 401, 403, 404, 429) -Response $threadsHealth
 
 if ($homeResp.Raw -and ($homeResp.Raw -match "effectivegatecpm\.com" -or $homeResp.Raw -match "Adsterra")) {
   Add-Result -Name "Home includes Adsterra marker" -Status "PASS" -Detail "marker found in html"

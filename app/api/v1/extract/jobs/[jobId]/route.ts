@@ -1,7 +1,7 @@
 import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
 import { createJob, getJob } from "@/lib/extract/store";
-import { shouldRefreshTelegramJob, shouldRefreshTikTokJob, shouldRefreshTwitterJob } from "@/lib/extract/freshness";
+import { shouldRefreshTelegramJob, shouldRefreshThreadsJob, shouldRefreshTikTokJob, shouldRefreshTwitterJob } from "@/lib/extract/freshness";
 
 type Context = {
   params: Promise<{ jobId: string }>;
@@ -67,7 +67,7 @@ export async function GET(_request: Request, context: Context) {
     });
   }
 
-  if (shouldRefreshTikTokJob(job) || shouldRefreshTwitterJob(job) || shouldRefreshTelegramJob(job)) {
+  if (shouldRefreshTikTokJob(job) || shouldRefreshTwitterJob(job) || shouldRefreshTelegramJob(job) || shouldRefreshThreadsJob(job)) {
     await createJob(job.platform, job.sourceUrl, "en", { forceRefresh: true });
     return success({
       requestId,
