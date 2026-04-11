@@ -86,7 +86,7 @@ export default async function Page({ params, searchParams }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Suspense fallback={<div className="p-20 text-center text-gray-400">{t.initialMessage}...</div>}>
-        <GalleryPageContent platform={platform as GalleryPlatform} locale={locale} type="trending" range={typeof sp.range === 'string' && ['today', 'week', 'month'].includes(sp.range) ? (sp.range as 'today' | 'week' | 'month') : undefined} />
+        <GalleryPageContent platform={platform as GalleryPlatform} locale={locale} type="trending" range={range} />
       </Suspense>
     </>
   );

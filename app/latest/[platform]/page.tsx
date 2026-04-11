@@ -41,10 +41,11 @@ export default async function Page({ params, searchParams }: Props) {
 
   const locale = normalizeLocale(sp.locale as string);
   const t = homeText[locale] || homeText['en'];
+  const range = normalizeGalleryRange(typeof sp.range === 'string' ? sp.range : undefined, DEFAULT_LATEST_RANGE);
 
   return (
     <Suspense fallback={<div className="p-20 text-center text-gray-400">{t.initialMessage}...</div>}>
-      <GalleryPageContent platform={platform as GalleryPlatform} locale={locale} type="latest" range={typeof sp.range === 'string' && ['today', 'week', 'month'].includes(sp.range) ? (sp.range as 'today' | 'week' | 'month') : undefined} />
+      <GalleryPageContent platform={platform as GalleryPlatform} locale={locale} type="latest" range={range} />
     </Suspense>
   );
 }
