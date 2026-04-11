@@ -6,6 +6,15 @@ type Context = {
   params: Promise<{ jobId: string }>;
 };
 
+function ensureProxyDownloadUrl(url?: string): string {
+  if (!url) return "";
+  if (url.startsWith("/api/v1/extract/proxy?")) return url;
+  if (/^https?:\/\//i.test(url)) {
+    return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
+  }
+  return url;
+}
+
 export async function GET(_request: Request, context: Context) {
   const requestId = await getRequestId();
   const { jobId } = await context.params;
@@ -65,7 +74,7 @@ export async function GET(_request: Request, context: Context) {
         platform: job.platform,
         status: job.status,
         variants: job.media.map(m => ({
-          url: m.downloadUrl,
+          url: ensureProxyDownloadUrl(m.downloadUrl || m.url),
           quality: m.quality,
           ext: m.type === 'video' ? 'mp4' : m.type === 'image' ? 'jpg' : 'mp3',
           type: m.type,

@@ -11,6 +11,15 @@ interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
+function ensureProxyDownloadUrl(url?: string): string {
+  if (!url) return '';
+  if (url.startsWith('/api/v1/extract/proxy?')) return url;
+  if (/^https?:\/\//i.test(url)) {
+    return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
+  }
+  return url;
+}
+
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { jobId } = await params;
   const job = await getJob(jobId);
@@ -57,7 +66,7 @@ export default async function ResultPage({ params, searchParams }: Props) {
     platform: job.platform,
     status: job.status,
     variants: job.media.map(m => ({
-      url: m.downloadUrl || m.url || '',
+      url: ensureProxyDownloadUrl(m.downloadUrl || m.url),
       quality: m.quality || 'original',
       ext: m.type === 'video' ? 'mp4' : m.type === 'image' ? 'jpg' : 'mp3',
       type: m.type as 'video' | 'image' | 'audio' | 'gif',
