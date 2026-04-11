@@ -1,6 +1,7 @@
 import { getRequestId } from "@/lib/api/request-id";
 import { failure, success } from "@/lib/api/response";
-import { getJob } from "@/lib/extract/store";
+import { createJob, getJob } from "@/lib/extract/store";
+import { shouldRefreshTikTokJob } from "@/lib/extract/freshness";
 
 type Context = {
   params: Promise<{ jobId: string }>;
@@ -62,6 +63,22 @@ export async function GET(_request: Request, context: Context) {
         code: "JOB_NOT_FOUND",
         message: "Job not found",
         details: { jobId },
+      },
+    });
+  }
+
+  if (shouldRefreshTikTokJob(job)) {
+    await createJob(job.platform, job.sourceUrl, "en", { forceRefresh: true });
+    return success({
+      requestId,
+      data: {
+        id: job.id,
+        platform: job.platform,
+        status: "processing",
+        progress: 10,
+        variants: [],
+        source_url: job.sourceUrl,
+        warnings: ["Refreshing expired media links. Please wait a moment."],
       },
     });
   }

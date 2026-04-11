@@ -164,7 +164,12 @@ function mapExtractionError(errorMsg: string): string {
   return "An internal error occurred during extraction. Please try again later.";
 }
 
-export async function createJob(platform: Platform, sourceUrl: string, locale: string = "en"): Promise<ExtractJob> {
+export async function createJob(
+  platform: Platform,
+  sourceUrl: string,
+  locale: string = "en",
+  options?: { forceRefresh?: boolean }
+): Promise<ExtractJob> {
   const now = nowIso();
   const id = await getDeterministicJobId(platform, sourceUrl);
 
@@ -181,7 +186,7 @@ export async function createJob(platform: Platform, sourceUrl: string, locale: s
   };
 
   const existingJob = await getJob(id);
-  if (existingJob) {
+  if (existingJob && !options?.forceRefresh) {
     const updatedAt = new Date(existingJob.updatedAt).getTime();
     const nowTime = Date.now();
 

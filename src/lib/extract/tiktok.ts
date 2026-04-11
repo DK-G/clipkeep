@@ -35,6 +35,23 @@ type LovetikResponse = {
   desc?: string;
 };
 
+const PROVIDER_COOLDOWN_MS = 2 * 60 * 1000;
+const providerCooldowns = new Map<string, number>();
+
+function isProviderCoolingDown(provider: string): boolean {
+  const until = providerCooldowns.get(provider);
+  if (!until) return false;
+  if (until <= Date.now()) {
+    providerCooldowns.delete(provider);
+    return false;
+  }
+  return true;
+}
+
+function markProviderBlocked(provider: string): void {
+  providerCooldowns.set(provider, Date.now() + PROVIDER_COOLDOWN_MS);
+}
+
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
@@ -47,12 +64,12 @@ function buildProxyDownloadUrl(url: string): string {
  * Resolves TikTok short URLs (vt.tiktok.com, vm.tiktok.com) to their canonical video URL.
  */
 async function resolveTikTokUrl(url: string): Promise<string> {
-  if (!url.includes("vt.tiktok.com") && !url.includes("vm.tiktok.com")) {
-    return url;
-  }
+  const normalizedInput = normalizeTikTokInputUrl(url);
+  const host = new URL(normalizedInput).hostname.toLowerCase();
+  if (!isTikTokShortHost(host)) return normalizedInput;
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(normalizedInput, {
       method: "HEAD",
       redirect: "follow",
       headers: {
@@ -61,9 +78,7 @@ async function resolveTikTokUrl(url: string): Promise<string> {
     });
 
     if (response.ok) {
-      const finalUrl = new URL(response.url);
-      finalUrl.search = "";
-      return finalUrl.toString();
+      return normalizeTikTokInputUrl(response.url);
     }
   } catch (error: unknown) {
     console.error("Error resolving TikTok URL:", getErrorMessage(error));
@@ -78,64 +93,71 @@ async function resolveTikTokUrl(url: string): Promise<string> {
  */
 export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
   const startTime = Date.now();
+  let sawAntiBot = false;
 
   try {
     const resolvedUrl = await resolveTikTokUrl(sourceUrl);
     console.log(`[TikTok] Resolved URL: ${resolvedUrl}`);
 
-    try {
-      const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(resolvedUrl)}`;
-      const response = await fetch(apiUrl, {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        },
-      });
+    if (!isProviderCoolingDown("tikwm")) {
+      try {
+        const apiUrl = `https://www.tikwm.com/api/?url=${encodeURIComponent(resolvedUrl)}`;
+        const response = await fetch(apiUrl, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          },
+        });
 
-      if (response.status === 403 || response.status === 429) {
-        throw new Error("ANTI_BOT_BLOCKED");
-      }
-
-      if (response.ok) {
-        const data = await response.json() as TikWMResponse;
-        if (data.code === 0 && data.data) {
-          // Priority 1: Slideshow (Multi-image)
-          if (data.data.images && data.data.images.length > 0) {
-            console.log(`[TikTok] Success via TikWM Slideshow (${Date.now() - startTime}ms)`);
-            return data.data.images.map(imageUrl => ({
-              type: "image",
-              url: imageUrl,
-              downloadUrl: buildProxyDownloadUrl(imageUrl),
-              thumbUrl: data.data?.cover,
-              title: data.data?.title,
-              sourcePath: "tikwm-slideshow",
-            }));
-          }
-
-          // Priority 2: Video
-          const videoUrl = data.data.play || data.data.wmplay;
-          if (videoUrl) {
-            console.log(`[TikTok] Success via TikWM Video (${Date.now() - startTime}ms)`);
-            return [{
-              type: "video",
-              url: videoUrl,
-              downloadUrl: buildProxyDownloadUrl(videoUrl),
-              thumbUrl: data.data.cover,
-              title: data.data.title,
-              sourcePath: "tikwm-video",
-            }];
-          }
+        if (response.status === 403 || response.status === 429) {
+          sawAntiBot = true;
+          markProviderBlocked("tikwm");
+          throw new Error("ANTI_BOT_BLOCKED");
         }
 
-        if (data.msg?.toLowerCase().includes("private")) {
-          throw new Error("PRIVATE_POST");
+        if (response.ok) {
+          const data = await response.json() as TikWMResponse;
+          if (data.code === 0 && data.data) {
+            // Priority 1: Slideshow (Multi-image)
+            if (data.data.images && data.data.images.length > 0) {
+              console.log(`[TikTok] Success via TikWM Slideshow (${Date.now() - startTime}ms)`);
+              return data.data.images.map(imageUrl => ({
+                type: "image",
+                url: imageUrl,
+                downloadUrl: buildProxyDownloadUrl(imageUrl),
+                thumbUrl: data.data?.cover,
+                title: data.data?.title,
+                sourcePath: "tikwm-slideshow",
+              }));
+            }
+
+            // Priority 2: Video
+            const videoUrl = data.data.play || data.data.wmplay;
+            if (videoUrl) {
+              console.log(`[TikTok] Success via TikWM Video (${Date.now() - startTime}ms)`);
+              return [{
+                type: "video",
+                url: videoUrl,
+                downloadUrl: buildProxyDownloadUrl(videoUrl),
+                thumbUrl: data.data.cover,
+                title: data.data.title,
+                sourcePath: "tikwm-video",
+              }];
+            }
+          }
+
+          if (data.msg?.toLowerCase().includes("private")) {
+            throw new Error("PRIVATE_POST");
+          }
+        }
+      } catch (error: unknown) {
+        const errorMessage = getErrorMessage(error);
+        if (errorMessage === "PRIVATE_POST") {
+          throw error;
+        }
+        if (errorMessage !== "ANTI_BOT_BLOCKED") {
+          console.warn("[TikTok] TikWM path failed:", errorMessage);
         }
       }
-    } catch (error: unknown) {
-      const errorMessage = getErrorMessage(error);
-      if (errorMessage === "PRIVATE_POST" || errorMessage === "ANTI_BOT_BLOCKED") {
-        throw error;
-      }
-      console.warn("[TikTok] TikWM path failed:", errorMessage);
     }
 
     // vxtiktok fallback removed (service is down)
@@ -152,7 +174,10 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
         body: `q=${encodeURIComponent(resolvedUrl)}`,
       });
 
-      if (loveRes.ok) {
+      if (loveRes.status === 403 || loveRes.status === 429) {
+        sawAntiBot = true;
+        markProviderBlocked("lovetik");
+      } else if (loveRes.ok) {
         const data = (await loveRes.json()) as LovetikResponse;
         if (data.status === "ok" && data.links) {
           const links: LovetikLink[] = Array.isArray(data.links) ? data.links : [];
@@ -191,7 +216,7 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
     }
 
     const kkUrl = resolvedUrl.replace("tiktok.com", "kktiktok.com");
-    try {
+    if (!isProviderCoolingDown("kktiktok")) try {
       const kkResponse = await fetch(kkUrl, {
         redirect: "follow",
         headers: {
@@ -199,6 +224,8 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
         },
       });
       if (kkResponse.status === 403 || kkResponse.status === 429) {
+        sawAntiBot = true;
+        markProviderBlocked("kktiktok");
         throw new Error("ANTI_BOT_BLOCKED");
       }
 
@@ -223,12 +250,11 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
       }
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
-      if (errorMessage === "ANTI_BOT_BLOCKED") {
-        throw error;
-      }
+      if (errorMessage === "ANTI_BOT_BLOCKED") sawAntiBot = true;
       console.warn("kktiktok fallback failed:", errorMessage);
     }
 
+    if (sawAntiBot) throw new Error("ANTI_BOT_BLOCKED");
     throw new Error("MEDIA_NOT_FOUND");
   } catch (error: unknown) {
     const errorMessage = getErrorMessage(error);
@@ -240,3 +266,4 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
   }
 }
 
+import { isTikTokShortHost, normalizeTikTokInputUrl } from "./tiktok-url";

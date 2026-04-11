@@ -7,6 +7,7 @@ import { checkExtractRateLimit, getClientKey } from "@/lib/rate-limit/extract";
 import { verifyTurnstileToken } from "@/lib/security/turnstile";
 import type { Platform } from "@/lib/extract/types";
 import type { Locale } from "@/lib/i18n/ui";
+import { normalizeTikTokInputUrl } from "@/lib/extract/tiktok-url";
 
 type PrepareBody = {
   url?: string;
@@ -91,9 +92,10 @@ export async function POST(request: Request) {
     });
   }
 
-  const url = body.url?.trim() ?? "";
+  const rawUrl = body.url?.trim() ?? "";
+  let url = rawUrl;
   const demoUrl = 'https://www.tiktok.com/@tiktok/video/7460937381265411370';
-  const isDemo = url === demoUrl;
+  const isDemo = rawUrl === demoUrl;
 
   // Verify Turnstile Token
   const token = body.turnstileToken;
@@ -163,6 +165,23 @@ export async function POST(request: Request) {
         details: { url },
       },
     });
+  }
+
+  if (platform === "tiktok" && !isDemo) {
+    try {
+      url = normalizeTikTokInputUrl(url);
+    } catch {
+      return failure({
+        status: 400,
+        requestId,
+        locale: body.locale,
+        error: {
+          code: "INVALID_URL",
+          message: "TikTok URL must be a valid tiktok.com/@user/video/<id> or vt/vm short link.",
+          details: { url: rawUrl },
+        },
+      });
+    }
   }
 
   try {

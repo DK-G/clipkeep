@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { normalizeLocale, resultText, menuText } from '@/lib/i18n/ui';
-import { getJob } from '@/lib/extract/store';
+import { createJob, getJob } from '@/lib/extract/store';
+import { shouldRefreshTikTokJob } from '@/lib/extract/freshness';
 import { ResultClient } from '@/components/result-client';
 import type { ExtractionResult } from '@/lib/api/types';
 import { SITE_URL } from '@/lib/site-url';
@@ -59,7 +60,12 @@ export default async function ResultPage({ params, searchParams }: Props) {
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = resultText[locale];
   const menu = menuText[locale];
-  const job = await getJob(jobId);
+  let job = await getJob(jobId);
+
+  if (job && shouldRefreshTikTokJob(job)) {
+    const refreshed = await createJob(job.platform, job.sourceUrl, locale, { forceRefresh: true });
+    job = refreshed;
+  }
 
   const initialData: ExtractionResult | null = job ? {
     id: job.id,
