@@ -3,6 +3,7 @@ import { createJob, getJob, recordAccess } from "./extract/store";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 type TrendPlatform = "twitter" | "tiktok";
+const TARGET_PER_PLATFORM = 1;
 
 function normalizeTwitterUrl(url: string): string | null {
   try {
@@ -86,7 +87,13 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
     getRecentlySeenUrls("tiktok"),
   ]);
 
-  const browser = await puppeteer.launch(env.browser_rendering);
+  let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
+  try {
+    browser = await puppeteer.launch(env.browser_rendering);
+  } catch (error) {
+    console.error("[AutoTrend] Browser launch failed:", error);
+    return { twitter: [], tiktok: [] };
+  }
   try {
     console.log("[AutoTrend] Scraping TikTok Explore...");
     const ttPage = await browser.newPage();
@@ -104,7 +111,7 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
         .map((url) => normalizeTikTokUrl(url))
         .filter((value): value is string => Boolean(value))
         .filter((url) => !recentTikTokUrls.has(url))
-        .slice(0, 18);
+        .slice(0, 6);
       tiktokUrls.push(...ttLinks);
     } catch (e) {
       console.warn("[AutoTrend] TikTok scrape failed:", e);
@@ -121,7 +128,7 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
       });
 
       for (const keyword of xKeywords) {
-        if (twitterUrls.length >= 3) break;
+        if (twitterUrls.length >= TARGET_PER_PLATFORM) break;
         try {
           await xPage.goto(`https://search.yahoo.co.jp/realtime/search?p=${encodeURIComponent(keyword)}&ei=UTF-8`, { waitUntil: "networkidle2", timeout: 15000 });
           const tweetCandidates = await xPage.evaluate(() => {
@@ -152,8 +159,8 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
   }
 
   return {
-    twitter: [...new Set(twitterUrls)].slice(0, 3),
-    tiktok: [...new Set(tiktokUrls)].slice(0, 3),
+    twitter: [...new Set(twitterUrls)].slice(0, TARGET_PER_PLATFORM),
+    tiktok: [...new Set(tiktokUrls)].slice(0, TARGET_PER_PLATFORM),
   };
 }
 
@@ -182,10 +189,12 @@ export async function runAutoTrendUpdate() {
     console.log(`[AutoTrend] Discovered ${twitter.length} X and ${tiktok.length} TikTok URLs`);
 
     const allItems: Array<{ url: string; platform: "twitter" | "tiktok" }> = [];
-    const max = Math.max(twitter.length, tiktok.length);
-    for (let i = 0; i < max; i++) {
-      if (twitter[i]) allItems.push({ url: twitter[i], platform: "twitter" });
-      if (tiktok[i]) allItems.push({ url: tiktok[i], platform: "tiktok" });
+    if (twitter[0]) allItems.push({ url: twitter[0], platform: "twitter" });
+    if (tiktok[0]) allItems.push({ url: tiktok[0], platform: "tiktok" });
+
+    if (allItems.length === 0) {
+      console.warn("[AutoTrend] No candidates discovered. Skipping this cycle.");
+      return { status: "success", processed: 0, skipped: true };
     }
 
     const createdJobs = await Promise.allSettled(
