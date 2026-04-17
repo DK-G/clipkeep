@@ -3,7 +3,7 @@ import { createJob, getJob, recordAccess } from "./extract/store";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 type TrendPlatform = "twitter" | "tiktok";
-const TARGET_PER_PLATFORM = 1;
+const TARGET_PER_PLATFORM = 3;
 
 function normalizeTwitterUrl(url: string): string | null {
   try {
@@ -84,6 +84,7 @@ async function getFallbackCandidate(platform: TrendPlatform): Promise<string | n
          AND status = 'completed'
          AND is_public = 1
          AND source_url IS NOT NULL
+         AND created_at > datetime('now', '-7 days')
        ORDER BY COALESCE(last_accessed_at, created_at) ASC, created_at DESC
        LIMIT 12`
     )
@@ -148,8 +149,8 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
     try {
       await xPage.goto("https://twittrend.jp/", { waitUntil: "networkidle2", timeout: 30000 });
       const xKeywords = await xPage.evaluate(() => {
-        const items = Array.from(document.querySelectorAll(".trend_list li a")) as HTMLAnchorElement[];
-        return items.map((a) => a.innerText.trim()).filter((t) => t.length > 0).slice(0, 5);
+        const items = Array.from(document.querySelectorAll(".trend a")) as HTMLAnchorElement[];
+        return items.map((a) => a.innerText.trim()).filter((t) => t.length > 0).slice(0, 10);
       });
 
       for (const keyword of xKeywords) {
@@ -157,10 +158,12 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
         try {
           await xPage.goto(`https://search.yahoo.co.jp/realtime/search?p=${encodeURIComponent(keyword)}&ei=UTF-8`, { waitUntil: "networkidle2", timeout: 15000 });
           const tweetCandidates = await xPage.evaluate(() => {
-            const links = Array.from(document.querySelectorAll("a")) as HTMLAnchorElement[];
-            const hrefs = links.map((a) => a.href);
+            const timeLinks = Array.from(document.querySelectorAll("time a")) as HTMLAnchorElement[];
+            const hrefs = timeLinks.map((a) => a.href);
+            const allLinks = Array.from(document.querySelectorAll("a")) as HTMLAnchorElement[];
+            const allHrefs = allLinks.map((a) => a.href);
             const html = document.documentElement.innerHTML;
-            return { hrefs, html };
+            return { hrefs: [...new Set([...hrefs, ...allHrefs])], html };
           });
           const tweetLinks = [
             ...tweetCandidates.hrefs.map((href) => normalizeTwitterUrl(href)).filter((value): value is string => Boolean(value)),
