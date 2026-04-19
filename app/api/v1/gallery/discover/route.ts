@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/db/d1";
-import { success } from "@/lib/api/response";
+import { success, failure } from "@/lib/api/response";
 import { getRequestId } from "@/lib/api/request-id";
 
 const PATTERNS = [
@@ -59,14 +59,12 @@ export async function GET() {
         items: results,
       },
     });
-  } catch {
-    return success({
-      status: 200,
+  } catch (err) {
+    console.error("Discover API Error", err);
+    return failure({
+      status: 500,
       requestId,
-      data: {
-        pattern: pattern.key,
-        items: [],
-      },
+      error: { code: "DB_ERROR", message: "Failed to fetch discover items", details: {} },
     });
   }
 }

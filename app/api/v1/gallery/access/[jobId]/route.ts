@@ -20,10 +20,19 @@ export async function POST(
 
   try {
     const { searchParams } = new URL(request.url);
-    const mediaIndex = searchParams.get('index');
+    const mediaIndexRaw = searchParams.get('index');
     const locale = searchParams.get('locale') || 'en';
-    
-    await recordAccess(jobId, locale, mediaIndex ? parseInt(mediaIndex) : undefined);
+
+    let mediaIndex: number | undefined;
+    if (mediaIndexRaw !== null) {
+      const parsed = parseInt(mediaIndexRaw, 10);
+      if (Number.isNaN(parsed) || parsed < 0) {
+        return failure({ status: 400, requestId, error: { code: "INVALID_INDEX", message: "index must be a non-negative integer", details: {} } });
+      }
+      mediaIndex = parsed;
+    }
+
+    await recordAccess(jobId, locale, mediaIndex);
     return success({
       status: 200,
       requestId,
