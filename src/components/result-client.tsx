@@ -8,6 +8,8 @@ import { resultText, localeDir, Locale, menuText } from "@/lib/i18n/ui";
 import type { ApiSuccess, ApiFailure, ExtractionResult } from "@/lib/api/types";
 import type { Platform } from "@/lib/extract/types";
 import { MonetaguBanner } from "@/components/ads/monetag-banner";
+import { ShareButton } from "@/components/share-button";
+import { PwaInstallBanner } from "@/components/pwa-install-banner";
 import { DownloadItem } from "@/components/download-item";
 import { GallerySection } from "@/components/gallery-section";
 import { PlatformIcon } from "@/components/platform-icons";
@@ -296,12 +298,13 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
   return (
     <>
       {guardActive && (
-        <DownloadGuard 
-          text={t.preparingDownload} 
-          onComplete={handleGuardComplete} 
+        <DownloadGuard
+          text={t.preparingDownload}
+          onComplete={handleGuardComplete}
           duration={getGuardDuration(sessionDownloadCount)} locale={locale}
         />
       )}
+      <PwaInstallBanner locale={locale} trigger={sessionDownloadCount > 0} />
       <div className="max-w-5xl mx-auto py-8 sm:py-12 px-4 sm:px-6" dir={dir}>
         <header className="mb-8">
           <Link href={`/download-${data.platform}-video?locale=${locale}`} className="text-blue-600 dark:text-blue-400 font-bold hover:underline inline-flex items-center gap-2">
@@ -379,7 +382,7 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
 
             <div className="space-y-4">
               {data.variants.map((variant, idx) => (
-                <DownloadItem 
+                <DownloadItem
                   key={idx}
                   variant={variant}
                   variantIndex={idx}
@@ -392,7 +395,17 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
               ))}
             </div>
 
-            <div className="mt-12 p-8 bg-blue-600 rounded-3xl text-white shadow-xl shadow-blue-600/20 relative overflow-hidden group">
+            {data.status === 'completed' && (
+              <div className="mt-6 flex items-center gap-3">
+                <ShareButton
+                  locale={locale}
+                  platform={data.platform}
+                  title={data.title}
+                />
+              </div>
+            )}
+
+            <div className="mt-8 p-8 bg-blue-600 rounded-3xl text-white shadow-xl shadow-blue-600/20 relative overflow-hidden group">
                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
                <div className="relative z-10">
                   <div className="flex items-center justify-between mb-4">
