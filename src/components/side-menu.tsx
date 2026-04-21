@@ -14,16 +14,16 @@ interface SideMenuProps {
 }
 
 const sideMenuUi = {
-  en: { menu: 'MENU', close: 'Close Menu', footer: 'EST. 2025 • CLIPKEEP' },
-  ar: { menu: 'القائمة', close: 'إغلاق القائمة', footer: 'منذ 2025 • CLIPKEEP' },
-  ja: { menu: 'メニュー', close: 'メニューを閉じる', footer: 'EST. 2025 • CLIPKEEP' },
-  es: { menu: 'MENÚ', close: 'Cerrar menú', footer: 'EST. 2025 • CLIPKEEP' },
-  pt: { menu: 'MENU', close: 'Fechar menu', footer: 'EST. 2025 • CLIPKEEP' },
-  fr: { menu: 'MENU', close: 'Fermer le menu', footer: 'EST. 2025 • CLIPKEEP' },
-  id: { menu: 'MENU', close: 'Tutup menu', footer: 'EST. 2025 • CLIPKEEP' },
-  hi: { menu: 'मेनू', close: 'मेनू बंद करें', footer: 'EST. 2025 • CLIPKEEP' },
-  de: { menu: 'MENÜ', close: 'Menü schließen', footer: 'EST. 2025 • CLIPKEEP' },
-  tr: { menu: 'MENÜ', close: 'Menüyü kapat', footer: 'EST. 2025 • CLIPKEEP' },
+  en: { menu: 'MENU', close: 'Close Menu', footer: 'EST. 2025 • CLIPKEEP', history: 'History' },
+  ar: { menu: 'القائمة', close: 'إغلاق القائمة', footer: 'منذ 2025 • CLIPKEEP', history: 'السجل' },
+  ja: { menu: 'メニュー', close: 'メニューを閉じる', footer: 'EST. 2025 • CLIPKEEP', history: '履歴' },
+  es: { menu: 'MENÚ', close: 'Cerrar menú', footer: 'EST. 2025 • CLIPKEEP', history: 'Historial' },
+  pt: { menu: 'MENU', close: 'Fechar menu', footer: 'EST. 2025 • CLIPKEEP', history: 'Histórico' },
+  fr: { menu: 'MENU', close: 'Fermer le menu', footer: 'EST. 2025 • CLIPKEEP', history: 'Historique' },
+  id: { menu: 'MENU', close: 'Tutup menu', footer: 'EST. 2025 • CLIPKEEP', history: 'Riwayat' },
+  hi: { menu: 'मेनू', close: 'मेनू बंद करें', footer: 'EST. 2025 • CLIPKEEP', history: 'इतिहास' },
+  de: { menu: 'MENÜ', close: 'Menü schließen', footer: 'EST. 2025 • CLIPKEEP', history: 'Verlauf' },
+  tr: { menu: 'MENÜ', close: 'Menüyü kapat', footer: 'EST. 2025 • CLIPKEEP', history: 'Geçmiş' },
 } as const;
 
 export function SideMenu({ isOpen, onClose, triggerRef, locale }: SideMenuProps) {
@@ -113,6 +113,7 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale }: SideMenuProps)
       items: [
         { label: t.rankings, href: `/trending?locale=${locale}` },
         { label: t.latest, href: `/latest?locale=${locale}` },
+        { label: ui.history, href: `/history?locale=${locale}` },
       ],
     },
     {

@@ -7,7 +7,7 @@ import { trackEvent } from "@/lib/analytics/gtag";
 import { resultText, localeDir, Locale, menuText } from "@/lib/i18n/ui";
 import type { ApiSuccess, ApiFailure, ExtractionResult } from "@/lib/api/types";
 import type { Platform } from "@/lib/extract/types";
-import { AdsterraNative } from "@/components/ads/native-banner";
+import { AdSenseUnit } from "@/components/ads/adsense-unit";
 import { DownloadItem } from "@/components/download-item";
 import { GallerySection } from "@/components/gallery-section";
 import { PlatformIcon } from "@/components/platform-icons";
@@ -441,12 +441,16 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
             </div>
 
             <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-900">
-               <AdsterraNative />
+              <AdSenseUnit adSlot="RESULT_SIDE_AD_SLOT_ID" adFormat="auto" className="min-h-[100px]" />
             </div>
           </div>
         </main>
 
-        <div className="mt-16 space-y-10">
+        <div className="mt-10">
+          <AdSenseUnit adSlot="RESULT_FEED_AD_SLOT_ID" adFormat="auto" className="min-h-[90px]" />
+        </div>
+
+        <div className="mt-6 space-y-10">
           <section className="rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-5 sm:p-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
