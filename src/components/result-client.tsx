@@ -7,7 +7,7 @@ import { trackEvent } from "@/lib/analytics/gtag";
 import { resultText, localeDir, Locale, menuText } from "@/lib/i18n/ui";
 import type { ApiSuccess, ApiFailure, ExtractionResult } from "@/lib/api/types";
 import type { Platform } from "@/lib/extract/types";
-import { AdSenseUnit } from "@/components/ads/adsense-unit";
+import { MonetaguBanner } from "@/components/ads/monetag-banner";
 import { DownloadItem } from "@/components/download-item";
 import { GallerySection } from "@/components/gallery-section";
 import { PlatformIcon } from "@/components/platform-icons";
@@ -441,13 +441,13 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
             </div>
 
             <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-900">
-              <AdSenseUnit adSlot="RESULT_SIDE_AD_SLOT_ID" adFormat="auto" className="min-h-[100px]" />
+              <MonetaguBanner zoneId="RESULT_SIDE_BANNER_ZONE_ID" className="min-h-[100px]" />
             </div>
           </div>
         </main>
 
         <div className="mt-10">
-          <AdSenseUnit adSlot="RESULT_FEED_AD_SLOT_ID" adFormat="auto" className="min-h-[90px]" />
+          <MonetaguBanner zoneId="RESULT_FEED_BANNER_ZONE_ID" className="min-h-[90px]" />
         </div>
 
         <div className="mt-6 space-y-10">
