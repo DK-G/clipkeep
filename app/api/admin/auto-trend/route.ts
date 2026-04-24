@@ -12,8 +12,8 @@ export async function GET(request: Request) {
   const secret = searchParams.get("secret");
   
   // Cloudflareの環境変数を取得
-  const context = await getCloudflareContext();
-  const env = (context?.env as { CRON_SECRET?: string } | undefined) || {};
+  const cfContext = await getCloudflareContext();
+  const env = (cfContext?.env as { CRON_SECRET?: string } | undefined) || {};
   
   // wrangler.production.tomlで定義した変数、または秘密情報から取得
   const internalSecret = env?.CRON_SECRET || process.env.CRON_SECRET;
@@ -30,13 +30,21 @@ export async function GET(request: Request) {
     console.log("[AutoTrend API] Triggering manual update (confirmed auth)...");
     
     // 非同期で実行を開始し、クライアントにはすぐにレスポンスを返す（タイムアウト防止）
-    // ただし、Next.jsのEdge Runtimeでは待機が必要な場合があるためawaitします。
-    const result = await runAutoTrendUpdate();
+    // Next.jsのEdge Runtimeでは、cfContext.ctx.waitUntil を使用してバックグラウンド処理を行う
+    if (cfContext && cfContext.ctx && cfContext.ctx.waitUntil) {
+      cfContext.ctx.waitUntil(runAutoTrendUpdate().catch((e: any) => {
+        console.error("[AutoTrend API] Background update failed:", e);
+      }));
+    } else {
+      // ローカル開発環境などのフォールバック
+      runAutoTrendUpdate().catch((e: any) => {
+        console.error("[AutoTrend API] Background update failed:", e);
+      });
+    }
     
     return NextResponse.json({ 
       status: "success", 
-      message: "Automated trend update completed",
-      result 
+      message: "Automated trend update started in background"
     });
   } catch (error) {
     console.error("[AutoTrend API] error:", error);
