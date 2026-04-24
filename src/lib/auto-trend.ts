@@ -192,7 +192,7 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
   };
 }
 
-async function waitForCompletion(jobId: string, attempts = 8, intervalMs = 1500) {
+async function waitForCompletion(jobId: string, attempts = 20, intervalMs = 1500) {
   for (let attempt = 0; attempt < attempts; attempt++) {
     await new Promise((resolve) => setTimeout(resolve, intervalMs));
     const latest = await getJob(jobId);
