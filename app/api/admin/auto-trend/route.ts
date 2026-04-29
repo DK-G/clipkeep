@@ -29,9 +29,14 @@ export async function GET(request: Request) {
   try {
     console.log("[AutoTrend API] Triggering manual update (confirmed auth)...");
     
-    // Run the extraction task in the background using Cloudflare's waitUntil
-    // to prevent edge runtime HTTP timeouts.
-    context?.ctx?.waitUntil(runAutoTrendUpdate());
+    if (context?.ctx?.waitUntil) {
+      // Run the extraction task in the background using Cloudflare's waitUntil
+      // to prevent edge runtime HTTP timeouts.
+      context.ctx.waitUntil(runAutoTrendUpdate());
+    } else {
+      // Fallback for environments without waitUntil
+      runAutoTrendUpdate();
+    }
     
     return NextResponse.json({ 
       status: "success", 
