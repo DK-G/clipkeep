@@ -29,14 +29,19 @@ export async function GET(request: Request) {
   try {
     console.log("[AutoTrend API] Triggering manual update (confirmed auth)...");
     
-    // 非同期で実行を開始し、クライアントにはすぐにレスポンスを返す（タイムアウト防止）
-    // ただし、Next.jsのEdge Runtimeでは待機が必要な場合があるためawaitします。
-    const result = await runAutoTrendUpdate();
+    if (context?.ctx?.waitUntil) {
+      // Run the extraction task in the background using Cloudflare's waitUntil
+      // to prevent edge runtime HTTP timeouts.
+      context.ctx.waitUntil(runAutoTrendUpdate());
+    } else {
+      // Fallback for environments without waitUntil
+      runAutoTrendUpdate();
+    }
     
     return NextResponse.json({ 
       status: "success", 
       message: "Automated trend update completed",
-      result 
+      message_details: "Task is running in background"
     });
   } catch (error) {
     console.error("[AutoTrend API] error:", error);
