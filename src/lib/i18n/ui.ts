@@ -3911,81 +3911,97 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
       title: "Latest Reddit Downloads",
       subtitle: "Recently extracted videos from Reddit.",
       description: "See what the world is saving from Reddit right now. Explore the latest Reddit media on ClipKeep.",
+      seoContent: "## Reddit's Best, In Real Time\nReddit is home to thousands of niche communities sharing some of the internet's most original video content. This gallery shows the latest Reddit media being processed by ClipKeep users — from viral clips on r/funny to documentaries and news footage.\n\n## Save Any Reddit Video\nSpotted something worth keeping? Our [Reddit Video Downloader](/download-reddit-video?locale=en) lets you save any public Reddit post in seconds, with no account required.",
     },
     trendingReddit: {
       title: "Trending Reddit Videos",
       subtitle: "The most popular clips from Reddit today.",
       description: "Discover viral gems and top-rated media from Reddit's global communities.",
+      seoContent: "## What Reddit Is Watching\nReddit surfaces content faster than almost any other platform. Our trending gallery captures the most-accessed Reddit clips on ClipKeep — upvoted gems across gaming, science, sports, and culture.\n\n## Download Trending Reddit Videos\nSeen a clip you want to save? Use our [Reddit Video Downloader](/download-reddit-video?locale=en) to archive any public Reddit post with one click.",
     },
     latestPinterest: {
       title: "Latest Pinterest Downloads",
       subtitle: "New video pins processed by ClipKeep.",
       description: "A real-time look at aesthetic videos and pins being saved on our platform.",
+      seoContent: "## Pinterest Video Discovery\nPinterest is a visual search engine packed with recipe videos, interior design clips, fashion reels, and DIY tutorials. This feed shows the newest Pinterest video pins being archived by ClipKeep users.\n\n## Save Pinterest Videos Easily\nReady to save a pin? Our [Pinterest Video Downloader](/download-pinterest-video?locale=en) handles any public Pinterest video quickly and without watermarks.",
     },
     trendingPinterest: {
       title: "Trending Pinterest Pins",
       subtitle: "Viral video pins and aesthetic content.",
       description: "Explore what's inspiring the world on Pinterest right now.",
+      seoContent: "## The Most Inspiring Pins Right Now\nPinterest's trending content spans lifestyle, fashion, home décor, food, and creativity. This page tracks the most-accessed Pinterest video pins on ClipKeep — the ones people are saving most right now.\n\n## Download Pinterest Videos\nLove what you see? Our [Pinterest Video Downloader](/download-pinterest-video?locale=en) makes it simple to save any trending pin directly to your device.",
     },
     latestThreads: {
       title: "Latest Threads Downloads",
       subtitle: "Recently saved clips from Threads.",
       description: "Stay updated with the newest media being archived from the Threads social network.",
+      seoContent: "## Threads Content, Archived\nThreads by Meta is rapidly becoming a go-to platform for short-form commentary and video. This gallery shows the latest Threads media being saved through ClipKeep in real time.\n\n## Save Threads Videos\nFound a post you want to keep? Our [Threads Video Downloader](/download-threads-video?locale=en) lets you save any public Threads video instantly.",
     },
     trendingThreads: {
       title: "Trending Threads Videos",
       subtitle: "Viral moments and top media from Threads.",
       description: "Discover the most talked-about videos on Threads today.",
+      seoContent: "## What's Going Viral on Threads\nThreads moves fast — conversations spark and clips spread in hours. Our trending page tracks the most popular Threads videos being archived by the ClipKeep community right now.\n\n## Download Threads Videos\nWant to keep a trending clip? Use our [Threads Video Downloader](/download-threads-video?locale=en) to save any public Threads post with a single paste.",
     },
     latestBluesky: {
       title: "Latest Bluesky Downloads",
       subtitle: "Fresh media being saved from Bluesky.",
       description: "The newest videos and images from the decentralized social network.",
+      seoContent: "## The Open Web, Archived\nBluesky is a decentralized social platform growing rapidly with independent creators, journalists, and communities. This feed shows the newest Bluesky media being processed by ClipKeep.\n\n## Save Bluesky Videos\nFound a post worth keeping? Our [Bluesky Video Downloader](/download-bluesky-video?locale=en) works with any public Bluesky post link.",
     },
     trendingBluesky: {
       title: "Trending Bluesky Clips",
       subtitle: "Most popular posts on Bluesky right now.",
       description: "Discover viral media from the Bluesky community.",
+      seoContent: "## Bluesky's Most Shared Content\nBluesky's open protocol fosters authentic communities sharing raw, unfiltered content. This page highlights the most popular Bluesky clips being archived through ClipKeep.\n\n## Download Bluesky Videos\nReady to save a trending clip? Our [Bluesky Video Downloader](/download-bluesky-video?locale=en) makes archiving any public post simple and fast.",
     },
     latestLemon8: {
       title: "Latest Lemon8 Downloads",
       subtitle: "Aesthetic videos recently saved from Lemon8.",
       description: "Explore the newest lifestyle and fashion clips on ClipKeep.",
+      seoContent: "## Lemon8 Lifestyle Content\nLemon8 blends photo blogging with short-form video to create a uniquely aesthetic feed. This gallery shows the newest Lemon8 videos being saved by ClipKeep users across fashion, travel, food, and beauty.\n\n## Save Lemon8 Videos\nWant to archive a post? Our [Lemon8 Video Downloader](/download-lemon8-video?locale=en) saves any public Lemon8 video directly to your device.",
     },
     trendingLemon8: {
       title: "Trending Lemon8 Videos",
       subtitle: "Viral lifestyle and aesthetic clips.",
       description: "Stay in the loop with what's trending on Lemon8 today.",
+      seoContent: "## What's Hot on Lemon8\nLemon8 is a visual-first platform where lifestyle creators share curated photos and videos. This page tracks the most-accessed Lemon8 content on ClipKeep — trending looks, recipes, and travel clips.\n\n## Download Trending Lemon8 Videos\nFound a clip you love? Our [Lemon8 Video Downloader](/download-lemon8-video?locale=en) lets you save any public post with one click.",
     },
     latestBilibili: {
       title: "Latest Bilibili Downloads",
       subtitle: "Recently extracted animations and clips from Bilibili.",
       description: "See what's new in the world of ACG and Bilibili content.",
+      seoContent: "## Bilibili: ACG and Beyond\nBilibili is China's premier video platform for anime, gaming, tech tutorials, and creative content. This feed shows the newest Bilibili clips being archived through ClipKeep.\n\n## Save Bilibili Videos\nReady to keep a clip? Our [Bilibili Video Downloader](/download-bilibili-video?locale=en) supports any public Bilibili video and delivers high-quality results.",
     },
     trendingBilibili: {
       title: "Trending Bilibili Clips",
       subtitle: "The most popular animations on Bilibili today.",
       description: "Discover trending clips and fan-favorites from Bilibili.",
+      seoContent: "## Bilibili's Most Popular Content\nBilibili's trending section reflects what millions of viewers are watching — from anime openings and gaming highlights to science explainers and music covers. This page tracks the most-saved Bilibili clips on ClipKeep.\n\n## Download Bilibili Videos\nSeen something worth archiving? Our [Bilibili Video Downloader](/download-bilibili-video?locale=en) makes saving any public clip fast and simple.",
     },
     latestDiscord: {
       title: "Latest Discord Downloads",
       subtitle: "Recently saved media from Discord CDN.",
       description: "Explore the latest videos and images shared via Discord links.",
+      seoContent: "## Discord Media, Saved\nDiscord servers share a vast array of content through public CDN links — clips, memes, tutorials, and more. This gallery shows the newest Discord media being processed by ClipKeep.\n\n## Save Discord Videos\nHave a Discord CDN link? Our [Discord Video Downloader](/download-discord-video?locale=en) extracts and saves any public Discord media file.",
     },
     trendingDiscord: {
       title: "Trending Discord Media",
       subtitle: "Popular clips being archived from Discord.",
       description: "Stay updated with the most shared media from Discord servers.",
+      seoContent: "## The Most Shared Discord Content\nDiscord is where communities share exclusive clips, gaming moments, and rare media. This page tracks the most-accessed Discord content being archived through ClipKeep.\n\n## Download Discord Videos\nNeed to save a clip? Our [Discord Video Downloader](/download-discord-video?locale=en) handles any public Discord CDN link quickly and reliably.",
     },
     latestFacebook: {
       title: "Latest Facebook Downloads",
       subtitle: "Recent videos and stories saved from Facebook.",
       description: "Explore the newest media being archived from Facebook on ClipKeep.",
+      seoContent: "## Facebook Video Archive\nFacebook remains one of the world's largest video platforms, with news clips, live streams, and community content shared daily. This gallery shows the newest Facebook videos being saved through ClipKeep.\n\n## Save Facebook Videos\nSpotted a video you need? Our [Facebook Video Downloader](/download-facebook-video?locale=en) extracts any public Facebook post quickly, no account required.",
     },
     trendingFacebook: {
       title: "Trending Facebook Videos",
       subtitle: "Viral reels and stories from Facebook.",
       description: "Discover what's trending across Facebook communities today.",
+      seoContent: "## Facebook's Viral Moments\nFacebook Reels, news clips, and community videos reach millions every day. This page tracks the most-accessed Facebook content on ClipKeep — the videos people are saving most right now.\n\n## Download Facebook Videos\nReady to archive a trending clip? Our [Facebook Video Downloader](/download-facebook-video?locale=en) makes it simple to save any public Facebook video.",
     }
   },
   ja: {
@@ -4038,82 +4054,98 @@ export const galleryPages: Record<Locale, Record<string, GalleryPageDict>> = {
     latestReddit: {
       title: "Reddit 最近のダウンロード",
       description: "Redditのコミュニティから抽出された最新の動画やメディアをチェックしましょう。",
-      subtitle: "直近に作成されたRedditのアーカイブ"
+      subtitle: "直近に作成されたRedditのアーカイブ",
+      seoContent: "## Redditメディアの最新アーカイブ\nRedditの各コミュニティで共有されている動画クリップ、GIF、面白コンテンツが次々とアーカイブされています。このフィードでは、ClipKeepユーザーが今まさに保存しているRedditメディアをリアルタイムで確認できます。\n\n## Reddit動画を保存する\n気になった動画はそのままアーカイブしましょう。[Reddit動画ダウンローダー](/download-reddit-video?locale=ja) を使えば、公開されているRedditの動画を素早く保存できます。"
     },
     trendingReddit: {
       title: "Reddit トレンド動画",
       description: "Redditで現在話題になっている人気の動画クリップを探索しましょう。",
-      subtitle: "今Redditで最も注目されているメディア"
+      subtitle: "今Redditで最も注目されているメディア",
+      seoContent: "## Redditで今バズっているコンテンツ\nRedditは世界最大のコミュニティ集合体です。r/funny、r/news、r/gaming など無数のサブレディットで、毎日膨大な数の動画クリップや面白コンテンツが話題を集めています。ClipKeepのトレンドRedditページでは、現在最も多くアーカイブされている注目動画を一覧できます。\n\n## バイラル動画を手元に保存\nトレンドのRedditクリップをオフラインで楽しみたい場合は、[Reddit動画ダウンローダー](/download-reddit-video?locale=ja) をご利用ください。リンクを貼り付けるだけで簡単に保存できます。"
     },
     latestPinterest: {
       title: "Pinterest 最近のダウンロード",
       description: "Pinterestから新しく保存されたビデオピンや画像をリアルタイムで表示。",
-      subtitle: "直近のPinterestアーカイブ"
+      subtitle: "直近のPinterestアーカイブ",
+      seoContent: "## Pinterestの最新ビデオピン\nインテリア、ファッション、レシピ、DIYなど、あらゆるジャンルのPinterestビデオピンが日々アーカイブされています。このフィードでは、ClipKeepユーザーが新しく保存したPinterestコンテンツをリアルタイムで確認できます。\n\n## ビデオピンを保存する\nお気に入りのPinterestビデオを手元に保存しておきたい方は、[Pinterest動画ダウンローダー](/download-pinterest-video?locale=ja) をご利用ください。"
     },
     trendingPinterest: {
       title: "Pinterest トレンドピン",
       description: "Pinterestで現在人気のビデオピンやおしゃれなコンテンツを発見しましょう。",
-      subtitle: "今Pinterestで話題のビジュアル"
+      subtitle: "今Pinterestで話題のビジュアル",
+      seoContent: "## 世界のインスピレーションが集まるPinterest\nPinterestはビジュアルインスピレーションの宝庫です。インテリアデザインからファッション、料理、旅行まで、トレンドのビデオピンが毎日何百万人ものユーザーを魅了しています。ClipKeepのトレンドPinterestページでは、今最もアーカイブされている人気ビデオピンを一覧できます。\n\n## お気に入りのPinterestコンテンツを保存\nインスピレーションを感じたビデオピンはすぐに保存しましょう。[Pinterest動画ダウンローダー](/download-pinterest-video?locale=ja) を使えば、公開されているピンを簡単にダウンロードできます。"
     },
     latestThreads: {
       title: "Threads 最近のダウンロード",
       description: "Threadsから抽出された最新の動画やメディアをチェックしましょう。",
-      subtitle: "直近のThreadsアーカイブ"
+      subtitle: "直近のThreadsアーカイブ",
+      seoContent: "## ThreadsのリアルタイムメディアフィードTimestamp\nMetaが運営するThreadsは、テキストと動画が融合したSNSとして急速に成長しています。このフィードでは、ClipKeepユーザーがThreadsから新しくアーカイブしたメディアをリアルタイムで確認できます。\n\n## Threads動画を保存する\n気になったThreadsの投稿動画を手元に保存したい場合は、[Threads動画ダウンローダー](/download-threads-video?locale=ja) をお使いください。"
     },
     trendingThreads: {
       title: "Threads トレンド動画",
       description: "Threads で現在話題のバイラル動画を探索しましょう。",
-      subtitle: "今Threadsで最も注目されているメディア"
+      subtitle: "今Threadsで最も注目されているメディア",
+      seoContent: "## Threadsで話題のコンテンツ\nInstagramと連携したThreadsは、短文投稿と動画を組み合わせた新世代のSNSです。クリエイター、ブランド、一般ユーザーが日々魅力的なコンテンツを発信しており、バイラルな瞬間が次々と生まれています。ClipKeepのトレンドThreadsページでは、今最も注目されているメディアを確認できます。\n\n## トレンドのThreads動画を保存\n話題のThreads動画をオフラインで楽しみたい場合は、[Threads動画ダウンローダー](/download-threads-video?locale=ja) を使って簡単に保存できます。"
     },
     latestBluesky: {
       title: "Bluesky 最近のダウンロード",
       description: "Bluesky SNSから新しく保存された動画や画像をリアルタイムでチェック。",
-      subtitle: "直近のBlueskyアーカイブ"
+      subtitle: "直近のBlueskyアーカイブ",
+      seoContent: "## Blueskyの最新メディアアーカイブ\n分散型SNSとして注目を集めるBlueskyでは、独自の視点を持つコンテンツクリエイターが活躍しています。このフィードでは、ClipKeepユーザーがBlueskyから新しくアーカイブしたメディアをリアルタイムで確認できます。\n\n## Bluesky動画を保存する\n気になったBlueskyの動画や画像を保存したい場合は、[Bluesky動画ダウンローダー](/download-bluesky-video?locale=ja) をご利用ください。"
     },
     trendingBluesky: {
       title: "Bluesky トレンドクリップ",
       description: "Blueskyコミュニティで現在人気のバイラルメディアを発見しましょう。",
-      subtitle: "今Blueskyで話題のコンテンツ"
+      subtitle: "今Blueskyで話題のコンテンツ",
+      seoContent: "## Blueskyで今話題のコンテンツ\nBlueskyはTwitter (X) の代替として急成長している分散型SNSです。オープンなプロトコル「AT Protocol」を採用し、検閲に強い自由なコミュニティが形成されています。ClipKeepのトレンドBlueskyページでは、このプラットフォームで今最もアーカイブされているバイラルクリップを発見できます。\n\n## トレンドのBluesky動画を保存\n話題のBlueskyコンテンツをダウンロードするには、[Bluesky動画ダウンローダー](/download-bluesky-video?locale=ja) を使って手軽に保存できます。"
     },
     latestLemon8: {
       title: "Lemon8 最近のダウンロード",
       description: "Lemon8から新しく抽出されたおしゃれなライフスタイル動画を紹介。",
-      subtitle: "直近のLemon8アーカイブ"
+      subtitle: "直近のLemon8アーカイブ",
+      seoContent: "## Lemon8の最新ライフスタイルコンテンツ\nファッション、美容、グルメ、旅行など、Lemon8のおしゃれなライフスタイル動画が次々とアーカイブされています。このフィードでは、ClipKeepユーザーがLemon8から新しく保存したコンテンツをリアルタイムで確認できます。\n\n## Lemon8動画を保存する\nお気に入りのLemon8動画を手元に保存するには、[Lemon8動画ダウンローダー](/download-lemon8-video?locale=ja) をご利用ください。"
     },
     trendingLemon8: {
       title: "Lemon8 トレンド動画",
       description: "Lemon8で現在人気のファッションやライフスタイルクリップをチェック。",
-      subtitle: "今Lemon8で話題のメディア"
+      subtitle: "今Lemon8で話題のメディア",
+      seoContent: "## Lemon8で今トレンドのライフスタイル動画\nByteDanceが運営するLemon8は、ファッション、美容、グルメ、旅行などのライフスタイルコンテンツに特化したSNSです。インスタグラムとPinterestを融合させたような独特のスタイルで、若い世代を中心に人気を集めています。ClipKeepのトレンドLemon8ページでは、今最もアーカイブされているコンテンツを一覧できます。\n\n## トレンドのLemon8動画を保存\n気に入ったLemon8コンテンツを保存したい場合は、[Lemon8動画ダウンローダー](/download-lemon8-video?locale=ja) で簡単にダウンロードできます。"
     },
     latestBilibili: {
       title: "Bilibili 最近のダウンロード",
       description: "Bilibiliから新しく抽出されたアニメや動画クリップをチェックしましょう。",
-      subtitle: "直近のBilibiliアーカイブ"
+      subtitle: "直近のBilibiliアーカイブ",
+      seoContent: "## Bilibiliの最新コンテンツアーカイブ\nアニメ、ゲーム実況、料理、音楽など、Bilibiliの多様なコンテンツが次々とアーカイブされています。このフィードでは、ClipKeepユーザーがBilibiliから新しく保存した動画クリップをリアルタイムで確認できます。\n\n## Bilibili動画を保存する\nお気に入りのBilibili動画をオフラインで楽しみたい場合は、[Bilibili動画ダウンローダー](/download-bilibili-video?locale=ja) をご利用ください。"
     },
     trendingBilibili: {
       title: "Bilibili トレンドクリップ",
       description: "Bilibiliで現在最も人気のあるアニメやクリップを探索しましょう。",
-      subtitle: "今Bilibiliで話題のコンテンツ"
+      subtitle: "今Bilibiliで話題のコンテンツ",
+      seoContent: "## 中国最大の動画プラットフォーム・Bilibiliのトレンド\nBilibiliは中国最大の動画共有プラットフォームで、アニメ、ゲーム、VLOG、音楽など多彩なジャンルのコンテンツが集まっています。国内外のクリエイターが質の高い動画を日々投稿しており、独自のカルチャーが育まれています。ClipKeepのトレンドBilibiliページでは、今最もアーカイブされている人気クリップを発見できます。\n\n## トレンドのBilibili動画を保存\nBilibili動画をダウンロードするには、[Bilibili動画ダウンローダー](/download-bilibili-video?locale=ja) を使って手軽に保存できます。"
     },
     latestDiscord: {
       title: "Discord 最近のダウンロード",
       description: "Discord CDN経由で新しく保存された動画や画像を探索しましょう。",
-      subtitle: "直近のDiscordアーカイブ"
+      subtitle: "直近のDiscordアーカイブ",
+      seoContent: "## DiscordのCDNメディア最新アーカイブ\nゲーミング、クリエイティブ、コミュニティなど多様なDiscordサーバーで共有されたメディアファイルが次々とアーカイブされています。このフィードでは、Discord CDN経由で新しく保存されたコンテンツをリアルタイムで確認できます。\n\n## Discordメディアを保存する\nDiscordで共有された動画や画像を保存したい場合は、[Discord動画ダウンローダー](/download-discord-video?locale=ja) をご利用ください。"
     },
     trendingDiscord: {
       title: "Discord トレンドメディア",
       description: "Discordサーバーで頻繁に共有されている人気のクリップをチェック。",
-      subtitle: "今Discordで話題のコンテンツ"
+      subtitle: "今Discordで話題のコンテンツ",
+      seoContent: "## Discordコミュニティで広まるコンテンツ\nDiscordはゲーマー、クリエイター、コミュニティの拠点として世界中で利用されています。サーバー内で話題のクリップ、ミーム、ゲームのハイライト映像が日々共有され、コミュニティを盛り上げています。ClipKeepのトレンドDiscordページでは、今最も注目されているメディアを確認できます。\n\n## トレンドのDiscordメディアを保存\nDiscordで見つけた動画をダウンロードするには、[Discord動画ダウンローダー](/download-discord-video?locale=ja) を使って手軽に保存できます。"
     },
     latestFacebook: {
       title: "Facebook 最近のダウンロード",
       description: "Facebookから新しく保存された動画やストーリーをリアルタイムで表示。",
-      subtitle: "直近のFacebookアーカイブ"
+      subtitle: "直近のFacebookアーカイブ",
+      seoContent: "## Facebookの最新動画アーカイブ\nFacebookリール、ニュースクリップ、コミュニティ動画など、幅広いコンテンツが次々とアーカイブされています。このフィードでは、ClipKeepユーザーがFacebookから新しく保存したメディアをリアルタイムで確認できます。\n\n## Facebook動画を保存する\n気になったFacebook動画を手元に保存したい場合は、[Facebook動画ダウンローダー](/download-facebook-video?locale=ja) をご利用ください。"
     },
     trendingFacebook: {
       title: "Facebook トレンド動画",
       description: "Facebookのコミュニティで現在人気のバイラルリールやストーリーをチェック。",
-      subtitle: "今Facebookで話題のメディア"
+      subtitle: "今Facebookで話題のメディア",
+      seoContent: "## Facebookで今バズっているコンテンツ\nFacebookリール、ニュースクリップ、コミュニティ動画は毎日何百万人ものユーザーにリーチしています。ClipKeepのトレンドFacebookページでは、現在最も多くアーカイブされている注目動画を一覧できます。ニュース、エンタメ、スポーツなどあらゆるジャンルのバイラル動画を確認しましょう。\n\n## トレンドのFacebook動画を保存\n話題のFacebook動画をオフラインで楽しみたい場合は、[Facebook動画ダウンローダー](/download-facebook-video?locale=ja) を使って手軽に保存できます。"
     }
   },
   ar: {
