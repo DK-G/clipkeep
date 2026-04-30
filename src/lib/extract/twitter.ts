@@ -23,6 +23,9 @@ interface FXTwitterResponse {
 
 const PROVIDER_COOLDOWN_MS = 2 * 60 * 1000;
 const providerCooldowns = new Map<string, number>();
+const FETCH_TIMEOUT_MS = 10000;
+
+type FetchInit = RequestInit & { timeoutMs?: number };
 
 function isProviderCoolingDown(provider: string): boolean {
   const until = providerCooldowns.get(provider);
@@ -44,6 +47,145 @@ function getErrorMessage(error: unknown): string {
 
 function buildProxyDownloadUrl(url: string): string {
   return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
+}
+
+function logTwitterEvent(event: string, payload: Record<string, unknown>): void {
+  console.log(JSON.stringify({
+    service: "extractor",
+    platform: "twitter",
+    event,
+    timestamp: new Date().toISOString(),
+    ...payload,
+  }));
+}
+
+async function fetchWithTimeout(url: string, init: FetchInit = {}): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutMs = init.timeoutMs ?? FETCH_TIMEOUT_MS;
+  const timer = setTimeout(() => controller.abort("timeout"), timeoutMs);
+  try {
+    return await fetch(url, {
+      ...init,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function isM3u8ByUrl(url: string): boolean {
+  return /\.m3u8(?:$|\?)/i.test(url);
+}
+
+function getContentType(value: string | null): string {
+  return (value || "").split(";")[0].trim().toLowerCase();
+}
+
+async function probeContentType(url: string): Promise<string | null> {
+  try {
+    const head = await fetchWithTimeout(url, { method: "HEAD", redirect: "follow" });
+    if (head.ok) {
+      const ct = getContentType(head.headers.get("content-type"));
+      if (ct) return ct;
+    }
+  } catch {
+    // fall back to range GET
+  }
+
+  try {
+    const get = await fetchWithTimeout(url, {
+      method: "GET",
+      redirect: "follow",
+      headers: { Range: "bytes=0-0" },
+    });
+    if (get.ok || get.status === 206) {
+      const ct = getContentType(get.headers.get("content-type"));
+      if (ct) return ct;
+    }
+  } catch {
+    // ignore probe errors
+  }
+  return null;
+}
+
+function isM3u8ContentType(contentType: string | null): boolean {
+  return contentType === "application/x-mpegurl" || contentType === "application/vnd.apple.mpegurl";
+}
+
+function joinM3u8Url(baseUrl: string, line: string): string {
+  try {
+    return new URL(line, baseUrl).toString();
+  } catch {
+    return line;
+  }
+}
+
+async function resolveM3u8ToMp4(playlistUrl: string): Promise<string | null> {
+  const res = await fetchWithTimeout(playlistUrl, {
+    method: "GET",
+    redirect: "follow",
+    headers: { Accept: "application/vnd.apple.mpegurl,text/plain,*/*" },
+    cache: "no-store",
+  });
+  if (!res.ok) return null;
+
+  const text = await res.text();
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith("#"));
+
+  const directMp4 = lines.find((line) => /\.mp4(?:$|\?)/i.test(line));
+  if (directMp4) {
+    return joinM3u8Url(playlistUrl, directMp4);
+  }
+
+  const childPlaylist = lines.find((line) => /\.m3u8(?:$|\?)/i.test(line));
+  if (childPlaylist) {
+    const nested = joinM3u8Url(playlistUrl, childPlaylist);
+    const nestedRes = await fetchWithTimeout(nested, {
+      method: "GET",
+      redirect: "follow",
+      headers: { Accept: "application/vnd.apple.mpegurl,text/plain,*/*" },
+      cache: "no-store",
+    });
+    if (!nestedRes.ok) return null;
+    const nestedText = await nestedRes.text();
+    const nestedLines = nestedText
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0 && !line.startsWith("#"));
+    const nestedMp4 = nestedLines.find((line) => /\.mp4(?:$|\?)/i.test(line));
+    if (nestedMp4) {
+      return joinM3u8Url(nested, nestedMp4);
+    }
+  }
+
+  return null;
+}
+
+async function normalizeTwitterMediaUrl(statusId: string, mediaUrl: string): Promise<string | null> {
+  if (!isM3u8ByUrl(mediaUrl)) {
+    const contentType = await probeContentType(mediaUrl);
+    if (!isM3u8ContentType(contentType)) return mediaUrl;
+  }
+
+  const resolvedFromPlaylist = await resolveM3u8ToMp4(mediaUrl);
+  if (resolvedFromPlaylist) {
+    return resolvedFromPlaylist;
+  }
+
+  const directUrl = `https://d.fxtwitter.com/i/status/${statusId}`;
+  try {
+    const directRes = await fetchWithTimeout(directUrl, { method: "HEAD", redirect: "follow" });
+    if (directRes.ok && /\.mp4(?:$|\?)/i.test(directRes.url)) {
+      return directRes.url;
+    }
+  } catch {
+    // ignore direct fallback errors
+  }
+
+  return null;
 }
 
 /**
@@ -70,7 +212,7 @@ async function resolveTwitterUrl(input: string): Promise<string> {
   if (!isTwitterShortHost(host)) return normalized;
 
   try {
-    const response = await fetch(normalized, {
+    const response = await fetchWithTimeout(normalized, {
       method: "HEAD",
       redirect: "follow",
       headers: {
@@ -101,7 +243,7 @@ function findMeta(html: string, key: string): string | null {
 }
 
 async function scrapeFixer(url: string): Promise<TwitterMedia[]> {
-  const response = await fetch(url, {
+  const response = await fetchWithTimeout(url, {
     headers: {
       "User-Agent": "TelegramBot (like TwitterBot)",
       Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -156,11 +298,11 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
   }
 
   const startTime = Date.now();
-  console.log(`[Twitter] Starting stabilized extraction for ID: ${statusId}`);
+  logTwitterEvent("extract_start", { statusId });
   let sawBotChallenge = false;
 
   if (!isProviderCoolingDown("fx-api")) try {
-    const apiRes = await fetch(`https://api.fxtwitter.com/i/status/${statusId}`, { cache: "no-store" });
+    const apiRes = await fetchWithTimeout(`https://api.fxtwitter.com/i/status/${statusId}`, { cache: "no-store" });
 
     if (apiRes.status === 403 || apiRes.status === 429) {
       sawBotChallenge = true;
@@ -174,14 +316,44 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
     if (apiRes.ok) {
       const data = await apiRes.json() as FXTwitterResponse;
       if (data.tweet?.media?.all?.length) {
-        console.log(`[Twitter] Success via API path (${Date.now() - startTime}ms)`);
-        return data.tweet.media.all.map((media) => ({
-          type: media.type === "video" || media.type === "gif" ? "video" : "image",
-          url: media.url,
-          downloadUrl: buildProxyDownloadUrl(media.url),
-          thumbUrl: media.thumbnail_url || undefined,
-          sourcePath: "api",
+        const normalizedMedia: Array<TwitterMedia | null> = await Promise.all(data.tweet.media.all.map(async (media): Promise<TwitterMedia | null> => {
+          const mappedType = media.type === "video" || media.type === "gif" ? "video" : "image";
+          if (mappedType !== "video") {
+            return {
+              type: "image" as const,
+              url: media.url,
+              downloadUrl: buildProxyDownloadUrl(media.url),
+              thumbUrl: media.thumbnail_url || undefined,
+              sourcePath: "api" as const,
+            };
+          }
+          const normalizedUrl = await normalizeTwitterMediaUrl(statusId, media.url);
+          if (!normalizedUrl) {
+            logTwitterEvent("candidate_dropped", {
+              statusId,
+              reason: "m3u8_unresolved",
+              candidateUrl: media.url,
+            });
+            return null;
+          }
+          return {
+            type: "video" as const,
+            url: normalizedUrl,
+            downloadUrl: buildProxyDownloadUrl(normalizedUrl),
+            thumbUrl: media.thumbnail_url || undefined,
+            sourcePath: "api" as const,
+          };
         }));
+        const filtered = normalizedMedia.filter((item): item is TwitterMedia => item !== null);
+        if (filtered.length > 0) {
+          logTwitterEvent("extract_success", {
+            statusId,
+            sourcePath: "api",
+            durationMs: Date.now() - startTime,
+            mediaCount: filtered.length,
+          });
+          return filtered;
+        }
       }
 
       const errorText = data.error?.toLowerCase() || "";
@@ -198,12 +370,16 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
       throw error;
     }
     if (errorMessage === "BOT_CHALLENGED") sawBotChallenge = true;
-    console.error("[Twitter] API path failed:", errorMessage);
+    logTwitterEvent("provider_failed", {
+      statusId,
+      provider: "fx-api",
+      error: errorMessage,
+    });
   }
 
   if (!isProviderCoolingDown("fx-direct")) try {
     const directUrl = `https://d.fxtwitter.com/i/status/${statusId}`;
-    const directRes = await fetch(directUrl, { method: "HEAD", redirect: "follow" });
+    const directRes = await fetchWithTimeout(directUrl, { method: "HEAD", redirect: "follow" });
 
     if (directRes.status === 403 || directRes.status === 429) {
       sawBotChallenge = true;
@@ -215,7 +391,12 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
     }
 
     if (directRes.ok && (directRes.url.includes("twimg.com") || directRes.url.includes("video.twimg.com") || directRes.url.includes("pbs.twimg.com"))) {
-      console.log(`[Twitter] Success via Direct path (${Date.now() - startTime}ms)`);
+      logTwitterEvent("extract_success", {
+        statusId,
+        sourcePath: "direct",
+        durationMs: Date.now() - startTime,
+        mediaCount: 1,
+      });
       return [{ type: "video", url: directRes.url, downloadUrl: buildProxyDownloadUrl(directRes.url), sourcePath: "direct" }];
     }
   } catch (error: unknown) {
@@ -224,7 +405,11 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
       throw error;
     }
     if (errorMessage === "BOT_CHALLENGED") sawBotChallenge = true;
-    console.error("[Twitter] Direct path failed:", errorMessage);
+    logTwitterEvent("provider_failed", {
+      statusId,
+      provider: "fx-direct",
+      error: errorMessage,
+    });
   }
 
   const candidates = [
@@ -240,12 +425,22 @@ export async function extractTwitter(sourceUrl: string): Promise<TwitterMedia[]>
     try {
       const media = await scrapeFixer(candidate);
       if (media.length > 0) {
-        console.log(`[Twitter] Success via Fixer path (${candidate}) (${Date.now() - startTime}ms)`);
+        logTwitterEvent("extract_success", {
+          statusId,
+          sourcePath: "fixer",
+          provider: candidate,
+          durationMs: Date.now() - startTime,
+          mediaCount: media.length,
+        });
         return media;
       }
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
-      console.warn(`[Twitter] Fixer candidate ${candidate} failed:`, errorMessage);
+      logTwitterEvent("provider_failed", {
+        statusId,
+        provider: candidate,
+        error: errorMessage,
+      });
       if (errorMessage === "BOT_CHALLENGED") {
         sawBotChallenge = true;
         markProviderBlocked(providerKey);
