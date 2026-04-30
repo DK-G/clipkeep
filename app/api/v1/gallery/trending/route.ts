@@ -23,10 +23,13 @@ export async function GET(request: Request) {
     const db = await getDb();
     const startDate = getStartDate(range, 7);
 
+    // LEFT JOIN so jobs with no job_stats entries (e.g. newly created or bot-missed)
+    // still appear, ranked by period stats first then by lifetime access_count.
     const { results } = await db.prepare(
-      `SELECT j.id, j.platform, j.source_url, j.thumbnail_url, s.total_access as access_count, j.created_at
+      `SELECT j.id, j.platform, j.source_url, j.thumbnail_url,
+              COALESCE(s.total_access, j.access_count, 0) as access_count, j.created_at
        FROM extractor_jobs j
-       JOIN (
+       LEFT JOIN (
          SELECT job_id, SUM(count) as total_access
          FROM job_stats
          WHERE date >= ?
@@ -36,7 +39,7 @@ export async function GET(request: Request) {
          AND j.status = 'completed'
          AND j.is_public = 1
          AND j.thumbnail_url IS NOT NULL
-       ORDER BY s.total_access DESC, j.created_at DESC
+       ORDER BY COALESCE(s.total_access, 0) DESC, j.access_count DESC, j.created_at DESC
        LIMIT ? OFFSET ?`
     ).bind(...[
       startDate,
