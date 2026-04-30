@@ -18,6 +18,225 @@ function nowIso(): string {
   return new Date().toISOString();
 }
 
+type ExtractErrorCode =
+  | "AUTH"
+  | "FETCH"
+  | "PARSE"
+  | "DOWNLOAD"
+  | "TRANSCODE"
+  | "TIMEOUT"
+  | "RATE_LIMIT"
+  | "UNKNOWN";
+
+type CircuitState = {
+  failures: number[];
+  blockedUntil: number;
+};
+
+const CIRCUIT_WINDOW_MS = 2 * 60 * 1000;
+const CIRCUIT_BLOCK_MS = 60 * 1000;
+const CIRCUIT_FAILURE_THRESHOLD = 5;
+const circuitByPlatform = new Map<Platform, CircuitState>();
+
+function logExtractEvent(event: string, payload: Record<string, unknown>): void {
+  console.log(JSON.stringify({
+    service: "extractor",
+    event,
+    timestamp: nowIso(),
+    ...payload,
+  }));
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function getCircuitState(platform: Platform): CircuitState {
+  const existing = circuitByPlatform.get(platform);
+  if (existing) return existing;
+  const created: CircuitState = { failures: [], blockedUntil: 0 };
+  circuitByPlatform.set(platform, created);
+  return created;
+}
+
+function isCircuitOpen(platform: Platform): boolean {
+  const state = getCircuitState(platform);
+  if (state.blockedUntil <= Date.now()) {
+    state.blockedUntil = 0;
+    return false;
+  }
+  return true;
+}
+
+function registerCircuitFailure(platform: Platform): void {
+  const now = Date.now();
+  const state = getCircuitState(platform);
+  state.failures = state.failures.filter((ts) => now - ts <= CIRCUIT_WINDOW_MS);
+  state.failures.push(now);
+
+  if (state.failures.length >= CIRCUIT_FAILURE_THRESHOLD) {
+    state.blockedUntil = now + CIRCUIT_BLOCK_MS;
+    logExtractEvent("extract_circuit_opened", {
+      platform,
+      failure_window_ms: CIRCUIT_WINDOW_MS,
+      threshold: CIRCUIT_FAILURE_THRESHOLD,
+      blocked_until: new Date(state.blockedUntil).toISOString(),
+    });
+  }
+}
+
+function registerCircuitSuccess(platform: Platform): void {
+  const state = getCircuitState(platform);
+  if (state.failures.length > 0 || state.blockedUntil > 0) {
+    state.failures = [];
+    state.blockedUntil = 0;
+    logExtractEvent("extract_circuit_reset", { platform });
+  }
+}
+
+async function evaluatePlatformQualityGate(platform: Platform): Promise<void> {
+  const db = await getDb();
+  const dayAgoIso = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const rows = await db.prepare(
+    `SELECT status
+     FROM extractor_jobs
+     WHERE platform = ?
+       AND status IN ('completed', 'failed')
+       AND updated_at >= ?
+     ORDER BY updated_at DESC
+     LIMIT 20`
+  ).bind(platform, dayAgoIso).all<{ status: "completed" | "failed" }>();
+
+  const recent = rows.results ?? [];
+  if (recent.length < 10) return;
+
+  const successCount = recent.filter((row) => row.status === "completed").length;
+  const successRate = successCount / recent.length;
+  if (successRate < 0.65) {
+    logExtractEvent("quality_gate_alert", {
+      platform,
+      sample_size: recent.length,
+      success_rate: Number(successRate.toFixed(3)),
+      threshold: 0.65,
+      window: "24h",
+    });
+  }
+}
+
+function classifyExtractionError(err: unknown): { code: ExtractErrorCode; retryable: boolean; message: string } {
+  const message = err instanceof Error ? err.message : String(err);
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("timeout") || normalized.includes("aborted")) return { code: "TIMEOUT", retryable: true, message };
+  if (normalized.includes("rate limit") || normalized.includes("rate_limited")) return { code: "RATE_LIMIT", retryable: true, message };
+  if (normalized.includes("bot_challenged") || normalized.includes("anti_bot")) return { code: "AUTH", retryable: true, message };
+  if (normalized.includes("parse") || normalized.includes("json")) return { code: "PARSE", retryable: false, message };
+  if (normalized.includes("download") || normalized.includes("expired")) return { code: "DOWNLOAD", retryable: true, message };
+  if (normalized.includes("fetch failed") || normalized.includes("network")) return { code: "FETCH", retryable: true, message };
+
+  return { code: "UNKNOWN", retryable: false, message };
+}
+
+async function runExtraction(platform: Platform, sourceUrl: string): Promise<ExtractionMedia[]> {
+  if (platform === "telegram") {
+    return await extractTelegram(sourceUrl) as ExtractionMedia[];
+  }
+  if (platform === "twitter") {
+    return await extractTwitter(sourceUrl) as ExtractionMedia[];
+  }
+  if (platform === "tiktok") {
+    return await extractTikTok(sourceUrl) as ExtractionMedia[];
+  }
+  if (platform === "reddit") {
+    const results = await extractReddit(sourceUrl);
+    return results.length > 0 ? results : await extractWithBrowser(sourceUrl);
+  }
+  if (platform === "pinterest") {
+    const results = await extractPinterest(sourceUrl);
+    return results.length > 0 ? results : await extractWithBrowser(sourceUrl);
+  }
+  if (platform === "bluesky") {
+    const results = await extractBluesky(sourceUrl);
+    return results.length > 0 ? results : await extractWithBrowser(sourceUrl);
+  }
+  if (platform === "lemon8") {
+    const results = await extractLemon8(sourceUrl);
+    return results.length > 0 ? results : await extractWithBrowser(sourceUrl);
+  }
+  if (platform === "bilibili") {
+    const results = await extractBilibili(sourceUrl);
+    if (results.length > 0) return results;
+    return (await extractWithBrowser(sourceUrl)).filter((item) => item.type === "video");
+  }
+  if (platform === "discord") {
+    const results = await extractDiscord(sourceUrl);
+    return results.length > 0 ? results : await extractWithBrowser(sourceUrl);
+  }
+  if (platform === "threads") {
+    const results = await extractThreads(sourceUrl);
+    return results.length > 0 ? results : await extractWithBrowser(sourceUrl);
+  }
+  if (platform === "facebook") {
+    const results = await extractFacebook(sourceUrl) as ExtractionMedia[];
+    return results.length > 0 ? results : await extractWithBrowser(sourceUrl);
+  }
+  return [];
+}
+
+async function runExtractionWithRetry(platform: Platform, sourceUrl: string, jobId: string): Promise<ExtractionMedia[]> {
+  if (isCircuitOpen(platform)) {
+    throw new Error("UPSTREAM_TEMPORARY_FAILURE");
+  }
+  const maxAttempts = 3;
+  const timeoutMs = 25000;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const started = Date.now();
+    let timer: NodeJS.Timeout | undefined;
+    try {
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error("Extraction timed out after 25 seconds")), timeoutMs);
+      });
+      const results = await Promise.race([runExtraction(platform, sourceUrl), timeoutPromise]);
+      logExtractEvent("extract_attempt", {
+        job_id: jobId,
+        platform,
+        attempt,
+        max_attempts: maxAttempts,
+        timeout_ms: timeoutMs,
+        duration_ms: Date.now() - started,
+        result: "success",
+        media_count: results.length,
+      });
+      registerCircuitSuccess(platform);
+      return results;
+    } catch (err: unknown) {
+      registerCircuitFailure(platform);
+      const classified = classifyExtractionError(err);
+      const shouldRetry = attempt < maxAttempts && classified.retryable;
+      const backoffMs = shouldRetry ? Math.min(500 * (2 ** (attempt - 1)), 2000) : 0;
+      logExtractEvent("extract_attempt", {
+        job_id: jobId,
+        platform,
+        attempt,
+        max_attempts: maxAttempts,
+        timeout_ms: timeoutMs,
+        duration_ms: Date.now() - started,
+        result: "failed",
+        error_code: classified.code,
+        error_message: classified.message,
+        retryable: classified.retryable,
+        backoff_ms: backoffMs,
+      });
+      if (!shouldRetry) throw err;
+      await sleep(backoffMs);
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  }
+
+  return [];
+}
+
 function normalizeUrl(url: string, platform: Platform): string {
   try {
     const u = new URL(url.trim());
@@ -104,6 +323,34 @@ async function saveJobToDb(job: ExtractJob, locale: string = "en"): Promise<void
     job.updatedAt,
     locale
   ).run();
+}
+
+/**
+ * Atomically inserts a new queued job using INSERT OR IGNORE.
+ * Returns true if this caller won the race and owns the extraction,
+ * false if another concurrent request already inserted the same job.
+ */
+async function tryClaimJob(job: ExtractJob, locale: string = "en"): Promise<boolean> {
+  const db = await getDb();
+  const resultPayload = JSON.stringify({ media: [], warnings: [] });
+  const isPublic = job.platform === "telegram" ? 0 : 1;
+
+  const result = await db.prepare(
+    `INSERT OR IGNORE INTO extractor_jobs
+       (id, platform, source_url, status, progress, result_payload, thumbnail_url, is_public, created_at, updated_at, locale)
+     VALUES (?, ?, ?, 'queued', 0, ?, NULL, ?, ?, ?, ?)`
+  ).bind(
+    job.id,
+    job.platform,
+    job.sourceUrl,
+    resultPayload,
+    isPublic,
+    job.createdAt,
+    job.updatedAt,
+    locale,
+  ).run();
+
+  return (result.meta.rows_written ?? 0) > 0;
 }
 
 function mapExtractionError(errorMsg: string): string {
@@ -203,9 +450,35 @@ export async function createJob(
       console.log(`[Store] Cache hit (Failed) for ${id}`);
       return existingJob;
     }
+
+    // Extraction already running — do not restart it.
+    if (existingJob.status === "queued" || existingJob.status === "processing") {
+      console.log(`[Store] Extraction already in progress for ${id} [status=${existingJob.status}]`);
+      return existingJob;
+    }
   }
 
-  await saveJobToDb(job, locale);
+  if (existingJob && options?.forceRefresh) {
+    // Avoid restarting an extraction that is already in-flight.
+    if (existingJob.status === "queued" || existingJob.status === "processing") {
+      console.log(`[Store] Force refresh skipped: extraction already in progress for ${id} [status=${existingJob.status}]`);
+      return existingJob;
+    }
+
+    // Requeue existing deterministic job id and start a fresh extraction pass.
+    await saveJobToDb(job, locale);
+  } else {
+    // Atomically claim the job slot. If another concurrent request beat us to it,
+    // return their job instead of starting a duplicate extraction.
+    const claimed = await tryClaimJob(job, locale);
+    if (!claimed) {
+      const concurrent = await getJob(id);
+      if (concurrent) {
+        console.log(`[Store] Concurrent claim detected for ${id}, deferring to existing job`);
+        return concurrent;
+      }
+    }
+  }
 
   const cloudflare = await getCloudflareContext();
   if (cloudflare && cloudflare.ctx && cloudflare.ctx.waitUntil) {
@@ -213,52 +486,13 @@ export async function createJob(
       const processingJob = { ...job, status: "processing" as const, progress: 10, updatedAt: nowIso() };
 
       try {
-        console.log(`[Store] Starting extraction for ${id} (${platform})`);
-        await saveJobToDb(processingJob);
-
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error("Extraction timed out after 25 seconds")), 25000);
+        logExtractEvent("extract_start", {
+          job_id: id,
+          platform,
+          source_url: sourceUrl,
         });
-
-        let results: ExtractionMedia[] = [];
-
-        await Promise.race([
-          (async () => {
-            if (platform === "telegram") {
-              results = await extractTelegram(sourceUrl) as ExtractionMedia[];
-            } else if (platform === "twitter") {
-              results = await extractTwitter(sourceUrl) as ExtractionMedia[];            } else if (platform === "tiktok") {
-              results = await extractTikTok(sourceUrl) as ExtractionMedia[];
-            } else if (platform === "reddit") {
-              results = await extractReddit(sourceUrl);
-              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
-            } else if (platform === "pinterest") {
-              results = await extractPinterest(sourceUrl);
-              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
-            } else if (platform === "bluesky") {
-              results = await extractBluesky(sourceUrl);
-              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
-            } else if (platform === "lemon8") {
-              results = await extractLemon8(sourceUrl);
-              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
-            } else if (platform === "bilibili") {
-              results = await extractBilibili(sourceUrl);
-              if (results.length === 0) {
-                results = (await extractWithBrowser(sourceUrl)).filter((item) => item.type === "video");
-              }
-            } else if (platform === "discord") {
-              results = await extractDiscord(sourceUrl);
-              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
-            } else if (platform === "threads") {
-              results = await extractThreads(sourceUrl);
-              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
-            } else if (platform === "facebook") {
-              results = await extractFacebook(sourceUrl) as ExtractionMedia[];
-              if (results.length === 0) results = await extractWithBrowser(sourceUrl);
-            }
-          })(),
-          timeoutPromise,
-        ]);
+        await saveJobToDb(processingJob);
+        const results = await runExtractionWithRetry(platform, sourceUrl, id);
 
         console.log(`[Store] Extraction results for ${id}: ${results.length} items`);
 
@@ -286,6 +520,14 @@ export async function createJob(
             updatedAt: nowIso(),
           };
           await saveJobToDb(completed);
+          await evaluatePlatformQualityGate(platform);
+          logExtractEvent("extract_done", {
+            job_id: id,
+            platform,
+            job_result: "success",
+            downloaded_files: completed.media.length,
+            output_formats: [...new Set(completed.media.map((item) => item.type))],
+          });
         } else {
           // Keep previously completed media available if refresh fails.
           if (existingJob?.status === "completed" && existingJob.media.length > 0) {
@@ -300,6 +542,13 @@ export async function createJob(
               status: "failed",
               warnings: ["Media could not be found. The post might be private, deleted, or the URL format is unsupported."],
               updatedAt: nowIso(),
+            });
+            await evaluatePlatformQualityGate(platform);
+            logExtractEvent("extract_done", {
+              job_id: id,
+              platform,
+              job_result: "failed",
+              failure_point: "media_not_found",
             });
           }
         }
@@ -332,6 +581,15 @@ export async function createJob(
             status: "failed",
             warnings: [userMessage],
             updatedAt: nowIso(),
+          });
+          await evaluatePlatformQualityGate(platform);
+          const classified = classifyExtractionError(error);
+          logExtractEvent("extract_done", {
+            job_id: id,
+            platform,
+            job_result: "failed",
+            failure_point: classified.code,
+            error_message: classified.message,
           });
         }
       }

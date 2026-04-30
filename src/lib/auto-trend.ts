@@ -192,7 +192,7 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
   };
 }
 
-async function waitForCompletion(jobId: string, attempts = 20, intervalMs = 1500) {
+async function waitForCompletion(jobId: string, attempts = 20, intervalMs = 2000) {
   for (let attempt = 0; attempt < attempts; attempt++) {
     await new Promise((resolve) => setTimeout(resolve, intervalMs));
     const latest = await getJob(jobId);
@@ -263,15 +263,24 @@ export async function runAutoTrendUpdate() {
         return;
       }
 
+      // Pre-register in job_stats immediately so the job surfaces in trending
+      // as soon as extraction completes, even if waitForCompletion times out.
+      try {
+        await recordAccess(job.id, "ja");
+        console.log(`[AutoTrend] Pre-registered job_stats entry for: ${job.id}`);
+      } catch (e) {
+        console.warn(`[AutoTrend] Pre-register recordAccess failed for ${job.id}:`, e);
+      }
+
       try {
         const completed = await waitForCompletion(job.id);
         if (completed?.status === "completed") {
           await recordAccess(job.id, "ja");
-          console.log(`[AutoTrend] Successfully queued and lightly boosted: ${job.id}`);
+          console.log(`[AutoTrend] Successfully queued and boosted: ${job.id}`);
         } else if (completed?.status === "failed") {
-          console.warn(`[AutoTrend] Job failed before visibility bump: ${job.id}`);
+          console.warn(`[AutoTrend] Job failed before completion bump: ${job.id}`);
         } else {
-          console.warn(`[AutoTrend] Job did not complete in time for visibility bump: ${job.id}`);
+          console.warn(`[AutoTrend] Job did not complete in time for completion bump: ${job.id}`);
         }
       } catch (e) {
         console.error(`[AutoTrend] Extraction follow-up error for ${item.url}:`, e);
