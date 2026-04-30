@@ -62,11 +62,6 @@ export const metadata: Metadata = {
       { url: '/apple-icon.png', type: 'image/png' },
     ],
   },
-  verification: {
-    other: {
-      'google-adsense-account': 'ca-pub-5877075056686035',
-    },
-  },
 };
 
 export const viewport: Viewport = {
@@ -104,13 +99,6 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        <Script
-          id="adsense-init"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5877075056686035"
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-          data-cfasync="false"
-        />
         <Suspense fallback={null}>
           <LocaleUpdater />
         </Suspense>
@@ -133,15 +121,16 @@ export default function RootLayout({
         {children}
         <Footer />
 
-        <Script 
-          id="monetag-in-page-push" 
+        {/* Monetag In-Page Push — non-intrusive banner format, no popunder */}
+        <Script
+          id="monetag-in-page-push"
           src="https://nap5k.com/tag.min.js"
           data-zone="10760541"
           strategy="afterInteractive"
           data-cfasync="false"
         />
-        <Script 
-          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" 
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
           strategy="afterInteractive"
         />
       </body>

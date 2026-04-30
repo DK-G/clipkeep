@@ -1,11 +1,9 @@
-﻿'use client';
+'use client';
 
 /**
- * Adsterra Native Banners.
- * All Adsterra ads have been disabled per user request to ensure site stability.
- * Direct script injection was confirmed to cause unauthorized redirects.
+ * @deprecated Adsterra native banner — removed due to redirect issues.
+ * Use MonteagBanner instead.
  */
 export function AdsterraNative() {
   return null;
 }
-
