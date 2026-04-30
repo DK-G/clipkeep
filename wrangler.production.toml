@@ -23,7 +23,7 @@ RATE_LIMIT_DO_ENDPOINT = "https://clipkeep-rate-limit.liminality-3110.workers.de
 RATE_LIMIT_LIMIT = "30"
 RATE_LIMIT_WINDOW_MS = "60000"
 NEXT_PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAACvkzgdZA8KipZXs"
-CRON_SECRET = "clipkeep_auto_trend_2026_06be00c8"
+# CRON_SECRET is stored as a Cloudflare Secret (not a plain var)
 
 [triggers]
 crons = ["0 * * * *"] # Every hour
