@@ -112,6 +112,7 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
   const { recordPlatformUse } = usePlatformUsage();
   const [data, setData] = useState<ExtractionResult | null>(initialData);
   const [error, setError] = useState<string | null>(null);
+  const [solutionSlug, setSolutionSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(
     !initialData || (initialData?.status !== "completed" && initialData?.status !== "failed")
   );
@@ -212,8 +213,24 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
               });
             }
             if (json.data.status === "failed") {
-              setError(t.errorTitle);
-              trackEvent("error_displayed", { platform: json.data.platform, jobId, error: "job_failed" });
+              // Use the first warning as the user-facing message; fall back to generic title
+              const userMsg = json.data.warnings?.[0] || t.errorTitle;
+              setError(userMsg);
+              // Suggest a relevant solution page based on platform and error content
+              const msgLower = userMsg.toLowerCase();
+              const platform = json.data.platform;
+              if (msgLower.includes("private") || msgLower.includes("restricted") || msgLower.includes("login")) {
+                setSolutionSlug(platform === "twitter" ? "twitter-video-downloader-not-working" : platform === "telegram" ? "telegram-video-downloader-not-working" : "extractor-temporary-limited");
+              } else if (msgLower.includes("bot") || msgLower.includes("anti") || msgLower.includes("temporarily") || msgLower.includes("limited") || msgLower.includes("upstream")) {
+                setSolutionSlug("extractor-temporary-limited");
+              } else if (platform === "twitter") {
+                setSolutionSlug("twitter-video-downloader-not-working");
+              } else if (platform === "telegram") {
+                setSolutionSlug("telegram-video-downloader-not-working");
+              } else {
+                setSolutionSlug("extractor-temporary-limited");
+              }
+              trackEvent("error_displayed", { platform: json.data.platform, jobId, error: "job_failed", message: userMsg });
             }
           } else {
             pollInterval = setTimeout(fetchResult, 2000);
@@ -292,7 +309,18 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
         <div className="text-center mb-12">
           <div className="w-20 h-20 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl transform -rotate-6 shadow-lg">!</div>
           <h2 className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{t.errorTitle}</h2>
+          {/* Show the actual error reason from warnings, not just the title */}
           <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-md mx-auto">{error}</p>
+          {solutionSlug && (
+            <p className="mt-4">
+              <a
+                href={`/solution/${solutionSlug}${locale !== 'en' ? `?locale=${locale}` : ''}`}
+                className="inline-block text-blue-600 dark:text-blue-400 font-semibold underline underline-offset-2 hover:text-blue-800 dark:hover:text-blue-300"
+              >
+                {t.needHelp} {t.checkSolution} →
+              </a>
+            </p>
+          )}
         </div>
         <div className="max-w-2xl mx-auto">
           <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl">
@@ -517,4 +545,3 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
     </>
   );
 }
-

@@ -99,12 +99,10 @@ export async function POST(request: Request) {
 
   const rawUrl = body.url?.trim() ?? "";
   let url = rawUrl;
-  const demoUrl = 'https://www.tiktok.com/@tiktok/video/7460937381265411370';
-  const isDemo = rawUrl === demoUrl;
 
   // Verify Turnstile Token
   const token = body.turnstileToken;
-  if (!token && !isDemo) {
+  if (!token) {
     return failure({
       status: 403,
       requestId,
@@ -118,7 +116,7 @@ export async function POST(request: Request) {
 
   if (token) {
     const isHuman = await verifyTurnstileToken(token);
-    if (!isHuman && !isDemo) {
+    if (!isHuman) {
       return failure({
         status: 403,
         requestId,
@@ -172,7 +170,7 @@ export async function POST(request: Request) {
     });
   }
 
-  if (platform === "tiktok" && !isDemo) {
+  if (platform === "tiktok") {
     try {
       url = normalizeTikTokInputUrl(url);
     } catch {
@@ -189,7 +187,7 @@ export async function POST(request: Request) {
     }
   }
 
-  if (platform === "twitter" && !isDemo) {
+  if (platform === "twitter") {
     try {
       url = normalizeTwitterInputUrl(url);
     } catch {
@@ -206,7 +204,7 @@ export async function POST(request: Request) {
     }
   }
 
-  if (platform === "telegram" && !isDemo) {
+  if (platform === "telegram") {
     try {
       url = normalizeTelegramUrl(url);
     } catch {
@@ -223,7 +221,7 @@ export async function POST(request: Request) {
     }
   }
 
-  if (platform === "reddit" && !isDemo) {
+  if (platform === "reddit") {
     try {
       url = normalizeRedditUrl(url);
     } catch {
@@ -240,7 +238,7 @@ export async function POST(request: Request) {
     }
   }
 
-  if (platform === "pinterest" && !isDemo) {
+  if (platform === "pinterest") {
     try {
       url = normalizePinterestUrl(url);
     } catch {
@@ -257,7 +255,7 @@ export async function POST(request: Request) {
     }
   }
 
-  if (platform === "threads" && !isDemo) {
+  if (platform === "threads") {
     try {
       url = normalizeThreadsUrl(url);
     } catch {
@@ -275,21 +273,6 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Force the deterministic Job ID for the demo to ensure consistency across environments
-    const demoJobId = 'job_tiktok_7c1de28c9edb807c';
-    if (isDemo) {
-      return success({
-        status: 202,
-        requestId,
-        locale: body.locale,
-        data: {
-          jobId: demoJobId,
-          status: 'queued',
-          pollAfterMs: 1200,
-        },
-      });
-    }
-
     const job = await createJob(platform, url, body.locale || 'en');
     recordExtractAttempt({ upstreamFailed: false, queueWaitMs: 0 });
 
