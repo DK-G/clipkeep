@@ -137,10 +137,21 @@ const ctaText: Record<
 };
 
 function downloaderPath(platform: GalleryPlatform): string {
-  if (platform === 'twitter') return '/download-twitter-video';
-  if (platform === 'telegram') return '/download-telegram-video';
-  if (platform === 'instagram') return '/download-instagram-video';
-  return '/download-tiktok-video';
+  const map: Partial<Record<GalleryPlatform, string>> = {
+    twitter:   '/download-twitter-video',
+    telegram:  '/download-telegram-video',
+    tiktok:    '/download-tiktok-video',
+    reddit:    '/download-reddit-video',
+    facebook:  '/download-facebook-video',
+    instagram: '/download-instagram-video',
+    pinterest: '/download-pinterest-video',
+    threads:   '/download-threads-video',
+    bluesky:   '/download-bluesky-video',
+    bilibili:  '/download-bilibili-video',
+    discord:   '/download-discord-video',
+    lemon8:    '/download-lemon8-video',
+  };
+  return map[platform] ?? '/';
 }
 
 function oppositeFeed(type: 'trending' | 'latest', platform: GalleryPlatform): string {

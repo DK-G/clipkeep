@@ -3,11 +3,15 @@ import { normalizeLocale } from '@/lib/i18n/ui';
 import { DiscoverySection } from '@/components/discovery-section';
 import { GallerySection } from '@/components/gallery-section';
 import { HistorySection } from '@/components/history-section';
-import { PlatformShortcuts } from '@/components/platform-shortcuts';
 import { ExtractorForm } from '@/components/extractor-form';
 import { TrendingHubSection } from '@/components/trending-hub-section';
 import { SITE_URL } from '@/lib/site-url';
 import Link from 'next/link';
+import {
+  TiktokIcon, TwitterXIcon, TelegramIcon, RedditIcon,
+  FacebookIcon, PinterestIcon, ThreadsIcon, BlueskyIcon,
+  BilibiliIcon, DiscordIcon, Lemon8Icon,
+} from '@/components/platform-icons';
 
 type HomeProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -512,19 +516,52 @@ export default async function HomePage({ searchParams }: HomeProps) {
         <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-4">
           {t.welcome}
         </h1>
-        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed mb-8">
-          {t.subtitle}
+        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed mb-3">
+          Save public social media posts in seconds with one URL.
         </p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-6">
+          Public posts only. If extraction fails, ClipKeep shows the reason and what to try next.
+        </p>
+
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-2 text-xs font-semibold">
+          <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">No login required</span>
+          <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">Public posts only</span>
+          <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">Clear error reasons</span>
+        </div>
+
+        {/* Supported platform icons — signals compatibility at a glance */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+          {[
+            { id: 'tiktok',    Icon: TiktokIcon,    bg: 'bg-slate-950' },
+            { id: 'twitter',   Icon: TwitterXIcon,  bg: 'bg-slate-900' },
+            { id: 'telegram',  Icon: TelegramIcon,  bg: 'bg-blue-400'  },
+            { id: 'reddit',    Icon: RedditIcon,    bg: 'bg-orange-600'},
+            { id: 'facebook',  Icon: FacebookIcon,  bg: 'bg-blue-600'  },
+            { id: 'pinterest', Icon: PinterestIcon, bg: 'bg-red-600'   },
+            { id: 'threads',   Icon: ThreadsIcon,   bg: 'bg-slate-900' },
+            { id: 'bluesky',   Icon: BlueskyIcon,   bg: 'bg-blue-400'  },
+            { id: 'bilibili',  Icon: BilibiliIcon,  bg: 'bg-pink-400'  },
+            { id: 'discord',   Icon: DiscordIcon,   bg: 'bg-indigo-500'},
+            { id: 'lemon8',    Icon: Lemon8Icon,    bg: 'bg-yellow-400'},
+          ].map(({ id, Icon, bg }) => (
+            <Link
+              key={id}
+              href={`/download-${id}-video${locale !== 'en' ? `?locale=${locale}` : ''}`}
+              title={id.charAt(0).toUpperCase() + id.slice(1)}
+              className="group"
+            >
+              <div className={`w-9 h-9 flex items-center justify-center rounded-xl ${bg} shadow-sm opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-200`}>
+                <Icon className="w-5 h-5" />
+              </div>
+            </Link>
+          ))}
+        </div>
 
         <div className="mb-12 dynamic-glow relative z-10 w-full max-w-3xl mx-auto">
           <ExtractorForm locale={locale} hero={true} />
         </div>
 
         <HistorySection locale={locale} />
-      </div>
-
-      <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-20 max-w-4xl mx-auto">
-        <PlatformShortcuts locale={locale} labels={t} />
       </div>
 
       <TrendingHubSection 
@@ -566,6 +603,4 @@ export default async function HomePage({ searchParams }: HomeProps) {
     </main>
   );
 }
-
-
 

@@ -88,6 +88,12 @@ interface ExtractorFormProps {
   hero?: boolean;
 }
 
+type SavedPreset = {
+  sourceUrl: string;
+  platform?: Platform;
+  savedAt?: string;
+};
+
 export function ExtractorForm({ platform: initialPlatform = 'telegram', locale = 'en', onStatusChange, hero = false }: ExtractorFormProps) {
   const router = useRouter();
   const [sourceUrl, setSourceUrl] = useState('');
@@ -98,6 +104,7 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
   const widgetIdRef = useRef<string | null>(null);
 
   const [localStatus, setLocalStatus] = useState<string | null>(null);
+  const [savedPreset, setSavedPreset] = useState<SavedPreset | null>(null);
 
   const l = homeText[locale];
 
@@ -111,9 +118,9 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
 
   const activePlatform = detectedPlatform || initialPlatform;
 
-  const handleUrlChange = (url: string) => {
+  const handleUrlChange = useCallback((url: string) => {
     setSourceUrl(url);
-    if (localStatus) setLocalStatus(null);
+    setLocalStatus(null);
     if (!url) {
       setDetectedPlatform(null);
       return;
@@ -125,7 +132,13 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
         return;
       }
     }
-  };
+  }, []);
+
+  const applySavedPreset = useCallback(() => {
+    if (!savedPreset) return;
+    setSourceUrl(savedPreset.sourceUrl);
+    handleUrlChange(savedPreset.sourceUrl);
+  }, [savedPreset, handleUrlChange]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -158,6 +171,18 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
       }
     };
   }, [updateStatus, hero]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("clipkeep:last-preset");
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as SavedPreset;
+      if (!parsed?.sourceUrl) return;
+      setSavedPreset(parsed);
+    } catch {
+      // ignore parse/storage errors
+    }
+  }, []);
 
   const canSubmit = useMemo(() => {
     return !!sourceUrl && !submitting && !!turnstileToken && activePlatform !== 'instagram';
@@ -333,6 +358,16 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
               <span className="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500/10 text-blue-500">▶</span>
               {l.demoButton}
             </button>
+            {savedPreset && (
+              <button
+                type="button"
+                onClick={applySavedPreset}
+                className="text-xs font-bold text-slate-500 hover:text-blue-500 transition-colors flex items-center gap-1.5"
+              >
+                <span className="w-5 h-5 flex items-center justify-center rounded-full bg-slate-500/10 text-slate-500">↺</span>
+                Reuse last URL
+              </button>
+            )}
           </div>
           
           {detectedPlatform === 'instagram' && (

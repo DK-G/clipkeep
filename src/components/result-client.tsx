@@ -235,6 +235,19 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
   }, [jobId, t.errorTitle, data?.status, data?.platform, sessionDownloadCount]);
 
   useEffect(() => {
+    if (!data || data.status !== "completed") return;
+    try {
+      localStorage.setItem("clipkeep:last-preset", JSON.stringify({
+        sourceUrl: data.source_url,
+        platform: data.platform,
+        savedAt: new Date().toISOString(),
+      }));
+    } catch {
+      // ignore localStorage errors
+    }
+  }, [data]);
+
+  useEffect(() => {
     if (data?.status !== "completed" || !jobId) return;
 
     const storageKey = `recorded_${jobId}`;

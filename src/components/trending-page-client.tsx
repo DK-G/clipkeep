@@ -2,12 +2,14 @@
 
 import React, { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { normalizeLocale, homeText, galleryRangeText, type Locale } from '@/lib/i18n/ui';
 import { GalleryPageContent, type GalleryPlatform } from '@/components/gallery-page-content';
 import { PlatformFilter } from '@/components/platform-filter';
 import { TimeRangeFilter, type TimeRange, getTimeRangeLabel } from '@/components/time-range-filter';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { trackEvent } from '@/lib/analytics/gtag';
+import { DOWNLOADER_MAP, DOWNLOADER_CTA } from '@/lib/utils/downloader-map';
 
 const DEFAULT_TRENDING_RANGE: TimeRange = 'week';
 
@@ -17,16 +19,17 @@ export function TrendingPageClient() {
 
   const locale = normalizeLocale(searchParams.get('locale'));
   const t = homeText[locale] || homeText.en;
-  const [platform, setPlatform] = useState<string>('all');
+  const [platform, setPlatform] = useState<'all' | GalleryPlatform>('all');
   const [range, setRange] = useState<TimeRange>(DEFAULT_TRENDING_RANGE);
 
   useEffect(() => {
-    setPlatform(searchParams.get('p') || 'all');
+    const nextPlatform = searchParams.get('p');
+    setPlatform((nextPlatform as GalleryPlatform | null) || 'all');
     const nextRange = searchParams.get('range');
     setRange(nextRange === 'today' || nextRange === 'week' || nextRange === 'month' ? nextRange : DEFAULT_TRENDING_RANGE);
   }, [searchParams]);
 
-  const replaceParams = (nextPlatform: string, nextRange: TimeRange) => {
+  const replaceParams = (nextPlatform: 'all' | GalleryPlatform, nextRange: TimeRange) => {
     const params = new URLSearchParams(searchParams.toString());
     if (nextPlatform === 'all') params.delete('p'); else params.set('p', nextPlatform);
     if (nextRange === DEFAULT_TRENDING_RANGE) params.delete('range'); else params.set('range', nextRange);
@@ -47,15 +50,16 @@ export function TrendingPageClient() {
   };
 
   const handlePlatformChange = (nextPlatform: string) => {
-    setPlatform(nextPlatform);
+    const normalized = (nextPlatform as GalleryPlatform | 'all');
+    setPlatform(normalized);
     trackEvent('discovery_platform_change', {
       discovery_type: 'trending',
       locale,
       previous_platform: platform,
-      selected_platform: nextPlatform,
+      selected_platform: normalized,
       range,
     });
-    replaceParams(nextPlatform, range);
+    replaceParams(normalized, range);
   };
 
   const rangeLabel = getTimeRangeLabel(range, locale as Locale);
@@ -81,9 +85,22 @@ export function TrendingPageClient() {
         <TimeRangeFilter current={range} onChange={handleRangeChange} locale={locale as Locale} />
       </div>
 
-      <div className="mb-8">
+      <div className="mb-6">
         <PlatformFilter current={platform} onChange={handlePlatformChange} locale={locale as Locale} />
       </div>
+
+      {platform !== 'all' && DOWNLOADER_MAP[platform] && (
+        <div className="mb-6">
+          <Link
+            href={`${DOWNLOADER_MAP[platform]}?locale=${locale}`}
+            onClick={() => trackEvent('trending_to_downloader_click', { locale, platform })}
+            className="flex items-center justify-between gap-3 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 px-5 py-3 text-indigo-700 dark:text-indigo-300 font-semibold text-sm hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
+          >
+            <span>{(DOWNLOADER_CTA[locale as Locale] ?? DOWNLOADER_CTA.en)(platform)}</span>
+            <span className="text-indigo-400 dark:text-indigo-500 text-xs font-normal">clipkeep.net</span>
+          </Link>
+        </div>
+      )}
 
       <Suspense fallback={<div className="p-20 text-center text-gray-400">{t.initialMessage}...</div>}>
         <GalleryPageContent platform={platform as GalleryPlatform} locale={locale as Locale} type="trending" range={range} />
