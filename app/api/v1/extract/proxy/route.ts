@@ -22,15 +22,62 @@ const PRIVATE_IPV4_PATTERNS = [
   /^172\.(1[6-9]|2\d|3[0-1])\./,
 ];
 
+// IPv6 loopback, link-local, unique-local, and mapped IPv4-private ranges
+const PRIVATE_IPV6_PATTERNS = [
+  /^\[?::1\]?$/,           // loopback
+  /^\[?fe80:/i,            // link-local
+  /^\[?fc[0-9a-f]{2}:/i,  // unique-local fc00::/7
+  /^\[?fd[0-9a-f]{2}:/i,  // unique-local fd00::/8
+  /^\[?::ffff:127\./i,     // IPv4-mapped loopback
+  /^\[?::ffff:10\./i,      // IPv4-mapped private
+  /^\[?::ffff:192\.168\./i,
+  /^\[?::ffff:172\.(1[6-9]|2\d|3[0-1])\./i,
+];
+
 function isPrivateHost(hostname: string): boolean {
   const host = hostname.toLowerCase();
-  if (host === "localhost" || host === "::1") return true;
-  return PRIVATE_IPV4_PATTERNS.some((pattern) => pattern.test(host));
+  if (host === "localhost") return true;
+  if (PRIVATE_IPV4_PATTERNS.some((p) => p.test(host))) return true;
+  if (PRIVATE_IPV6_PATTERNS.some((p) => p.test(host))) return true;
+  return false;
 }
 
 function isAllowedTarget(url: URL): boolean {
   const host = url.hostname.toLowerCase();
   return ALLOWED_HOSTS.some((allowed) => host === allowed || host.endsWith(`.${allowed}`));
+}
+
+function normalizeContentType(value: string | null): string {
+  return (value || "application/octet-stream").split(";")[0].trim().toLowerCase();
+}
+
+function extensionFromContentType(contentType: string): string {
+  switch (contentType) {
+    case "video/mp4":
+      return "mp4";
+    case "video/webm":
+      return "webm";
+    case "image/jpeg":
+      return "jpg";
+    case "image/png":
+      return "png";
+    case "image/webp":
+      return "webp";
+    case "audio/mpeg":
+      return "mp3";
+    case "audio/mp4":
+      return "m4a";
+    case "application/vnd.apple.mpegurl":
+    case "application/x-mpegurl":
+      return "m3u8";
+    default: {
+      const slashIndex = contentType.indexOf("/");
+      if (slashIndex >= 0 && slashIndex < contentType.length - 1) {
+        return contentType.slice(slashIndex + 1).replace(/[^a-z0-9.+-]/gi, "") || "bin";
+      }
+      return "bin";
+    }
+  }
 }
 
 /**
@@ -85,7 +132,7 @@ export async function GET(req: NextRequest) {
       return new NextResponse(`Upstream error: ${response.status}`, { status: response.status });
     }
 
-    const contentType = response.headers.get("content-type") || "application/octet-stream";
+    const contentType = normalizeContentType(response.headers.get("content-type"));
     const isDownload = searchParams.get("dl") === "1";
 
     const headersConfig: Record<string, string> = {
@@ -95,7 +142,7 @@ export async function GET(req: NextRequest) {
     };
 
     if (isDownload) {
-      const ext = contentType.split("/")[1] || "mp4";
+      const ext = extensionFromContentType(contentType);
       headersConfig["Content-Disposition"] = `attachment; filename="clipkeep_media.${ext}"`;
     }
 
