@@ -396,7 +396,7 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
             </div>
 
             {data.status === 'completed' && (
-              <div className="mt-6 flex items-center gap-3">
+              <div className="mt-6">
                 <ShareButton
                   locale={locale}
                   platform={data.platform}

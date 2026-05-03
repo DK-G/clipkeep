@@ -3,12 +3,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { normalizeLocale, homeText, menuText } from '@/lib/i18n/ui';
+import { normalizeLocale, homeText, menuText, Locale } from '@/lib/i18n/ui';
 import { useHistory } from '@/hooks/use-history';
 import { PlatformIcon } from '@/components/platform-icons';
 import type { Platform } from '@/lib/extract/types';
 
-const ui = {
+const pageText: Record<Locale, { empty: string; emptyBody: string; openAgain: string }> = {
   en: { empty: 'No downloads yet', emptyBody: 'Videos you extract will appear here so you can quickly reopen them.', openAgain: 'Open again' },
   ja: { empty: 'まだダウンロード履歴がありません', emptyBody: '抽出した動画がここに表示され、すぐに再アクセスできます。', openAgain: '再度開く' },
   ar: { empty: 'لا توجد تنزيلات بعد', emptyBody: 'ستظهر هنا مقاطع الفيديو التي تستخرجها لتتمكن من إعادة فتحها بسرعة.', openAgain: 'فتح مرة أخرى' },
@@ -19,7 +19,7 @@ const ui = {
   hi: { empty: 'अभी तक कोई डाउनलोड नहीं', emptyBody: 'आपके द्वारा निकाले गए वीडियो यहाँ दिखेंगे ताकि आप उन्हें जल्दी से फिर से खोल सकें।', openAgain: 'फिर से खोलें' },
   de: { empty: 'Noch keine Downloads', emptyBody: 'Hier erscheinen extrahierte Videos, damit Sie sie schnell erneut öffnen können.', openAgain: 'Erneut öffnen' },
   tr: { empty: 'Henüz indirme yok', emptyBody: 'Çıkardığınız videolar burada görünecek, böylece hızlıca yeniden açabilirsiniz.', openAgain: 'Tekrar aç' },
-} as const;
+};
 
 function formatDate(iso: string, locale: string): string {
   try {
@@ -35,7 +35,7 @@ export function HistoryPageContent() {
   const { history, clearHistory } = useHistory();
   const home = homeText[locale] || homeText.en;
   const menu = menuText[locale] || menuText.en;
-  const t = ui[locale] || ui.en;
+  const t = pageText[locale] || pageText.en;
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-10">

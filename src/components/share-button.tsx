@@ -49,9 +49,7 @@ export function ShareButton({ locale, platform, title }: ShareButtonProps) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       trackEvent('share_copy_link', { platform, locale });
-    } catch {
-      // clipboard not available
-    }
+    } catch {}
   };
 
   return (

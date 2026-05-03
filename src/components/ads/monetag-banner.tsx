@@ -12,11 +12,9 @@ interface MonetaguBannerProps {
 
 export function MonetaguBanner({ zoneId, className = '' }: MonetaguBannerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const injected = useRef(false);
 
   useEffect(() => {
-    if (injected.current || !containerRef.current) return;
-    injected.current = true;
+    if (!containerRef.current) return;
 
     const script = document.createElement('script');
     script.src = 'https://nap5k.com/tag.min.js';
@@ -24,6 +22,8 @@ export function MonetaguBanner({ zoneId, className = '' }: MonetaguBannerProps) 
     script.async = true;
     script.dataset.cfasync = 'false';
     containerRef.current.appendChild(script);
+
+    return () => { script.remove(); };
   }, [zoneId]);
 
   return <div ref={containerRef} className={`overflow-hidden ${className}`} />;
