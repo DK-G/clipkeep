@@ -16,7 +16,7 @@
 - SEO/コンテンツ担当
 
 ## 事前準備（5-10分）
-- GA4: `download_click`, `blog_cta_click`, `gallery_card_click`, `extract_completed`
+- GA4: `extract_submit`, `processing_complete`, `download_actual_start`, `error_displayed`, `blog_cta_click`, `gallery_card_click`, `result_related_click`
 - Search Console: locale別（en/es/ar）の主要クエリ順位・CTR
 - 先週のアクション実施結果
 
@@ -32,9 +32,11 @@
 | Search CTR (en) | | | | |
 | Search CTR (es) | | | | |
 | Search CTR (ar) | | | | |
-| Gallery→Download CTR | | | | |
+| Extract Completion Rate | | | | |
+| Download Start Rate | | | | |
+| Error Rate | | | | |
 | Blog CTA CTR | | | | |
-| CVR (`extract_completed / download_click`) | | | | |
+| CVR (`download_actual_start / extract_submit`) | | | | |
 
 ### 3. 順位監視（主要クエリ Top10）
 | Locale | Query | Landing | Position | Prev Position | Diff | Action |
@@ -68,9 +70,11 @@
 - 優先対応（P1）
   - Search CTR が前週比 -20%以下
   - または CVR が前週比 -15%以下
+  - または Error Rate が前週比 +15%以上
 - 要観察（P2）
   - Search CTR が前週比 -10%〜-20%
   - または 順位が +3 以上悪化
+  - または Extract Completion Rate / Download Start Rate が前週比 -10%以下
 - 維持（P3）
   - 変動軽微、またはデータ量不足
 

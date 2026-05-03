@@ -47,6 +47,23 @@ Optional:
 
 ## Core Metrics
 
+### Daily Scorecard
+
+Use this small scorecard before deciding the day's task.
+
+| Area | Metric | Current event/source | Daily question |
+|---|---|---|---|
+| Acquisition | Organic sessions | GA4 traffic acquisition / Search Console | Is SEO bringing qualified users? |
+| Landing intent | Top landing pages | GA4 pages and screens | Which user intent is active today? |
+| Trust | Submit rate | `extract_submit / downloader page views` | Do visitors trust the page enough to try? |
+| Reliability | Completion rate | `processing_complete / extract_submit` | Is the extractor path working? |
+| Value moment | Download start rate | `download_actual_start / processing_complete` | Do completed results become real downloads? |
+| Friction | Error rate | `error_displayed / extract_submit` | Which platform or URL pattern is failing? |
+| Content handoff | Blog CTA rate | `blog_cta_click / blog page views` | Do articles route readers to the tool? |
+| Retention | Next-action rate | `cta_next_click`, `result_related_click` | Do users continue after one result? |
+
+If screenshots are used, record the numerator and denominator manually. If API exports are available, use `docs/analytics/README.md`.
+
 ### Discovery
 
 | Metric | Source | Why it matters |
@@ -66,6 +83,8 @@ Optional:
 | Processing completed | `processing_complete` | Extractor and upstream path worked |
 | Download started | `download_actual_start` | User reached the real value moment |
 | Error displayed | `error_displayed` | User hit a platform or UX failure |
+
+Historical docs may mention older event names such as `download_click`, `similar_click`, `result_view`, or `extract_completed`. Treat the current implementation names above as the daily source of truth unless the code changes.
 
 ### Content
 
@@ -111,6 +130,14 @@ Patterns:
 - Solution page has views but no retry path: missing "try again" or platform-specific route.
 - Result pages have views but low `download_actual_start`: download UI or guard friction.
 
+When Search Console data is available, join GA4 and Search Console mentally by landing page:
+
+```text
+Search query -> landing page -> page views -> extract_submit -> download_actual_start
+```
+
+This is more useful than optimizing pages only by page views, because it separates "traffic that reads" from "traffic that tries the tool".
+
 ### 3. Funnel Drop Check
 
 Compare event counts:
@@ -129,6 +156,17 @@ Rules of thumb:
 - `error_displayed` rising faster than submissions: platform failure, URL validation gap, or copy mismatch.
 - `demo_click` high but real submit low: homepage trust is weak or form requires clearer examples.
 
+For deeper weekly analysis, build the same sequence as a GA4 funnel exploration:
+
+```text
+page_view on downloader/blog/solution
+-> extract_submit or blog_cta_click
+-> processing_complete
+-> download_actual_start
+```
+
+Use an open funnel when users can enter at result/solution pages. Use a closed funnel only when testing a specific guided flow.
+
 ### 4. Acquisition Check
 
 Look at Traffic acquisition.
@@ -146,6 +184,12 @@ Actions:
 - Direct growing: improve retention/history/reuse flows.
 - Referral growing: identify referring page/community and create a matching solution page.
 - Paid/unknown spam showing up: do not optimize around it until validated.
+
+Search Console linkage:
+
+- impressions high + CTR low: metadata/snippet problem
+- clicks high + submit low: landing-page trust or intent mismatch
+- average position improving + no GA4 movement: page may rank for low-intent queries
 
 ### 5. Locale / Country Check
 
@@ -278,6 +322,15 @@ Choose one task per day using this priority:
 
 Do not pick more than three changes per day. Small changes are easier to attribute.
 
+Each daily task must include:
+
+- one target page or platform
+- one metric to improve
+- one expected direction
+- one recheck date, usually 7 days later
+
+If the proposed task cannot be connected to a metric, move it to weekly planning instead of daily execution.
+
 ## Change Types
 
 ### Safe Daily Changes
@@ -358,6 +411,15 @@ Minimum screenshot pack:
 3. Traffic acquisition
 4. Events
 5. Countries or languages
+
+Optional Search Console pack:
+
+1. Queries, last 7 days compared with previous 7 days
+2. Pages, same period
+3. Query filtered to the top growing landing page
+4. Page filtered to the top downloader or solution page
+
+When Search Console screenshots are available, choose improvements from query/page pairs, not from queries alone.
 
 ## Automation Trigger
 

@@ -6,8 +6,12 @@
 実装済みイベントを GA4 側でキーイベント化し、週次で改善判断できる状態にする。
 
 対象イベント（実装済み）:
-- `download_click`
-- `similar_click`
+- `extract_submit`
+- `processing_complete`
+- `download_actual_start`
+- `error_displayed`
+- `blog_cta_click`
+- `result_related_click`
 - `gallery_card_click`
 
 ## 前提
@@ -19,11 +23,16 @@
 1. GA4 の対象プロパティを開く
 2. 左メニュー `管理` -> `データ表示` -> `イベント`
 3. 下記イベントが一覧に出るまで本番で実際に操作する
-   - `download_click`
-   - `similar_click`
+   - `extract_submit`
+   - `processing_complete`
+   - `download_actual_start`
+   - `error_displayed`
+   - `blog_cta_click`
+   - `result_related_click`
    - `gallery_card_click`
-4. 各イベントのトグルで `キーイベントとしてマーク` を有効化
-5. 左メニュー `レポート` -> `リアルタイム` でイベント発火を確認
+4. まず `extract_submit`, `processing_complete`, `download_actual_start` を `キーイベントとしてマーク` する
+5. `error_displayed`, `blog_cta_click`, `result_related_click`, `gallery_card_click` は日次/週次分析イベントとして監視する
+6. 左メニュー `レポート` -> `リアルタイム` でイベント発火を確認
 
 ## 推奨カスタム定義
 `管理` -> `データ表示` -> `カスタム定義` で追加:
@@ -31,6 +40,7 @@
 イベントスコープ（推奨）:
 - `platform`
 - `locale`
+- `jobId`
 - `job_id`
 - `gallery_section`
 - `media_type`
@@ -43,13 +53,16 @@
 - 追加後、標準レポートに反映されるまで最大24時間程度かかる
 
 ## 確認シナリオ（本番操作）
-1. `/twitter-trending-videos?locale=en` を開く
-2. カードを1回クリック（`gallery_card_click`）
-3. 結果ページで DL ボタンを1回クリック（`download_click`）
-4. Similar Videos のカードを1回クリック（`similar_click`）
-5. リアルタイムレポートで3イベントが観測されることを確認
+1. `/download-twitter-video?locale=en` または `/download-tiktok-video?locale=en` を開く
+2. 公開投稿URLを貼り付けて抽出する（`extract_submit`）
+3. 結果が返ることを確認する（`processing_complete`）
+4. 結果ページでダウンロードを開始する（`download_actual_start`）
+5. 関連/最新リンクをクリックする（`result_related_click`）
+6. ブログ記事からCTAをクリックする（`blog_cta_click`）
+7. リアルタイムレポートでイベントが観測されることを確認
 
 ## 運用ルール
 - デプロイ後は `npm run check:release` 実行
-- 週次レビュー時に 3イベントの件数と比率を確認
-- 2週連続で `similar_click / download_click` 比率が低下したらUI導線改善を起票
+- 日次レビューでは `extract_submit`, `processing_complete`, `download_actual_start`, `error_displayed` を確認
+- 週次レビューでは `processing_complete / extract_submit` と `download_actual_start / processing_complete` を確認
+- 2週連続で `download_actual_start / processing_complete` が低下したら結果ページまたはダウンロード導線改善を起票
