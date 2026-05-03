@@ -23,6 +23,43 @@ interface ResultClientProps {
   initialData: ExtractionResult | null;
 }
 
+function getFailureGuidance(message: string, platform?: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("private") || normalized.includes("login") || normalized.includes("cookie")) {
+    return {
+      title: "Private or login-required content",
+      body: "ClipKeep only works with public links. It will not ask for passwords, cookies, or account access to bypass a platform restriction.",
+    };
+  }
+
+  if (normalized.includes("region") || normalized.includes("restricted")) {
+    return {
+      title: "Restricted by platform availability",
+      body: "The post may be limited by region, age, account settings, or platform policy. Try opening the same link in a private browser window to confirm it is public.",
+    };
+  }
+
+  if (normalized.includes("deleted") || normalized.includes("removed") || normalized.includes("not found")) {
+    return {
+      title: "Post unavailable",
+      body: "The source post may have been deleted or made unavailable. ClipKeep cannot recover media that the platform no longer serves publicly.",
+    };
+  }
+
+  if (normalized.includes("rate") || normalized.includes("too many") || normalized.includes("limited") || normalized.includes("temporarily")) {
+    return {
+      title: "Temporarily limited",
+      body: "The platform or ClipKeep may be rate limiting requests. Wait a few minutes, then retry the same public link.",
+    };
+  }
+
+  return {
+    title: `${platform ? platform.charAt(0).toUpperCase() + platform.slice(1) : "Platform"} extraction failed`,
+    body: "Check that the link opens without logging in and points directly to a public post with media.",
+  };
+}
+
 const relatedSectionText: Record<Locale, {
   trendingBody: (platform: string) => string;
   trendingLink: string;
@@ -282,7 +319,10 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
             platform: data.platform,
             thumbnail_url: data.thumbnail_url || "",
             title: data.title || "",
-            created_at: new Date().toISOString()
+            created_at: new Date().toISOString(),
+            source_url: data.source_url || "",
+            author_name: data.author_name || "",
+            author_handle: data.author_handle || "",
           });
         }
       } catch (err) {
@@ -304,6 +344,7 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
   }
 
   if (error) {
+    const guidance = getFailureGuidance(error, data?.platform);
     return (
       <div className="max-w-4xl mx-auto py-12 px-6">
         <div className="text-center mb-12">
@@ -311,6 +352,10 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
           <h2 className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{t.errorTitle}</h2>
           {/* Show the actual error reason from warnings, not just the title */}
           <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-md mx-auto">{error}</p>
+          <div className="mt-6 mx-auto max-w-xl rounded-2xl border border-amber-200/80 bg-amber-50 p-5 text-left text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-100">
+            <h3 className="text-sm font-black uppercase tracking-widest">{guidance.title}</h3>
+            <p className="mt-2 text-sm leading-6">{guidance.body}</p>
+          </div>
           {solutionSlug && (
             <p className="mt-4">
               <a

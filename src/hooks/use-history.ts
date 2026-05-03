@@ -8,6 +8,9 @@ export interface HistoryItem {
   thumbnail_url: string;
   title: string;
   created_at: string;
+  source_url?: string;
+  author_name?: string;
+  author_handle?: string;
 }
 
 const STORAGE_KEY = 'clipkeep_history';

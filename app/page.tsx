@@ -527,6 +527,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
           <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">No login required</span>
           <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">Public posts only</span>
           <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">Clear error reasons</span>
+          <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">No cookies or account access</span>
         </div>
 
         {/* Supported platform icons — signals compatibility at a glance */}
@@ -563,6 +564,28 @@ export default async function HomePage({ searchParams }: HomeProps) {
 
         <HistorySection locale={locale} />
       </div>
+
+      <section className="mb-16 grid gap-4 md:grid-cols-3">
+        {[
+          {
+            title: "Personal archive first",
+            body: "ClipKeep is built for saving public media links for personal reference, research, and offline access.",
+          },
+          {
+            title: "No private access",
+            body: "We do not ask for passwords, browser cookies, or logged-in sessions. Private and login-required posts stay unsupported.",
+          },
+          {
+            title: "Know why it failed",
+            body: "When a platform blocks a request, the result page explains the likely reason and points to the safest next step.",
+          },
+        ].map((item) => (
+          <div key={item.title} className="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white dark:bg-slate-950/40 p-5 text-left shadow-sm">
+            <h2 className="text-sm font-black uppercase tracking-widest text-slate-900 dark:text-slate-100">{item.title}</h2>
+            <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">{item.body}</p>
+          </div>
+        ))}
+      </section>
 
       <TrendingHubSection 
         locale={locale} 
@@ -603,4 +626,3 @@ export default async function HomePage({ searchParams }: HomeProps) {
     </main>
   );
 }
-
