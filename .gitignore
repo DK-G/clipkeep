@@ -26,6 +26,11 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.secrets/
+
+# local analytics exports
+docs/analytics/*.csv
+docs/analytics/*.json
 
 # vercel
 .vercel
