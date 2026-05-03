@@ -8,6 +8,24 @@ npm run analytics:ga4
 
 Generated `.json` and `.csv` files are ignored by Git because they can contain business analytics data.
 
+## Growth review kickoff
+
+Use this command when starting a ClipKeep improvement review:
+
+```powershell
+npm run growth:review
+```
+
+This only refreshes GA4 exports. It does not generate or apply improvement proposals automatically.
+
+After it finishes, review:
+
+- `docs/analytics/latest-ga4-summary.json`
+- `docs/analytics/latest-ga4-pages.csv`
+- `docs/analytics/latest-ga4-events.csv`
+- `docs/analytics/latest-ga4-acquisition.csv`
+- `docs/ops/daily_growth_optimization_playbook.md`
+
 ## Recommended: OAuth local login
 
 Use this when reading GA4 as your own Google account.

@@ -17,11 +17,17 @@ ClipKeep is an SNS media extraction hub focused on SEO/AISO discoverability and 
 ## Current Phase
 - 立ち上げ段階 / 改善継続中
 
+## Growth Review Routine
+- Run `npm run growth:review` to refresh local GA4 exports before reviewing improvement work.
+- Review the exported files in `docs/analytics/` with `docs/ops/daily_growth_optimization_playbook.md`.
+- Keep improvement decisions manual; the command only collects data for the review.
+
 ## Core Docs
 - `docs/INDEX.md`: 全ドキュメント索引
 - `docs/core/plan.md`: Master specification
 - `docs/core/RoadMap.md`: Phase roadmap and epics
 - `docs/api/api_contract.md`: API behavior contract (current)
 - `docs/ops/feed_behavior.md`: Trend/Recent feed rules
+- `docs/analytics/README.md`: GA4 export and growth review entrypoint
 - `task.md`: Executable task backlog (daily)
 - `memo.md`: Notes and investigations
