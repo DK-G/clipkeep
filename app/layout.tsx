@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { HeaderShell } from '@/components/header-shell';
 import { Footer } from '@/components/footer';
 import { LocaleUpdater } from '@/components/locale-updater';
+import { AnalyticsPageView } from '@/components/analytics-page-view';
 import { SITE_URL } from '@/lib/site-url';
 
 import './globals.css';
@@ -107,8 +108,11 @@ export default function RootLayout({
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" data-cfasync="false" />
             <Script id="ga-init" strategy="afterInteractive" data-cfasync="false">
-              {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} window.gtag = gtag; gtag('js', new Date()); gtag('config', '${gaId}');`}
+              {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} window.gtag = gtag; gtag('js', new Date()); gtag('config', '${gaId}', { send_page_view: false });`}
             </Script>
+            <Suspense fallback={null}>
+              <AnalyticsPageView gaId={gaId} />
+            </Suspense>
           </>
         )}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
@@ -137,4 +141,3 @@ export default function RootLayout({
     </html>
   );
 }
-
