@@ -18,6 +18,7 @@
         "check:prod": "powershell -ExecutionPolicy Bypass -File .\\scripts\\prod_release_check.ps1",
         "check:release": "powershell -ExecutionPolicy Bypass -File .\\scripts\\release_gate.ps1",
         "analytics:ga4": "node scripts/fetch-ga4-report.mjs",
+        "analytics:ga4:login": "node scripts/ga4-oauth-login.mjs",
         "cf:deploy:prod": "npm run clean:build-artifacts && npm run cf:build && wrangler deploy -c wrangler.production.toml",
         "cf:deploy:test": "npm run clean:build-artifacts && npm run cf:build && wrangler deploy -c wrangler.test.toml",
         "deploy:prod": "npm run cf:deploy:prod",

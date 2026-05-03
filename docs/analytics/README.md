@@ -8,13 +8,40 @@ npm run analytics:ga4
 
 Generated `.json` and `.csv` files are ignored by Git because they can contain business analytics data.
 
-Required local environment file:
+## Recommended: OAuth local login
+
+Use this when reading GA4 as your own Google account.
+
+1. Download the Google Cloud OAuth desktop client JSON.
+2. Save it as:
+
+```text
+.secrets/ga4-oauth-client.json
+```
+
+3. Run the one-time login:
+
+```powershell
+npm run analytics:ga4:login
+```
+
+4. After browser consent completes, export reports:
+
+```powershell
+npm run analytics:ga4
+```
+
+The login command writes `.secrets/ga4-oauth-token.json`. The `.secrets/` directory is ignored by Git.
+
+## Optional: service account fallback
+
+Local environment file:
 
 ```text
 .env.analytics.local
 ```
 
-Required variables:
+Variables:
 
 ```env
 GA4_PROPERTY_ID=528376605

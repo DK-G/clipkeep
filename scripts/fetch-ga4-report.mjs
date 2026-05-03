@@ -6,6 +6,9 @@ import process from "node:process";
 const ROOT = process.cwd();
 const ENV_PATH = path.join(ROOT, ".env.analytics.local");
 const OUT_DIR = path.join(ROOT, "docs", "analytics");
+const SECRETS_DIR = path.join(ROOT, ".secrets");
+const OAUTH_CLIENT_PATH = path.join(SECRETS_DIR, "ga4-oauth-client.json");
+const OAUTH_TOKEN_PATH = path.join(SECRETS_DIR, "ga4-oauth-token.json");
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
 
@@ -52,11 +55,19 @@ async function loadConfig() {
   try {
     await fs.access(credentialsPath);
   } catch {
-    const secretsDir = path.join(ROOT, ".secrets");
-    const candidates = (await fs.readdir(secretsDir).catch(() => []))
+    const candidates = (await fs.readdir(SECRETS_DIR).catch(() => []))
       .filter((name) => name.toLowerCase().endsWith(".json"));
-    if (candidates.length === 1) {
-      credentialsPath = path.join(secretsDir, candidates[0]);
+    for (const candidate of candidates) {
+      const candidatePath = path.join(SECRETS_DIR, candidate);
+      try {
+        const parsed = JSON.parse(await fs.readFile(candidatePath, "utf8"));
+        if (parsed.type === "service_account" && parsed.client_email && parsed.private_key) {
+          credentialsPath = candidatePath;
+          break;
+        }
+      } catch {
+        // Ignore non-JSON or unrelated secret files.
+      }
     }
   }
 
@@ -66,8 +77,59 @@ async function loadConfig() {
   };
 }
 
-async function getAccessToken(credentialsPath) {
+async function readJsonIfExists(filePath) {
+  try {
+    return JSON.parse(await fs.readFile(filePath, "utf8"));
+  } catch (error) {
+    if (error.code === "ENOENT") return null;
+    throw error;
+  }
+}
+
+function getOAuthClientConfig(raw) {
+  const config = raw?.installed || raw?.web;
+  if (!config?.client_id || !config?.client_secret) {
+    throw new Error(".secrets/ga4-oauth-client.json must contain installed.client_id and installed.client_secret.");
+  }
+  return config;
+}
+
+async function getOAuthAccessToken() {
+  const [clientRaw, token] = await Promise.all([
+    readJsonIfExists(OAUTH_CLIENT_PATH),
+    readJsonIfExists(OAUTH_TOKEN_PATH),
+  ]);
+
+  if (!clientRaw || !token) return null;
+  if (!token.refresh_token) {
+    throw new Error("OAuth token is missing refresh_token. Re-run npm run analytics:ga4:login.");
+  }
+
+  const client = getOAuthClientConfig(clientRaw);
+  const response = await fetch(TOKEN_URL, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: client.client_id,
+      client_secret: client.client_secret,
+      refresh_token: token.refresh_token,
+      grant_type: "refresh_token",
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`OAuth refresh failed: ${response.status} ${await response.text()}`);
+  }
+
+  const payload = await response.json();
+  return payload.access_token;
+}
+
+async function getServiceAccountAccessToken(credentialsPath) {
   const credentials = JSON.parse(await fs.readFile(credentialsPath, "utf8"));
+  if (!credentials.client_email || !credentials.private_key) {
+    throw new Error(`Service account credentials are invalid: ${credentialsPath}`);
+  }
   const now = Math.floor(Date.now() / 1000);
   const header = { alg: "RS256", typ: "JWT" };
   const claim = {
@@ -143,7 +205,7 @@ function toCsv(headers, rows) {
 
 async function main() {
   const { propertyId, credentialsPath } = await loadConfig();
-  const accessToken = await getAccessToken(credentialsPath);
+  const accessToken = (await getOAuthAccessToken()) || (await getServiceAccountAccessToken(credentialsPath));
   await fs.mkdir(OUT_DIR, { recursive: true });
 
   const baseDateRanges = [
@@ -156,7 +218,6 @@ async function main() {
     propertyId,
     body: {
       dateRanges: baseDateRanges,
-      dimensions: [{ name: "dateRange" }],
       metrics: [
         { name: "activeUsers" },
         { name: "sessions" },
@@ -207,8 +268,8 @@ async function main() {
     propertyId,
     generatedAt: new Date().toISOString(),
     ranges: Object.fromEntries(
-      (summaryReport.rows || []).map((row) => [
-        dimensionValue(row, 0),
+      (summaryReport.rows || []).map((row, index) => [
+        dimensionValue(row, 0) || baseDateRanges[index]?.name || `range${index + 1}`,
         {
           activeUsers: metricValue(row, 0),
           sessions: metricValue(row, 1),
