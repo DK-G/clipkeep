@@ -1,15 +1,9 @@
-﻿/**
+import type { ExtractionMedia } from "./types";
+import { normalizeMediaUrl } from "./m3u8";
+
+/**
  * Utility for extracting TikTok media without watermarks using public APIs/Fixers.
  */
-
-export type TikTokMedia = {
-  type: "video" | "image";
-  url: string;
-  downloadUrl?: string;
-  thumbUrl?: string;
-  title?: string;
-  sourcePath?: string;
-};
 
 interface TikWMResponse {
   code: number;
@@ -91,7 +85,7 @@ async function resolveTikTokUrl(url: string): Promise<string> {
 /**
  * Extracts TikTok media using public APIs/fixers.
  */
-export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
+export async function extractTikTok(sourceUrl: string): Promise<ExtractionMedia[]> {
   const startTime = Date.now();
   let sawAntiBot = false;
 
@@ -133,15 +127,18 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
             // Priority 2: Video
             const videoUrl = data.data.play || data.data.wmplay;
             if (videoUrl) {
-              console.log(`[TikTok] Success via TikWM Video (${Date.now() - startTime}ms)`);
-              return [{
-                type: "video",
-                url: videoUrl,
-                downloadUrl: buildProxyDownloadUrl(videoUrl),
-                thumbUrl: data.data.cover,
-                title: data.data.title,
-                sourcePath: "tikwm-video",
-              }];
+              const normalizedUrl = await normalizeMediaUrl(videoUrl);
+              if (normalizedUrl) {
+                console.log(`[TikTok] Success via TikWM Video (${Date.now() - startTime}ms)`);
+                return [{
+                  type: "video",
+                  url: normalizedUrl,
+                  downloadUrl: buildProxyDownloadUrl(normalizedUrl),
+                  thumbUrl: data.data.cover,
+                  title: data.data.title,
+                  sourcePath: "tikwm-video",
+                }];
+              }
             }
           }
 
@@ -159,8 +156,6 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
         }
       }
     }
-
-    // vxtiktok fallback removed (service is down)
 
     // Lovetik fallback (good for slideshows/carousels)
     try {
@@ -199,15 +194,18 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
 
           const video = links.find((l) => l.t === "Video" || l.t === "Video(Watermark)");
           if (video?.a) {
-            console.log(`[TikTok] Success via Lovetik Video (${Date.now() - startTime}ms)`);
-            return [{
-              type: "video",
-              url: video.a,
-              downloadUrl: buildProxyDownloadUrl(video.a),
-              thumbUrl: data.cover,
-              title: data.desc,
-              sourcePath: "lovetik-video",
-            }];
+            const normalizedUrl = await normalizeMediaUrl(video.a);
+            if (normalizedUrl) {
+              console.log(`[TikTok] Success via Lovetik Video (${Date.now() - startTime}ms)`);
+              return [{
+                type: "video",
+                url: normalizedUrl,
+                downloadUrl: buildProxyDownloadUrl(normalizedUrl),
+                thumbUrl: data.cover,
+                title: data.desc,
+                sourcePath: "lovetik-video",
+              }];
+            }
           }
         }
       }
@@ -235,17 +233,20 @@ export async function extractTikTok(sourceUrl: string): Promise<TikTokMedia[]> {
           || html.match(/<meta[^>]+property="og:video"[^>]+content="([^"]+)"/)?.[1];
 
         if (videoUrl) {
-          const thumbUrl = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/)?.[1];
-          const title = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/)?.[1];
-          console.log(`[TikTok] Success via kktiktok OG meta (${Date.now() - startTime}ms)`);
-          return [{
-            type: "video",
-            url: videoUrl,
-            downloadUrl: buildProxyDownloadUrl(videoUrl),
-            thumbUrl,
-            title,
-            sourcePath: "kktiktok-og",
-          }];
+          const normalizedUrl = await normalizeMediaUrl(videoUrl);
+          if (normalizedUrl) {
+            const thumbUrl = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/)?.[1];
+            const title = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/)?.[1];
+            console.log(`[TikTok] Success via kktiktok OG meta (${Date.now() - startTime}ms)`);
+            return [{
+              type: "video",
+              url: normalizedUrl,
+              downloadUrl: buildProxyDownloadUrl(normalizedUrl),
+              thumbUrl,
+              title,
+              sourcePath: "kktiktok-og",
+            }];
+          }
         }
       }
     } catch (error: unknown) {

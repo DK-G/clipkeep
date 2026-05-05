@@ -1,4 +1,5 @@
 import type { ExtractionMedia } from "./types";
+import { normalizeMediaUrl } from "./m3u8";
 
 const PUBLIC_API_BASE = "https://public.api.bsky.app/xrpc";
 
@@ -139,14 +140,17 @@ async function extractViaPublicApi(handle: string, postId: string): Promise<Extr
   collectUrls(payload, found);
 
   if (found.videoUrl) {
-    return [{
-      type: "video",
-      url: found.videoUrl,
-      downloadUrl: buildProxyDownloadUrl(found.videoUrl),
-      thumbUrl: found.thumbUrl || found.imageUrl,
-      title: found.title,
-      sourcePath: "bluesky-public-api-video",
-    }];
+    const normalizedUrl = await normalizeMediaUrl(found.videoUrl);
+    if (normalizedUrl) {
+      return [{
+        type: "video",
+        url: normalizedUrl,
+        downloadUrl: buildProxyDownloadUrl(normalizedUrl),
+        thumbUrl: found.thumbUrl || found.imageUrl,
+        title: found.title,
+        sourcePath: "bluesky-public-api-video",
+      }];
+    }
   }
 
   if (found.imageUrl) {
@@ -205,14 +209,17 @@ async function extractViaHtml(normalizedUrl: string): Promise<ExtractionMedia[]>
   const title = extractMeta("og:title");
 
   if (videoUrl) {
-    return [{
-      type: "video",
-      url: videoUrl,
-      downloadUrl: buildProxyDownloadUrl(videoUrl),
-      thumbUrl,
-      title,
-      sourcePath: "bluesky-og-video",
-    }];
+    const normalizedUrl = await normalizeMediaUrl(videoUrl);
+    if (normalizedUrl) {
+      return [{
+        type: "video",
+        url: normalizedUrl,
+        downloadUrl: buildProxyDownloadUrl(normalizedUrl),
+        thumbUrl,
+        title,
+        sourcePath: "bluesky-og-video",
+      }];
+    }
   }
 
   if (thumbUrl) {

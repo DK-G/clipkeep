@@ -126,13 +126,23 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
       return;
     }
 
+    let found = false;
     for (const [p, regex] of Object.entries(platformPatterns)) {
       if (regex.test(url)) {
         setDetectedPlatform(p as DetectedPlatform);
-        return;
+        found = true;
+        break;
       }
     }
+
+    if (!found) {
+      setDetectedPlatform(null);
+    }
   }, []);
+
+  const onInputFocus = useCallback(() => {
+    trackEvent('extract_form_focus', { platform: activePlatform, locale });
+  }, [activePlatform, locale]);
 
   const applySavedPreset = useCallback(() => {
     if (!savedPreset) return;
@@ -225,6 +235,10 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
             trackEvent('extract_submit_degraded', { platform: activePlatform, locale });
             return;
           }
+
+          if (payload.error.code === 'INVALID_URL') {
+            trackEvent('extract_invalid_url', { platform: activePlatform, locale, url: sourceUrl });
+          }
           
           updateStatus(payload.error.message || l.invalidRequest);
           return;
@@ -311,6 +325,7 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
               required
               value={sourceUrl}
               onChange={(e) => handleUrlChange(e.target.value)}
+              onFocus={onInputFocus}
               placeholder={
                 activePlatform === 'telegram' ? 'https://t.me/...' : 
                 activePlatform === 'twitter' ? 'https://x.com/...' :

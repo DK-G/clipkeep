@@ -157,6 +157,8 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
   const [guardActive, setGuardActive] = useState(false);
   const [pendingDownload, setPendingDownload] = useState<{ url: string; index: number } | null>(null);
   const [sessionDownloadCount, setSessionDownloadCount] = useState(0);
+  const [isMagicMoment, setIsMagicMoment] = useState(false);
+  const [showDiscoveryBridge, setShowDiscoveryBridge] = useState(false);
   const guardStartRef = useRef<number | null>(null);
 
   const getGuardDuration = (count: number) => {
@@ -213,6 +215,11 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
         same_origin: isSameOrigin
       });
       trackEvent("max_session_depth", { depth: newCount });
+      
+      // Trigger Discovery Bridge after first download
+      if (newCount === 1) {
+        setTimeout(() => setShowDiscoveryBridge(true), 1500);
+      }
     }
   };
 
@@ -248,6 +255,9 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
                 jobId,
                 total_session_downloads: sessionDownloadCount
               });
+              // Check for Magic Moment on completion
+              const isMagic = localStorage.getItem("clipkeep:magic_moment_reached") === "true";
+              setIsMagicMoment(isMagic);
             }
             if (json.data.status === "failed") {
               // Use the first warning as the user-facing message; fall back to generic title
@@ -442,18 +452,20 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
                 <h1 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-slate-50 tracking-tight flex items-center gap-3">
                   {data.status === 'completed' ? (
                     <span className="flex items-center gap-2">
-                      ✔ {t.successSubtitle}
+                      <span className="animate-celebrate inline-block">✨</span> {t.successSubtitle}
                     </span>
                   ) : t.loadingTitle}
                   {data.status === 'completed' && (
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white animate-in zoom-in duration-500">
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white animate-celebrate shadow-lg shadow-blue-600/30">
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     </span>
                   )}
                 </h1>
-                <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">{t.downloadDescription}</p>
+                <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">
+                  {isMagicMoment ? (locale === 'ja' ? 'あなたはプロのClipKeeperです！' : 'You are now a Pro ClipKeeper!') : t.downloadDescription}
+                </p>
               </div>
               
               {data.status === 'completed' && (
@@ -466,7 +478,7 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
             <div className="space-y-4">
               {data.variants.map((variant, idx) => (
                 <DownloadItem 
-                  key={idx}
+                  key={idx} 
                   variant={variant}
                   variantIndex={idx}
                   locale={locale}
@@ -477,6 +489,65 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
                 />
               ))}
             </div>
+
+            {/* Viral Loop Share Section - Redesigned for Impact */}
+            <div className={`mt-10 p-1px rounded-3xl bg-gradient-to-br ${isMagicMoment ? 'from-amber-400 via-orange-500 to-rose-600' : 'from-blue-500 via-indigo-600 to-purple-700'} shadow-xl shadow-blue-500/20 group`}>
+              <div className="bg-white dark:bg-slate-900 rounded-[23px] p-6 sm:p-8">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="text-center md:text-left">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest mb-3">
+                      {isMagicMoment ? '🏆 Achievement Unlocked' : '🚀 Spread the Mission'}
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 mb-2 leading-tight">
+                      {isMagicMoment 
+                        ? (locale === 'ja' ? '3回連続成功！友だちに教える' : '3-Streak Success! Share the power')
+                        : (locale === 'ja' ? 'アーカイブ成功をみんなにシェア' : 'Success! Tell the world')}
+                    </h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md">
+                      {locale === 'ja' 
+                        ? 'ClipKeepは完全無料のツールです。あなたのシェアが、さらなる改善の原動力になります！' 
+                        : 'ClipKeep is 100% free. Your support keeps the servers running and the features coming!'}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => {
+                        const text = locale === 'ja' 
+                          ? `ClipKeepで動画をアーカイブしました！爆速で保存できて便利。 ${isMagicMoment ? '3回連続成功！' : ''} #ClipKeep` 
+                          : `Just archived this clip with @ClipKeepApp! Super fast extraction. ${isMagicMoment ? '3-Streak!' : ''} #ClipKeep`;
+                        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.origin)}`;
+                        window.open(url, '_blank');
+                        trackEvent("share_click", { platform: 'twitter', locale, magic_moment: isMagicMoment });
+                      }}
+                      className="w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-950 text-white hover:scale-110 transition-transform shadow-lg group-hover:shadow-blue-500/20"
+                    >
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </button>
+                    <button
+                      onClick={() => {
+                        const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.origin)}`;
+                        window.open(url, '_blank');
+                        trackEvent("share_click", { platform: 'facebook', locale, magic_moment: isMagicMoment });
+                      }}
+                      className="w-14 h-14 flex items-center justify-center rounded-2xl bg-blue-600 text-white hover:scale-110 transition-transform shadow-lg"
+                    >
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(window.location.origin);
+                        alert(locale === 'ja' ? 'URLをコピーしました！' : 'Link copied to clipboard!');
+                        trackEvent("share_click", { platform: 'copy', locale, magic_moment: isMagicMoment });
+                      }}
+                      className="w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:scale-110 transition-transform shadow-inner"
+                    >
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
 
             <div className="mt-12 p-8 bg-blue-600 rounded-3xl text-white shadow-xl shadow-blue-600/20 relative overflow-hidden group">
                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
@@ -542,10 +613,24 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
                 </p>
               </div>
               <div className="flex flex-wrap gap-3 text-sm font-semibold">
-                <Link href={`/trending/${data.platform}?locale=${locale}`} onClick={() => trackEvent("result_related_click", { locale, platform: data.platform, job_id: jobId, destination_type: "trending", section: "similar" })} className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                <Link 
+                  href={`/trending/${data.platform}?locale=${locale}`} 
+                  onClick={() => {
+                    trackEvent("result_related_click", { locale, platform: data.platform, job_id: jobId, destination_type: "trending", section: "similar" });
+                    trackEvent("discovery_intent_from_result", { platform: data.platform, type: "trending" });
+                  }} 
+                  className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                >
                   {relatedText.trendingLink}
                 </Link>
-                <Link href={`/latest/${data.platform}?locale=${locale}`} onClick={() => trackEvent("result_related_click", { locale, platform: data.platform, job_id: jobId, destination_type: "latest", section: "similar" })} className="text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100">
+                <Link 
+                  href={`/latest/${data.platform}?locale=${locale}`} 
+                  onClick={() => {
+                    trackEvent("result_related_click", { locale, platform: data.platform, job_id: jobId, destination_type: "latest", section: "similar" });
+                    trackEvent("discovery_intent_from_result", { platform: data.platform, type: "latest" });
+                  }} 
+                  className="text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+                >
                   {relatedText.latestLink}
                 </Link>
               </div>
@@ -570,7 +655,14 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
                   {relatedText.latestBody(data.platform)}
                 </p>
               </div>
-              <Link href={`/latest/${data.platform}?locale=${locale}`} onClick={() => trackEvent("result_related_click", { locale, platform: data.platform, job_id: jobId, destination_type: "latest", section: "latest" })} className="text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+              <Link 
+                href={`/latest/${data.platform}?locale=${locale}`} 
+                onClick={() => {
+                  trackEvent("result_related_click", { locale, platform: data.platform, job_id: jobId, destination_type: "latest", section: "latest" });
+                  trackEvent("discovery_intent_from_result", { platform: data.platform, type: "latest" });
+                }} 
+                className="text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              >
                 {relatedText.latestLink}
               </Link>
             </div>
@@ -585,6 +677,38 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
               excludeIds={[jobId]}
             />
           </section>
+        </div>
+      </div>
+
+      {/* Discovery Loop Bridge Snackbar */}
+      <div className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 transform ${showDiscoveryBridge ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}>
+        <div className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border border-white/10 min-w-[320px] sm:min-w-[400px]">
+          <div className="flex-1">
+            <p className="text-sm font-bold">
+              {locale === 'ja' ? `人気の${data.platform}動画もチェック！` : `Check out trending ${data.platform} clips!`}
+            </p>
+            <p className="text-xs opacity-70">
+              {locale === 'ja' ? '他のユーザーが保存した人気の投稿を見よう' : 'See what others are saving right now'}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setShowDiscoveryBridge(false)}
+              className="text-xs font-bold opacity-50 hover:opacity-100 px-2 py-1"
+            >
+              {locale === 'ja' ? '閉じる' : 'Close'}
+            </button>
+            <Link 
+              href={`/trending/${data.platform}?locale=${locale}`}
+              onClick={() => {
+                trackEvent("discovery_bridge_click", { platform: data.platform, locale });
+                setShowDiscoveryBridge(false);
+              }}
+              className="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-black animate-shine"
+            >
+              {locale === 'ja' ? '見る' : 'View'}
+            </Link>
+          </div>
         </div>
       </div>
     </>

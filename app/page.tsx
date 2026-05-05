@@ -180,8 +180,8 @@ const supportedPlatforms = [
 
 const translations: Record<string, Record<string, string>> = {
   en: {
-    welcome: "Welcome to ClipKeep",
-    subtitle: "The all-in-one downloader hub for your favorite platforms.",
+    welcome: "Archive Social Media in Seconds",
+    subtitle: "The premium hub for permanent offline archives. No login, no tracking, just high-quality extraction.",
     weeklyTrending: "Weekly Trending",
     recentDownloads: "Recent Downloads",
     startDownloading: "Start Extracting Now",
@@ -204,8 +204,8 @@ const translations: Record<string, Record<string, string>> = {
     viewAllLatest: "View All Latest"
   },
   ja: {
-    welcome: "ClipKeep へようこそ",
-    subtitle: "お気に入りのプラットフォームに対応したオールインワン保存ハブ。",
+    welcome: "SNSを数秒でアーカイブ",
+    subtitle: "オフライン保存のためのプレミアムハブ。ログイン不要、トラッキングなし、高品質な抽出を実現。",
     weeklyTrending: "週間トレンド",
     recentDownloads: "最近のダウンロード",
     startDownloading: "今すぐ保存を開始",
@@ -510,55 +510,75 @@ export default async function HomePage({ searchParams }: HomeProps) {
   };
 
   return (
-    <main className="max-w-[1400px] mx-auto py-12 px-6">
+    <main className="max-w-[1400px] mx-auto py-12 px-6 relative">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }} />
-      <div className="text-center mb-10">
-        <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-4">
-          {t.welcome}
-        </h1>
-        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed mb-3">
-          Save public social media posts in seconds with one URL.
-        </p>
-        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-6">
-          Public posts only. If extraction fails, ClipKeep shows the reason and what to try next.
-        </p>
+      
+      {/* Premium Background Aesthetics */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 dark:bg-blue-600/10 rounded-full blur-[120px] animate-slow-blob" />
+        <div className="absolute bottom-[10%] right-[-10%] w-[35%] h-[35%] bg-purple-500/10 dark:bg-purple-600/10 rounded-full blur-[120px] animate-slow-blob [animation-delay:2s]" />
+        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] bg-indigo-500/5 dark:bg-indigo-400/5 rounded-full blur-[100px] animate-slow-blob [animation-delay:4s]" />
+      </div>
 
-        <div className="mb-6 flex flex-wrap items-center justify-center gap-2 text-xs font-semibold">
-          <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">No login required</span>
-          <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">Public posts only</span>
-          <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">Clear error reasons</span>
-          <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/60 px-3 py-1 text-slate-700 dark:text-slate-300">No cookies or account access</span>
+      <div className="text-center mb-10 pt-8 sm:pt-16">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50/50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-400 text-xs font-bold mb-6 backdrop-blur-sm">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+          </span>
+          {t.startDownloading || "Ready to Archive"}
         </div>
 
-        {/* Supported platform icons — signals compatibility at a glance */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+        <h1 className="text-5xl sm:text-7xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-6 leading-[1.1]">
+          {t.welcome}
+        </h1>
+        
+        <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed mb-8">
+          {t.subtitle}
+        </p>
+
+        <div className="mb-10 flex flex-wrap items-center justify-center gap-3 text-xs font-medium">
           {[
-            { id: 'tiktok',    Icon: TiktokIcon,    bg: 'bg-slate-950' },
-            { id: 'twitter',   Icon: TwitterXIcon,  bg: 'bg-slate-900' },
-            { id: 'telegram',  Icon: TelegramIcon,  bg: 'bg-blue-400'  },
-            { id: 'reddit',    Icon: RedditIcon,    bg: 'bg-orange-600'},
-            { id: 'facebook',  Icon: FacebookIcon,  bg: 'bg-blue-600'  },
-            { id: 'pinterest', Icon: PinterestIcon, bg: 'bg-red-600'   },
-            { id: 'threads',   Icon: ThreadsIcon,   bg: 'bg-slate-900' },
-            { id: 'bluesky',   Icon: BlueskyIcon,   bg: 'bg-blue-400'  },
-            { id: 'bilibili',  Icon: BilibiliIcon,  bg: 'bg-pink-400'  },
-            { id: 'discord',   Icon: DiscordIcon,   bg: 'bg-indigo-500'},
-            { id: 'lemon8',    Icon: Lemon8Icon,    bg: 'bg-yellow-400'},
-          ].map(({ id, Icon, bg }) => (
+            "No login required",
+            "Permanent archives",
+            "Private by design",
+            "Public posts only"
+          ].map((feat) => (
+            <span key={feat} className="glass-panel px-4 py-1.5 rounded-full text-slate-700 dark:text-slate-300">
+              {feat}
+            </span>
+          ))}
+        </div>
+
+        {/* Supported platform icons — Refined animations */}
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
+          {[
+            { id: 'tiktok',    Icon: TiktokIcon,    bg: 'bg-slate-950',   glow: 'hover:shadow-[0_0_20px_rgba(0,0,0,0.3)]' },
+            { id: 'twitter',   Icon: TwitterXIcon,  bg: 'bg-slate-900',   glow: 'hover:shadow-[0_0_20px_rgba(15,23,42,0.3)]' },
+            { id: 'telegram',  Icon: TelegramIcon,  bg: 'bg-blue-400',    glow: 'hover:shadow-[0_0_20px_rgba(96,165,250,0.4)]'  },
+            { id: 'reddit',    Icon: RedditIcon,    bg: 'bg-orange-600',  glow: 'hover:shadow-[0_0_20px_rgba(234,88,12,0.4)]' },
+            { id: 'facebook',  Icon: FacebookIcon,  bg: 'bg-blue-600',    glow: 'hover:shadow-[0_0_20px_rgba(37,99,235,0.4)]'  },
+            { id: 'pinterest', Icon: PinterestIcon, bg: 'bg-red-600',     glow: 'hover:shadow-[0_0_20px_rgba(220,38,38,0.4)]'   },
+            { id: 'threads',   Icon: ThreadsIcon,   bg: 'bg-slate-900',   glow: 'hover:shadow-[0_0_20px_rgba(15,23,42,0.3)]' },
+            { id: 'bluesky',   Icon: BlueskyIcon,   bg: 'bg-blue-400',    glow: 'hover:shadow-[0_0_20px_rgba(96,165,250,0.4)]'  },
+            { id: 'bilibili',  Icon: BilibiliIcon,  bg: 'bg-pink-400',    glow: 'hover:shadow-[0_0_20px_rgba(244,114,182,0.4)]'  },
+            { id: 'discord',   Icon: DiscordIcon,   bg: 'bg-indigo-500',  glow: 'hover:shadow-[0_0_20px_rgba(99,102,241,0.4)]'},
+            { id: 'lemon8',    Icon: Lemon8Icon,    bg: 'bg-yellow-400',  glow: 'hover:shadow-[0_0_20px_rgba(250,204,21,0.4)]'},
+          ].map(({ id, Icon, bg, glow }) => (
             <Link
               key={id}
               href={`/download-${id}-video${locale !== 'en' ? `?locale=${locale}` : ''}`}
               title={id.charAt(0).toUpperCase() + id.slice(1)}
-              className="group"
+              className="group relative"
             >
-              <div className={`w-9 h-9 flex items-center justify-center rounded-xl ${bg} shadow-sm opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-200`}>
-                <Icon className="w-5 h-5" />
+              <div className={`w-11 h-11 flex items-center justify-center rounded-2xl ${bg} ${glow} shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-active:scale-95`}>
+                <Icon className="w-6 h-6" />
               </div>
             </Link>
           ))}
         </div>
 
-        <div className="mb-12 dynamic-glow relative z-10 w-full max-w-3xl mx-auto">
+        <div className="mb-16 dynamic-glow relative z-10 w-full max-w-3xl mx-auto">
           <ExtractorForm locale={locale} hero={true} />
         </div>
 

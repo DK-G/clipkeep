@@ -1,4 +1,5 @@
 import type { ExtractionMedia } from "./types";
+import { normalizeMediaUrl } from "./m3u8";
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
@@ -85,14 +86,17 @@ export async function extractThreads(url: string): Promise<ExtractionMedia[]> {
     const title = findMeta(html, "og:title") || findMeta(html, "twitter:title") || undefined;
 
     if (videoUrl) {
-      return [{
-        type: "video",
-        url: videoUrl,
-        downloadUrl: buildProxyDownloadUrl(videoUrl),
-        thumbUrl: thumbUrl || undefined,
-        title,
-        sourcePath: "threads-og-video",
-      }];
+      const normalizedUrl = await normalizeMediaUrl(videoUrl);
+      if (normalizedUrl) {
+        return [{
+          type: "video",
+          url: normalizedUrl,
+          downloadUrl: buildProxyDownloadUrl(normalizedUrl),
+          thumbUrl: thumbUrl || undefined,
+          title,
+          sourcePath: "threads-og-video",
+        }];
+      }
     }
 
     if (thumbUrl) {

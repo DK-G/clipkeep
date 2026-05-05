@@ -1,4 +1,5 @@
-﻿import type { ExtractionMedia } from "./types";
+import type { ExtractionMedia } from "./types";
+import { normalizeMediaUrl } from "./m3u8";
 
 interface RedditListingResponse {
   data?: {
@@ -108,13 +109,16 @@ async function scrapeRedditFixer(url: string): Promise<ExtractionMedia[]> {
       const title = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/)?.[1];
 
       if (videoUrl) {
-        return [{
-          type: "video",
-          url: videoUrl,
-          thumbUrl,
-          title,
-          sourcePath: `fixer-${new URL(candidate).hostname}`,
-        }];
+        const normalizedUrl = await normalizeMediaUrl(videoUrl);
+        if (normalizedUrl) {
+          return [{
+            type: "video",
+            url: normalizedUrl,
+            thumbUrl,
+            title,
+            sourcePath: `fixer-${new URL(candidate).hostname}`,
+          }];
+        }
       }
     } catch (error: unknown) {
       console.warn(`[Reddit] Fixer ${candidate} failed:`, getErrorMessage(error));
@@ -184,14 +188,17 @@ export async function extractReddit(url: string): Promise<ExtractionMedia[]> {
             || post.media?.reddit_video?.fallback_url;
 
           if (videoUrl) {
-            console.log(`[Reddit] Success via JSON API Native Video (${Date.now() - startTime}ms)`);
-            return [{
-              type: "video",
-              url: videoUrl,
-              thumbUrl,
-              title,
-              sourcePath: "reddit-json-native",
-            }];
+            const normalizedUrl = await normalizeMediaUrl(videoUrl);
+            if (normalizedUrl) {
+              console.log(`[Reddit] Success via JSON API Native Video (${Date.now() - startTime}ms)`);
+              return [{
+                type: "video",
+                url: normalizedUrl,
+                thumbUrl,
+                title,
+                sourcePath: "reddit-json-native",
+              }];
+            }
           }
 
           if (post.is_gallery && post.media_metadata) {

@@ -5,6 +5,7 @@ import { HeaderShell } from '@/components/header-shell';
 import { Footer } from '@/components/footer';
 import { LocaleUpdater } from '@/components/locale-updater';
 import { AnalyticsPageView } from '@/components/analytics-page-view';
+import { GrowthLoopTracker } from '@/components/analytics/growth-loop-tracker';
 import { SITE_URL } from '@/lib/site-url';
 
 import './globals.css';
@@ -113,6 +114,7 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <AnalyticsPageView gaId={gaId} />
             </Suspense>
+            <GrowthLoopTracker />
           </>
         )}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />

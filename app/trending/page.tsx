@@ -44,6 +44,8 @@ export async function generateMetadata({ searchParams }: TrendingPageProps): Pro
   };
 }
 
+import { HubAnalytics } from '@/components/analytics/hub-analytics';
+
 export default async function TrendingPage({ searchParams }: TrendingPageProps) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
@@ -63,6 +65,7 @@ export default async function TrendingPage({ searchParams }: TrendingPageProps) 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <HubAnalytics type="trending" />
       <TrendingPageClient />
     </>
   );

@@ -44,6 +44,8 @@ export async function generateMetadata({ searchParams }: LatestPageProps): Promi
   };
 }
 
+import { HubAnalytics } from '@/components/analytics/hub-analytics';
+
 export default async function LatestPage({ searchParams }: LatestPageProps) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
@@ -63,6 +65,7 @@ export default async function LatestPage({ searchParams }: LatestPageProps) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <HubAnalytics type="latest" />
       <LatestPageClient />
     </>
   );

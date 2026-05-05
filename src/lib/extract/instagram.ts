@@ -1,12 +1,11 @@
-﻿/**
+import type { ExtractionMedia } from "./types";
+import { normalizeMediaUrl } from "./m3u8";
+
+/**
  * Utility for extracting Instagram media using public fixers/proxies.
  */
 
-export type InstagramMedia = {
-  type: "video" | "image";
-  url: string;
-  thumbUrl?: string;
-};
+
 
 /**
  * Resolves Instagram short URLs (ig.me) to canonical URLs.
@@ -42,7 +41,7 @@ export async function resolveInstagramUrl(url: string): Promise<string> {
  * Extracts Instagram media using ddinstagram.com (InstaFix).
  * It provides an easy way to scrape the direct media link from the OG tags.
  */
-export async function extractInstagram(sourceUrl: string): Promise<InstagramMedia[]> {
+export async function extractInstagram(sourceUrl: string): Promise<ExtractionMedia[]> {
   try {
     const resolvedUrl = await resolveInstagramUrl(sourceUrl);
     
@@ -60,29 +59,36 @@ export async function extractInstagram(sourceUrl: string): Promise<InstagramMedi
 
         if (response.ok) {
           const html = await response.text();
-          const mediaItems: InstagramMedia[] = [];
-
           const videoMatch = html.match(/<meta property="og:video" content="([^"]+)"/i);
-          if (videoMatch && videoMatch[1]) {
-            mediaItems.push({
-              type: "video",
-              url: videoMatch[1],
-            });
-          }
-
           const imageMatch = html.match(/<meta property="og:image" content="([^"]+)"/i);
-          if (imageMatch && imageMatch[1] && mediaItems.length === 0) {
-            mediaItems.push({
-              type: "image",
-              url: imageMatch[1],
-            });
+          const titleMatch = html.match(/<meta property="og:title" content="([^"]+)"/i);
+          const title = titleMatch?.[1];
+
+          if (videoMatch?.[1]) {
+            const videoUrl = videoMatch[1];
+            const normalizedUrl = await normalizeMediaUrl(videoUrl);
+            if (normalizedUrl) {
+              return [{
+                type: "video",
+                url: normalizedUrl,
+                downloadUrl: `/api/v1/extract/proxy?url=${encodeURIComponent(normalizedUrl)}&dl=1`,
+                thumbUrl: imageMatch?.[1],
+                title,
+                sourcePath: `instagram-fixer-${domain}`,
+              }];
+            }
           }
 
-          if (mediaItems.length > 0) {
-            if (mediaItems[0].type === "video" && imageMatch && imageMatch[1]) {
-              mediaItems[0].thumbUrl = imageMatch[1];
-            }
-            return mediaItems;
+          if (imageMatch?.[1]) {
+            const imageUrl = imageMatch[1];
+            return [{
+              type: "image",
+              url: imageUrl,
+              downloadUrl: `/api/v1/extract/proxy?url=${encodeURIComponent(imageUrl)}&dl=1`,
+              thumbUrl: imageUrl,
+              title,
+              sourcePath: `instagram-fixer-${domain}`,
+            }];
           }
         }
       } catch (e) {

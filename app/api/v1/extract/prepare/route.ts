@@ -190,15 +190,24 @@ export async function POST(request: Request) {
   if (platform === "twitter") {
     try {
       url = normalizeTwitterInputUrl(url);
-    } catch {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "";
+      let userMessage = "X URL must be a valid x.com/twitter.com status URL or t.co short link.";
+      
+      if (message === "X_PROFILE_URL_NOT_SUPPORTED") {
+        userMessage = "Profile URLs are not supported. Please provide a link to a specific Post (Status).";
+      } else if (message === "UNSUPPORTED_HOST") {
+        userMessage = "This URL host is not supported for X/Twitter. Please use x.com or twitter.com.";
+      }
+
       return failure({
         status: 400,
         requestId,
         locale: body.locale,
         error: {
           code: "INVALID_URL",
-          message: "X URL must be a valid x.com/twitter.com status URL or t.co short link.",
-          details: { url: rawUrl },
+          message: userMessage,
+          details: { url: rawUrl, reason: message },
         },
       });
     }

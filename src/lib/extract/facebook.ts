@@ -1,4 +1,5 @@
-﻿import type { ExtractionMedia } from "./types";
+import type { ExtractionMedia } from "./types";
+import { normalizeMediaUrl } from "./m3u8";
 
 function buildProxyDownloadUrl(url: string): string {
   return `/api/v1/extract/proxy?url=${encodeURIComponent(url)}&dl=1`;
@@ -88,14 +89,17 @@ export async function extractFacebook(url: string): Promise<ExtractionMedia[]> {
 
     if (videoUrl) {
       const decodedVideoUrl = decodeEscapedUrl(videoUrl);
-      return [{
-        type: "video",
-        url: decodedVideoUrl,
-        downloadUrl: buildProxyDownloadUrl(decodedVideoUrl),
-        thumbUrl,
-        title,
-        sourcePath: "facebook-og-video",
-      }];
+      const normalizedUrl = await normalizeMediaUrl(decodedVideoUrl);
+      if (normalizedUrl) {
+        return [{
+          type: "video",
+          url: normalizedUrl,
+          downloadUrl: buildProxyDownloadUrl(normalizedUrl),
+          thumbUrl,
+          title,
+          sourcePath: "facebook-og-video",
+        }];
+      }
     }
 
     throw new Error("VIDEO_URL_NOT_RESOLVED");

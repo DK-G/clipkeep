@@ -15,6 +15,7 @@ SocialBar
 SocialBar_1
 JS SYNC (NO ADBLOCK BYPASS)
 <script src="https://pl28916536.effectivegatecpm.com/93/a3/05/93a305874ff7aa9542dff8f824db8e76.js"></script>
+
 ## 2026-03-12 Post-Deploy実行ログ（Codex実行）
 
 ### 1) 本番API統合テスト
@@ -67,3 +68,18 @@ JS SYNC (NO ADBLOCK BYPASS)
 - フッターに法務リンクを追加（Terms/Privacy/Cookies/DMCA/Contact/Status）。
 - Privacyポリシーに広告/Cookie/同意制御を追記。
 - `docs/ops/adsense_go_live_checklist.md` を追加。
+
+## Growth Loop (Analytics & Insights)
+
+### 1) データの取得と分析
+- 実行: `npm run growth`
+- 内容:
+    - GA4から最新の集計レポートを取得 (`docs/analytics/`)
+    - ターミナルに「グロース・インサイト（転換率の要約）」を表示
+- 頻度: 開発の節目や、新機能のリリース翌日などに実行
+
+### 2) 開発中のデバッグログ制御
+- ブラウザのコンソールで以下を実行すると、分析イベントのログを非表示にできます。
+  - `localStorage.setItem('clipkeep_analytics_silent', 'true')`
+- 再表示する場合:
+  - `localStorage.removeItem('clipkeep_analytics_silent')`

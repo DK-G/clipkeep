@@ -67,6 +67,27 @@ body {
     animation: slow-blob 20s infinite alternate;
   }
 
+  .animate-shine {
+    background: linear-gradient(110deg, transparent 45%, rgba(255, 255, 255, 0.4) 50%, transparent 55%);
+    background-size: 200% 100%;
+    animation: shine 3s infinite;
+  }
+
+  .animate-celebrate {
+    animation: celebrate 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  @keyframes shine {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  @keyframes celebrate {
+    0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+    70% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+
   @keyframes slow-blob {
     0% { transform: translate(0, 0) scale(1); }
     33% { transform: translate(30px, -50px) scale(1.1); }
