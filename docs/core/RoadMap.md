@@ -29,6 +29,31 @@
 - [ ] CTA導線のAB観測ポイント定義
 - [x] SEOページ設計を 100ページ構成まで拡張
 
+## Phase 3.5: SEO多言語展開（ランチェスター × ロングテール）
+
+> **基本方針**: 英語市場の競合が激しい領域を避け、日本語・ポルトガル語・アラビア語の
+> ニッチ検索クエリを先行占領する。対象プラットフォームは**TikTok・X・Reddit**（ダウンロード安定済み）。
+
+### ターゲット設定
+| 言語 | ロケール | 狙い |
+|---|---|---|
+| 日本語 | `ja` | 国内SNSユーザーの「保存・ダウンロード」需要 |
+| ポルトガル語 | `pt` (pt-BR優先) | ブラジル市場、英語ツールが少ない領域 |
+| アラビア語 | `ar` | RTL対応ツールの希少性を活かす |
+
+### 対象プラットフォーム
+- **TikTok**: 動画保存需要が高く、各言語でロングテールクエリが豊富
+- **X (Twitter)**: 動画・スペース保存のクエリが ja/ar で競合少
+- **Reddit**: 動画ダウンロード系クエリで競合が英語偏重
+
+### Todoリスト
+- [ ] hreflangタグの実装（`/ja/`, `/pt/`, `/ar/` URLパス対応）
+- [ ] 各ロケールの `<title>` / `<meta description>` をlocaleファイルに追加
+- [ ] プラットフォーム×言語のロングテールキーワードマップ作成
+- [ ] ja/pt/ar 向け Solution ページの内容充足（TikTok/X/Reddit）
+- [ ] Schema.org（FAQ/HowTo）の多言語実装
+- [ ] Sitemap の hreflang alternates 追加
+
 ## Phase 4: TikTok Expansion（Backlog）
 
 ### 優先度P1（先に着手）
@@ -66,6 +91,8 @@
 ## Current Constraints
 - Instagram は廃止済みで、maintenance placeholder + noindex のみ維持する。
 - 本番反映は `deploy:prod`、検証は `deploy:test` を使う。
+- SEO展開の優先プラットフォームは **TikTok・X・Reddit**（抽出安定済み）に限定。
+- SEO展開の優先言語は **ja・pt・ar**（英語市場を避けたランチェスター戦略）。
 
 ## Epic Overview
 

@@ -1,4 +1,4 @@
-﻿# Translation Update Workflow
+# Translation Update Workflow
 
 ## Purpose
 Use this checklist when adding or changing user-facing copy to keep all locales consistent.
@@ -6,6 +6,9 @@ Use this checklist when adding or changing user-facing copy to keep all locales 
 ## Supported locales
 - `en` (default)
 - `ja`, `ar`, `es`, `pt`, `fr`, `id`, `hi`, `de`, `tr`
+
+> **SEO優先ロケール**: `ja` / `pt` / `ar` — ランチェスター戦略に基づき、英語市場との直接競合を避けたニッチ占領を優先する。
+> **対象プラットフォーム**: `tiktok` / `twitter` / `reddit` — ダウンロード安定済みの3プラットフォームに絞り、ロングテールクエリを各言語で確実に取る。
 
 ## 1. Where to update text
 1. Prefer shared dictionaries in `src/lib/i18n/ui.ts`.

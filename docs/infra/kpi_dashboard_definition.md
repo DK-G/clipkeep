@@ -1,4 +1,4 @@
-﻿# KPI Dashboard Definition (ClipKeep)
+# KPI Dashboard Definition (ClipKeep)
 
 ## 1. Core KPI
 - Extract Submit Count
@@ -20,8 +20,8 @@
 - Platform Mix (telegram vs twitter)
 
 ## 3. Segments
-- Locale: `en`, `ar`
-- Platform: `telegram`, `twitter`
+- Locale: `en`, `ar`, `ja`, `pt` — **SEO優先を ja / pt / ar に設定**
+- Platform: `tiktok`, `twitter`, `reddit` — **抽出安定プラットフォームに限定**
 - Device: mobile / desktop
 - Region: top countries
 
@@ -31,6 +31,7 @@
 3. Solution Page Performance
 4. Error / Degraded Monitoring
 5. Geo & Locale Split
+6. **SEO Organic ランキング**（Search Console連携）— ja/pt/ar・プラットフォーム別クリック数
 
 ## 5. Update Cadence
 - Daily check: degraded ratio, failure spikes
