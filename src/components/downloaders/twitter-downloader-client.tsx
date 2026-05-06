@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ExtractorForm } from '@/components/extractor-form';
 import { twitterText, Locale, localeDir } from '@/lib/i18n/ui';
-import { AdsterraNative } from '@/components/ads/native-banner';
+
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { GallerySection } from '@/components/gallery-section';
 
@@ -49,7 +49,7 @@ export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps
       <div className="mb-16">
         <ExtractorForm platform="twitter" locale={locale} onStatusChange={handleStatusChange} />
         
-        <AdsterraNative />
+        
 
         <div className="mt-6 p-4 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-sm text-gray-600 dark:text-slate-400">
           <span className="font-bold mr-2 text-gray-900 dark:text-slate-200">{t.statusLabel}:</span>
@@ -80,14 +80,14 @@ export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps
               <li key={i} className="leading-relaxed">{point}</li>
             ))}
           </ul>
-          <AdsterraNative />
+          
         </section>
       </div>
 
       <GallerySection id="realtime" platform="twitter" locale={locale} title={labels.realtime} type="recent" layout="masonry" hideMeta={false} />
 
       <div className="my-12">
-        <AdsterraNative />
+        
       </div>
 
       {t.trendingTitle && (
@@ -95,7 +95,7 @@ export function TwitterDownloaderClient({ locale }: TwitterDownloaderClientProps
       )}
 
       <div className="my-12">
-        <AdsterraNative />
+        
       </div>
 
       {/* Detailed SEO Content Section */}

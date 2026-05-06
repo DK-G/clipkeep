@@ -1,4 +1,4 @@
-﻿import type { DegradedMetrics } from "@/lib/degraded/types";
+import type { DegradedMetrics } from "@/lib/degraded/types";
 
 const WINDOW_MS = 5 * 60 * 1000;
 
@@ -35,7 +35,7 @@ export function recordExtractAttempt(args: { upstreamFailed: boolean; queueWaitM
   trimOldSamples(now);
 }
 
-export function setActiveJobs(count: number): void {
+function setActiveJobs(count: number): void {
   state.activeJobs = Math.max(0, count);
 }
 

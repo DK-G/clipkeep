@@ -1,0 +1,27 @@
+import type { MenuDict } from '../../types';
+
+export const ar: MenuDict = {
+    downloads: "تنزيل",
+    rankings: "الرائج",
+    latest: "الأحدث",
+    viewAllTrending: "عرض كل الترند",
+    language: "اللغة",
+    more: "المزيد",
+    bilibili: "بليبلي",
+    bluesky: "بلوسكاي",
+    discord: "ديسكورد",
+    lemon8: "ليمون 8",
+    pinterest: "بينتيريست",
+    reddit: "ريديت",
+    telegram: "تيليجرام",
+    threads: "ثريدز",
+    tiktok: "تيك توك",
+    twitter: "تويتر",
+    facebook: "فيسبوك",
+    about: "من نحن",
+    faq: "الأسئلة الشائعة",
+    privacy: "سياسة الخصوصية",
+    contact: "اتصل بنا",
+    globalHub: "المركز العالمي",
+    globalTrend: "الترند العالمي",
+  };

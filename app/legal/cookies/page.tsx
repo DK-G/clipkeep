@@ -71,7 +71,7 @@ export default async function CookiePolicyPage({ searchParams }: Props) {
       <p className="text-xl text-slate-600 dark:text-slate-400 mb-12">{t.lastUpdated}</p>
 
       <div className="space-y-10">
-        {t.sections.map((section, index) => (
+        {t.sections.map((section: { title: string; content: string }, index: number) => (
           <section key={index}>
             <h2 className="text-2xl font-bold mb-4">{section.title}</h2>
             <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-lg">

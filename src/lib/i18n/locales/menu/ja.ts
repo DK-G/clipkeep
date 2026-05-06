@@ -1,0 +1,27 @@
+import type { MenuDict } from '../../types';
+
+export const ja: MenuDict = {
+    downloads: "ダウンロード",
+    rankings: "トレンド",
+    latest: "最新",
+    viewAllTrending: "トレンド一覧を見る",
+    language: "言語切り替え",
+    more: "その他",
+    bilibili: "Bilibili 保存",
+    bluesky: "Bluesky 保存",
+    discord: "Discord 保存",
+    lemon8: "Lemon8 保存",
+    pinterest: "Pinterest 保存",
+    reddit: "Reddit 保存",
+    telegram: "Telegram 保存",
+    threads: "Threads 保存",
+    tiktok: "TikTok 保存",
+    twitter: "Twitter 保存",
+    facebook: "Facebook 保存",
+    about: "サイトについて",
+    faq: "よくある質問",
+    privacy: "プライバシーポリシー",
+    contact: "お問い合わせ",
+    globalHub: "グローバルハブ",
+    globalTrend: "グローバルトレンド",
+  };

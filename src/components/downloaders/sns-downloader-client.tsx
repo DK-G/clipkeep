@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ExtractorForm, Platform } from '@/components/extractor-form';
 import { Locale, localeDir, PlatformPageDict } from '@/lib/i18n/ui';
-import { AdsterraNative } from '@/components/ads/native-banner';
+
 import { GallerySection } from '@/components/gallery-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 
@@ -51,7 +51,7 @@ export function SnsDownloaderClient({ platform, locale, dict: t }: SnsDownloader
       <div className="mb-16">
         <ExtractorForm platform={platform} locale={locale} onStatusChange={handleStatusChange} />
         
-        <AdsterraNative />
+        
 
         <div className="mt-6 p-4 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-sm text-gray-600 dark:text-slate-400">
           <span className="font-bold mr-2 text-gray-900 dark:text-slate-200">{t.statusLabel}:</span>
@@ -82,14 +82,14 @@ export function SnsDownloaderClient({ platform, locale, dict: t }: SnsDownloader
               <li key={i} className="leading-relaxed">{point}</li>
             ))}
           </ul>
-          <AdsterraNative />
+          
         </section>
       </div>
 
       <GallerySection id="realtime" platform={platform} locale={locale} title={labels.realtime} type="recent" layout="masonry" hideMeta={false} />
 
       <div className="my-12">
-        <AdsterraNative />
+        
       </div>
 
       {t.trendingTitle && (
@@ -97,7 +97,7 @@ export function SnsDownloaderClient({ platform, locale, dict: t }: SnsDownloader
       )}
 
       <div className="my-12">
-        <AdsterraNative />
+        
       </div>
 
       {/* Detailed SEO Content Section */}

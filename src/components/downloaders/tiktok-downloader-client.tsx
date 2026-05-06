@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ExtractorForm } from '@/components/extractor-form';
 import { tiktokText, Locale, localeDir } from '@/lib/i18n/ui';
-import { AdsterraNative } from '@/components/ads/native-banner';
+
 import { GallerySection } from '@/components/gallery-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 
@@ -59,7 +59,7 @@ export function TikTokDownloaderClient({ locale }: TikTokDownloaderClientProps) 
       <div className="mb-16">
         <ExtractorForm platform="tiktok" locale={locale} onStatusChange={handleStatusChange} />
         
-        <AdsterraNative />
+        
 
         <div className="mt-6 p-4 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-sm text-gray-600 dark:text-slate-400">
           <span className="font-bold mr-2 text-gray-900 dark:text-slate-200">{t.statusLabel}:</span>
@@ -96,7 +96,7 @@ export function TikTokDownloaderClient({ locale }: TikTokDownloaderClientProps) 
       <GallerySection id="realtime" platform="tiktok" locale={locale} title={labels.realtime} type="recent" layout="masonry" hideMeta={false} />
 
       <div className="my-12">
-        <AdsterraNative />
+        
       </div>
 
       {t.trendingTitle && (
@@ -104,7 +104,7 @@ export function TikTokDownloaderClient({ locale }: TikTokDownloaderClientProps) 
       )}
 
       <div className="my-12">
-        <AdsterraNative />
+        
       </div>
 
       {/* Detailed SEO Content Section */}

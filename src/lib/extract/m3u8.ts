@@ -1,7 +1,7 @@
 
 const FETCH_TIMEOUT_MS = 10000;
 
-export type FetchInit = RequestInit & { timeoutMs?: number };
+type FetchInit = RequestInit & { timeoutMs?: number };
 
 export async function fetchWithTimeout(url: string, init: FetchInit = {}): Promise<Response> {
   const controller = new AbortController();
@@ -17,17 +17,17 @@ export async function fetchWithTimeout(url: string, init: FetchInit = {}): Promi
   }
 }
 
-export function isM3u8ByUrl(url: string): boolean {
+function isM3u8ByUrl(url: string): boolean {
   return /\.m3u8(?:$|\?)/i.test(url);
 }
 
-export function isM3u8ContentType(contentType: string | null): boolean {
+function isM3u8ContentType(contentType: string | null): boolean {
   if (!contentType) return false;
   const ct = contentType.split(";")[0].trim().toLowerCase();
   return ct === "application/x-mpegurl" || ct === "application/vnd.apple.mpegurl";
 }
 
-export async function probeContentType(url: string): Promise<string | null> {
+async function probeContentType(url: string): Promise<string | null> {
   try {
     const head = await fetchWithTimeout(url, { method: "HEAD", redirect: "follow" });
     if (head.ok) {
@@ -60,7 +60,7 @@ function joinM3u8Url(baseUrl: string, line: string): string {
   }
 }
 
-export async function resolveM3u8ToMp4(playlistUrl: string, depth = 0): Promise<string | null> {
+async function resolveM3u8ToMp4(playlistUrl: string, depth = 0): Promise<string | null> {
   if (depth > 2) return null;
 
   try {

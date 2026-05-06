@@ -136,6 +136,12 @@ export default function RootLayout({
           data-cfasync="false"
         />
         <Script
+          id="monetag-push-notification"
+          src="https://3nbf4.com/pfe/current/tag.min.js?z=10969428"
+          strategy="afterInteractive"
+          data-cfasync="false"
+        />
+        <Script
           src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
           strategy="afterInteractive"
         />

@@ -1,0 +1,27 @@
+import type { MenuDict } from '../../types';
+
+export const en: MenuDict = {
+    downloads: "DOWNLOAD",
+    rankings: "Trend",
+    latest: "Latest",
+    viewAllTrending: "View All Trending",
+    language: "LANGUAGE",
+    more: "MORE",
+    bilibili: "Bilibili Downloader",
+    bluesky: "Bluesky Downloader",
+    discord: "Discord Media Saver",
+    lemon8: "Lemon8 Downloader",
+    pinterest: "Pinterest Downloader",
+    reddit: "Reddit Downloader",
+    telegram: "Telegram Downloader",
+    threads: "Threads Downloader",
+    tiktok: "TikTok Downloader",
+    twitter: "Twitter (X) Downloader",
+    facebook: "Facebook Downloader",
+    about: "About",
+    faq: "FAQ",
+    privacy: "Privacy Policy",
+    contact: "Contact Support",
+    globalHub: "GLOBAL HUB",
+    globalTrend: "Global Trend",
+  };

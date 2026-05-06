@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ExtractorForm } from '@/components/extractor-form';
 import { telegramText, Locale, localeDir } from '@/lib/i18n/ui';
-import { AdsterraNative } from '@/components/ads/native-banner';
+
 import { GallerySection } from '@/components/gallery-section';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 
@@ -49,7 +49,7 @@ export function TelegramDownloaderClient({ locale }: TelegramDownloaderClientPro
       <div className="mb-16">
         <ExtractorForm platform="telegram" locale={locale} onStatusChange={handleStatusChange} />
         
-        <AdsterraNative />
+        
 
         <div className="mt-6 p-4 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-sm text-gray-600 dark:text-slate-400">
           <span className="font-bold mr-2 text-gray-900 dark:text-slate-200">{t.statusLabel}:</span>
@@ -86,7 +86,7 @@ export function TelegramDownloaderClient({ locale }: TelegramDownloaderClientPro
       <GallerySection id="realtime" platform="telegram" locale={locale} title={labels.realtime} type="recent" />
 
       <div className="my-12">
-        <AdsterraNative />
+        
       </div>
 
       {t.trendingTitle && (
@@ -94,7 +94,7 @@ export function TelegramDownloaderClient({ locale }: TelegramDownloaderClientPro
       )}
 
       <div className="my-12">
-        <AdsterraNative />
+        
       </div>
 
       {/* Detailed SEO Content Section */}

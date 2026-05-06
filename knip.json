@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreExportsUsedInFile": true,
+  "ignore": [
+    "open-next.config.ts",
+    "public/sw.js",
+    "workers/**",
+    "src/lib/i18n/locales/degraded/**"
+  ],
+  "ignoreDependencies": [
+    "autoprefixer",
+    "eslint",
+    "eslint-config-next"
+  ],
+  "ignoreBinaries": [
+    "powershell"
+  ]
+}

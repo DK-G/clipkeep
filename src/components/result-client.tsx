@@ -7,7 +7,7 @@ import { trackEvent } from "@/lib/analytics/gtag";
 import { resultText, localeDir, Locale, menuText } from "@/lib/i18n/ui";
 import type { ApiSuccess, ApiFailure, ExtractionResult } from "@/lib/api/types";
 import type { Platform } from "@/lib/extract/types";
-import { AdsterraNative } from "@/components/ads/native-banner";
+
 import { DownloadItem } from "@/components/download-item";
 import { GallerySection } from "@/components/gallery-section";
 import { PlatformIcon } from "@/components/platform-icons";
@@ -597,9 +597,7 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
                </div>
             </div>
 
-            <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-900">
-               <AdsterraNative />
-            </div>
+
           </div>
         </main>
 
