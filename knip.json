@@ -4,8 +4,7 @@
   "ignore": [
     "open-next.config.ts",
     "public/sw.js",
-    "workers/**",
-    "src/lib/i18n/locales/degraded/**"
+    "workers/**"
   ],
   "ignoreDependencies": [
     "autoprefixer",

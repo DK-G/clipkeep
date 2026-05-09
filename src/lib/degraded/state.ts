@@ -35,10 +35,6 @@ export function recordExtractAttempt(args: { upstreamFailed: boolean; queueWaitM
   trimOldSamples(now);
 }
 
-function setActiveJobs(count: number): void {
-  state.activeJobs = Math.max(0, count);
-}
-
 export function getMetrics(): DegradedMetrics {
   trimOldSamples(Date.now());
   return {
@@ -58,4 +54,3 @@ export function setDegradedFlag(isDegraded: boolean): void {
   state.isDegraded = isDegraded;
   state.degradedEnteredAt = isDegraded ? Date.now() : null;
 }
-

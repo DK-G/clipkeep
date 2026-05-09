@@ -102,15 +102,6 @@ export type SolutionDict = {
   getStarted: string;
 };
 
-export type DegradedDict = {
-  title: string;
-  body: string;
-  reasonLabel: string;
-  retryAfter: string;
-  openGuide: string;
-  reasons: Record<string, string>;
-};
-
 export type StatusDict = {
   title: string;
   liveHealth: string;
@@ -243,4 +234,3 @@ export type GalleryRangeDict = {
   latestWeekSubtitle: string;
   latestMonthSubtitle: string;
 };
-

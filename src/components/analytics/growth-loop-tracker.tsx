@@ -23,7 +23,7 @@ export function GrowthLoopTracker() {
           });
           localStorage.setItem("clipkeep:magic_moment_reached", "true");
         }
-      } catch (e) {
+      } catch {
         // Ignore storage errors
       }
     };
@@ -41,7 +41,7 @@ export function GrowthLoopTracker() {
           });
           sessionStorage.setItem("clipkeep:return_visit_tracked", "true");
         }
-      } catch (e) {
+      } catch {
         // Ignore storage errors
       }
     };

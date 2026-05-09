@@ -1,4 +1,4 @@
-import type { Locale, FAQDict, LegalPageDict, LegalSection, AboutDict, ContactDict } from '../types';
+import type { Locale, FAQDict, LegalSection, AboutDict, ContactDict } from '../types';
 
 const faqBaseEn: FAQDict = {
   title: 'Frequently Asked Questions',

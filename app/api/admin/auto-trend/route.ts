@@ -73,7 +73,7 @@ export async function GET(request: Request) {
     // 完了後に setLastRunAt を記録する
     const backgroundTask = runAutoTrendUpdate()
       .then(() => setLastRunAt(new Date().toISOString()))
-      .catch((e: any) => {
+      .catch((e: unknown) => {
         console.error("[AutoTrend API] Background update failed:", e);
       });
 
