@@ -5,6 +5,7 @@ import { HeaderShell } from '@/components/header-shell';
 import { Footer } from '@/components/footer';
 import { LocaleUpdater } from '@/components/locale-updater';
 import { AnalyticsPageView } from '@/components/analytics-page-view';
+import { AdDiagnostics } from '@/components/analytics/ad-diagnostics';
 import { GrowthLoopTracker } from '@/components/analytics/growth-loop-tracker';
 import { SITE_URL } from '@/lib/site-url';
 
@@ -127,20 +128,7 @@ export default function RootLayout({
         {children}
         <Footer />
 
-        {/* Monetag In-Page Push — non-intrusive banner format, no popunder */}
-        <Script
-          id="monetag-in-page-push"
-          src="https://nap5k.com/tag.min.js"
-          data-zone="10760541"
-          strategy="afterInteractive"
-          data-cfasync="false"
-        />
-        <Script
-          id="monetag-push-notification"
-          src="https://3nbf4.com/pfe/current/tag.min.js?z=10969428"
-          strategy="afterInteractive"
-          data-cfasync="false"
-        />
+        <AdDiagnostics />
         <Script
           src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
           strategy="afterInteractive"
