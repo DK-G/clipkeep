@@ -131,6 +131,7 @@ export type FooterDict = {
   dmca: string;
   contact: string;
   status: string;
+  guides: string;
   adsDisclaimer: string;
 };
 

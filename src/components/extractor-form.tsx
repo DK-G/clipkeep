@@ -2,7 +2,7 @@
 
 import { FormEvent, useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { homeText, Locale } from '@/lib/i18n/ui';
+import { homeText, resultText, Locale } from '@/lib/i18n/ui';
 import type { Platform as ExtractPlatform } from '@/lib/extract/types';
 export type Platform = ExtractPlatform;
 import { trackEvent } from '@/lib/analytics/gtag';
@@ -103,16 +103,17 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
 
-  const [localStatus, setLocalStatus] = useState<string | null>(null);
+  const [localStatus, setLocalStatus] = useState<{ message: string; helpSlug?: string | null } | null>(null);
   const [savedPreset, setSavedPreset] = useState<SavedPreset | null>(null);
 
   const l = homeText[locale];
+  const resultCopy = resultText[locale] || resultText.en;
 
   const updateStatus = useCallback((message: string, helpSlug: string | null = null, retryAfterSec: number | undefined = undefined) => {
     if (onStatusChange) {
       onStatusChange(message, helpSlug, retryAfterSec);
     } else {
-      setLocalStatus(message);
+      setLocalStatus({ message, helpSlug });
     }
   }, [onStatusChange]);
 
@@ -404,11 +405,21 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
         </div>
 
         {localStatus && (
-          <div className="mt-4 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            {localStatus}
+          <div className="mt-4 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center gap-3">
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              {localStatus.message}
+            </div>
+            {localStatus.helpSlug && (
+              <a 
+                href={`/solution/${localStatus.helpSlug}${locale !== 'en' ? `?locale=${locale}` : ''}`}
+                className="ml-8 text-xs underline underline-offset-2 hover:opacity-80"
+              >
+                {resultCopy.checkSolution || 'Check solution guide'} →
+              </a>
+            )}
           </div>
         )}
 
@@ -419,7 +430,6 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     </div>
   );
 }
-
 
 
 

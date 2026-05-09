@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { keywordArticles } from "@/lib/blog/keyword-articles";
+import { pages } from "@/lib/solution-pages/store";
 
 const BASE_URL = "https://clipkeep.net";
 
@@ -31,29 +32,7 @@ const GALLERY_PLATFORMS = [
 const STATIC_PATHS = ["/about", "/faq", "/contact", "/status", "/blog", "/trending", "/latest"];
 const LEGAL_PATHS = ["/legal/privacy", "/legal/terms", "/legal/dmca", "/legal/cookies"];
 
-const SOLUTION_SLUGS = [
-  "extractor-temporary-limited",
-  "telegram-video-downloader-not-working",
-  "twitter-video-downloader-not-working",
-  "tiktok-video-downloader-not-working",
-  "reddit-video-downloader-not-working",
-  "facebook-video-downloader-not-working",
-  "bilibili-video-downloader-not-working",
-  "discord-video-downloader-not-working",
-  "instagram-downloader-not-working",
-  "video-download-not-working-on-iphone",
-  "video-download-not-working-on-android",
-  "download-not-working-on-chrome",
-  "download-not-working-private-account",
-  "how-to-download-without-watermark",
-  "video-download-slow",
-  "video-downloader-safe-guide",
-  "is-video-downloader-legal",
-  "video-format-mp4-vs-webm",
-  "best-quality-download-settings",
-  "twitter-video-download-2026",
-  "tiktok-download-2026",
-];
+const SOLUTION_SLUGS = Array.from(new Set(pages.map((p) => p.slug)));
 
 function localeUrl(path: string, locale: string): string {
   const base = `${BASE_URL}${path}`;

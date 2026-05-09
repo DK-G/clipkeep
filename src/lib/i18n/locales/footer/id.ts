@@ -9,5 +9,6 @@ export const id: FooterDict = {
     dmca: "DMCA",
     contact: "Kontak",
     status: "Status",
+    guides: "Panduan",
     adsDisclaimer: "Iklan ditandai sebagai konten bersponsor."
   };

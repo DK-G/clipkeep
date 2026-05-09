@@ -15,6 +15,7 @@ import { useHistory } from "@/hooks/use-history";
 import { usePlatformUsage } from "@/hooks/use-platform-usage";
 import { ExtractorForm } from "@/components/extractor-form";
 import { DownloadGuard } from "@/components/download-guard";
+import { MagicMomentCelebration } from "@/components/analytics/magic-moment-celebration";
 
 
 interface ResultClientProps {
@@ -391,6 +392,7 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
 
   return (
     <>
+      <MagicMomentCelebration locale={locale} />
       {guardActive && (
         <DownloadGuard 
           text={t.preparingDownload} 

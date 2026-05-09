@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { normalizeLocale } from '@/lib/i18n/ui';
+import { menuText, normalizeLocale } from '@/lib/i18n/ui';
 import { DiscoverySection } from '@/components/discovery-section';
 import { GallerySection } from '@/components/gallery-section';
 import { HistorySection } from '@/components/history-section';
@@ -12,6 +12,7 @@ import {
   FacebookIcon, PinterestIcon, ThreadsIcon, BlueskyIcon,
   BilibiliIcon, DiscordIcon, Lemon8Icon,
 } from '@/components/platform-icons';
+import { LiveStatsTicker } from '@/components/analytics/live-stats-ticker';
 
 type HomeProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -88,44 +89,44 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
 
   const meta: Record<string, { title: string; description: string }> = {
     en: {
-      title: 'SNS Downloader Hub',
-      description: 'ClipKeep home hub for Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok, and Twitter downloader tools.',
+      title: 'SNS Video Downloader Hub - No Watermark (TikTok, X, Reddit)',
+      description: 'ClipKeep is the ultimate hub to download videos without watermark from TikTok, X (Twitter), Reddit, and 10+ platforms. Fast, free, and high quality MP4 extraction.',
     },
     ja: {
-      title: 'SNS動画保存ハブ',
-      description: 'Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok, X(Twitter)などの保存ツールをまとめたハブページです。',
+      title: 'SNS動画保存ハブ - ロゴなしダウンロード (TikTok, X, Reddit)',
+      description: 'ClipKeepは、TikTok、X (Twitter)、Redditなど10以上のプラットフォームからロゴなしで動画を保存できるプレミアムハブです。高速・無料・高品質な抽出。',
     },
     ar: {
-      title: 'مركز مطور SNS',
-      description: 'مركز ClipKeep لأدوات تنزيل Bilibili وBluesky وDiscord وFacebook وLemon8 وPinterest وReddit وThreads وTikTok وTwitter.',
+      title: 'مركز تنزيل فيديوهات SNS - بدون علامة مائية (تيك توك، إكس، ريديت)',
+      description: 'ClipKeep هو المركز النهائي لتنزيل مقاطع الفيديو بدون علامة مائية من TikTok وX (تويتر) وReddit وأكثر من 10 منصات. استخراج MP4 سريع ومجاني وعالي الجودة.',
     },
     es: {
-      title: 'Centro de Descarga de Redes Sociales',
-      description: 'Centro de ClipKeep para herramientas de descarga de Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok y Twitter.',
+      title: 'Descargar Videos SNS Sin Marca de Agua - Gratis (TikTok, X, Reddit)',
+      description: 'ClipKeep es el centro ideal para descargar videos sin marca de agua de TikTok, X (Twitter), Reddit y más de 10 plataformas. Extracción MP4 rápida, gratis y en alta calidad.',
     },
     pt: {
-      title: 'Central de Downloads de Redes Sociais',
-      description: 'Central do ClipKeep para ferramentas de download de Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok e Twitter.',
+      title: 'Baixar Vídeos SNS Sem Marca d\'Água - Grátis (TikTok, X, Reddit)',
+      description: 'ClipKeep é o hub definitivo para baixar vídeos sem marca d\'água do TikTok, X (Twitter), Reddit e mais de 10 plataformas. Extração MP4 rápida, grátis e em alta qualidade.',
     },
     fr: {
-      title: 'Hub de Téléchargement SNS',
-      description: 'Hub ClipKeep pour les outils de téléchargement Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok et Twitter.',
+      title: 'Télécharger Vidéo SNS Sans Filigrane - Gratuit (TikTok, X, Reddit)',
+      description: 'ClipKeep est le hub ultime pour télécharger des vidéos sans filigrane de TikTok, X (Twitter), Reddit et plus de 10 plateformes. Extraction MP4 rapide, gratuite et de haute qualité.',
     },
     id: {
-      title: 'Hub Pengunduh SNS',
-      description: 'Hub ClipKeep untuk alat unduh Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok, dan Twitter.',
+      title: 'Download Video SNS Tanpa Watermark - Gratis (TikTok, X, Reddit)',
+      description: 'ClipKeep adalah pusat utama untuk download video tanpa watermark dari TikTok, X (Twitter), Reddit, dan 10+ platform. Ekstraksi MP4 cepat, gratis, dan berkualitas tinggi.',
     },
     hi: {
-      title: 'SNS डाउनलोडर हब',
-      description: 'Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok और Twitter डाउनलोड टूल्स के लिए ClipKeep हब।',
+      title: 'SNS वीडियो डाउनलोडर - बिना वॉटरमार्क (टिकटॉक, एक्स, रेडिट)',
+      description: 'ClipKeep टिकटॉक, एक्स (ट्विटर), रेडिट और 10+ प्लेटफार्मों से बिना वॉटरमार्क के वीडियो डाउनलोड करने का सबसे अच्छा हब है। तेज़, मुफ्त और उच्च गुणवत्ता वाला MP4 एक्सट्रैक्शन।',
     },
     de: {
-      title: 'SNS Downloader Hub',
-      description: 'ClipKeep Hub für Downloader-Tools von Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok und Twitter.',
+      title: 'SNS Video Downloader - Ohne Wasserzeichen (TikTok, X, Reddit)',
+      description: 'ClipKeep ist der ultimative Hub zum Herunterladen von Videos ohne Wasserzeichen von TikTok, X (Twitter), Reddit und über 10 Plattformen. Schnelle, kostenlose und hochwertige MP4-Extraktion.',
     },
     tr: {
-      title: 'SNS İndirici Merkezi',
-      description: 'Bilibili, Bluesky, Discord, Facebook, Lemon8, Pinterest, Reddit, Threads, TikTok ve Twitter indirici araçları için ClipKeep merkezi.',
+      title: 'SNS Video İndirici - Filigransız (TikTok, X, Reddit)',
+      description: 'ClipKeep; TikTok, X (Twitter), Reddit ve 10\'dan fazla platformdan filigransız video indirmek için en iyi merkezdir. Hızlı, ücretsiz ve yüksek kaliteli MP4 çıkarma.',
     }
   };
 
@@ -180,8 +181,8 @@ const supportedPlatforms = [
 
 const translations: Record<string, Record<string, string>> = {
   en: {
-    welcome: "Archive Social Media in Seconds",
-    subtitle: "The premium hub for permanent offline archives. No login, no tracking, just high-quality extraction.",
+    welcome: "SNS Downloader (No Watermark)",
+    subtitle: "The premium hub for high-quality MP4 archives. No watermark, no login, 100% free. Works with TikTok, X, Reddit and more.",
     weeklyTrending: "Weekly Trending",
     recentDownloads: "Recent Downloads",
     startDownloading: "Start Extracting Now",
@@ -201,11 +202,13 @@ const translations: Record<string, Record<string, string>> = {
     globalTrending: "Global Trending Hub",
     globalTrendingSubtitle: "Discover popular clips across all platforms.",
     recentDownloadsSubtitle: "Explore the latest media successfully cached by our users worldwide.",
-    viewAllLatest: "View All Latest"
+    viewAllLatest: "View All Latest",
+    guidesTitle: "Ultimate Guides 2026",
+    guide2026: "2026 Guide"
   },
   ja: {
-    welcome: "SNSを数秒でアーカイブ",
-    subtitle: "オフライン保存のためのプレミアムハブ。ログイン不要、トラッキングなし、高品質な抽出を実現。",
+    welcome: "SNS動画保存ハブ (ロゴなし)",
+    subtitle: "オフライン保存のためのプレミアムハブ。ロゴなし・ログイン不要・完全無料。TikTok、X (Twitter)、Redditなどから高品質なMP4を抽出。",
     weeklyTrending: "週間トレンド",
     recentDownloads: "最近のダウンロード",
     startDownloading: "今すぐ保存を開始",
@@ -225,11 +228,13 @@ const translations: Record<string, Record<string, string>> = {
     globalTrending: "グローバルトレンドハブ",
     globalTrendingSubtitle: "すべてのプラットフォームから人気のクリップを公開。",
     recentDownloadsSubtitle: "ユーザーにより直近で正常に保存されたメディアをまとめて確認できます。",
-    viewAllLatest: "最新一覧を見る"
+    viewAllLatest: "最新一覧を見る",
+    guidesTitle: "2026年最新ガイド",
+    guide2026: "2026年版"
   },
   ar: {
-    welcome: "مرحبًا بك في ClipKeep",
-    subtitle: "قم بتنزيل مقاطع فيديو عالية الجودة من منصات مختلفة।",
+    welcome: "محمل فيديوهات SNS (بدون علامة مائية)",
+    subtitle: "المركز المتميز للأرشفة بجودة عالية MP4. بدون علامة مائية، بدون تسجيل دخول، مجاني 100%. يدعم تيك توك، X، ريديت وأكثر.",
     weeklyTrending: "الأكثر رواجًا لهذا الأسبوع",
     recentDownloads: "أحدث التنزيلات",
     startDownloading: "ابدأ الاستخراج الآن",
@@ -249,11 +254,13 @@ const translations: Record<string, Record<string, string>> = {
     globalTrending: "مركز الترند العالمي",
     globalTrendingSubtitle: "اكتشف المقاطع الشائعة عبر جميع المنصات.",
     recentDownloadsSubtitle: "استعرض أحدث الوسائط التي تم حفظها بنجاح بواسطة المستخدمين.",
-    viewAllLatest: "عرض أحدث العناصر"
+    viewAllLatest: "عرض أحدث العناصر",
+    guidesTitle: "أدلة 2026 الشاملة",
+    guide2026: "دليل 2026"
   },
   es: {
-    welcome: "Bienvenido a ClipKeep",
-    subtitle: "Descarga videos de alta calidad de varias plataformas।",
+    welcome: "Descargar Videos SNS (Sin Marca de Agua)",
+    subtitle: "El centro premium para archivos MP4 de alta calidad. Sin marca de agua, sin login, 100% gratis. Funciona con TikTok, X, Reddit y más.",
     weeklyTrending: "Tendencias Semanales",
     recentDownloads: "Descargas Recientes",
     startDownloading: "Comenzar Extracción",
@@ -273,11 +280,13 @@ const translations: Record<string, Record<string, string>> = {
     globalTrending: "Hub de tendencias globales",
     globalTrendingSubtitle: "Descubre clips populares en todas las plataformas.",
     recentDownloadsSubtitle: "Explora los medios guardados recientemente por nuestros usuarios en todo el mundo.",
-    viewAllLatest: "Ver todo lo reciente"
+    viewAllLatest: "Ver todo lo reciente",
+    guidesTitle: "Guías Definitivas 2026",
+    guide2026: "Guía 2026"
   },
   pt: {
-    welcome: "Bem-vindo ao ClipKeep",
-    subtitle: "Baixe vídeos de alta qualidade de várias plataformas।",
+    welcome: "Baixar Vídeos SNS (Sem Marca d'Água)",
+    subtitle: "O hub premium para arquivos MP4 de alta qualidade. Sem marca d'água, sem login, 100% grátis. Funciona com TikTok, X, Reddit e muito mais.",
     weeklyTrending: "Tendências Semanais",
     recentDownloads: "Downloads Recentes",
     startDownloading: "Começar Extração",
@@ -297,11 +306,13 @@ const translations: Record<string, Record<string, string>> = {
     globalTrending: "Hub de tendências globais",
     globalTrendingSubtitle: "Descubra clipes populares em todas as plataformas.",
     recentDownloadsSubtitle: "Explore as mídias salvas recentemente por usuários do mundo todo.",
-    viewAllLatest: "Ver tudo em latest"
+    viewAllLatest: "Ver tudo em latest",
+    guidesTitle: "Guias Definitivos 2026",
+    guide2026: "Guia 2026"
   },
   fr: {
-    welcome: "Bienvenue sur ClipKeep",
-    subtitle: "Téléchargez des vidéos de haute qualité depuis diverses plateformes।",
+    welcome: "Télécharger Vidéo (Sans Filigrane)",
+    subtitle: "Le hub premium pour des archives MP4 de haute qualité. Sans filigrane, sans connexion, 100% gratuit.",
     weeklyTrending: "Tendances Hebdomadaires",
     recentDownloads: "Téléchargements Récents",
     startDownloading: "Démarrer l'Extraction",
@@ -321,11 +332,13 @@ const translations: Record<string, Record<string, string>> = {
     globalTrending: "Hub des tendances mondiales",
     globalTrendingSubtitle: "Découvrez les clips populaires sur toutes les plateformes.",
     recentDownloadsSubtitle: "Explorez les médias récemment sauvegardés par nos utilisateurs dans le monde.",
-    viewAllLatest: "Voir tout dans Latest"
+    viewAllLatest: "Voir tout dans Latest",
+    guidesTitle: "Guides Ultimes 2026",
+    guide2026: "Guide 2026"
   },
   id: {
-    welcome: "Selamat datang di ClipKeep",
-    subtitle: "Unduh video berkualitas tinggi dari berbagai platform।",
+    welcome: "Download Video (Tanpa Watermark)",
+    subtitle: "Pusat premium untuk arsip MP4 berkualitas tinggi. Tanpa watermark, tanpa login, 100% gratis.",
     weeklyTrending: "Tren Mingguan",
     recentDownloads: "Unduhan Terbaru",
     startDownloading: "Mulai Ekstraksi Sekarang",
@@ -345,11 +358,13 @@ const translations: Record<string, Record<string, string>> = {
     globalTrending: "Pusat Tren Global",
     globalTrendingSubtitle: "Temukan klip populer di semua platform.",
     recentDownloadsSubtitle: "Jelajahi media terbaru yang berhasil disimpan oleh pengguna kami di seluruh dunia.",
-    viewAllLatest: "Lihat semua yang terbaru"
+    viewAllLatest: "Lihat semua yang terbaru",
+    guidesTitle: "Panduan Utama 2026",
+    guide2026: "Panduan 2026"
   },
   hi: {
-    welcome: "क्लिपकीप में आपका स्वागत है",
-    subtitle: "विभिन्न प्लेटफार्मों से उच्च गुणवत्ता वाले वीडियो डाउनलोड करें।",
+    welcome: "वीडियो डाउनलोडर (बिना वॉटरमार्क)",
+    subtitle: "उच्च गुणवत्ता वाले MP4 के लिए प्रीमियम हब। बिना वॉटरमार्क, बिना लॉगिन, 100% मुफ्त।",
     weeklyTrending: "साप्ताहिक ट्रेंडिंग",
     recentDownloads: "हाल के डाउनलोड",
     startDownloading: "अभी निकालना शुरू करें",
@@ -369,11 +384,13 @@ const translations: Record<string, Record<string, string>> = {
     globalTrending: "वैश्विक ट्रेंडिंग हब",
     globalTrendingSubtitle: "सभी प्लेटफार्मों पर लोकप्रिय क्लिप खोजें।",
     recentDownloadsSubtitle: "दुनिया भर के उपयोगकर्ताओं द्वारा हाल ही में सफलतापूर्वक सहेजे गए मीडिया को देखें।",
-    viewAllLatest: "सभी नवीनतम देखें"
+    viewAllLatest: "सभी नवीनतम देखें",
+    guidesTitle: "सर्वश्रेष्ठ गाइड 2026",
+    guide2026: "2026 गाइड"
   },
   de: {
-    welcome: "Willkommen bei ClipKeep",
-    subtitle: "Das All-in-One-Downloader-Hub für Ihre Lieblingsplattformen।",
+    welcome: "Video Downloader (ohne Wasserzeichen)",
+    subtitle: "Der Premium-Hub für hochwertige MP4-Archive. Ohne Wasserzeichen, ohne Anmeldung, 100% kostenlos.",
     weeklyTrending: "Wöchentliche Trends",
     recentDownloads: "Aktuelle Downloads",
     startDownloading: "Jetzt Extraktion starten",
@@ -393,11 +410,13 @@ const translations: Record<string, Record<string, string>> = {
     globalTrending: "Globaler Trend-Hub",
     globalTrendingSubtitle: "Entdecken Sie beliebte Clips auf allen Plattformen。",
     recentDownloadsSubtitle: "Entdecken Sie Medien, die von unseren Nutzern weltweit zuletzt erfolgreich gespeichert wurden.",
-    viewAllLatest: "Alle neuesten anzeigen"
+    viewAllLatest: "Alle neuesten anzeigen",
+    guidesTitle: "Ultimative Guides 2026",
+    guide2026: "Guide 2026"
   },
   tr: {
-    welcome: "ClipKeep'e Hoş Geldiniz",
-    subtitle: "Favori platformlarınız için hepsi bir arada indirici merkezi।",
+    welcome: "Video İndirici (Filigransız)",
+    subtitle: "Yüksek kaliteli MP4 arşivleri için premium merkez. Filigran yok, giriş yok, %100 ücretsiz.",
     weeklyTrending: "Haftalık Gündem",
     recentDownloads: "Son İndirmeler",
     startDownloading: "Şimdi Çıkarmaya Başlayın",
@@ -417,7 +436,9 @@ const translations: Record<string, Record<string, string>> = {
     globalTrending: "Küresel Trend Merkezi",
     globalTrendingSubtitle: "Tüm platformlardaki popüler klipleri keşfedin。",
     recentDownloadsSubtitle: "Kullanıcılarımız tarafından yakın zamanda başarıyla kaydedilen medyaları keşfedin.",
-    viewAllLatest: "Tüm yenileri gör"
+    viewAllLatest: "Tüm yenileri gör",
+    guidesTitle: "Nihai Kılavuzlar 2026",
+    guide2026: "2026 Kılavuzu"
   }
 };
 
@@ -425,6 +446,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = translations[locale] || translations.en;
+  const menu = menuText[locale] || menuText.en;
   const faq = faqDict[locale] || faqDict.en;
   const base = SITE_URL;
   const url = `${base}/${locale !== 'en' ? `?locale=${locale}` : ''}`;
@@ -521,12 +543,22 @@ export default async function HomePage({ searchParams }: HomeProps) {
       </div>
 
       <div className="text-center mb-10 pt-8 sm:pt-16">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50/50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-400 text-xs font-bold mb-6 backdrop-blur-sm">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-          </span>
-          {t.startDownloading || "Ready to Archive"}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50/50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-400 text-xs font-bold backdrop-blur-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+            {t.startDownloading || "Ready to Archive"}
+          </div>
+
+          <Link
+            href={`/trending?locale=${locale}`}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50/50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 text-xs font-bold backdrop-blur-sm hover:scale-105 transition-transform"
+          >
+            <span aria-hidden="true">🔥</span>
+            {menu.rankings}
+          </Link>
         </div>
 
         <h1 className="text-5xl sm:text-7xl font-black text-slate-900 dark:text-slate-50 tracking-tight mb-6 leading-[1.1]">
@@ -583,6 +615,10 @@ export default async function HomePage({ searchParams }: HomeProps) {
         </div>
 
         <HistorySection locale={locale} />
+        
+        <div className="mt-16">
+          <LiveStatsTicker locale={locale} />
+        </div>
       </div>
 
       <section className="mb-16 grid gap-4 md:grid-cols-3">
@@ -641,6 +677,36 @@ export default async function HomePage({ searchParams }: HomeProps) {
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-slate-50">{t.notes}</h2>
         <p className="mt-2 text-sm sm:text-base leading-relaxed text-gray-800 dark:text-slate-300 font-medium">{t.noteBody}</p>
       </section>
+
+      <div className="mb-20">
+        <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-50 flex items-center mb-8">
+          <span className="w-1.5 h-8 bg-indigo-600 rounded-full mr-3 shadow-[0_0_8px_rgba(79,70,229,0.4)]"></span>
+          {t.guidesTitle || "Ultimate Guides 2026"}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { slug: "twitter-video-download-2026", title: (t.twitter || "Twitter") + " " + (t.guide2026 || "2026") },
+            { slug: "tiktok-download-2026", title: (t.tiktok || "TikTok") + " " + (t.guide2026 || "2026") },
+            { slug: "how-to-download-without-watermark", title: t.welcome },
+            { slug: "how-to-save-on-iphone-android", title: t.notes },
+            { slug: "best-quality-download-settings", title: "HD / 4K " + (t.guide2026 || "2026") },
+            { slug: "reddit-video-downloader-not-working", title: (t.reddit || "Reddit") + " Fix" },
+          ].map((guide) => (
+            <Link 
+              key={guide.slug}
+              href={`/solution/${guide.slug}${locale !== 'en' ? `?locale=${locale}` : ''}`}
+              className="glass-panel p-5 rounded-2xl hover:border-indigo-500/50 transition-all group block"
+            >
+              <h3 className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 text-sm sm:text-base">
+                {guide.title}
+              </h3>
+              <p className="text-[10px] uppercase tracking-widest font-black text-slate-400 mt-2 flex items-center gap-1 group-hover:text-indigo-500">
+                Read Guide <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
+              </p>
+            </Link>
+          ))}
+        </div>
+      </div>
 
       <DiscoverySection locale={locale} />
     </main>

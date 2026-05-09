@@ -9,5 +9,6 @@ export const ar: FooterDict = {
     dmca: "حقوق النشر",
     contact: "اتصل بنا",
     status: "الحالة",
+    guides: "الأدلة",
     adsDisclaimer: "الإعلانات، عند تمكينها، يتم تصنيفها كمحتوى ممول."
   };

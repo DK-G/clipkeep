@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -25,6 +25,7 @@ function FooterContent() {
         <Link href={buildUrl('/legal/dmca')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.dmca}</Link>
         <Link href={buildUrl('/contact')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.contact}</Link>
         <Link href={buildUrl('/status')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter">{t.status}</Link>
+        <Link href={buildUrl('/solution/how-to-save-on-iphone-android')} className="hover:text-blue-500 transition-colors uppercase font-bold tracking-tighter text-blue-600 dark:text-blue-400">{t.guides}</Link>
       </nav>
       <p className="leading-relaxed opacity-70">{t.adsDisclaimer}</p>
     </footer>

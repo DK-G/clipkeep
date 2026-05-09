@@ -94,4 +94,13 @@ body {
     66% { transform: translate(-20px, 20px) scale(0.9); }
     100% { transform: translate(0, 0) scale(1); }
   }
+
+  @keyframes confetti {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  .animate-confetti {
+    animation: confetti linear infinite;
+  }
 }

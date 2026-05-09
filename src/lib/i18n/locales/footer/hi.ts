@@ -9,5 +9,6 @@ export const hi: FooterDict = {
     dmca: "DMCA",
     contact: "संपर्क",
     status: "स्थिति",
+    guides: "गाइड",
     adsDisclaimer: "विज्ञापनों को प्रायोजित सामग्री के रूप में लेबल किया गया है।"
   };

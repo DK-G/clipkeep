@@ -9,5 +9,6 @@ export const tr: FooterDict = {
     dmca: "DMCA",
     contact: "İletişim",
     status: "Durum",
+    guides: "Rehberler",
     adsDisclaimer: "Reklamlar sponsorlu içerik olarak işaretlenmiştir."
   };

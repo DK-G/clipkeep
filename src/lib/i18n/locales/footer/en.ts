@@ -9,5 +9,6 @@ export const en: FooterDict = {
     dmca: "DMCA",
     contact: "Contact",
     status: "Status",
+    guides: "Guides",
     adsDisclaimer: "Ads, when enabled, are labeled as sponsored content."
   };
