@@ -251,14 +251,8 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
           if (json.data.status === "completed" || json.data.status === "failed") {
             setLoading(false);
             if (json.data.status === "completed") {
-              trackEvent("processing_complete", { 
-                platform: json.data.platform, 
-                jobId,
-                total_session_downloads: sessionDownloadCount
-              });
-              // Check for Magic Moment on completion
-              const isMagic = localStorage.getItem("clipkeep:magic_moment_reached") === "true";
-              setIsMagicMoment(isMagic);
+              // Completion analytics are emitted by the status effect below so
+              // initial server data and polled data share one deduped path.
             }
             if (json.data.status === "failed") {
               // Use the first warning as the user-facing message; fall back to generic title
@@ -298,6 +292,37 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
     fetchResult();
     return () => clearTimeout(pollInterval);
   }, [jobId, t.errorTitle, data?.status, data?.platform, sessionDownloadCount]);
+
+  useEffect(() => {
+    if (!data || !jobId) return;
+
+    const resultViewKey = `result_view_${jobId}`;
+    if (!sessionStorage.getItem(resultViewKey)) {
+      trackEvent("result_view", {
+        platform: data.platform,
+        locale,
+        jobId,
+        status: data.status,
+      });
+      sessionStorage.setItem(resultViewKey, "true");
+    }
+
+    if (data.status !== "completed") return;
+
+    const completionKey = `processing_complete_${jobId}`;
+    if (sessionStorage.getItem(completionKey)) return;
+
+    trackEvent("processing_complete", {
+      platform: data.platform,
+      locale,
+      jobId,
+      total_session_downloads: sessionDownloadCount,
+    });
+    sessionStorage.setItem(completionKey, "true");
+
+    const isMagic = localStorage.getItem("clipkeep:magic_moment_reached") === "true";
+    setIsMagicMoment(isMagic);
+  }, [data, jobId, locale, sessionDownloadCount]);
 
   useEffect(() => {
     if (!data || data.status !== "completed") return;

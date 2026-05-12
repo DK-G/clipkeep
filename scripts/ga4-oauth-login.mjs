@@ -9,9 +9,12 @@ const SECRETS_DIR = path.join(ROOT, ".secrets");
 const CLIENT_PATH = path.join(SECRETS_DIR, "ga4-oauth-client.json");
 const TOKEN_PATH = path.join(SECRETS_DIR, "ga4-oauth-token.json");
 const AUTH_URL_PATH = path.join(SECRETS_DIR, "ga4-oauth-login-url.txt");
-const REDIRECT_PORT = 53605;
-const REDIRECT_URI = `http://127.0.0.1:${REDIRECT_PORT}/oauth2callback`;
-const SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
+const REDIRECT_HOST = "127.0.0.1";
+const REDIRECT_PATH = "/oauth2callback";
+const SCOPES = [
+  "https://www.googleapis.com/auth/analytics.readonly",
+  "https://www.googleapis.com/auth/webmasters.readonly",
+];
 
 function getClientConfig(raw) {
   const parsed = JSON.parse(raw);
@@ -35,12 +38,15 @@ async function openBrowser(url) {
   });
 }
 
-function waitForCode(expectedState) {
+function createCodeListener(expectedState) {
   return new Promise((resolve, reject) => {
     const server = http.createServer((req, res) => {
       try {
-        const url = new URL(req.url || "/", REDIRECT_URI);
-        if (url.pathname !== "/oauth2callback") {
+        const address = server.address();
+        const port = typeof address === "object" && address ? address.port : 0;
+        const redirectUri = `http://${REDIRECT_HOST}:${port}${REDIRECT_PATH}`;
+        const url = new URL(req.url || "/", redirectUri);
+        if (url.pathname !== REDIRECT_PATH) {
           res.writeHead(404);
           res.end("Not found");
           return;
@@ -62,23 +68,33 @@ function waitForCode(expectedState) {
         }
 
         res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-        res.end("<h1>ClipKeep GA4 login complete</h1><p>You can close this tab.</p>");
+        res.end("<h1>ClipKeep Google analytics login complete</h1><p>You can close this tab.</p>");
         server.close();
-        resolve(code);
+        server.emit("clipkeep-code", code);
       } catch (error) {
         res.writeHead(400, { "content-type": "text/plain; charset=utf-8" });
         res.end(error.message);
         server.close();
-        reject(error);
+        server.emit("clipkeep-error", error);
       }
     });
 
     server.on("error", reject);
-    server.listen(REDIRECT_PORT, "127.0.0.1");
+    server.listen(0, REDIRECT_HOST, () => {
+      const address = server.address();
+      const port = typeof address === "object" && address ? address.port : 0;
+      resolve({
+        redirectUri: `http://${REDIRECT_HOST}:${port}${REDIRECT_PATH}`,
+        codePromise: new Promise((resolveCode, rejectCode) => {
+          server.once("clipkeep-code", resolveCode);
+          server.once("clipkeep-error", rejectCode);
+        }),
+      });
+    });
   });
 }
 
-async function exchangeCode({ clientId, clientSecret, code }) {
+async function exchangeCode({ clientId, clientSecret, code, redirectUri }) {
   const response = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
@@ -87,7 +103,7 @@ async function exchangeCode({ clientId, clientSecret, code }) {
       client_secret: clientSecret,
       code,
       grant_type: "authorization_code",
-      redirect_uri: REDIRECT_URI,
+      redirect_uri: redirectUri,
     }),
   });
 
@@ -101,11 +117,12 @@ async function exchangeCode({ clientId, clientSecret, code }) {
 async function main() {
   const client = getClientConfig(await fs.readFile(CLIENT_PATH, "utf8"));
   const state = crypto.randomBytes(16).toString("hex");
+  const { redirectUri, codePromise } = await createCodeListener(state);
   const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   authUrl.searchParams.set("client_id", client.client_id);
-  authUrl.searchParams.set("redirect_uri", REDIRECT_URI);
+  authUrl.searchParams.set("redirect_uri", redirectUri);
   authUrl.searchParams.set("response_type", "code");
-  authUrl.searchParams.set("scope", SCOPE);
+  authUrl.searchParams.set("scope", SCOPES.join(" "));
   authUrl.searchParams.set("access_type", "offline");
   authUrl.searchParams.set("prompt", "consent");
   authUrl.searchParams.set("state", state);
@@ -116,13 +133,13 @@ async function main() {
   await fs.writeFile(AUTH_URL_PATH, `${authUrl.toString()}\n`);
   console.log(`If the browser does not open, open ${path.relative(ROOT, AUTH_URL_PATH)} manually.`);
 
-  const codePromise = waitForCode(state);
   await openBrowser(authUrl.toString());
   const code = await codePromise;
   const token = await exchangeCode({
     clientId: client.client_id,
     clientSecret: client.client_secret,
     code,
+    redirectUri,
   });
 
   await fs.mkdir(SECRETS_DIR, { recursive: true });

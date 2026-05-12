@@ -5,10 +5,10 @@
   - Definition: `extract_submit` event count
   - View: daily / weekly / monthly
 - Extract Completion Rate
-  - Definition: `extract_completed / extract_submit`
+  - Definition: `processing_complete / extract_submit`
   - Goal: increase over time
 - Solution-to-Extractor CTR
-  - Definition: extractor遷移イベント / `solution_view`
+  - Definition: extractor遷移イベント / solution page views
 - Degraded Ratio
   - Definition: (`429` + `503`) responses / total prepare requests
 - Country Mix
@@ -39,7 +39,7 @@
 - Monthly review: roadmap impact and SEO/solution expansion priorities
 
 ## 6. Data Sources
-- GA4 events (`extract_submit`, `result_view`, `extract_completed`, `solution_view`)
+- GA4 events (`extract_submit`, `extract_prepare_success`, `result_view`, `processing_complete`, `download_actual_start`, `error_displayed`)
 - API logs (`429`, `503`, `4xx`, `5xx`)
 
 ## 7. Acceptance Criteria

@@ -183,6 +183,26 @@ async function runReport({ accessToken, propertyId, body }) {
   return response.json();
 }
 
+async function runRealtimeReport({ accessToken, propertyId, body }) {
+  const response = await fetch(
+    `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runRealtimeReport`,
+    {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(body),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`GA4 realtime report failed: ${response.status} ${await response.text()}`);
+  }
+
+  return response.json();
+}
+
 function metricValue(row, index) {
   return Number(row.metricValues?.[index]?.value || 0);
 }
@@ -264,6 +284,17 @@ async function main() {
     },
   });
 
+  const realtimeEventReport = await runRealtimeReport({
+    accessToken,
+    propertyId,
+    body: {
+      dimensions: [{ name: "eventName" }],
+      metrics: [{ name: "eventCount" }],
+      orderBys: [{ metric: { metricName: "eventCount" }, desc: true }],
+      limit: 100,
+    },
+  });
+
   const summary = {
     propertyId,
     generatedAt: new Date().toISOString(),
@@ -304,13 +335,19 @@ async function main() {
     engagedSessions: metricValue(row, 2),
   }));
 
+  const realtimeEventRows = (realtimeEventReport.rows || []).map((row) => ({
+    eventName: dimensionValue(row, 0),
+    eventCount: metricValue(row, 0),
+  }));
+
   await fs.writeFile(path.join(OUT_DIR, "latest-ga4-summary.json"), JSON.stringify(summary, null, 2));
   await fs.writeFile(path.join(OUT_DIR, "latest-ga4-pages.csv"), toCsv(["pagePath", "pageTitle", "views", "activeUsers", "sessions"], pageRows));
   await fs.writeFile(path.join(OUT_DIR, "latest-ga4-events.csv"), toCsv(["eventName", "eventCount", "activeUsers"], eventRows));
   await fs.writeFile(path.join(OUT_DIR, "latest-ga4-acquisition.csv"), toCsv(["channelGroup", "sourceMedium", "sessions", "activeUsers", "engagedSessions"], acquisitionRows));
+  await fs.writeFile(path.join(OUT_DIR, "latest-ga4-realtime-events.csv"), toCsv(["eventName", "eventCount"], realtimeEventRows));
 
   console.log(`GA4 reports exported to ${path.relative(ROOT, OUT_DIR)}`);
-  console.log(`Pages: ${pageRows.length}, events: ${eventRows.length}, acquisition rows: ${acquisitionRows.length}`);
+  console.log(`Pages: ${pageRows.length}, events: ${eventRows.length}, acquisition rows: ${acquisitionRows.length}, realtime events: ${realtimeEventRows.length}`);
 }
 
 main().catch((error) => {

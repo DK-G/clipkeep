@@ -16,7 +16,13 @@ Use this command when starting a ClipKeep improvement review:
 npm run growth:review
 ```
 
-This only refreshes GA4 exports. It does not generate or apply improvement proposals automatically.
+If `npm` is unavailable in the automation shell, run the same executable entrypoint directly:
+
+```powershell
+node scripts/run-growth-review.mjs
+```
+
+This only refreshes GA4 exports and writes local history snapshots. It does not generate or apply improvement proposals automatically.
 
 After it finishes, review:
 
@@ -24,7 +30,39 @@ After it finishes, review:
 - `docs/analytics/latest-ga4-pages.csv`
 - `docs/analytics/latest-ga4-events.csv`
 - `docs/analytics/latest-ga4-acquisition.csv`
+- `docs/analytics/latest-ga4-realtime-events.csv`
+- `docs/analytics/latest-gsc-query-pages.csv`
+- `docs/analytics/latest-gsc-pages.csv`
+- `docs/analytics/latest-gsc-country-pages.csv`
+- `docs/analytics/latest-gsc-locale-summary.csv`
+- `docs/analytics/latest-gsc-opportunities.csv`
+- `docs/analytics/history/latest-growth-snapshot.json`
 - `docs/ops/daily_growth_optimization_playbook.md`
+
+Each `npm run growth:review` run also writes a timestamped local snapshot under
+`docs/analytics/history/` and prints the delta versus the previous growth run.
+
+Search Console exports require OAuth consent with both Analytics and Search Console
+read-only scopes. If GSC export is skipped for an auth scope error, re-run:
+
+```powershell
+npm run analytics:ga4:login
+```
+
+## Daily automation prompt
+
+Use this prompt for the daily review thread:
+
+```text
+Run the ClipKeep growth review loop in C:\dev\portfolio\web\clipkeep.
+First read C:\Users\52hae\.codex\automations\clipkeep-daily-growth-proposal-loop\memory.md if present.
+Refresh analytics with `node scripts/run-growth-review.mjs`.
+Review latest GA4 summary, pages, events, realtime events, acquisition, and growth history snapshots.
+Before product conclusions, check whether `extract_submit`, `result_view`, `processing_complete`, and `download_actual_start` are internally consistent.
+Produce a decision-ready proposal covering health/data quality, changes versus prior run, highest-signal bottleneck, 1-3 ranked improvements, metrics to watch, and whether each is recommended now/later/not recommended.
+Do not make code changes, commits, deploys, or edits during the review.
+Update the automation memory with the run summary and timestamp.
+```
 
 ## Recommended: OAuth local login
 

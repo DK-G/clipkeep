@@ -31,6 +31,7 @@ yarn-error.log*
 # local analytics exports
 docs/analytics/*.csv
 docs/analytics/*.json
+docs/analytics/history/
 
 # vercel
 .vercel

@@ -4,7 +4,7 @@
 
 ## 目的
 - Search Consoleのクエリ変動を、ランディングページ単位で週次監視する。
-- `en / es / ar` のどこで機会損失が起きているかを早期検知する。
+- `ja / pt / ar / hi / id / tr` などのマイナー言語SEOで、どこに機会損失が起きているかを早期検知する。
 
 ## 監視対象
 - 期間: 直近7日（比較: 前週7日）
@@ -14,23 +14,29 @@
 ## 取得手順（毎週）
 1. Search Consoleで `clipkeep.net` プロパティを開く
 2. `検索パフォーマンス` -> 検索タイプ `ウェブ`
-3. フィルタで `ページ` を `contains ?locale=en` にして上位20クエリを抽出
-4. 同じ手順を `?locale=es`, `?locale=ar` で実行
-5. 下記テンプレートへ記録し、前週比を算出
+3. 自動取得では `npm run analytics:gsc` を実行し、`docs/analytics/latest-gsc-*.csv` を確認する
+4. 手動確認する場合は、フィルタで `ページ` を `contains ?locale=ja` などにして上位20クエリを抽出
+5. `ja`, `pt`, `ar`, `hi`, `id`, `tr` を優先して同じ手順を実行
+6. 下記テンプレートへ記録し、前週比を算出
 
 ## 記録テンプレート
 
-### EN
+### JA
 | Query | Landing Page | Clicks | Impressions | CTR | Position | WoW CTR | WoW Position | Action |
 |---|---|---:|---:|---:|---:|---:|---:|---|
 | | | | | | | | | |
 
-### ES
+### PT
 | Query | Landing Page | Clicks | Impressions | CTR | Position | WoW CTR | WoW Position | Action |
 |---|---|---:|---:|---:|---:|---:|---:|---|
 | | | | | | | | | |
 
 ### AR
+| Query | Landing Page | Clicks | Impressions | CTR | Position | WoW CTR | WoW Position | Action |
+|---|---|---:|---:|---:|---:|---:|---:|---|
+| | | | | | | | | |
+
+### HI / ID / TR
 | Query | Landing Page | Clicks | Impressions | CTR | Position | WoW CTR | WoW Position | Action |
 |---|---|---:|---:|---:|---:|---:|---:|---|
 | | | | | | | | | |

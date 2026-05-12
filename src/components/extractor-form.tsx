@@ -249,7 +249,12 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
         return;
       }
 
-      trackEvent('processing_complete', { platform: activePlatform, jobId: payload.data.jobId });
+      trackEvent('extract_prepare_success', {
+        platform: activePlatform,
+        locale,
+        jobId: payload.data.jobId,
+        status: payload.data.status,
+      });
       router.push(`/result/${payload.data.jobId}?locale=${locale}`);
     } catch {
       updateStatus(l.networkError);
@@ -276,6 +281,8 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     // or just call the submit handler directly with a override.
     
     trackEvent('demo_click', { locale });
+    trackEvent('extract_submit', { platform: 'tiktok', locale, demo: true });
+    trackEvent('processing_start', { platform: 'tiktok', locale, jobId: 'demo-pending', demo: true });
     
     // Setup for submission
     setSubmitting(true);
@@ -296,7 +303,14 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     .then(res => res.json() as Promise<PrepareSuccess | ApiError>)
     .then(payload => {
       if ('data' in payload) {
-        trackEvent('demo_submit_success', { platform: 'tiktok', jobId: payload.data.jobId });
+        trackEvent('extract_prepare_success', {
+          platform: 'tiktok',
+          locale,
+          jobId: payload.data.jobId,
+          status: payload.data.status,
+          demo: true,
+        });
+        trackEvent('demo_submit_success', { platform: 'tiktok', locale, jobId: payload.data.jobId });
         // We add a small artificial delay of 1.2s to ensure the user SEES the loading "演出"
         // as the backend might return instantly for the cached/pinned demo.
         setTimeout(() => {
@@ -430,6 +444,4 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     </div>
   );
 }
-
-
 
