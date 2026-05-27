@@ -125,6 +125,17 @@ async function getOAuthAccessToken() {
   return payload.access_token;
 }
 
+async function getAccessToken(credentialsPath) {
+  try {
+    const oauthToken = await getOAuthAccessToken();
+    if (oauthToken) return oauthToken;
+  } catch (error) {
+    console.warn(`[analytics] OAuth token unavailable, trying service account: ${error.message}`);
+  }
+
+  return getServiceAccountAccessToken(credentialsPath);
+}
+
 async function getServiceAccountAccessToken(credentialsPath) {
   const credentials = JSON.parse(await fs.readFile(credentialsPath, "utf8"));
   if (!credentials.client_email || !credentials.private_key) {
@@ -225,7 +236,7 @@ function toCsv(headers, rows) {
 
 async function main() {
   const { propertyId, credentialsPath } = await loadConfig();
-  const accessToken = (await getOAuthAccessToken()) || (await getServiceAccountAccessToken(credentialsPath));
+  const accessToken = await getAccessToken(credentialsPath);
   await fs.mkdir(OUT_DIR, { recursive: true });
 
   const baseDateRanges = [

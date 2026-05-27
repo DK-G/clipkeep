@@ -6,6 +6,7 @@ import { homeText, resultText, Locale } from '@/lib/i18n/ui';
 import type { Platform as ExtractPlatform } from '@/lib/extract/types';
 export type Platform = ExtractPlatform;
 import { trackEvent } from '@/lib/analytics/gtag';
+import { createExtractionAttribution, saveExtractionAttribution } from '@/lib/analytics/funnel';
 
 type TurnstileRenderOptions = {
   sitekey: string;
@@ -199,17 +200,47 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     return !!sourceUrl && !submitting && !!turnstileToken && activePlatform !== 'instagram';
   }, [sourceUrl, submitting, turnstileToken, activePlatform]);
 
+  const blockedSubmitReason = useMemo(() => {
+    if (submitting || canSubmit) return null;
+    if (activePlatform === 'instagram') return 'instagram';
+    if (!sourceUrl) return 'missing_url';
+    if (!turnstileToken) return 'security_pending';
+    return null;
+  }, [activePlatform, canSubmit, sourceUrl, submitting, turnstileToken]);
+
+  const blockedSubmitMessage = useMemo(() => {
+    if (blockedSubmitReason === 'instagram') return l.submitBlockedInstagram;
+    if (blockedSubmitReason === 'missing_url') return l.submitBlockedUrl;
+    if (blockedSubmitReason === 'security_pending') return l.submitBlockedSecurity;
+    return null;
+  }, [blockedSubmitReason, l.submitBlockedInstagram, l.submitBlockedSecurity, l.submitBlockedUrl]);
+
+  const trackBlockedSubmitIntent = useCallback(() => {
+    if (!blockedSubmitReason) return;
+
+    trackEvent('extract_attempt_blocked', {
+      platform: activePlatform,
+      locale,
+      reason: blockedSubmitReason,
+      has_url: !!sourceUrl,
+      has_turnstile_token: !!turnstileToken,
+    });
+  }, [activePlatform, blockedSubmitReason, locale, sourceUrl, turnstileToken]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!canSubmit) return;
+    if (activePlatform === 'instagram') return;
     
     setSubmitting(true);
     setLocalStatus(null);
     updateStatus(l.creatingJob);
 
-    trackEvent('extract_submit', { platform: activePlatform, locale });
-    trackEvent('processing_start', { platform: activePlatform, jobId: 'pending' });
+    const attribution = createExtractionAttribution('form', activePlatform, locale);
+
+    trackEvent('extract_attempt', { platform: activePlatform, locale, origin: attribution.origin, attempt_id: attribution.attemptId });
+    trackEvent('extract_submit', { platform: activePlatform, locale, origin: attribution.origin, attempt_id: attribution.attemptId });
+    trackEvent('processing_start', { platform: activePlatform, locale, origin: attribution.origin, attempt_id: attribution.attemptId, jobId: 'pending' });
 
     try {
       const res = await fetch('/api/v1/extract/prepare', {
@@ -254,7 +285,10 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
         locale,
         jobId: payload.data.jobId,
         status: payload.data.status,
+        origin: attribution.origin,
+        attempt_id: attribution.attemptId,
       });
+      saveExtractionAttribution(payload.data.jobId, attribution);
       router.push(`/result/${payload.data.jobId}?locale=${locale}`);
     } catch {
       updateStatus(l.networkError);
@@ -280,9 +314,12 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     // We use a dummy token to satisfy the client-side check if necessary,
     // or just call the submit handler directly with a override.
     
-    trackEvent('demo_click', { locale });
-    trackEvent('extract_submit', { platform: 'tiktok', locale, demo: true });
-    trackEvent('processing_start', { platform: 'tiktok', locale, jobId: 'demo-pending', demo: true });
+    const attribution = createExtractionAttribution('demo', 'tiktok', locale);
+
+    trackEvent('demo_click', { locale, attempt_id: attribution.attemptId });
+    trackEvent('extract_attempt', { platform: 'tiktok', locale, demo: true, origin: attribution.origin, attempt_id: attribution.attemptId });
+    trackEvent('extract_submit', { platform: 'tiktok', locale, demo: true, origin: attribution.origin, attempt_id: attribution.attemptId });
+    trackEvent('processing_start', { platform: 'tiktok', locale, jobId: 'demo-pending', demo: true, origin: attribution.origin, attempt_id: attribution.attemptId });
     
     // Setup for submission
     setSubmitting(true);
@@ -309,8 +346,11 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
           jobId: payload.data.jobId,
           status: payload.data.status,
           demo: true,
+          origin: attribution.origin,
+          attempt_id: attribution.attemptId,
         });
         trackEvent('demo_submit_success', { platform: 'tiktok', locale, jobId: payload.data.jobId });
+        saveExtractionAttribution(payload.data.jobId, attribution);
         // We add a small artificial delay of 1.2s to ensure the user SEES the loading "演出"
         // as the backend might return instantly for the cached/pinned demo.
         setTimeout(() => {
@@ -365,18 +405,21 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
               </div>
             )}
           </div>
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="h-14 sm:h-16 px-10 glass-button rounded-xl font-bold text-white transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 relative overflow-hidden"
-          >
-            {submitting ? (
-              <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                {l.submitting}
-              </span>
-            ) : l.submit}
-          </button>
+          <span onPointerDown={trackBlockedSubmitIntent} className="block sm:inline-block">
+            <button
+              type="submit"
+              disabled={!canSubmit}
+              aria-describedby="extractor-submit-help"
+              className="h-14 sm:h-16 w-full sm:w-auto px-10 glass-button rounded-xl font-bold text-white transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 disabled:pointer-events-none relative overflow-hidden"
+            >
+              {submitting ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  {l.submitting}
+                </span>
+              ) : l.submit}
+            </button>
+          </span>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4 px-2">
@@ -418,6 +461,13 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
           </div>
         </div>
 
+        <div id="extractor-submit-help" className="mt-3 flex flex-col gap-1 px-2 text-xs font-semibold text-slate-500 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+          <span>{l.formTrustLine}</span>
+          {blockedSubmitMessage && (
+            <span className="text-blue-600 dark:text-blue-400">{blockedSubmitMessage}</span>
+          )}
+        </div>
+
         {localStatus && (
           <div className="mt-4 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="flex items-center gap-3">
@@ -444,4 +494,3 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     </div>
   );
 }
-

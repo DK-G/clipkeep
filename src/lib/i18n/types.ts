@@ -10,6 +10,10 @@ export type HomeDict = {
   submitting: string;
   status: string;
   initialMessage: string;
+  formTrustLine: string;
+  submitBlockedUrl: string;
+  submitBlockedSecurity: string;
+  submitBlockedInstagram: string;
   creatingJob: string;
   degradedMessage: string;
   invalidRequest: string;

@@ -80,6 +80,17 @@ async function getOAuthAccessToken() {
   return payload.access_token;
 }
 
+async function getAccessToken(credentialsPath) {
+  try {
+    const oauthToken = await getOAuthAccessToken();
+    if (oauthToken) return oauthToken;
+  } catch (error) {
+    console.warn(`[analytics] OAuth token unavailable, trying service account: ${error.message}`);
+  }
+
+  return getServiceAccountAccessToken(credentialsPath);
+}
+
 async function getServiceAccountAccessToken(credentialsPath) {
   const credentials = JSON.parse(await fs.readFile(credentialsPath, "utf8"));
   if (!credentials.client_email || !credentials.private_key) {
@@ -129,6 +140,25 @@ async function loadConfig() {
     env.GOOGLE_APPLICATION_CREDENTIALS ||
     path.join(ROOT, ".secrets", "ga4-service-account.json");
   credentialsPath = path.isAbsolute(credentialsPath) ? credentialsPath : path.join(ROOT, credentialsPath);
+
+  try {
+    await fs.access(credentialsPath);
+  } catch {
+    const candidates = (await fs.readdir(SECRETS_DIR).catch(() => []))
+      .filter((name) => name.toLowerCase().endsWith(".json"));
+    for (const candidate of candidates) {
+      const candidatePath = path.join(SECRETS_DIR, candidate);
+      try {
+        const parsed = JSON.parse(await fs.readFile(candidatePath, "utf8"));
+        if (parsed.type === "service_account" && parsed.client_email && parsed.private_key) {
+          credentialsPath = candidatePath;
+          break;
+        }
+      } catch {
+        // Ignore non-JSON or unrelated secret files.
+      }
+    }
+  }
 
   return {
     siteUrl: process.env.GSC_SITE_URL || env.GSC_SITE_URL || "https://clipkeep.net/",
@@ -285,7 +315,7 @@ function buildOpportunities(rows) {
 
 async function main() {
   const { siteUrl, credentialsPath } = await loadConfig();
-  const accessToken = (await getOAuthAccessToken()) || (await getServiceAccountAccessToken(credentialsPath));
+  const accessToken = await getAccessToken(credentialsPath);
   await fs.mkdir(OUT_DIR, { recursive: true });
   const sites = await listSites(accessToken);
   const resolvedSiteUrl = pickSiteUrl(siteUrl, sites);

@@ -81,8 +81,14 @@ async function main() {
   
   // Key Funnel Events
   const focus = findEventCount("extract_form_focus");
-  const submit = findEventCount("extract_submit");
+  const legacySubmit = findEventCount("extract_submit");
+  const attempt = findEventCount("extract_attempt");
+  const submit = attempt > 0 ? attempt : legacySubmit;
   const complete = findEventCount("processing_complete");
+  const attributedComplete = findEventCount("processing_complete_attributed");
+  const directComplete = findEventCount("processing_complete_direct");
+  const funnelComplete = attributedComplete > 0 ? attributedComplete : (complete <= submit ? complete : 0);
+  const blockedAttempts = findEventCount("extract_attempt_blocked");
   const invalidUrl = findEventCount("extract_invalid_url");
 
   // Growth Loop Events
@@ -93,7 +99,7 @@ async function main() {
   const rates = {
     formInterestPerSession: pctNumber(focus, sessions),
     submitPerSession: pctNumber(submit, sessions),
-    completionPerSubmit: pctNumber(complete, submit),
+    completionPerSubmit: pctNumber(funnelComplete, submit),
     sharePerComplete: pctNumber(shares, complete),
     discoveryPerSession: pctNumber(discoveryClicks, sessions),
     relatedPerComplete: pctNumber(relatedClicks, complete),
@@ -113,7 +119,13 @@ async function main() {
       engagementRate: l28.engagementRate || 0,
       extractFormFocus: focus,
       extractSubmit: submit,
+      extractAttempt: attempt,
+      legacyExtractSubmit: legacySubmit,
+      extractAttemptBlocked: blockedAttempts,
       processingComplete: complete,
+      processingCompleteAttributed: attributedComplete,
+      processingCompleteDirect: directComplete,
+      funnelProcessingComplete: funnelComplete,
       downloadActualStart: findEventCount("download_actual_start"),
       invalidUrl,
       shareClick: shares,
@@ -157,8 +169,14 @@ async function main() {
   console.log("\n🎯 CONVERSION FUNNEL (Linear)");
   console.log("-".repeat(40));
   console.log(`1. Form Interest  : ${focus.toString().padEnd(5)} clicks (${pct(focus, sessions)} of sessions)`);
-  console.log(`2. Intent to Clip : ${submit.toString().padEnd(5)} submits (${pct(submit, sessions)} of sessions)`);
-  console.log(`3. Success Rate   : ${complete.toString().padEnd(5)} completes (${pct(complete, submit)} of submits)`);
+  console.log(`2. Intent to Clip : ${submit.toString().padEnd(5)} attempts (${pct(submit, sessions)} of sessions)`);
+  if (blockedAttempts > 0) {
+    console.log(`   Blocked Intents: ${blockedAttempts.toString().padEnd(5)} blocked attempts (${pct(blockedAttempts, sessions)} of sessions)`);
+  }
+  console.log(`3. Success Rate   : ${funnelComplete.toString().padEnd(5)} attributed completes (${pct(funnelComplete, submit)} of attempts)`);
+  if (directComplete > 0 || complete > funnelComplete) {
+    console.log(`   Direct Results  : ${directComplete || (complete - funnelComplete)} completions outside the submit funnel`);
+  }
 
   console.log("\n♻️  GROWTH LOOPS (Network Effects)");
   console.log("-".repeat(40));
@@ -172,11 +190,13 @@ async function main() {
   console.log("\n🧪 MEASUREMENT CHECKS");
   console.log("-".repeat(40));
   if (submit === 0 && complete > 0) {
-    console.log("- Check: processing_complete is greater than extract_submit. Current historical data cannot be used for completion-rate decisions.");
-  } else if (complete > submit) {
-    console.log("- Check: processing_complete exceeds extract_submit. Review event deduplication or demo/bypass flows.");
+    console.log("- Check: completions exist without extract attempts. Treat them as direct result/gallery traffic until the next deploy records attribution.");
+  } else if (funnelComplete > submit) {
+    console.log("- Check: attributed completions exceed attempts. Review event deduplication.");
+  } else if (complete > funnelComplete) {
+    console.log("- Check: submit funnel is separated from direct result/gallery completions.");
   } else {
-    console.log("- Check: submit and completion counts are internally consistent.");
+    console.log("- Check: attempt and attributed completion counts are internally consistent.");
   }
   if (findEventCount("result_view") === 0 && complete > 0) {
     console.log("- Check: result_view is missing while completions exist. Result-page measurement should be verified after the next deploy.");
@@ -231,6 +251,13 @@ async function main() {
     console.log(`\n⚠️  FRICTION POINTS`);
     console.log("-".repeat(40));
     console.log(`- Invalid URLs: ${invalidUrl} (${pct(invalidUrl, submit)} of total attempts)`);
+    if (blockedAttempts > 0) {
+      console.log(`- Blocked attempts: ${blockedAttempts} (${pct(blockedAttempts, sessions)} of sessions)`);
+    }
+  } else if (blockedAttempts > 0) {
+    console.log(`\n⚠️  FRICTION POINTS`);
+    console.log("-".repeat(40));
+    console.log(`- Blocked attempts: ${blockedAttempts} (${pct(blockedAttempts, sessions)} of sessions)`);
   }
 
   console.log("\n💡 GROWTH STRATEGY TIPS:");

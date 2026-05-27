@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { trackEvent } from "@/lib/analytics/gtag";
+import { readExtractionAttribution } from "@/lib/analytics/funnel";
 import { resultText, localeDir, Locale, menuText } from "@/lib/i18n/ui";
 import type { ApiSuccess, ApiFailure, ExtractionResult } from "@/lib/api/types";
 import type { Platform } from "@/lib/extract/types";
@@ -318,6 +319,26 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
       jobId,
       total_session_downloads: sessionDownloadCount,
     });
+
+    const attribution = readExtractionAttribution(jobId);
+    if (attribution && attribution.origin !== "direct") {
+      trackEvent("processing_complete_attributed", {
+        platform: data.platform,
+        locale,
+        jobId,
+        origin: attribution.origin,
+        attempt_id: attribution.attemptId,
+        total_session_downloads: sessionDownloadCount,
+      });
+    } else {
+      trackEvent("processing_complete_direct", {
+        platform: data.platform,
+        locale,
+        jobId,
+        origin: "direct",
+        total_session_downloads: sessionDownloadCount,
+      });
+    }
     sessionStorage.setItem(completionKey, "true");
 
     const isMagic = localStorage.getItem("clipkeep:magic_moment_reached") === "true";

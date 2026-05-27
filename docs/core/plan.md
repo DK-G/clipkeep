@@ -21,7 +21,7 @@
 
 ### 1.4 スコープ外
 - 高度な編集機能（トリミング等）。
-- Instagram の再有効化。
+- Instagram の再有効化。既存の maintenance placeholder と noindex 運用は維持する。
 
 ## 2. 設計原則・基本方針
 - SEO/AISO ファーストで、各ページが明確な検索意図を持つこと。
@@ -29,6 +29,15 @@
 - 多言語は文言翻訳だけでなく、RTL 表示品質まで含めて担保すること。
 - SNS downloader は単一サイト模倣ではなく、複数競合の長所合成で設計すること。
 - test と prod の deploy 先を設定ファイルと release gate で明示的に分離すること。
+
+## 2.5 変更時の不変条件
+- 10言語 (`en/ja/ar/es/pt/fr/id/hi/de/tr`) の UI / metadata / SEO 導線を壊さない。
+- RTL 対応を含む表示品質を維持する。
+- `wrangler.test.toml` と `wrangler.production.toml` を混同しない。`wrangler.toml` の手動切り替えに依存しない。
+- D1 schema、Cloudflare bindings、Durable Object、Cron を変更する場合は migrations、wrangler設定、release checks を同時に更新する。
+- AdSense 審査・運用に必要な法務導線、Privacy、Terms、免責、問い合わせ導線の到達性を維持する。
+- Analytics / GA4 / GSC export は改善判断の材料であり、自動的なプロダクト変更トリガーにはしない。
+- `.env`, `.env.local`, `.secrets`, `.wrangler`, `.next`, `.open-next` はローカル/生成物として扱い、仕様やレビューの正本にしない。
 
 ## 3. 参考サイト戦略（memo反映）
 
@@ -94,7 +103,14 @@
 - `NEXT_PUBLIC_SITE_URL` を metadata / JSON-LD / sitemap / robots の基準URLにする。
 - 詳細は `docs/infra/deployment_profiles.md` と `docs/ops/release_flow.md` を参照する。
 
-## 9. 用語
+## 9. 完了条件
+- 主要ロケールで優先プラットフォームの抽出導線が稼働する。
+- 主要問題解決ページが抽出導線と内部リンクで接続される。
+- degraded モードの動作基準が定義・検証されている。
+- test / prod のデプロイ事故を release gate で防げる。
+- 法務導線、AdSense 関連ページ、sitemap / robots / metadata が本番URL基準で整合している。
+
+## 10. 用語
 - AISO: AI Search Optimization
 - degraded モード: 負荷/コスト制約下での縮退運用モード
 
