@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { homeText, resultText, Locale } from '@/lib/i18n/ui';
 import type { Platform as ExtractPlatform } from '@/lib/extract/types';
 export type Platform = ExtractPlatform;
-import { trackEvent } from '@/lib/analytics/gtag';
+import { trackEvent, trackEventAndWait } from '@/lib/analytics/gtag';
 import { createExtractionAttribution, saveExtractionAttribution } from '@/lib/analytics/funnel';
 
 type TurnstileRenderOptions = {
@@ -238,8 +238,9 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
 
     const attribution = createExtractionAttribution('form', activePlatform, locale);
 
-    trackEvent('extract_attempt', { platform: activePlatform, locale, origin: attribution.origin, attempt_id: attribution.attemptId });
-    trackEvent('extract_submit', { platform: activePlatform, locale, origin: attribution.origin, attempt_id: attribution.attemptId });
+    const attributionParams = { platform: activePlatform, locale, origin: attribution.origin, attempt_id: attribution.attemptId };
+    trackEvent('extract_attempt', attributionParams);
+    await trackEventAndWait('extract_submit', attributionParams);
     trackEvent('processing_start', { platform: activePlatform, locale, origin: attribution.origin, attempt_id: attribution.attemptId, jobId: 'pending' });
 
     try {
@@ -317,8 +318,8 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     const attribution = createExtractionAttribution('demo', 'tiktok', locale);
 
     trackEvent('demo_click', { locale, attempt_id: attribution.attemptId });
-    trackEvent('extract_attempt', { platform: 'tiktok', locale, demo: true, origin: attribution.origin, attempt_id: attribution.attemptId });
-    trackEvent('extract_submit', { platform: 'tiktok', locale, demo: true, origin: attribution.origin, attempt_id: attribution.attemptId });
+    const attributionParams = { platform: 'tiktok', locale, demo: true, origin: attribution.origin, attempt_id: attribution.attemptId };
+    trackEvent('extract_attempt', attributionParams);
     trackEvent('processing_start', { platform: 'tiktok', locale, jobId: 'demo-pending', demo: true, origin: attribution.origin, attempt_id: attribution.attemptId });
     
     // Setup for submission
@@ -327,7 +328,7 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
     updateStatus(l.creatingJob);
 
     // Call the API directly for the demo
-    fetch('/api/v1/extract/prepare', {
+    trackEventAndWait('extract_submit', attributionParams).then(() => fetch('/api/v1/extract/prepare', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ 
@@ -336,7 +337,7 @@ export function ExtractorForm({ platform: initialPlatform = 'telegram', locale =
         locale,
         turnstileToken: 'demo-bypass' // Satisfies the backend check if we want, or just let it be null
       }),
-    })
+    }))
     .then(res => res.json() as Promise<PrepareSuccess | ApiError>)
     .then(payload => {
       if ('data' in payload) {
