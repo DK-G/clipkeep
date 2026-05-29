@@ -45,11 +45,17 @@ Run-Step -Name "Wrangler config target check" -Action {
 
 Run-Step -Name "Release smoke check" -Action {
   powershell -ExecutionPolicy Bypass -File .\scripts\prod_release_check.ps1 -WebBaseUrl $WebBaseUrl -ApiBaseUrl $ApiBaseUrl
+  if ($LASTEXITCODE -ne 0) {
+    throw "Release smoke check failed with exit code $LASTEXITCODE"
+  }
 }
 
 if (-not $SkipD1) {
   Run-Step -Name "D1 migration status check (remote)" -Action {
     $output = & npx wrangler d1 migrations list $DatabaseName --remote 2>&1 | Out-String
+    if ($LASTEXITCODE -ne 0) {
+      throw "Unable to read migration status. wrangler exited with code $LASTEXITCODE.`n$output"
+    }
     if ($VerboseLog) {
       Write-Host $output
     }

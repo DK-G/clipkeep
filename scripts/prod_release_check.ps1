@@ -40,8 +40,14 @@ function Invoke-Req {
     $ex = $_.Exception
     if ($ex.Response -and $ex.Response.StatusCode) {
       $statusCode = [int]$ex.Response.StatusCode
-      $reader = New-Object System.IO.StreamReader($ex.Response.GetResponseStream())
-      $content = $reader.ReadToEnd(); $reader.Dispose()
+      $stream = $ex.Response.GetResponseStream()
+      $content = ""
+      if ($null -ne $stream) {
+        $reader = New-Object System.IO.StreamReader($stream)
+        $content = $reader.ReadToEnd(); $reader.Dispose()
+      } else {
+        $content = $ex.Message
+      }
       $parsed = $null
       try { $parsed = $content | ConvertFrom-Json } catch {}
       return [pscustomobject]@{
