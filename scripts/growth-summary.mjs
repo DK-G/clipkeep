@@ -62,7 +62,7 @@ function parseCsvLine(line) {
 async function readCsv(filePath) {
   try {
     const content = await fs.readFile(filePath, "utf8");
-    const lines = content.split("\n").filter(Boolean);
+    const lines = content.split(/\r?\n/).filter(Boolean);
     const headers = parseCsvLine(lines[0]);
     return lines.slice(1).map((line) => {
       const values = parseCsvLine(line);
