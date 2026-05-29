@@ -39,13 +39,33 @@ function topRows(rows, count, sortKey) {
     .slice(0, count);
 }
 
+function parseCsvLine(line) {
+  const fields = [];
+  let field = "";
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"' && line[i + 1] === '"') { field += '"'; i++; }
+      else if (ch === '"') { inQuotes = false; }
+      else { field += ch; }
+    } else {
+      if (ch === '"') { inQuotes = true; }
+      else if (ch === ",") { fields.push(field); field = ""; }
+      else { field += ch; }
+    }
+  }
+  fields.push(field);
+  return fields;
+}
+
 async function readCsv(filePath) {
   try {
     const content = await fs.readFile(filePath, "utf8");
     const lines = content.split("\n").filter(Boolean);
-    const headers = lines[0].split(",");
+    const headers = parseCsvLine(lines[0]);
     return lines.slice(1).map((line) => {
-      const values = line.split(",");
+      const values = parseCsvLine(line);
       return Object.fromEntries(headers.map((h, i) => [h, values[i]]));
     });
   } catch {

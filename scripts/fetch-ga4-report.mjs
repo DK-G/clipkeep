@@ -311,7 +311,7 @@ async function main() {
     generatedAt: new Date().toISOString(),
     ranges: Object.fromEntries(
       (summaryReport.rows || []).map((row, index) => [
-        dimensionValue(row, 0) || baseDateRanges[index]?.name || `range${index + 1}`,
+        baseDateRanges[index]?.name || `range${index + 1}`,
         {
           activeUsers: metricValue(row, 0),
           sessions: metricValue(row, 1),
