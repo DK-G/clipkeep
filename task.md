@@ -14,6 +14,7 @@
 - [/] Phase 3: Programmatic SEO (Trending Pages)
 
 ## 完了 (Done)
+- [x] PUBLIC-1: Git公開準備として `.env` を追跡対象から外し、`.gitignore` でローカル環境ファイルを除外
 - [x] P2-29: AdSense運用ルール適用（フッター法務導線 + Privacy更新 + 運用チェックシート）
 - [x] P2-28: 429しきい値調整と本番再検証（PASS=11）
 - [x] P2-27: 本番URLでのE2E/法務到達確認
