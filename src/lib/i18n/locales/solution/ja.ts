@@ -3,6 +3,8 @@ import type { SolutionDict } from '../../types';
 export const ja: SolutionDict = {
     loading: "読み込み中...",
     title: "解決ガイド",
+    metaTitle: "ClipKeep 解決ガイド",
+    metaDescription: "ClipKeep の抽出トラブルを解決するための手順と安全な代替策を日本語で案内します。",
     notFound: "ページが見つかりませんでした。",
     networkError: "接続エラーが発生しました。",
     heroSubtitle: "抽出エラーの具体的な対処方法です。",

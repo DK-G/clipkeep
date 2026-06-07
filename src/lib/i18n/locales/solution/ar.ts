@@ -3,6 +3,8 @@ import type { SolutionDict } from '../../types';
 export const ar: SolutionDict = {
     loading: "جارٍ تحميل صفحة الحل...",
     title: "الحل",
+    metaTitle: "دليل ClipKeep للحلول",
+    metaDescription: "تعرف على خطوات عربية واضحة وآمنة لحل مشاكل الاستخراج في ClipKeep واستعادة التنزيل بسرعة.",
     notFound: "لم يتم العثور على صفحة الحل.",
     networkError: "خطأ شبكة أثناء تحميل صفحة الحل.",
     heroSubtitle: "خطوات عملية لمعالجة مشاكل الاستخراج.",

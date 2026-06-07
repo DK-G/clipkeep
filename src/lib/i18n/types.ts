@@ -92,6 +92,8 @@ export type ResultDict = {
 export type SolutionDict = {
   loading: string;
   title: string;
+  metaTitle?: string;
+  metaDescription?: string;
   notFound: string;
   networkError: string;
   heroSubtitle: string;

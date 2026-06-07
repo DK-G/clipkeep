@@ -3,6 +3,8 @@ import type { SolutionDict } from '../../types';
 export const pt: SolutionDict = {
     loading: "Carregando...",
     title: "Guia",
+    metaTitle: "Guia do ClipKeep",
+    metaDescription: "Veja em portugues as etapas para corrigir falhas de extracao no ClipKeep com orientacoes praticas e seguras.",
     notFound: "Não encontrado.",
     networkError: "Erro.",
     heroSubtitle: "Passos de recuperação.",

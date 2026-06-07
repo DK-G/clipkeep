@@ -4,9 +4,9 @@
 - [/] Phase 3.5: 収益最大化向けSEO多言語展開（ja / pt / ar）
     - [ ] プラットフォーム×言語のロングテールキーワードマップ作成（検索需要・競合弱さ・広告収益性・実装リスクで優先度付け）
     - [ ] ja/pt/ar 向け Solution ページの内容充足（X/Reddit/Telegram中心、TikTok除外）
-    - [ ] 各ロケールの `<title>` / `<meta description>` をlocaleファイルに追加
-    - [ ] hreflangタグの実装（`/ja/`, `/pt/`, `/ar/` URLパス対応）
-    - [ ] Sitemap の hreflang alternates 追加
+    - [x] 各ロケールの `<title>` / `<meta description>` をlocaleファイルに追加
+    - [x] hreflangタグの実装（`/ja/`, `/pt/`, `/ar/` URLパス対応）
+    - [x] Sitemap の hreflang alternates 追加
     - [ ] Schema.org（FAQ/HowTo）の多言語実装
 
 ## 完了 (Done)
@@ -33,6 +33,8 @@
 - [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
 
 ## 更新メモ
+- 2026-06-08: `/ja` `/pt` `/ar` path を `middleware.ts` で既存 `?locale=` ルーティングへ rewrite し、`layout` / `faq` / `trending` / `latest` / `solution` の alternates と `app/sitemap.ts` を path-based hreflang に更新。
+- 2026-06-08: `src/lib/i18n/locales/solution/{ja,pt,ar}.ts` に locale metadata 文言を追加。Codex sandbox では `node.exe` が `Access is denied` のため `npm run lint` / `build` / `typecheck` は未実行。
 - 2026-06-03: `docs/core/RoadMap.md` の現在地に合わせ、作業中タスクを Phase 3.5 SEO多言語展開と Phase 4 TikTok Expansion に整理。
 - 2026-06-03: TikTok Expansion は無期限延期。作業中タスクから除外。
 - 2026-06-03: TikTok は公式規約上の商用利用・自動アクセス・無断ダウンロード/転載リスクが残るため、延期を維持。

@@ -1,7 +1,7 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
+import { buildLocaleAlternates, getLocalizedPath, getLocalizedUrl } from '@/lib/metadata-helper';
 import { normalizeLocale, faqText, localeDir } from '@/lib/i18n/ui';
-import { SITE_URL } from '@/lib/site-url';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -24,27 +24,15 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     tr: 'ClipKeep, desteklenen platformlar ve çıkarma süreci hakkında sık sorulan soruların yanıtlarını bulun.',
   };
 
-  const base = SITE_URL;
   const path = '/faq';
-  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
+  const url = getLocalizedUrl(path, locale);
 
   return {
     title: t.title,
     description: descriptions[locale] || descriptions.en,
     alternates: {
       canonical: url,
-      languages: {
-        en: `${base}${path}`,
-        ja: `${base}${path}?locale=ja`,
-        ar: `${base}${path}?locale=ar`,
-        es: `${base}${path}?locale=es`,
-        pt: `${base}${path}?locale=pt`,
-        fr: `${base}${path}?locale=fr`,
-        id: `${base}${path}?locale=id`,
-        hi: `${base}${path}?locale=hi`,
-        de: `${base}${path}?locale=de`,
-        tr: `${base}${path}?locale=tr`,
-      },
+      languages: buildLocaleAlternates(path).languages,
     },
     openGraph: {
       title: t.title,
@@ -69,14 +57,14 @@ export default async function FAQPage({ searchParams }: Props) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    'mainEntity': t.items.map(faq => ({
+    mainEntity: t.items.map(faq => ({
       '@type': 'Question',
-      'name': faq.question,
-      'acceptedAnswer': {
+      name: faq.question,
+      acceptedAnswer: {
         '@type': 'Answer',
-        'text': faq.answer
-      }
-    }))
+        text: faq.answer,
+      },
+    })),
   };
 
   return (
@@ -100,8 +88,8 @@ export default async function FAQPage({ searchParams }: Props) {
       <section className="mt-16 p-10 bg-gray-50 dark:bg-slate-900/50 rounded-3xl text-center border border-gray-100 dark:border-slate-800">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-50 mb-4">{t.stillQuestions}</h2>
         <p className="text-slate-600 dark:text-slate-400 mb-6 font-medium">{t.contactText}</p>
-        <Link 
-          href={`/contact${locale !== 'en' ? `?locale=${locale}` : ''}`} 
+        <Link
+          href={getLocalizedPath('/contact', locale)}
           className="inline-block px-8 py-3 bg-gray-900 dark:bg-blue-600 text-white dark:text-white rounded-full font-bold hover:bg-gray-800 dark:hover:bg-blue-500 transition-colors shadow-lg"
         >
           {t.contactSupport}
@@ -110,6 +98,3 @@ export default async function FAQPage({ searchParams }: Props) {
     </main>
   );
 }
-
-
-

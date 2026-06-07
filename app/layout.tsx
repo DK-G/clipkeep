@@ -7,6 +7,7 @@ import { LocaleUpdater } from '@/components/locale-updater';
 import { AnalyticsPageView } from '@/components/analytics-page-view';
 import { AdDiagnostics } from '@/components/analytics/ad-diagnostics';
 import { GrowthLoopTracker } from '@/components/analytics/growth-loop-tracker';
+import { buildLocaleAlternates } from '@/lib/metadata-helper';
 import { SITE_URL } from '@/lib/site-url';
 
 import './globals.css';
@@ -28,20 +29,7 @@ export const metadata: Metadata = {
     title: 'ClipKeep',
   },
   alternates: {
-    canonical: '/',
-    languages: {
-      en: '/',
-      ar: '/?locale=ar',
-      ja: '/?locale=ja',
-      es: '/?locale=es',
-      pt: '/?locale=pt',
-      fr: '/?locale=fr',
-      id: '/?locale=id',
-      hi: '/?locale=hi',
-      de: '/?locale=de',
-      tr: '/?locale=tr',
-      'x-default': '/',
-    },
+    ...buildLocaleAlternates('/'),
   },
   openGraph: {
     title: 'ClipKeep',

@@ -1,16 +1,14 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { SolutionContentClient } from '@/components/solution-content-client';
+import { solutionText, normalizeLocale, type Locale } from '@/lib/i18n/ui';
+import { buildLocaleAlternates, getLocalizedUrl } from '@/lib/metadata-helper';
 import { findSolutionPage } from '@/lib/solution-pages/store';
-import { normalizeLocale, type Locale } from '@/lib/i18n/ui';
-import { SITE_URL } from '@/lib/site-url';
 
 interface Props {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
-
-const allLocales: Locale[] = ['en', 'ja', 'ar', 'es', 'pt', 'fr', 'id', 'hi', 'de', 'tr'];
 
 function normalizeStoreLocale(value: string | undefined): Locale {
   return normalizeLocale(value);
@@ -24,21 +22,17 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const page = findSolutionPage(slug, locale);
   if (!page) return {};
 
-  const base = SITE_URL;
   const path = `/solution/${slug}`;
-  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
+  const url = getLocalizedUrl(path, locale);
+  const dict = solutionText[locale] || solutionText.en;
+  const description = page.sections[0]?.body || dict.metaDescription || 'ClipKeep solution guide.';
 
-  const languages = Object.fromEntries(
-    allLocales.map((l) => [l, `${base}${path}${l === 'en' ? '' : `?locale=${l}`}`]),
-  );
-
-  const description = page.sections[0]?.body || 'ClipKeep solution guide.';
   return {
     title: page.title,
     description,
     alternates: {
       canonical: url,
-      languages,
+      languages: buildLocaleAlternates(path).languages,
     },
     openGraph: {
       title: page.title,
@@ -64,10 +58,10 @@ export default async function Page({ params, searchParams }: Props) {
     notFound();
   }
 
-  const base = SITE_URL;
   const path = `/solution/${slug}`;
-  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
-  const description = page.sections[0]?.body || 'ClipKeep solution guide.';
+  const url = getLocalizedUrl(path, locale);
+  const dict = solutionText[locale] || solutionText.en;
+  const description = page.sections[0]?.body || dict.metaDescription || 'ClipKeep solution guide.';
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -80,53 +74,53 @@ export default async function Page({ params, searchParams }: Props) {
       },
       {
         '@type': 'BreadcrumbList',
-        'itemListElement': [
+        itemListElement: [
           {
             '@type': 'ListItem',
-            'position': 1,
-            'name': locale === 'ja' ? 'ホーム' : 'Home',
-            'item': `${base}${locale === 'en' ? '/' : `/?locale=${locale}`}`
+            position: 1,
+            name: locale === 'ja' ? 'ホーム' : 'Home',
+            item: getLocalizedUrl('/', locale),
           },
           {
             '@type': 'ListItem',
-            'position': 2,
-            'name': locale === 'ja' ? '解決策' : 'Solutions',
-            'item': `${base}/faq${locale === 'en' ? '' : `?locale=${locale}`}` // Linking to main FAQ as the parent
+            position: 2,
+            name: locale === 'ja' ? '解決策' : 'Solutions',
+            item: getLocalizedUrl('/faq', locale),
           },
           {
             '@type': 'ListItem',
-            'position': 3,
-            'name': page.title,
-            'item': url
-          }
-        ]
+            position: 3,
+            name: page.title,
+            item: url,
+          },
+        ],
       },
       {
         '@type': 'HowTo',
-        'name': page.title,
-        'description': description,
-        'step': page.sections.map((section, index) => ({
+        name: page.title,
+        description,
+        step: page.sections.map((section, index) => ({
           '@type': 'HowToStep',
-          'position': index + 1,
-          'name': section.heading,
-          'text': section.body,
-          'url': `${url}#${section.id}`
-        }))
+          position: index + 1,
+          name: section.heading,
+          text: section.body,
+          url: `${url}#${section.id}`,
+        })),
       },
       {
         '@type': 'FAQPage',
-        'mainEntity': [
+        mainEntity: [
           {
             '@type': 'Question',
-            'name': page.title,
-            'acceptedAnswer': {
+            name: page.title,
+            acceptedAnswer: {
               '@type': 'Answer',
-              'text': page.sections.map(s => s.body).join(' ')
-            }
-          }
-        ]
-      }
-    ]
+              text: page.sections.map(s => s.body).join(' '),
+            },
+          },
+        ],
+      },
+    ],
   };
 
   return (
@@ -136,5 +130,3 @@ export default async function Page({ params, searchParams }: Props) {
     </>
   );
 }
-
-

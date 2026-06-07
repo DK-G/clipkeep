@@ -8,22 +8,46 @@ const SUPPORTED_GALLERY_PLATFORMS = new Set([
 
 export type GalleryRange = 'today' | 'week' | 'month';
 
-function buildLocaleAlternates(path: string) {
-  const base = SITE_URL;
+export const SUPPORTED_LOCALES = [
+  'en',
+  'ar',
+  'ja',
+  'es',
+  'pt',
+  'fr',
+  'id',
+  'hi',
+  'de',
+  'tr',
+] as const satisfies readonly Locale[];
+
+const PATH_HREFLANG_LOCALES = new Set<Locale>(['ja', 'pt', 'ar']);
+
+export function getLocalizedPath(path: string, locale: Locale): string {
+  if (locale === 'en') {
+    return path;
+  }
+  if (PATH_HREFLANG_LOCALES.has(locale)) {
+    return path === '/' ? `/${locale}` : `/${locale}${path}`;
+  }
+  const separator = path.includes('?') ? '&' : '?';
+  return `${path}${separator}locale=${locale}`;
+}
+
+export function getLocalizedUrl(path: string, locale: Locale): string {
+  return `${SITE_URL}${getLocalizedPath(path, locale)}`;
+}
+
+export function buildLocaleAlternates(path: string) {
+  const languages = Object.fromEntries(
+    SUPPORTED_LOCALES.map((locale) => [locale, getLocalizedUrl(path, locale)]),
+  ) as Record<Locale, string>;
+
   return {
-    canonical: `${base}${path}`,
+    canonical: getLocalizedUrl(path, 'en'),
     languages: {
-      en: `${base}${path}`,
-      ar: `${base}${path}?locale=ar`,
-      ja: `${base}${path}?locale=ja`,
-      es: `${base}${path}?locale=es`,
-      pt: `${base}${path}?locale=pt`,
-      fr: `${base}${path}?locale=fr`,
-      id: `${base}${path}?locale=id`,
-      hi: `${base}${path}?locale=hi`,
-      de: `${base}${path}?locale=de`,
-      tr: `${base}${path}?locale=tr`,
-      'x-default': `${base}${path}`,
+      ...languages,
+      'x-default': getLocalizedUrl(path, 'en'),
     },
   };
 }
@@ -65,7 +89,7 @@ export function getGalleryMetadata(
   if (!dict) return {};
 
   const path = getGalleryCanonicalPath(type, platform === 'all' ? null : platform);
-  const url = `${SITE_URL}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
+  const url = getLocalizedUrl(path, locale);
   const description = descriptionOverride || dict.description;
 
   return {

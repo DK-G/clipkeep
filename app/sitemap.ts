@@ -1,13 +1,11 @@
 import type { MetadataRoute } from "next";
 import { keywordArticles } from "@/lib/blog/keyword-articles";
+import { buildLocaleAlternates, getLocalizedUrl, SUPPORTED_LOCALES } from "@/lib/metadata-helper";
+import type { Locale } from "@/lib/i18n/ui";
 import { pages } from "@/lib/solution-pages/store";
 
-const BASE_URL = "https://clipkeep.net";
-
-// All supported locales
-const ALL_LOCALES = ["en", "ja", "ar", "es", "pt", "fr", "id", "hi", "de", "tr"] as const;
-// Primary locales used for content-heavy pages (blog, solution)
-const PRIMARY_LOCALES = ["en", "ja", "es", "pt"] as const;
+const ALL_LOCALES = SUPPORTED_LOCALES;
+const PRIMARY_LOCALES = ["en", "ja", "es", "pt"] as const satisfies readonly Locale[];
 
 const DOWNLOADER_PATHS = [
   "/download-twitter-video",
@@ -34,25 +32,21 @@ const LEGAL_PATHS = ["/legal/privacy", "/legal/terms", "/legal/dmca", "/legal/co
 
 const SOLUTION_SLUGS = Array.from(new Set(pages.map((p) => p.slug)));
 
-function localeUrl(path: string, locale: string): string {
-  const base = `${BASE_URL}${path}`;
-  if (locale === "en") return base;
-  const sep = path.includes("?") ? "&" : "?";
-  return `${base}${sep}locale=${locale}`;
-}
-
 function makeEntries(
   path: string,
-  locales: readonly string[],
+  locales: readonly Locale[],
   priority: number,
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"],
   lastModified?: Date,
 ): MetadataRoute.Sitemap {
   return locales.map((locale) => ({
-    url: localeUrl(path, locale),
+    url: getLocalizedUrl(path, locale),
     lastModified: lastModified ?? new Date("2026-04-30"),
     changeFrequency,
     priority,
+    alternates: {
+      languages: buildLocaleAlternates(path).languages,
+    },
   }));
 }
 
