@@ -9,11 +9,11 @@
 - `task.md`: Phase 3.5 の完了チェックと作業メモを更新。
 
 **確認方法**:
-1. 人間環境で `npm run lint` を実行する。
-2. 人間環境で `npm run typecheck` を実行する。
-3. 人間環境で `npm run build` を実行する。
-4. `/ja/faq`, `/pt/trending`, `/ar/solution/<slug>` が既存ページへ rewrite され、`<link rel="alternate">` と sitemap alternates が path-based URL を返すことを確認する。
+1. `npm run typecheck`（成功）
+2. `npm run lint`（成功）
+3. `npm run build`（成功）
+4. `/ja/faq`, `/pt/trending`, `/ar/solution/<slug>` が既存ページへ rewrite され、`<link rel="alternate">` と sitemap alternates が path-based URL を返すことをブラウザで確認する。
 
 **既知の課題**:
-- この Codex sandbox では `node.exe` 実行が `Access is denied` で拒否されるため、`npm run lint` / `npm run typecheck` / `npm run build` は未実行。
 - 既存の query-string locale リンクは一部残っており、今回は hreflang/canonical/sitemap と rewrite 層を優先している。
+- `/ja|pt|ar` rewrite のブラウザ確認は未実行。

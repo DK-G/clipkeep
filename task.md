@@ -34,7 +34,7 @@
 
 ## 更新メモ
 - 2026-06-08: `/ja` `/pt` `/ar` path を `middleware.ts` で既存 `?locale=` ルーティングへ rewrite し、`layout` / `faq` / `trending` / `latest` / `solution` の alternates と `app/sitemap.ts` を path-based hreflang に更新。
-- 2026-06-08: `src/lib/i18n/locales/solution/{ja,pt,ar}.ts` に locale metadata 文言を追加。Codex sandbox では `node.exe` が `Access is denied` のため `npm run lint` / `build` / `typecheck` は未実行。
+- 2026-06-08: `src/lib/i18n/locales/solution/{ja,pt,ar}.ts` に locale metadata 文言を追加。`npm run typecheck` / `npm run lint` / `npm run build` 成功。
 - 2026-06-03: `docs/core/RoadMap.md` の現在地に合わせ、作業中タスクを Phase 3.5 SEO多言語展開と Phase 4 TikTok Expansion に整理。
 - 2026-06-03: TikTok Expansion は無期限延期。作業中タスクから除外。
 - 2026-06-03: TikTok は公式規約上の商用利用・自動アクセス・無断ダウンロード/転載リスクが残るため、延期を維持。
