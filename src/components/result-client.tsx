@@ -17,6 +17,8 @@ import { usePlatformUsage } from "@/hooks/use-platform-usage";
 import { ExtractorForm } from "@/components/extractor-form";
 import { DownloadGuard } from "@/components/download-guard";
 import { MagicMomentCelebration } from "@/components/analytics/magic-moment-celebration";
+import { MonetaguBanner } from "@/components/ads/monetag-banner";
+import { PwaInstallBanner } from "@/components/pwa-install-banner";
 
 
 interface ResultClientProps {

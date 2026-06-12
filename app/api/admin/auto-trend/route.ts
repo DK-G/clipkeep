@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { runAutoTrendUpdate } from "@/lib/auto-trend";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db/d1";
+import { checkInMemory, getClientKey } from "@/lib/rate-limit/admin";
 
 export const dynamic = 'force-dynamic';
 

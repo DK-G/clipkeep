@@ -26,6 +26,9 @@ export type ApiErrorBody = {
     | "DB_ERROR"
     | "MISSING_PLATFORM"
     | "MISSING_JOB_ID"
+    | "INVALID_PLATFORM"
+    | "INVALID_PARAMS"
+    | "INVALID_INDEX"
     | "TRACKING_ERROR"
     | "TURNSTILE_MISSING"
     | "TURNSTILE_FAILED";
@@ -61,4 +64,3 @@ export interface ExtractionResult {
   source_url?: string;
   warnings: string[];
 }
-
