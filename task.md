@@ -9,6 +9,7 @@
     - [ ] GSC で sitemap 再送信とカバレッジ確認（インデックス除外理由の一次データ取得）
     - [ ] ホーム title から未対応の TikTok を除去し実態と一致させる
     - [ ] workers.dev 配信の重複対策（canonical は clipkeep.net を指すことを本番で確認）
+    - [ ] blog / about / contact / legal / status の canonical を metadata-helper 方式に統一（現状 ?locale= 自己参照 canonical が残存）
 - [/] Phase 3.5: 収益最大化向けSEO多言語展開（ja / pt / ar）
     - [ ] プラットフォーム×言語のロングテールキーワードマップ作成（検索需要・競合弱さ・広告収益性・実装リスクで優先度付け）
     - [ ] ja/pt/ar 向け Solution ページの内容充足（X/Reddit/Telegram中心、TikTok除外）
