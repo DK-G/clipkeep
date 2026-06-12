@@ -440,12 +440,13 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
     <>
       <MagicMomentCelebration locale={locale} />
       {guardActive && (
-        <DownloadGuard 
-          text={t.preparingDownload} 
-          onComplete={handleGuardComplete} 
+        <DownloadGuard
+          text={t.preparingDownload}
+          onComplete={handleGuardComplete}
           duration={getGuardDuration(sessionDownloadCount)} locale={locale}
         />
       )}
+      <PwaInstallBanner locale={locale} trigger={sessionDownloadCount > 0} />
       <div className="max-w-5xl mx-auto py-8 sm:py-12 px-4 sm:px-6" dir={dir}>
         <header className="mb-8">
           <Link href={`/download-${data.platform}-video?locale=${locale}`} className="text-blue-600 dark:text-blue-400 font-bold hover:underline inline-flex items-center gap-2">
@@ -649,7 +650,11 @@ export function ResultClient({ jobId, locale, initialData }: ResultClientProps) 
           </div>
         </main>
 
-        <div className="mt-16 space-y-10">
+        <div className="mt-10">
+          <MonetaguBanner zoneId="RESULT_FEED_BANNER_ZONE_ID" className="min-h-[90px]" />
+        </div>
+
+        <div className="mt-6 space-y-10">
           <section className="rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-5 sm:p-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>

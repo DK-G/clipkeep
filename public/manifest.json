@@ -15,5 +15,31 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "TikTok Downloader",
+      "short_name": "TikTok",
+      "url": "/download-tiktok-video?utm_source=pwa_shortcut",
+      "icons": [{ "src": "/icon.png", "sizes": "1024x1024" }]
+    },
+    {
+      "name": "Twitter / X Downloader",
+      "short_name": "Twitter",
+      "url": "/download-twitter-video?utm_source=pwa_shortcut",
+      "icons": [{ "src": "/icon.png", "sizes": "1024x1024" }]
+    },
+    {
+      "name": "Trending",
+      "short_name": "Trending",
+      "url": "/trending?utm_source=pwa_shortcut",
+      "icons": [{ "src": "/icon.png", "sizes": "1024x1024" }]
+    },
+    {
+      "name": "History",
+      "short_name": "History",
+      "url": "/history?utm_source=pwa_shortcut",
+      "icons": [{ "src": "/icon.png", "sizes": "1024x1024" }]
+    }
   ]
 }

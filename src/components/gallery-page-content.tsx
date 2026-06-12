@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import type { Platform as ExtractPlatform } from '@/lib/extract/types';
 import { Locale, galleryPages, galleryRangeText, menuText } from '@/lib/i18n/ui';
 import { GallerySection, GalleryItem } from '@/components/gallery-section';
+import { MonetaguBanner } from '@/components/ads/monetag-banner';
 import { SEOContent } from '@/components/seo-content';
 import { VideoSchema } from '@/components/video-schema';
 import { BreadcrumbSchema } from '@/components/breadcrumb-schema';
@@ -258,6 +259,10 @@ export function GalleryPageContent({ platform, locale, type, range }: GalleryPag
         dense={false}
         layout="masonry"
       />
+
+      <div className="mt-10">
+        <MonetaguBanner zoneId="GALLERY_BANNER_ZONE_ID" className="min-h-[100px]" />
+      </div>
 
       <section className="mt-12 max-w-4xl mx-auto rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-3">{t.nextSteps}</h2>
