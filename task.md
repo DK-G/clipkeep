@@ -1,5 +1,19 @@
 # 作業タスクリスト: ClipKeep
 
+## 戦略バックログ（日次ループはここの先頭から1件選ぶ。優先順位は週次レビューが管理）
+
+正本: `docs/strategy/growth-strategy.md`（北極星: Monetag タグロード数/日）
+
+1. [ ] 計測: `scripts/growth-summary.mjs` に北極星 `ad_script_load`（zone別）の28日集計を追加し、growth:review 出力に表示する
+2. [ ] 柱1/TikTok-SEO: 「TikTok 保存できない/ロゴなし保存」solution ページ（en/ja）を新設。あわせて home title の TikTok 表記と extractor 実態の整合を確認し、不一致なら title を実態に合わせる（extractor は作らない）
+3. [ ] 柱1: ja Solution ページの内容充足（X/Reddit/Telegram 中心）
+4. [ ] 柱1: pt Solution ページの内容充足
+5. [ ] 柱1: ar Solution ページの内容充足（RTL 目視確認込み）
+6. [ ] 柱2: トレンド鮮度ページ生成パイプラインの設計（trending cron のデータから「{トレンド} video download」系ページを生成する方式を bythink で設計し、設計文書を docs/strategy/ に出す）
+7. [ ] OPS-1残: blog / about / contact / legal / status の canonical を metadata-helper 方式に統一
+8. [ ] 柱1: Schema.org（FAQ/HowTo）の ja/pt/ar 実装
+9. [ ] OPS-1残: workers.dev 配信の重複対策（canonical が clipkeep.net を指すことを本番確認）
+
 ## 作業中 (In Progress)
 - [/] OPS-1: 獲得ゼロ問題の是正（2026-06-12 診断に基づく）
     - [x] 原因診断: 未デプロイ（/ja/ 404・旧sitemap）、hreflang全言語同一URL、?locale= canonical畳み込み、GA4認証失効、weekly review未記入

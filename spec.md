@@ -58,7 +58,7 @@ memo.md          # 調査メモ
 
 - **デプロイ設定の混同禁止**: `wrangler.test.toml` と `wrangler.production.toml` を混同しない。`wrangler.toml` の手動切り替えに依存しない。デプロイ前は `check:release:test` / `check:release:prod` を必ず通す。
 - **10言語・RTL保証**: `en/ja/ar/es/pt/fr/id/hi/de/tr` の UI / metadata / SEO 導線を壊さない。RTL 表示品質も含む。
-- **法務導線の維持**: AdSense審査・運用に必要な Privacy、Terms、免責、問い合わせ導線の到達性を壊さない。
+- **法務導線の維持**: Privacy、Terms、免責、問い合わせ導線の到達性を壊さない（ユーザー信頼目的。2026-06-12 以降 AdSense 審査は追わず、収益化は Monetag 一本。正本: `docs/strategy/growth-strategy.md`）。
 - **D1 schema変更時の同期**: Cloudflare bindings、Durable Object、Cron を変更する場合は migrations・wrangler設定・release checks を同時に更新する。
 - **Analyticsは参考情報**: GA4 / GSC エクスポートは改善判断の材料であり、自動的なプロダクト変更トリガーにしない。`npm run growth:review` はデータ収集のみ。
 - **生成物をコミットしない**: `.env`, `.env.local`, `.secrets`, `.wrangler`, `.next`, `.open-next` はローカル/生成物であり、仕様・レビューの正本にしない。
