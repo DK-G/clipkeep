@@ -36,6 +36,15 @@ async function setLastRunAt(iso: string): Promise<void> {
  * 毎時トレンド抽出を実行するためのAPIエンドポイント。
  */
 export async function GET(request: Request) {
+  const clientKey = getClientKey(request);
+  const { limited, retryAfterSec } = checkInMemory(clientKey, Date.now(), 60_000, 5);
+  if (limited) {
+    return NextResponse.json({ error: "Too Many Requests" }, {
+      status: 429,
+      headers: { "Retry-After": String(retryAfterSec) },
+    });
+  }
+
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get("secret");
 
@@ -96,5 +105,5 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-   return GET(request);
+  return GET(request);
 }
