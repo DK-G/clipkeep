@@ -1,6 +1,13 @@
 # 作業タスクリスト: ClipKeep
 
 ## 作業中 (In Progress)
+- [/] OPS-1: 獲得ゼロ問題の是正（2026-06-12 診断に基づく）
+    - [x] 原因診断: 未デプロイ（/ja/ 404・旧sitemap）、hreflang全言語同一URL、?locale= canonical畳み込み、GA4認証失効、weekly review未記入
+    - [/] main を本番デプロイし `/ja/` 200 と path-based sitemap を本番確認
+    - [ ] GA4/GSC 認証復旧（要ユーザー操作: `npm run analytics:ga4:login` 再実行 or `.secrets/ga4-service-account.json` 配置+GA4プロパティ権限付与）
+    - [ ] GSC で sitemap 再送信とカバレッジ確認（インデックス除外理由の一次データ取得）
+    - [ ] ホーム title から未対応の TikTok を除去し実態と一致させる
+    - [ ] workers.dev 配信の重複対策（canonical は clipkeep.net を指すことを本番で確認）
 - [/] Phase 3.5: 収益最大化向けSEO多言語展開（ja / pt / ar）
     - [ ] プラットフォーム×言語のロングテールキーワードマップ作成（検索需要・競合弱さ・広告収益性・実装リスクで優先度付け）
     - [ ] ja/pt/ar 向け Solution ページの内容充足（X/Reddit/Telegram中心、TikTok除外）
@@ -33,6 +40,7 @@
 - [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
 
 ## 更新メモ
+- 2026-06-12: 「全く伸びない」原因診断を実施。最大要因は①改修が本番未反映（デプロイギャップ）②本番の hreflang/canonical が全言語同一URLでインデックス2件のみ③GA4認証失効で計測不能。対策として AGENTS.md に Definition of Done（デプロイ+本番検証必須）と Launch-Phase KPI Gate（北極星=インデックス数/GSC impressions、CVR微調整凍結）を追加。playbook 先頭にも同ゲートを追記。
 - 2026-06-08: `/ja` `/pt` `/ar` path を `middleware.ts` で既存 `?locale=` ルーティングへ rewrite し、`layout` / `faq` / `trending` / `latest` / `solution` の alternates と `app/sitemap.ts` を path-based hreflang に更新。
 - 2026-06-08: `src/lib/i18n/locales/solution/{ja,pt,ar}.ts` に locale metadata 文言を追加。`npm run typecheck` / `npm run lint` / `npm run build` 成功。
 - 2026-06-03: `docs/core/RoadMap.md` の現在地に合わせ、作業中タスクを Phase 3.5 SEO多言語展開と Phase 4 TikTok Expansion に整理。

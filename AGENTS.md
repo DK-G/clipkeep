@@ -39,6 +39,44 @@ When the user invokes one of these names, read the matching portfolio routine:
 If the shared file cannot be read, continue with the same intent using local
 primary sources and mention the unavailable shared file in the result.
 
+## Definition of Done (MANDATORY for every improvement loop)
+
+A change is NOT complete at commit time. Every loop iteration must finish all of:
+
+1. Implement + verify locally (`npm run typecheck`, `npm run lint`, `npm run build`).
+2. Merge to `main` and push to `origin/main` (or leave an explicit handoff note in
+   `AGENT_RESULT.md` if push is blocked, marked `status: blocked-needs-push`).
+3. Deploy to production: `npm run deploy:prod`.
+4. Run the release gate against production: `npm run check:release:prod`.
+5. Verify the changed surface on the LIVE site (https://clipkeep.net), not localhost.
+   Example: locale path work requires `https://clipkeep.net/ja/` to return 200 and
+   `https://clipkeep.net/sitemap.xml` to reflect the new URL format.
+6. Record the deployed version ID and live-verification results in the daily log
+   (`docs/ops/daily/YYYY-MM-DD.md`).
+
+If any step cannot be executed, the iteration result must say so explicitly.
+"Committed but not deployed" silently is the failure mode that stalled growth in
+2026-05/06 — never repeat it.
+
+## Launch-Phase KPI Gate (added 2026-06-12)
+
+Until BOTH of the following are true, treat acquisition as the only growth priority:
+
+- Google-indexed pages (Search Console coverage) >= 50
+- Search impressions (GSC, last 28 days) >= 1,000
+
+While below these thresholds:
+
+- North-star metrics are **indexed page count** and **GSC impressions** — not page
+  views, not funnel CVR.
+- CVR / funnel micro-optimization (form friction, event consistency, download-button
+  tuning) is FROZEN. Do not select these as daily tasks.
+- Eligible daily tasks: deploy/indexing fixes, sitemap/canonical/hreflang correctness,
+  ja/pt/ar solution-page content fill (long-tail keywords), internal linking,
+  GSC sitemap submission and coverage triage, analytics auth repair.
+- Weekly review (`docs/ops/weekly_review_playbook.md`) must record actual numbers.
+  A review with TBD values counts as a failed iteration.
+
 ## Project-Specific Notes
 
 - Main stack: Next.js App Router, React 19, TypeScript, OpenNext for Cloudflare, Cloudflare D1, Durable Object rate limiting, Worker Cron.

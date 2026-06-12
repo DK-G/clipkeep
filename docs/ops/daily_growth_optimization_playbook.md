@@ -1,6 +1,31 @@
 # Daily Growth Optimization Playbook
 
-Last updated: 2026-05-03
+Last updated: 2026-06-12
+
+## Launch-Phase Gate (READ FIRST — overrides the rest of this playbook)
+
+Status check (2026-06-12): the site has ~2 pages indexed by Google and ~8 page
+views per 28 days. At this stage the funnel sections below are NOT actionable —
+there is no traffic to optimize. See "Launch-Phase KPI Gate" in `AGENTS.md`.
+
+Until indexed pages >= 50 AND GSC impressions (28d) >= 1,000:
+
+1. Daily task selection is restricted to acquisition work:
+   indexing/canonical/hreflang correctness, sitemap hygiene, ja/pt/ar solution-page
+   content fill, internal linking, GSC coverage triage, analytics auth repair.
+2. Every shipped change must reach production the same day
+   (`npm run deploy:prod` + `npm run check:release:prod` + live check). A commit
+   that is not deployed is a failed iteration, not a completed one.
+3. The daily scorecard is replaced by:
+
+| Metric | Source | Target direction |
+|---|---|---|
+| Indexed pages | GSC coverage | up |
+| Impressions (28d) | GSC performance | up |
+| Pages submitted vs indexed gap | GSC | down |
+| Deployed version freshness | `wrangler deployments list` vs git main | same-day |
+
+Once the gate is cleared, resume the normal playbook below.
 
 ## Purpose
 
