@@ -38,13 +38,22 @@ export function getLocalizedUrl(path: string, locale: Locale): string {
   return `${SITE_URL}${getLocalizedPath(path, locale)}`;
 }
 
-export function buildLocaleAlternates(path: string) {
+// Only locales with distinct URLs (en root + /ja /pt /ar paths) participate in
+// hreflang. Query-param locale views are duplicates that canonicalize to the
+// English page; listing them in hreflang would contradict their canonical.
+const HREFLANG_LOCALES = ['en', 'ja', 'pt', 'ar'] as const satisfies readonly Locale[];
+
+export function buildLocaleAlternates(path: string, currentLocale: Locale = 'en') {
   const languages = Object.fromEntries(
-    SUPPORTED_LOCALES.map((locale) => [locale, getLocalizedUrl(path, locale)]),
-  ) as Record<Locale, string>;
+    HREFLANG_LOCALES.map((locale) => [locale, getLocalizedUrl(path, locale)]),
+  ) as Partial<Record<Locale, string>>;
+
+  // Each path-locale page is canonical for itself; query-param locale views
+  // fold into the English page.
+  const canonicalLocale = PATH_HREFLANG_LOCALES.has(currentLocale) ? currentLocale : 'en';
 
   return {
-    canonical: getLocalizedUrl(path, 'en'),
+    canonical: getLocalizedUrl(path, canonicalLocale),
     languages: {
       ...languages,
       'x-default': getLocalizedUrl(path, 'en'),
@@ -95,7 +104,7 @@ export function getGalleryMetadata(
   return {
     title: dict.title,
     description,
-    alternates: buildLocaleAlternates(path),
+    alternates: buildLocaleAlternates(path, locale),
     robots: shouldNoindex ? { index: false, follow: true, googleBot: { index: false, follow: true } } : undefined,
     openGraph: { title: dict.title, description, url, type: 'website' },
     twitter: { card: 'summary_large_image', title: dict.title, description },

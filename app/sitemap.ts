@@ -1,11 +1,16 @@
 import type { MetadataRoute } from "next";
 import { keywordArticles } from "@/lib/blog/keyword-articles";
-import { buildLocaleAlternates, getLocalizedUrl, SUPPORTED_LOCALES } from "@/lib/metadata-helper";
+import { buildLocaleAlternates, getLocalizedUrl } from "@/lib/metadata-helper";
 import type { Locale } from "@/lib/i18n/ui";
 import { pages } from "@/lib/solution-pages/store";
 
-const ALL_LOCALES = SUPPORTED_LOCALES;
-const PRIMARY_LOCALES = ["en", "ja", "es", "pt"] as const satisfies readonly Locale[];
+// Only list URLs that are canonical for themselves: the English page plus the
+// /ja /pt /ar path versions. Query-param locale views canonicalize to the
+// English page, so submitting them would only produce
+// "Duplicate, submitted URL not selected as canonical" noise in Search Console.
+const CANONICAL_LOCALES = ["en", "ja", "pt", "ar"] as const satisfies readonly Locale[];
+const ALL_LOCALES = CANONICAL_LOCALES;
+const PRIMARY_LOCALES = CANONICAL_LOCALES;
 
 const DOWNLOADER_PATHS = [
   "/download-twitter-video",

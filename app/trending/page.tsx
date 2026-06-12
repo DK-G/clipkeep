@@ -28,10 +28,7 @@ export async function generateMetadata({ searchParams }: TrendingPageProps): Pro
   return {
     title: `${t.globalTrending || 'Trending Hub'} | ClipKeep`,
     description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: buildLocaleAlternates(guard.canonicalPath).languages,
-    },
+    alternates: buildLocaleAlternates(guard.canonicalPath, locale),
     robots: guard.shouldNoindex ? { index: false, follow: true, googleBot: { index: false, follow: true } } : undefined,
     openGraph: { title: `${t.globalTrending || 'Trending Hub'} | ClipKeep`, description, url: canonicalUrl, type: 'website' },
     twitter: { card: 'summary_large_image', title: `${t.globalTrending || 'Trending Hub'} | ClipKeep`, description },

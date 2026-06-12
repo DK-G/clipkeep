@@ -7,7 +7,6 @@ import { LocaleUpdater } from '@/components/locale-updater';
 import { AnalyticsPageView } from '@/components/analytics-page-view';
 import { AdDiagnostics } from '@/components/analytics/ad-diagnostics';
 import { GrowthLoopTracker } from '@/components/analytics/growth-loop-tracker';
-import { buildLocaleAlternates } from '@/lib/metadata-helper';
 import { SITE_URL } from '@/lib/site-url';
 
 import './globals.css';
@@ -27,9 +26,6 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'default',
     title: 'ClipKeep',
-  },
-  alternates: {
-    ...buildLocaleAlternates('/'),
   },
   openGraph: {
     title: 'ClipKeep',

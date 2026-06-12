@@ -28,10 +28,7 @@ export async function generateMetadata({ searchParams }: LatestPageProps): Promi
   return {
     title: `${t.latest} | ClipKeep`,
     description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: buildLocaleAlternates(guard.canonicalPath).languages,
-    },
+    alternates: buildLocaleAlternates(guard.canonicalPath, locale),
     robots: guard.shouldNoindex ? { index: false, follow: true, googleBot: { index: false, follow: true } } : undefined,
     openGraph: { title: `${t.latest} | ClipKeep`, description, url: canonicalUrl, type: 'website' },
     twitter: { card: 'summary_large_image', title: `${t.latest} | ClipKeep`, description },

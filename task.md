@@ -3,7 +3,8 @@
 ## 作業中 (In Progress)
 - [/] OPS-1: 獲得ゼロ問題の是正（2026-06-12 診断に基づく）
     - [x] 原因診断: 未デプロイ（/ja/ 404・旧sitemap）、hreflang全言語同一URL、?locale= canonical畳み込み、GA4認証失効、weekly review未記入
-    - [/] main を本番デプロイし `/ja/` 200 と path-based sitemap を本番確認
+    - [x] main を本番デプロイし `/ja` 200 と path-based sitemap を本番確認（2026-06-12, ver 708c8fc4）
+    - [x] canonical/hreflang の矛盾を修正（自己参照 canonical、hreflang は en/ja/pt/ar のみ、sitemap から ?locale= を全廃 5,486→508 URL）
     - [ ] GA4/GSC 認証復旧（要ユーザー操作: `npm run analytics:ga4:login` 再実行 or `.secrets/ga4-service-account.json` 配置+GA4プロパティ権限付与）
     - [ ] GSC で sitemap 再送信とカバレッジ確認（インデックス除外理由の一次データ取得）
     - [ ] ホーム title から未対応の TikTok を除去し実態と一致させる

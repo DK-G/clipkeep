@@ -1,8 +1,9 @@
-﻿import { Suspense } from 'react';
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { SnsDownloaderClient } from '@/components/downloaders/sns-downloader-client';
 import { redditText, normalizeLocale, menuText } from '@/lib/i18n/ui';
 import { SITE_URL } from '@/lib/site-url';
+import { buildLocaleAlternates, getLocalizedUrl } from '@/lib/metadata-helper';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -28,29 +29,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = redditText[locale];
-  const base = SITE_URL;
   const path = '/download-reddit-video';
-  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
+  const url = getLocalizedUrl(path, locale);
 
   return {
     title: t.title,
     description: t.subtitle,
-    alternates: {
-      canonical: url,
-      languages: {
-        en: `${base}${path}`,
-        ar: `${base}${path}?locale=ar`,
-        ja: `${base}${path}?locale=ja`,
-        es: `${base}${path}?locale=es`,
-        pt: `${base}${path}?locale=pt`,
-        fr: `${base}${path}?locale=fr`,
-        id: `${base}${path}?locale=id`,
-        hi: `${base}${path}?locale=hi`,
-        de: `${base}${path}?locale=de`,
-        tr: `${base}${path}?locale=tr`,
-        'x-default': `${base}${path}`,
-      },
-    },
+    alternates: buildLocaleAlternates(path, locale),
     openGraph: {
       title: t.title,
       description: t.subtitle,

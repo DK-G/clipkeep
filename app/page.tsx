@@ -6,6 +6,7 @@ import { HistorySection } from '@/components/history-section';
 import { ExtractorForm } from '@/components/extractor-form';
 import { TrendingHubSection } from '@/components/trending-hub-section';
 import { SITE_URL } from '@/lib/site-url';
+import { buildLocaleAlternates, getLocalizedUrl } from '@/lib/metadata-helper';
 import Link from 'next/link';
 import {
   TiktokIcon, TwitterXIcon, TelegramIcon, RedditIcon,
@@ -84,8 +85,7 @@ const faqDict: Record<string, { q1: string; a1: string; q2: string; a2: string }
 export async function generateMetadata({ searchParams }: HomeProps): Promise<Metadata> {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
-  const base = SITE_URL;
-  const url = `${base}/${locale !== 'en' ? `?locale=${locale}` : ''}`;
+  const url = getLocalizedUrl('/', locale);
 
   const meta: Record<string, { title: string; description: string }> = {
     en: {
@@ -135,21 +135,7 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
   return {
     title: m.title,
     description: m.description,
-    alternates: {
-      languages: {
-        'en': `${base}/`,
-        'ja': `${base}/?locale=ja`,
-        'ar': `${base}/?locale=ar`,
-        'es': `${base}/?locale=es`,
-        'pt': `${base}/?locale=pt`,
-        'fr': `${base}/?locale=fr`,
-        'id': `${base}/?locale=id`,
-        'hi': `${base}/?locale=hi`,
-        'de': `${base}/?locale=de`,
-        'tr': `${base}/?locale=tr`,
-      },
-      canonical: url,
-    },
+    alternates: buildLocaleAlternates('/', locale),
     openGraph: {
       title: m.title,
       description: m.description,
