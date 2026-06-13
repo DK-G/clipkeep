@@ -2,7 +2,7 @@ import { getDb } from "@/lib/db/d1";
 import { success, failure } from "@/lib/api/response";
 import { getRequestId } from "@/lib/api/request-id";
 
-const VALID_PLATFORMS = new Set(['all', 'twitter', 'tiktok', 'telegram', 'threads', 'instagram']);
+const VALID_PLATFORMS = new Set(['all', 'twitter', 'tiktok', 'telegram', 'threads', 'instagram', 'reddit']);
 
 function getStartDate(range: string | null) {
   const days = range === 'today' ? 1 : range === 'week' ? 7 : 30;
