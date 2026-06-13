@@ -19,9 +19,9 @@ export type SolutionPage = {
 
 const locales: Locale[] = ["en", "ja", "ar", "es", "pt", "fr", "id", "hi", "de", "tr"];
 
-const telegramGuide: Record<Locale, { title: string; s1: string; s2: string; cta: string }> = {
+const telegramGuide: Record<Locale, { title: string; s1: string; s2: string; s3?: string; cta: string }> = {
   en: { title: "Telegram Video Downloader Not Working", s1: "Use a valid public Telegram post or channel link.", s2: "Temporary upstream limits may resolve within a few minutes.", cta: "Try Telegram Downloader" },
-  ja: { title: "Telegram動画が保存できない場合", s1: "公開されているTelegram投稿またはチャンネルURLを使用してください。", s2: "一時的な制限は数分で解消する場合があります。", cta: "Telegramダウンローダーを試す" },
+  ja: { title: "Telegram動画が保存できない場合", s1: "Telegram動画が保存できない・ダウンロードできない場合は、まずURLが公開チャンネルまたは公開投稿のものか確認してください。`t.me/チャンネル名/投稿番号` の形式の公開リンクが必要です。非公開グループやシークレットチャット内の動画は、Telegramの仕様上どの外部ツールでも取得できません。", s2: "「読み込めない」「処理が進まない」場合は、Telegram側のレート制限や一時的なサーバー負荷が原因のことがあります。数分待ってからURLを貼り付け直してください。それでも保存できないときは、ブラウザのキャッシュを削除し、URL末尾の余分なパラメータ（`?...`）を取り除いた状態で再試行すると成功率が上がります。", s3: "Telegramの動画は元の投稿画質のまま保存されます。元ファイルが低画質の場合、ツール側で高画質化することはできません。保存後の動画は標準的なMP4形式のため、iPhone・Android・PCのいずれでも再生・編集できます。", cta: "Telegramダウンローダーを試す" },
   ar: { title: "مشكلة في تنزيل فيديو تيليجرام", s1: "استخدم رابط منشور أو قناة Telegram عامة وصالحة.", s2: "قد تختفي القيود المؤقتة خلال بضع دقائق.", cta: "جرّب تنزيل تيليجرام" },
   es: { title: "El descargador de Telegram no funciona", s1: "Usa un enlace publico valido de Telegram.", s2: "Las limitaciones temporales pueden resolverse en pocos minutos.", cta: "Probar descargador de Telegram" },
   pt: { title: "Downloader do Telegram nao funciona", s1: "Use um link publico valido do Telegram.", s2: "Limitacoes temporarias podem normalizar em alguns minutos.", cta: "Testar downloader do Telegram" },
@@ -32,9 +32,9 @@ const telegramGuide: Record<Locale, { title: string; s1: string; s2: string; cta
   tr: { title: "Telegram indirici calismiyor", s1: "Gecerli ve herkese acik bir Telegram baglantisi kullanin.", s2: "Gecici kisitlar birkac dakika icinde duzelebilir.", cta: "Telegram indiriciyi dene" },
 };
 
-const twitterGuide: Record<Locale, { title: string; s1: string; s2: string; cta: string }> = {
+const twitterGuide: Record<Locale, { title: string; s1: string; s2: string; s3?: string; cta: string }> = {
   en: { title: "Twitter Video Downloader Not Working", s1: "Private or restricted posts cannot be processed.", s2: "Use a direct tweet URL without tracking parameters.", cta: "Try Twitter Downloader" },
-  ja: { title: "Twitter動画が保存できない場合", s1: "非公開または制限付き投稿は処理できません。", s2: "追跡パラメータなしの直接URLを使用してください。", cta: "Twitterダウンローダーを試す" },
+  ja: { title: "Twitter動画が保存できない場合", s1: "Twitter（X）の動画が保存できない最も多い原因は、投稿が非公開アカウント・年齢制限・センシティブ設定になっているケースです。鍵アカウントや制限付きツイートは、Twitterの仕様によりどの外部ツールでも取得できません。まず公開ツイートのURLであることを確認してください。", s2: "ツイートを開き「共有」→「リンクをコピー」で取得したURLを貼り付けてください。`https://x.com/ユーザー名/status/数字` または `https://twitter.com/...` の形式が確実です。検索結果やプロフィール画面のURL、`?s=20` などの追跡パラメータが付いたリンクでは失敗することがあるため、不要なパラメータは削除してから試してください。", s3: "通常の動画とGIFアニメーションに対応し、最高画質のMP4で保存できます。一方、外部のYouTube埋め込み、Spacesの録音、ライブ配信中の映像には対応していません。「見れない」「読み込み中のまま」になる場合は、数分後に再試行するか、別の公開ツイートで動作を確認してください。", cta: "Twitterダウンローダーを試す" },
   ar: { title: "مشكلة في تنزيل فيديو تويتر", s1: "لا يمكن معالجة المنشورات الخاصة أو المقيّدة.", s2: "استخدم رابط التغريدة المباشر بدون معاملات تتبع.", cta: "جرّب تنزيل تويتر" },
   es: { title: "El descargador de Twitter no funciona", s1: "Las publicaciones privadas o restringidas no se pueden procesar.", s2: "Usa la URL directa del tweet sin parametros de seguimiento.", cta: "Probar descargador de Twitter" },
   pt: { title: "Downloader do Twitter nao funciona", s1: "Posts privados ou restritos nao podem ser processados.", s2: "Use a URL direta do tweet sem parametros de rastreamento.", cta: "Testar downloader do Twitter" },
@@ -97,9 +97,9 @@ const mobileGuideData: Record<Locale, { title: string; s1: string; s2: string; s
   tr: { title: "iPhone ve Android'de video nasıl kaydedilir", s1: "iPhone — ClipKeep çıkarma işlemini bitirdikten sonra indirme seçeneğine dokunun ve Paylaş menüsünden Dosyalara Kaydet veya Videoyu Kaydet seçeneğini kullanın. iPhone'da Safari genellikle daha kararlı kayıt ekranı gösterir.", s2: "Android — Chrome MP4 dosyasını genellikle İndirilenler klasörüne kaydeder. Video yeni sekmede açılırsa tarayıcı menüsünden İndir veya Videoyu kaydet seçeneğini seçin.", s3Heading: "Kaydedilen dosyayı bul", s3: "Dosyayı bulamazsanız Android'de Files > Downloads, iPhone'da Dosyalar uygulamasını kontrol edin. Büyük HD videolar indirme bittikten sonra birkaç saniye içinde görünebilir.", cta: "Hemen İndir" },
 };
 
-const redditGuide: Record<Locale, { title: string; s1: string; s2: string; cta: string }> = {
+const redditGuide: Record<Locale, { title: string; s1: string; s2: string; s3?: string; cta: string }> = {
   en: { title: "Reddit Video Downloader Not Working", s1: "Use the direct post URL.", s2: "Audio and video are separate on Reddit; we merge them.", cta: "Try Reddit Downloader" },
-  ja: { title: "Reddit動画が保存できない場合", s1: "Reddit投稿の直接URL（reddit.com/r/...）を使用してください。", s2: "音声と映像が分離されている投稿も、当ツールで自動合成します。", cta: "Reddit保存を試す" },
+  ja: { title: "Reddit動画が保存できない場合", s1: "Reddit動画が保存できないときは、投稿の直接URL（`reddit.com/r/サブレディット名/comments/...`）または `redd.it` の短縮リンクを使用してください。検索画面や一覧からコピーしたURL、余分なクエリパラメータが付いたリンクでは正しく取得できないことがあります。", s2: "Redditでは映像と音声が別々のストリームで配信されているため、他ツールでは音声なしで保存されることがあります。ClipKeepは映像と音声を自動的に取得・合成し、1つの音声付きMP4として保存します。古い投稿など、元から映像のみの場合は音声は含まれません。", s3: "非公開（プライベート）サブレディット、ログインが必要なNSFW（成人向け）コミュニティ、隔離（quarantined）コミュニティ、削除済みの投稿は、Redditの仕様により保存できません。公開サブレディットの投稿であれば、リンクを貼り付けるだけで保存できます。", cta: "Reddit保存を試す" },
   ar: { title: "محمل فيديوهات Reddit لا يعمل", s1: "استخدم رابط المنشور المباشر.", s2: "يتم دمج الصوت والفيديو تلقائياً.", cta: "تجربة محمل Reddit" },
   es: { title: "El descargador de Reddit no funciona", s1: "Usa la URL directa de la publicación.", s2: "Combinamos audio y video automáticamente.", cta: "Probar Reddit" },
   pt: { title: "Downloader do Reddit não funciona", s1: "Use a URL direta do post.", s2: "Combinamos áudio e vídeo automaticamente.", cta: "Testar Reddit" },
@@ -634,8 +634,9 @@ export const pages: SolutionPage[] = [
     locale,
     title: telegramGuide[locale].title,
     sections: [
-      { id: "s1", heading: "Step 1", body: telegramGuide[locale].s1 },
-      { id: "s2", heading: "Step 2", body: telegramGuide[locale].s2 },
+      { id: "s1", heading: locale === "ja" ? "公開URLを使う" : "Step 1", body: telegramGuide[locale].s1 },
+      { id: "s2", heading: locale === "ja" ? "一時的なエラーへの対処" : "Step 2", body: telegramGuide[locale].s2 },
+      ...(telegramGuide[locale].s3 ? [{ id: "s3", heading: locale === "ja" ? "画質と保存形式" : "Step 3", body: telegramGuide[locale].s3 as string }] : []),
     ],
     cta: { label: telegramGuide[locale].cta, href: "/download-telegram-video" },
   })),
@@ -644,8 +645,9 @@ export const pages: SolutionPage[] = [
     locale,
     title: twitterGuide[locale].title,
     sections: [
-      { id: "s1", heading: "Step 1", body: twitterGuide[locale].s1 },
-      { id: "s2", heading: "Step 2", body: twitterGuide[locale].s2 },
+      { id: "s1", heading: locale === "ja" ? "非公開・制限付き投稿について" : "Step 1", body: twitterGuide[locale].s1 },
+      { id: "s2", heading: locale === "ja" ? "正しいURLの貼り付け方" : "Step 2", body: twitterGuide[locale].s2 },
+      ...(twitterGuide[locale].s3 ? [{ id: "s3", heading: locale === "ja" ? "GIF・動画の画質と対応範囲" : "Step 3", body: twitterGuide[locale].s3 as string }] : []),
     ],
     cta: { label: twitterGuide[locale].cta, href: "/download-twitter-video" },
   })),
@@ -693,8 +695,9 @@ export const pages: SolutionPage[] = [
     locale,
     title: redditGuide[locale].title,
     sections: [
-      { id: "s1", heading: "Step 1", body: redditGuide[locale].s1 },
-      { id: "s2", heading: "Step 2", body: redditGuide[locale].s2 },
+      { id: "s1", heading: locale === "ja" ? "投稿URLの形式を確認" : "Step 1", body: redditGuide[locale].s1 },
+      { id: "s2", heading: locale === "ja" ? "音声と映像の自動合成" : "Step 2", body: redditGuide[locale].s2 },
+      ...(redditGuide[locale].s3 ? [{ id: "s3", heading: locale === "ja" ? "保存できない投稿の種類" : "Step 3", body: redditGuide[locale].s3 as string }] : []),
     ],
     cta: { label: redditGuide[locale].cta, href: "/download-reddit-video" },
   })),
