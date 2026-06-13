@@ -5,8 +5,8 @@
 正本: `docs/strategy/growth-strategy.md`（北極星: Monetag タグロード数/日）
 
 1. [ ] 計測: `scripts/growth-summary.mjs` に北極星 `ad_script_load`（zone別）の28日集計を追加し、growth:review 出力に表示する
-2. [ ] 柱1/TikTok-SEO: 「TikTok 保存できない/ロゴなし保存」solution ページ（en/ja）を新設。あわせて home title の TikTok 表記と extractor 実態の整合を確認し、不一致なら title を実態に合わせる（extractor は作らない）
-3. [ ] 柱1: ja Solution ページの内容充足（X/Reddit/Telegram 中心）
+2. [x] 柱1/TikTok-SEO: 「TikTok 保存できない/ロゴなし保存」solution ページ（en/ja）— 既存で充足を確認（`tiktok-video-downloader-not-working` / `how-to-download-without-watermark` 全ロケール、本番200）。home title は汎用表記で TikTok 虚偽なし、かつ TikTok extractor は実装済み（`src/lib/extract/tiktok.ts`）で実態と整合 → 修正不要（2026-06-13 確認）
+3. [x] 柱1: ja Solution ページの内容充足（X/Reddit/Telegram 中心）— X/Reddit/Telegram の「保存できない」ページの ja 本文を拡充し s3 を追加（2026-06-13, ver a5c183d2）
 4. [ ] 柱1: pt Solution ページの内容充足
 5. [ ] 柱1: ar Solution ページの内容充足（RTL 目視確認込み）
 6. [ ] 柱2: トレンド鮮度ページ生成パイプラインの設計（trending cron のデータから「{トレンド} video download」系ページを生成する方式を bythink で設計し、設計文書を docs/strategy/ に出す）
@@ -56,6 +56,7 @@
 - [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
 
 ## 更新メモ
+- 2026-06-13: 日次ループ。柱1の ja Solution「保存できない」(X/Reddit/Telegram) を内容充足（s1/s2拡充+s3追加、ver a5c183d2、本番200確認）。バックログ#1(ad_script_load zone別)は zone ディメンション再取得が要GA4認証復旧（ブロック中）のためスキップ、#2は既充足を確認。デプロイ前リグレッション（gallery `VALID_PLATFORMS` から reddit 脱落で `?platform=reddit` が400／46059c0 の reconcile 起因）を発見し復帰修正、リリースゲートを PASS=29/FAIL=0 に回復。要人間判断: 戦略文書は「TikTok extractor 作らない」だがコードに既存稼働（詳細は docs/ops/daily/2026-06-13.md）。
 - 2026-06-12: 「全く伸びない」原因診断を実施。最大要因は①改修が本番未反映（デプロイギャップ）②本番の hreflang/canonical が全言語同一URLでインデックス2件のみ③GA4認証失効で計測不能。対策として AGENTS.md に Definition of Done（デプロイ+本番検証必須）と Launch-Phase KPI Gate（北極星=インデックス数/GSC impressions、CVR微調整凍結）を追加。playbook 先頭にも同ゲートを追記。
 - 2026-06-08: `/ja` `/pt` `/ar` path を `middleware.ts` で既存 `?locale=` ルーティングへ rewrite し、`layout` / `faq` / `trending` / `latest` / `solution` の alternates と `app/sitemap.ts` を path-based hreflang に更新。
 - 2026-06-08: `src/lib/i18n/locales/solution/{ja,pt,ar}.ts` に locale metadata 文言を追加。`npm run typecheck` / `npm run lint` / `npm run build` 成功。
