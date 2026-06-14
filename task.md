@@ -4,7 +4,7 @@
 
 正本: `docs/strategy/growth-strategy.md`（北極星: Monetag タグロード数/日）
 
-1. [ ] 計測: `scripts/growth-summary.mjs` に北極星 `ad_script_load`（zone別）の28日集計を追加し、growth:review 出力に表示する
+1. [ ] 計測: `scripts/growth-summary.mjs` に北極星 `ad_script_load`（zone別）の28日集計を追加し、growth:review 出力に表示する ← **GA4認証は2026-06-15に復旧確認済みでブロック解除、次ループで実行可能**
 2. [x] 柱1/TikTok-SEO: 「TikTok 保存できない/ロゴなし保存」solution ページ（en/ja）— 既存で充足を確認（`tiktok-video-downloader-not-working` / `how-to-download-without-watermark` 全ロケール、本番200）。home title は汎用表記で TikTok 虚偽なし、かつ TikTok extractor は実装済み（`src/lib/extract/tiktok.ts`）で実態と整合 → 修正不要（2026-06-13 確認）
 3. [x] 柱1: ja Solution ページの内容充足（X/Reddit/Telegram 中心）— X/Reddit/Telegram の「保存できない」ページの ja 本文を拡充し s3 を追加（2026-06-13, ver a5c183d2）
 4. [x] 柱1: pt Solution ページの内容充足 — Telegram/Twitter/Reddit の pt「não funciona」3ページを内容充足（s1/s2拡充+s3追加、旧ASCII表記をアクセント付きに修正）（2026-06-14, ver 3fa084d6, 本番200/canonical/hreflang/s3確認）
@@ -19,7 +19,7 @@
     - [x] 原因診断: 未デプロイ（/ja/ 404・旧sitemap）、hreflang全言語同一URL、?locale= canonical畳み込み、GA4認証失効、weekly review未記入
     - [x] main を本番デプロイし `/ja` 200 と path-based sitemap を本番確認（2026-06-12, ver 708c8fc4）
     - [x] canonical/hreflang の矛盾を修正（自己参照 canonical、hreflang は en/ja/pt/ar のみ、sitemap から ?locale= を全廃 5,486→508 URL）
-    - [ ] GA4/GSC 認証復旧（要ユーザー操作: `npm run analytics:ga4:login` 再実行 or `.secrets/ga4-service-account.json` 配置+GA4プロパティ権限付与）
+    - [x] GA4/GSC 認証復旧（2026-06-15 確認: `.secrets/ga4-oauth-token.json` 有効、`npm run analytics:ga4` / `analytics:gsc` 両方成功・実データ取得。失効時は `npm run analytics:ga4:login` で再ログイン）
     - [ ] GSC で sitemap 再送信とカバレッジ確認（インデックス除外理由の一次データ取得）
     - [ ] ホーム title から未対応の TikTok を除去し実態と一致させる
     - [ ] workers.dev 配信の重複対策（canonical は clipkeep.net を指すことを本番で確認）
@@ -56,6 +56,7 @@
 - [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
 
 ## 更新メモ
+- 2026-06-15: **GA4/GSC 認証は失効していないことを確認（バックログ#1のブロック解除）**。`npm run analytics:ga4`（Pages5/events16/acquisition4）と `npm run analytics:gsc`（property `sc-domain:clipkeep.net`、Query/page13/pages8）が両方成功し実データ取得。`.secrets/ga4-oauth-token.json` 有効・refresh 機能。task.md の「GA4認証復旧待ち」は古い情報だったため OPS-1 の該当項目を [x] に更新。再失効時の手順: このPCで `npm run analytics:ga4:login`（GA4プロパティ528376605 と GSC clipkeep.net の両権限を持つGoogleアカウントでログイン、scope=analytics.readonly+webmasters.readonly）。
 - 2026-06-15: **TikTok extractor 方針変更（ユーザー判断・選択肢A）**。戦略文書とコードの不整合（文書「extractor 作らない」 vs 既存稼働 `src/lib/extract/tiktok.ts`）を解消。extractor を**存続**させ文書を実態に整合：`docs/strategy/growth-strategy.md` 決定事項1・柱1・ガードレールを改訂、`docs/core/RoadMap.md` Phase 4 を「抽出導線稼働中」に更新、本「無期限延期」節を解除。規約リスクは承認のうえ許容、fixer 安定性は週次監視。
 - 2026-06-14: 日次ループ。柱1の pt Solution「não funciona」(Telegram/Twitter/Reddit) を内容充足（s1/s2拡充+s3追加、旧ASCII表記をアクセント付き表記に修正、見出しをptローカライズ、ver 3fa084d6、本番200/self-canonical/hreflang/s3確認、リリースゲート PASS=29/FAIL=0）。バックログ#1(ad_script_load zone別)は GA4 認証復旧待ちで継続スキップ。次は#5 ar Solution 内容充足（RTL目視込み）。詳細は docs/ops/daily/2026-06-14.md。
 - 2026-06-13: 日次ループ。柱1の ja Solution「保存できない」(X/Reddit/Telegram) を内容充足（s1/s2拡充+s3追加、ver a5c183d2、本番200確認）。バックログ#1(ad_script_load zone別)は zone ディメンション再取得が要GA4認証復旧（ブロック中）のためスキップ、#2は既充足を確認。デプロイ前リグレッション（gallery `VALID_PLATFORMS` から reddit 脱落で `?platform=reddit` が400／46059c0 の reconcile 起因）を発見し復帰修正、リリースゲートを PASS=29/FAIL=0 に回復。要人間判断: 戦略文書は「TikTok extractor 作らない」だがコードに既存稼働（詳細は docs/ops/daily/2026-06-13.md）。
