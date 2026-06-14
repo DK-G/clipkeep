@@ -295,6 +295,45 @@ async function main() {
     },
   });
 
+  // North-star (Monetag tag loads/day = GA4 `ad_script_load`). Captured for both
+  // 7d and 28d, broken down by event name. Zone-scoped companion events
+  // (`ad_script_load_z<zone>`, `ad_script_error_z<zone>`, `ad_script_timeout_z<zone>`)
+  // let us attribute the north-star per Monetag zone without a registered custom
+  // dimension for the `ad_zone` parameter. Zone-level rows only accrue after the
+  // companion-event deploy; the aggregate `ad_script_load` total is available now.
+  const northStarRanges = [
+    { name: "last7Days", startDate: "7daysAgo", endDate: "yesterday" },
+    { name: "last28Days", startDate: "28daysAgo", endDate: "yesterday" },
+  ];
+  const northStarRows = [];
+  for (const range of northStarRanges) {
+    const report = await runReport({
+      accessToken,
+      propertyId,
+      body: {
+        dateRanges: [{ startDate: range.startDate, endDate: range.endDate }],
+        dimensions: [{ name: "eventName" }],
+        metrics: [{ name: "eventCount" }, { name: "activeUsers" }],
+        dimensionFilter: {
+          filter: {
+            fieldName: "eventName",
+            stringFilter: { matchType: "BEGINS_WITH", value: "ad_script_" },
+          },
+        },
+        orderBys: [{ metric: { metricName: "eventCount" }, desc: true }],
+        limit: 100,
+      },
+    });
+    for (const row of report.rows || []) {
+      northStarRows.push({
+        range: range.name,
+        eventName: dimensionValue(row, 0),
+        eventCount: metricValue(row, 0),
+        activeUsers: metricValue(row, 1),
+      });
+    }
+  }
+
   const realtimeEventReport = await runRealtimeReport({
     accessToken,
     propertyId,
@@ -354,11 +393,12 @@ async function main() {
   await fs.writeFile(path.join(OUT_DIR, "latest-ga4-summary.json"), JSON.stringify(summary, null, 2));
   await fs.writeFile(path.join(OUT_DIR, "latest-ga4-pages.csv"), toCsv(["pagePath", "pageTitle", "views", "activeUsers", "sessions"], pageRows));
   await fs.writeFile(path.join(OUT_DIR, "latest-ga4-events.csv"), toCsv(["eventName", "eventCount", "activeUsers"], eventRows));
+  await fs.writeFile(path.join(OUT_DIR, "latest-ga4-northstar.csv"), toCsv(["range", "eventName", "eventCount", "activeUsers"], northStarRows));
   await fs.writeFile(path.join(OUT_DIR, "latest-ga4-acquisition.csv"), toCsv(["channelGroup", "sourceMedium", "sessions", "activeUsers", "engagedSessions"], acquisitionRows));
   await fs.writeFile(path.join(OUT_DIR, "latest-ga4-realtime-events.csv"), toCsv(["eventName", "eventCount"], realtimeEventRows));
 
   console.log(`GA4 reports exported to ${path.relative(ROOT, OUT_DIR)}`);
-  console.log(`Pages: ${pageRows.length}, events: ${eventRows.length}, acquisition rows: ${acquisitionRows.length}, realtime events: ${realtimeEventRows.length}`);
+  console.log(`Pages: ${pageRows.length}, events: ${eventRows.length}, north-star rows: ${northStarRows.length}, acquisition rows: ${acquisitionRows.length}, realtime events: ${realtimeEventRows.length}`);
 }
 
 main().catch((error) => {

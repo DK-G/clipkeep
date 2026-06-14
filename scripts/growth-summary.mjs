@@ -6,6 +6,7 @@ const ANALYTICS_DIR = path.join(ROOT, "docs", "analytics");
 const HISTORY_DIR = path.join(ANALYTICS_DIR, "history");
 const SUMMARY_JSON = path.join(ANALYTICS_DIR, "latest-ga4-summary.json");
 const EVENTS_CSV = path.join(ANALYTICS_DIR, "latest-ga4-events.csv");
+const NORTHSTAR_CSV = path.join(ANALYTICS_DIR, "latest-ga4-northstar.csv");
 const PAGES_CSV = path.join(ANALYTICS_DIR, "latest-ga4-pages.csv");
 const ACQUISITION_CSV = path.join(ANALYTICS_DIR, "latest-ga4-acquisition.csv");
 const GSC_LOCALE_SUMMARY_CSV = path.join(ANALYTICS_DIR, "latest-gsc-locale-summary.csv");
@@ -73,6 +74,68 @@ async function readCsv(filePath) {
   }
 }
 
+// Monetag zone identity (see docs/strategy/growth-strategy.md §1).
+const ZONE_LABELS = {
+  "10760541": "In-Page Push",
+  "10969428": "Push Notification",
+};
+
+// Build the north-star view (Monetag tag loads = `ad_script_load`) from the
+// north-star CSV. Aggregate rows are the bare `ad_script_load` event; per-zone
+// rows are the `ad_script_load_z<zone>` companion events. Returns per-range
+// totals plus a per-zone breakdown with load success rate (load / load+error+timeout).
+function computeNorthStar(rows) {
+  const byRange = {};
+  for (const row of rows) {
+    const range = row.range;
+    const name = row.eventName || "";
+    const count = parseInt(row.eventCount, 10) || 0;
+    byRange[range] ??= { loadTotal: 0, zones: {} };
+
+    if (name === "ad_script_load") {
+      byRange[range].loadTotal += count;
+      continue;
+    }
+    const m = name.match(/^ad_script_(load|error|timeout)_z(\d+)$/);
+    if (!m) continue;
+    const [, kind, zone] = m;
+    const zoneEntry = (byRange[range].zones[zone] ??= { load: 0, error: 0, timeout: 0 });
+    zoneEntry[kind] += count;
+  }
+  return byRange;
+}
+
+function printNorthStar(byRange) {
+  console.log("\n⭐ NORTH STAR — Monetag tag loads (`ad_script_load`)");
+  console.log("-".repeat(40));
+  const ranges = [
+    ["last7Days", "7d"],
+    ["last28Days", "28d"],
+  ];
+  let hasZoneData = false;
+  for (const [key, label] of ranges) {
+    const entry = byRange[key];
+    if (!entry) {
+      console.log(`${label.padEnd(4)}: no data`);
+      continue;
+    }
+    console.log(`${label.padEnd(4)}: ${entry.loadTotal} tag loads (aggregate)`);
+    const zoneIds = Object.keys(entry.zones);
+    for (const zone of zoneIds) {
+      const z = entry.zones[zone];
+      hasZoneData = true;
+      const attempts = z.load + z.error + z.timeout;
+      const rate = attempts > 0 ? ((z.load / attempts) * 100).toFixed(0) + "%" : "n/a";
+      const name = ZONE_LABELS[zone] || "unknown";
+      console.log(`      └ zone ${zone} (${name}): ${z.load} loads / ${z.error} err / ${z.timeout} timeout — load rate ${rate}`);
+    }
+  }
+  if (!hasZoneData) {
+    console.log("  (per-zone breakdown accrues after the zone-companion-event deploy;");
+    console.log("   aggregate `ad_script_load` total above is available now.)");
+  }
+}
+
 async function main() {
   console.log("\n" + "=".repeat(50));
   console.log("🚀 CLIPKEEP GROWTH INSIGHTS");
@@ -87,6 +150,8 @@ async function main() {
   }
 
   const events = await readCsv(EVENTS_CSV);
+  const northStarRows = await readCsv(NORTHSTAR_CSV);
+  const northStar = computeNorthStar(northStarRows);
   const pages = await readCsv(PAGES_CSV);
   const acquisition = await readCsv(ACQUISITION_CSV);
   const gscLocaleSummary = await readCsv(GSC_LOCALE_SUMMARY_CSV);
@@ -153,8 +218,11 @@ async function main() {
       relatedClicks,
       totalGrowthInteractions,
       viralFactor: complete > 0 ? shares / complete : 0,
+      adScriptLoad7d: northStar.last7Days?.loadTotal || 0,
+      adScriptLoad28d: northStar.last28Days?.loadTotal || 0,
       ...rates,
     },
+    northStar,
     topPages: topRows(pages, 10, "views"),
     topEvents: topRows(events, 20, "eventCount"),
     acquisition: topRows(acquisition, 10, "sessions"),
@@ -183,6 +251,8 @@ async function main() {
   console.log(`📈 Active Users: ${l28.activeUsers}`);
   console.log(`📊 Sessions: ${sessions}`);
   console.log(`🧾 Snapshot: ${path.relative(ROOT, path.join(HISTORY_DIR, snapshotFile))}`);
+
+  printNorthStar(northStar);
 
   const pct = (val, total) => total > 0 ? ((val / total) * 100).toFixed(1) + "%" : "0.0%";
 
@@ -253,6 +323,7 @@ async function main() {
     const prev = previousSnapshot.metrics || {};
     console.log("\n📉 CHANGE VS PREVIOUS GROWTH RUN");
     console.log("-".repeat(40));
+    console.log(`Tag Loads (28d)   : ${formatDelta(snapshot.metrics.adScriptLoad28d, prev.adScriptLoad28d)}`);
     console.log(`Sessions          : ${formatDelta(sessions, prev.sessions)}`);
     console.log(`Active Users      : ${formatDelta(l28.activeUsers || 0, prev.activeUsers)}`);
     console.log(`Form Interest     : ${formatDelta(focus, prev.extractFormFocus)} (${formatPctPointDelta(rates.formInterestPerSession, prev.formInterestPerSession)})`);

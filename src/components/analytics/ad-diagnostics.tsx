@@ -36,13 +36,21 @@ function looksLikeBot(userAgent: string): boolean {
 }
 
 function trackAdEvent(name: string, script: AdScript, params: Record<string, unknown> = {}) {
-  trackEvent(name, {
+  const payload = {
     provider: script.provider,
     ad_format: script.format,
     ad_zone: script.zone,
     script_id: script.id,
     ...params,
-  });
+  };
+  trackEvent(name, payload);
+  // Zone-scoped companion event (e.g. `ad_script_load_z10760541`). GA4 has no
+  // registered custom dimension for the `ad_zone` parameter, so the north-star
+  // (Monetag tag loads/day) cannot be split by zone via the Data API. Encoding
+  // the zone in the event name lets the existing eventName breakdown attribute
+  // loads/errors/timeouts per zone without GA4 Admin changes. The aggregate
+  // `ad_script_load` event is still emitted above for backward compatibility.
+  trackEvent(`${name}_z${script.zone}`, payload);
 }
 
 export function AdDiagnostics() {
