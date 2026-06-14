@@ -56,6 +56,7 @@
 - [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
 
 ## 更新メモ
+- 2026-06-15: **TikTok extractor 方針変更（ユーザー判断・選択肢A）**。戦略文書とコードの不整合（文書「extractor 作らない」 vs 既存稼働 `src/lib/extract/tiktok.ts`）を解消。extractor を**存続**させ文書を実態に整合：`docs/strategy/growth-strategy.md` 決定事項1・柱1・ガードレールを改訂、`docs/core/RoadMap.md` Phase 4 を「抽出導線稼働中」に更新、本「無期限延期」節を解除。規約リスクは承認のうえ許容、fixer 安定性は週次監視。
 - 2026-06-14: 日次ループ。柱1の pt Solution「não funciona」(Telegram/Twitter/Reddit) を内容充足（s1/s2拡充+s3追加、旧ASCII表記をアクセント付き表記に修正、見出しをptローカライズ、ver 3fa084d6、本番200/self-canonical/hreflang/s3確認、リリースゲート PASS=29/FAIL=0）。バックログ#1(ad_script_load zone別)は GA4 認証復旧待ちで継続スキップ。次は#5 ar Solution 内容充足（RTL目視込み）。詳細は docs/ops/daily/2026-06-14.md。
 - 2026-06-13: 日次ループ。柱1の ja Solution「保存できない」(X/Reddit/Telegram) を内容充足（s1/s2拡充+s3追加、ver a5c183d2、本番200確認）。バックログ#1(ad_script_load zone別)は zone ディメンション再取得が要GA4認証復旧（ブロック中）のためスキップ、#2は既充足を確認。デプロイ前リグレッション（gallery `VALID_PLATFORMS` から reddit 脱落で `?platform=reddit` が400／46059c0 の reconcile 起因）を発見し復帰修正、リリースゲートを PASS=29/FAIL=0 に回復。要人間判断: 戦略文書は「TikTok extractor 作らない」だがコードに既存稼働（詳細は docs/ops/daily/2026-06-13.md）。
 - 2026-06-12: 「全く伸びない」原因診断を実施。最大要因は①改修が本番未反映（デプロイギャップ）②本番の hreflang/canonical が全言語同一URLでインデックス2件のみ③GA4認証失効で計測不能。対策として AGENTS.md に Definition of Done（デプロイ+本番検証必須）と Launch-Phase KPI Gate（北極星=インデックス数/GSC impressions、CVR微調整凍結）を追加。playbook 先頭にも同ゲートを追記。
@@ -66,11 +67,11 @@
 - 2026-06-03: TikTok は公式規約上の商用利用・自動アクセス・無断ダウンロード/転載リスクが残るため、延期を維持。
 - 2026-06-03: Phase 3.5 を収益最大化目的に合わせ、優先順位をキーワード設計・ページ充足・CTR改善・多言語SEO基盤の順に再整理。
 
-## 無期限延期 (Deferred Indefinitely)
-- [ ] Phase 4: TikTok Expansion
-    - [ ] TikTok URLバリデーション仕様追加（`prepare` API）
-    - [ ] TikTok extractor adapter 実装（job作成/進捗/結果）
-    - [ ] TikTok Result UI（品質別DL候補）
-    - [ ] TikTok failure taxonomy 定義（private/region/rate-limit等）
-    - [ ] TikTok向け API統合テストケース追加
-    - [ ] TikTok向け E2Eケース追加
+## TikTok（無期限延期は 2026-06-15 解除 — extractor 稼働中）
+方針: extractor 存続＋SEO 両輪（`docs/strategy/growth-strategy.md` 決定事項1）。抽出導線は本番稼働済み。
+- [x] TikTok URLバリデーション仕様追加（`prepare` API） — `src/lib/extract/tiktok-url.ts`
+- [x] TikTok extractor adapter 実装（job作成/進捗/結果） — `src/lib/extract/tiktok.ts`
+- [x] TikTok Result UI（品質別DL候補） — 共通 result 導線で稼働
+- [ ] TikTok failure taxonomy 定義（private/region/rate-limit等）※品質向上タスク（任意）
+- [ ] TikTok向け API統合テストケース追加 ※品質向上タスク（任意）
+- [ ] TikTok向け E2Eケース追加 ※品質向上タスク（任意）

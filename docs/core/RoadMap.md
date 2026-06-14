@@ -54,12 +54,16 @@
 - [ ] Schema.org（FAQ/HowTo）の多言語実装
 - [ ] Sitemap の hreflang alternates 追加
 
-## Phase 4: TikTok Expansion（Backlog）
+## Phase 4: TikTok Expansion（抽出導線は稼働中 / 2026-06-15 更新）
 
-### 優先度P1（先に着手）
-- [ ] TikTok URLバリデーション仕様追加（`prepare` API） [S]
-- [ ] TikTok extractor adapter 実装（job作成/進捗/結果） [L]
-- [ ] TikTok Result UI（品質別DL候補） [M]
+> 2026-06-15 方針変更: TikTok extractor を「存続＋文書整合」とする（`docs/strategy/growth-strategy.md` 決定事項1、ユーザー承認済み）。
+> fixer 経由の抽出導線（`src/lib/extract/tiktok.ts`）は既に本番稼働しており、P1 は実装済み。
+> 規約リスクは承認のうえ許容、fixer 安定性は週次監視。
+
+### 優先度P1（実装済み）
+- [x] TikTok URLバリデーション仕様追加（`prepare` API） [S] — `src/lib/extract/tiktok-url.ts`
+- [x] TikTok extractor adapter 実装（job作成/進捗/結果） [L] — `src/lib/extract/tiktok.ts`（TikWM/Lovetik/kktiktok）
+- [x] TikTok Result UI（品質別DL候補） [M] — 共通 result 導線で稼働
 
 ### 優先度P2（次段）
 - [ ] TikTok failure taxonomy 定義（private/region/rate-limit等） [M]
