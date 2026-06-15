@@ -19,6 +19,7 @@
         "check:release": "powershell -ExecutionPolicy Bypass -File .\\scripts\\release_gate.ps1",
         "analytics:ga4": "node scripts/fetch-ga4-report.mjs",
         "analytics:gsc": "node scripts/fetch-gsc-report.mjs",
+        "analytics:gsc:coverage": "node scripts/fetch-gsc-index-coverage.mjs",
         "growth:review": "node scripts/run-growth-review.mjs",
         "growth": "npm run growth:review",
         "analytics:ga4:login": "node scripts/ga4-oauth-login.mjs",

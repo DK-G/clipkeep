@@ -11,6 +11,7 @@ const PAGES_CSV = path.join(ANALYTICS_DIR, "latest-ga4-pages.csv");
 const ACQUISITION_CSV = path.join(ANALYTICS_DIR, "latest-ga4-acquisition.csv");
 const GSC_LOCALE_SUMMARY_CSV = path.join(ANALYTICS_DIR, "latest-gsc-locale-summary.csv");
 const GSC_OPPORTUNITIES_CSV = path.join(ANALYTICS_DIR, "latest-gsc-opportunities.csv");
+const GSC_INDEX_COVERAGE_JSON = path.join(ANALYTICS_DIR, "latest-gsc-index-coverage-summary.json");
 
 function toTimestampSlug(value) {
   return new Date(value).toISOString().replace(/[:.]/g, "-");
@@ -71,6 +72,47 @@ async function readCsv(filePath) {
     });
   } catch {
     return [];
+  }
+}
+
+async function readJsonIfExists(filePath) {
+  try {
+    return JSON.parse(await fs.readFile(filePath, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+// Print the Index Coverage block (URL Inspection API). This is the Launch-Phase
+// north-star instrumentation: indexed real count vs the indexed>=50 gate, plus
+// the actual index-exclusion reasons (coverageState) and canonical mismatches.
+function printIndexCoverage(coverage) {
+  console.log("\n📚 INDEX COVERAGE (URL Inspection API)");
+  console.log("-".repeat(40));
+  if (!coverage) {
+    console.log("- No index-coverage data. Run 'npm run analytics:gsc:coverage' (needs GSC read auth).");
+    return;
+  }
+  const gate = coverage.phaseGate || {};
+  const ratio = ((coverage.coverageRatio || 0) * 100).toFixed(0);
+  console.log(`Indexed (verdict=PASS): ${coverage.indexed}/${coverage.inspected} inspected (${ratio}% of OK)`);
+  console.log(`Sitemap URLs total    : ${coverage.totalSitemapUrls}` + (coverage.errorCount ? `, errors: ${coverage.errorCount}` : ""));
+  console.log(`Phase gate (indexed>=${gate.target}): ${gate.cleared ? "✅ CLEARED" : "🚧 below"} — ${gate.note || ""}`);
+  const states = Object.entries(coverage.byCoverageState || {}).sort((a, b) => b[1] - a[1]);
+  if (states.length > 0) {
+    console.log("Index exclusion / coverage states:");
+    for (const [state, count] of states) {
+      console.log(`   ${count.toString().padStart(4)}  ${state}`);
+    }
+  }
+  if (coverage.canonicalMismatchCount > 0) {
+    console.log(`Canonical mismatches  : ${coverage.canonicalMismatchCount} (Google chose a different canonical than the URL)`);
+    for (const m of (coverage.canonicalMismatches || []).slice(0, 5)) {
+      console.log(`   ${m.url} -> google:${m.googleCanonical || "(none)"}`);
+    }
+  }
+  if (coverage.blockedCount > 0) {
+    console.log(`Blocked (robots/meta) : ${coverage.blockedCount}`);
   }
 }
 
@@ -156,6 +198,7 @@ async function main() {
   const acquisition = await readCsv(ACQUISITION_CSV);
   const gscLocaleSummary = await readCsv(GSC_LOCALE_SUMMARY_CSV);
   const gscOpportunities = await readCsv(GSC_OPPORTUNITIES_CSV);
+  const indexCoverage = await readJsonIfExists(GSC_INDEX_COVERAGE_JSON);
   const findEventCount = (name) => {
     const ev = events.find(e => e.eventName === name);
     return ev ? parseInt(ev.eventCount, 10) : 0;
@@ -229,6 +272,19 @@ async function main() {
     searchConsole: {
       localeSummary: topRows(gscLocaleSummary, 10, "impressions"),
       opportunities: topRows(gscOpportunities, 10, "impressions"),
+      indexCoverage: indexCoverage
+        ? {
+            totalSitemapUrls: indexCoverage.totalSitemapUrls,
+            inspected: indexCoverage.inspected,
+            indexed: indexCoverage.indexed,
+            notIndexed: indexCoverage.notIndexed,
+            coverageRatio: indexCoverage.coverageRatio,
+            phaseGateCleared: indexCoverage.phaseGate?.cleared || false,
+            byCoverageState: indexCoverage.byCoverageState,
+            canonicalMismatchCount: indexCoverage.canonicalMismatchCount,
+            blockedCount: indexCoverage.blockedCount,
+          }
+        : null,
     },
   };
 
@@ -308,6 +364,8 @@ async function main() {
       console.log(`- ${row.locale}: ${clicks} clicks / ${impressions} impressions / ${ctr.toFixed(1)}% CTR / pos ${position.toFixed(1)}`);
     }
   }
+
+  printIndexCoverage(indexCoverage);
 
   if (gscOpportunities.length > 0) {
     console.log("\n🎯 SEO OPPORTUNITIES");
