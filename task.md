@@ -10,7 +10,7 @@
 > 詳細: `docs/ops/weekly_review_2026-06-15.md`。
 
 1. [x] 計測/北極星: `scripts/growth-summary.mjs` に `ad_script_load`（zone 10760541 / 10969428 別）の**28日**集計を追加し growth:review に表示 ← **完了（2026-06-15, ver f43be6bd）**。GA4にカスタムディメンション未登録＋OAuth read-onlyのため `customEvent:ad_zone` 不可と判明。代替として ad-diagnostics で zone内包 companion イベント（`ad_script_load_z<zone>`）を併発し、eventName ブレークダウンで zone別取得する方式に切替。growth:review に NORTH STAR ブロック新設（7d=4/28d=18 集約を可視化、zone別はデプロイ後蓄積）。詳細 docs/ops/daily/2026-06-15.md
-2. [~] 計測/柱1: GSC カバレッジ取得（indexed 実数化）。`growth:review` に URL Inspection 由来の indexed カウント＋除外理由を追加 ← **計測部分は完了（2026-06-16, ローカル計測ツール）**。**フェーズゲート indexed≥50 は GSC 正本 172 でクリア済み**（Phase L 継続は impressions(28d)=15«1,000 のみ）。律速は新パス URL（ja/pt/ar 約375本が 100% 近く Google 未発見＝孤立疑い）の**発見/移行**。スイープの indexed=20/500 は「新 URL 発見率」でゲート指標と混同しないこと。**残: sitemap 再送信は書込スコープ未付与で自律不可 → GSC UI で手動再送信（要人間操作）**。詳細 docs/ops/daily/2026-06-16.md
+2. [~] 計測/柱1: GSC カバレッジ取得（indexed 実数化）。`growth:review` に URL Inspection 由来の indexed カウント＋除外理由を追加 ← **計測部分は完了（2026-06-16, ローカル計測ツール）**。**フェーズゲート indexed≥50 は GSC 正本 172 でクリア済み**（Phase L 継続は impressions(28d)=15«1,000 のみ）。律速は新パス URL（ja/pt/ar 約375本が 100% 近く Google 未発見＝孤立疑い）の**発見/移行**。スイープの indexed=20/500 は「新 URL 発見率」でゲート指標と混同しないこと。**sitemap 再送信＝2026-06-16 ユーザーが GSC UI で手動完了。当日再読込・ステータス成功・検出508（送信直後の旧値127→508に更新＝発見ギャップ即解消）**。ただし検出(discovered)≠index、実インデックス化は数日〜2週間→次回週次で新パスの登録済み件数増を監視。残る自律タスクは #3 内部リンク強化。詳細 docs/ops/daily/2026-06-16.md
 3. [ ] 柱1: 06-13/06-14 充足の新規 solution ページ（X/Reddit/Telegram/Twitter の `downloader-not-working` ja/pt）の**内部リンク強化**（home/関連ページ/solution 一覧から被リンクし、クロール発見性を上げる）。impression=0 の lag 解消が狙い
 4. [ ] 柱1: ar Solution ページの内容充足（RTL 目視確認込み）
 5. [ ] OPS-1残: blog / about / contact / legal / status の canonical を metadata-helper 方式に統一（?locale= 自己参照 canonical 残存の解消）
@@ -30,7 +30,7 @@
     - [x] main を本番デプロイし `/ja` 200 と path-based sitemap を本番確認（2026-06-12, ver 708c8fc4）
     - [x] canonical/hreflang の矛盾を修正（自己参照 canonical、hreflang は en/ja/pt/ar のみ、sitemap から ?locale= を全廃 5,486→508 URL）
     - [x] GA4/GSC 認証復旧（2026-06-15 確認: `.secrets/ga4-oauth-token.json` 有効、`npm run analytics:ga4` / `analytics:gsc` 両方成功・実データ取得。失効時は `npm run analytics:ga4:login` で再ログイン）
-    - [ ] GSC で sitemap 再送信とカバレッジ確認（インデックス除外理由の一次データ取得）
+    - [x] GSC で sitemap 再送信（2026-06-16 ユーザー手動完了）とカバレッジ確認（indexed 実数化は 06-16 計測ツールで完了）
     - [ ] ホーム title から未対応の TikTok を除去し実態と一致させる
     - [ ] workers.dev 配信の重複対策（canonical は clipkeep.net を指すことを本番で確認）
     - [ ] blog / about / contact / legal / status の canonical を metadata-helper 方式に統一（現状 ?locale= 自己参照 canonical が残存）
@@ -66,6 +66,7 @@
 - [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
 
 ## 更新メモ
+- 2026-06-16: **sitemap 手動再送信を実施（ユーザー操作）**。GSC UI（`sc-domain:clipkeep.net`）で `sitemap.xml` 再送信。**当日再読込・ステータス成功・検出ページ数 508**（送信直後の旧値127→508に更新＝新パス発見ギャップ約381本が即解消）。**#2 の人間操作待ち残を消し込み**。ただし検出(discovered)≠インデックス、実 index 化は数日〜2週間。次は **#3 内部リンク強化**（発見済みURLのクロール→index 昇格を後押し）。次回週次は新パスの登録済み件数増を監視。詳細 docs/ops/daily/2026-06-16.md。
 - 2026-06-16: 日次ループ。**バックログ #2 の計測部分（indexed 実数化＋除外理由の一次データ）を完遂**。新規 `scripts/fetch-gsc-index-coverage.mjs`（URL Inspection API, read-only スコープで可）を追加し `growth:review` に **📚 INDEX COVERAGE** ブロックを新設（`analytics:gsc:coverage` スクリプト追加、`run-growth-review` に組込、日次は既定 100 サンプル / 週次は `GSC_INSPECT_LIMIT=0` で全件）。スイープ実測（新 sitemap 500 URL の発見率）: PASS=20 / unknown=477 / crawled-not=3 / canonical 不一致=0、locale 別 en19・ja0・pt0・ar1。**【訂正】**ユーザー提供の GSC「ページのインデックス登録」正本では **登録済み=172 / 未登録=82**（404=27, 代替canonical=18, クロール済み未登録=29 等）。当初「indexed=20・ゲート未達」と書いたのは誤りで、スイープは「新パス URL の発見率」を測っていた。**フェーズゲート indexed≥50 は 172 でクリア済み**、Phase L 継続は impressions(28d)=15«1,000 の側のみ。172 の大半は sitemap から外した旧 ?locale= URL（低意図・表示ほぼ0）で、狙った高意図ページ（新パス ja/pt/ar 約375本）が**ほぼ未発見**＝**律速は新 URL の発見/移行**（孤立ページ疑い＋「検出-未登録=0」）。本タスクは worker/サイトコード不変更の計測ツールのため本番デプロイ面なし（`deploy:prod` 非該当）、リリースゲート PASS=29/0/1 で prod 健全確認。**#2 残**: sitemap 再送信は書込スコープ未付与で自律不可→GSC UI 手動（発見キュー投入に有効）。**次タスク=#3 内部リンク強化（ユーザー承認済み）**。詳細 docs/ops/daily/2026-06-16.md。
 - 2026-06-15: 日次ループ。**バックログ #1（北極星 `ad_script_load` の growth:review 可視化＋zone別計測）完了**（ver `f43be6bd`、本番確認済み）。ブロッカーは認証ではなく「GA4 にカスタムディメンション `ad_zone` 未登録＋OAuth read-only で登録不可」と判明。代替として ad-diagnostics で zone内包 companion イベント（`ad_script_load_z<zone>`）を併発し eventName ブレークダウンで zone別取得する方式へ。growth-summary に NORTH STAR ブロック（7d/28d 集約＋zone別 load/error/timeout＋成功率）を新設。北極星 28d=18（集約値、本日から常時可視化）。zone別実数は本デプロイ以降に蓄積（GA4仕様上の遡及不可を明記）。次は #2（GSC sitemap 再送信＋カバレッジ取得=indexed 実数化）。詳細 docs/ops/daily/2026-06-15.md。
 - 2026-06-15: **週次戦略レビュー #002 実施**（`docs/ops/weekly_review_2026-06-15.md`）。`growth:review` 成功・本番health 200。28d 実測: セッション2(±0)、GSC impressions 17→15(微減, locale-summary基準/pages基準では27)、clicks 0継続、北極星 ad_script_load は zone別28d が取得不能（events export が7日範囲のみ→バックログ#1で解消）、indexed 実数も取得不能（カバレッジAPI未取得→#2で解消、impression発生正規ページ=2）。**律速はインデックス遅延**（sitemap 508 URL に対し impression は旧?locale= 経由の2ページのみ、06-13/06-14充足の新規ページは impression=0）。撤退基準は非該当（履歴2点・3日で母数不足）。バックログを「計測整備→インデックス促進」優先に並べ替え（9件維持）。KPI履歴表に1行追記。柱4 outreach 下書きを `docs/ops/outreach/2026-06-15.md` に生成（投稿はユーザー手動）。戦略変更提案3件はレビュー文書に記載（growth-strategy.md 本文は未変更）。
