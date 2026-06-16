@@ -717,3 +717,64 @@ export function findSolutionPage(slug: string, locale: Locale): SolutionPage | u
   return pages.find((p) => p.slug === slug && p.locale === locale)
     ?? pages.find((p) => p.slug === slug && p.locale === "en");
 }
+
+export type RelatedSolution = { slug: string; title: string };
+
+// Curated internal-link graph between solution pages. Every entry leads to the
+// high-intent "downloader-not-working" cluster (ja/pt/ar resolve via fallback),
+// so newly filled long-tail pages stop being orphans and crawlers can reach them
+// from any sibling. Order = priority shown in the Related Guides block.
+const relatedSlugMap: Record<string, string[]> = {
+  "twitter-video-downloader-not-working": [
+    "twitter-video-download-2026",
+    "reddit-video-downloader-not-working",
+    "telegram-video-downloader-not-working",
+    "how-to-download-without-watermark",
+    "how-to-save-on-iphone-android",
+  ],
+  "reddit-video-downloader-not-working": [
+    "reddit-video-download-2026",
+    "twitter-video-downloader-not-working",
+    "telegram-video-downloader-not-working",
+    "best-quality-download-settings",
+    "how-to-save-on-iphone-android",
+  ],
+  "telegram-video-downloader-not-working": [
+    "twitter-video-downloader-not-working",
+    "reddit-video-downloader-not-working",
+    "tiktok-video-downloader-not-working",
+    "how-to-save-on-iphone-android",
+    "best-quality-download-settings",
+  ],
+  "tiktok-video-downloader-not-working": [
+    "tiktok-download-2026",
+    "how-to-download-without-watermark",
+    "twitter-video-downloader-not-working",
+    "reddit-video-downloader-not-working",
+    "how-to-save-on-iphone-android",
+  ],
+};
+
+// Fallback set for any solution page without a bespoke cluster: surface the
+// highest-intent not-working pages plus the most-read general guides.
+const defaultRelatedSlugs: string[] = [
+  "twitter-video-downloader-not-working",
+  "reddit-video-downloader-not-working",
+  "telegram-video-downloader-not-working",
+  "how-to-download-without-watermark",
+  "how-to-save-on-iphone-android",
+  "best-quality-download-settings",
+];
+
+export function getRelatedSolutions(slug: string, locale: Locale, limit = 5): RelatedSolution[] {
+  const candidates = relatedSlugMap[slug] ?? defaultRelatedSlugs;
+  const out: RelatedSolution[] = [];
+  for (const candidate of candidates) {
+    if (candidate === slug) continue;
+    const page = findSolutionPage(candidate, locale);
+    if (!page) continue;
+    out.push({ slug: candidate, title: page.title });
+    if (out.length >= limit) break;
+  }
+  return out;
+}

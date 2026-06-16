@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { SolutionContentClient } from '@/components/solution-content-client';
 import { solutionText, normalizeLocale, type Locale } from '@/lib/i18n/ui';
 import { buildLocaleAlternates, getLocalizedUrl } from '@/lib/metadata-helper';
-import { findSolutionPage } from '@/lib/solution-pages/store';
+import { findSolutionPage, getRelatedSolutions } from '@/lib/solution-pages/store';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -59,6 +59,7 @@ export default async function Page({ params, searchParams }: Props) {
   const url = getLocalizedUrl(path, locale);
   const dict = solutionText[locale] || solutionText.en;
   const description = page.sections[0]?.body || dict.metaDescription || 'ClipKeep solution guide.';
+  const related = getRelatedSolutions(slug, locale);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -123,7 +124,7 @@ export default async function Page({ params, searchParams }: Props) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <SolutionContentClient data={page} locale={locale} />
+      <SolutionContentClient data={page} locale={locale} related={related} />
     </>
   );
 }

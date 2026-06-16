@@ -677,6 +677,8 @@ export default async function HomePage({ searchParams }: HomeProps) {
             { slug: "how-to-save-on-iphone-android", title: t.notes },
             { slug: "best-quality-download-settings", title: "HD / 4K " + (t.guide2026 || "2026") },
             { slug: "reddit-video-downloader-not-working", title: (t.reddit || "Reddit") + " Fix" },
+            { slug: "twitter-video-downloader-not-working", title: (t.twitter || "Twitter") + " Fix" },
+            { slug: "telegram-video-downloader-not-working", title: (t.telegram || "Telegram") + " Fix" },
           ].map((guide) => (
             <Link 
               key={guide.slug}
