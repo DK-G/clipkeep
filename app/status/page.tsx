@@ -2,6 +2,7 @@
 import { StatusContentClient } from '@/components/status-content-client';
 import { normalizeLocale, statusText } from '@/lib/i18n/ui';
 import { SITE_URL } from '@/lib/site-url';
+import { buildLocaleAlternates } from '@/lib/metadata-helper';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -18,21 +19,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title: t.title,
     description: t.currentBody,
-    alternates: {
-      canonical: url,
-      languages: {
-        en: `${base}${path}`,
-        ja: `${base}${path}?locale=ja`,
-        ar: `${base}${path}?locale=ar`,
-        es: `${base}${path}?locale=es`,
-        pt: `${base}${path}?locale=pt`,
-        fr: `${base}${path}?locale=fr`,
-        id: `${base}${path}?locale=id`,
-        hi: `${base}${path}?locale=hi`,
-        de: `${base}${path}?locale=de`,
-        tr: `${base}${path}?locale=tr`,
-      },
-    },
+    alternates: buildLocaleAlternates(path, locale),
     openGraph: {
       title: t.title,
       description: t.currentBody,

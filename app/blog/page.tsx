@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { keywordArticles, type BlogLocale } from '@/lib/blog/keyword-articles';
 import { normalizeLocale } from '@/lib/i18n/ui';
 import { SITE_URL } from '@/lib/site-url';
+import { buildLocaleAlternates } from '@/lib/metadata-helper';
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -134,27 +135,12 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const sp = await searchParams;
   const locale = toBlogLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
   const t = pageText[locale];
-  const base = SITE_URL;
   const path = '/blog';
-  const url = `${base}${path}${locale === 'en' ? '' : `?locale=${locale}`}`;
 
   return {
     title: t.title,
     description: t.subtitle,
-    alternates: {
-      canonical: url,
-      languages: {
-        en: `${base}${path}`,
-        ja: `${base}${path}?locale=ja`,
-        es: `${base}${path}?locale=es`,
-        ar: `${base}${path}?locale=ar`,
-        pt: `${base}${path}?locale=pt`,
-        fr: `${base}${path}?locale=fr`,
-        de: `${base}${path}?locale=de`,
-        tr: `${base}${path}?locale=tr`,
-        'x-default': `${base}${path}`,
-      },
-    },
+    alternates: buildLocaleAlternates(path, locale),
   };
 }
 

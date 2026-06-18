@@ -2,6 +2,7 @@
 import { ContactContentClient } from '@/components/contact-content-client';
 import { normalizeLocale } from '@/lib/i18n/ui';
 import { SITE_URL } from '@/lib/site-url';
+import { buildLocaleAlternates } from '@/lib/metadata-helper';
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -10,9 +11,7 @@ interface Props {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
-  const base = SITE_URL;
   const path = '/contact';
-  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
 
   const titles: Record<string, string> = {
     en: 'Contact Us',
@@ -43,21 +42,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title: titles[locale] || titles.en,
     description: descriptions[locale] || descriptions.en,
-    alternates: {
-      canonical: url,
-      languages: {
-        en: `${base}${path}`,
-        ja: `${base}${path}?locale=ja`,
-        ar: `${base}${path}?locale=ar`,
-        es: `${base}${path}?locale=es`,
-        pt: `${base}${path}?locale=pt`,
-        fr: `${base}${path}?locale=fr`,
-        id: `${base}${path}?locale=id`,
-        hi: `${base}${path}?locale=hi`,
-        de: `${base}${path}?locale=de`,
-        tr: `${base}${path}?locale=tr`,
-      },
-    },
+    alternates: buildLocaleAlternates(path, locale),
   };
 }
 

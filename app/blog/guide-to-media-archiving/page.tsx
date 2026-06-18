@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { localeDir, normalizeLocale, type Locale } from '@/lib/i18n/ui';
-import { SITE_URL } from '@/lib/site-url';
+import { buildLocaleAlternates } from '@/lib/metadata-helper';
 
 type BlogSection = {
   heading: string;
@@ -606,29 +606,13 @@ const blogMeta: Record<Locale, { title: string; description: string }> = {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const sp = await searchParams;
   const locale = normalizeLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
-  const base = SITE_URL;
   const path = '/blog/guide-to-media-archiving';
-  const url = `${base}${path}${locale !== 'en' ? `?locale=${locale}` : ''}`;
   const meta = blogMeta[locale] ?? blogMeta.en;
 
   return {
     title: meta.title,
     description: meta.description,
-    alternates: {
-      canonical: url,
-      languages: {
-        en: `${base}${path}`,
-        ja: `${base}${path}?locale=ja`,
-        ar: `${base}${path}?locale=ar`,
-        es: `${base}${path}?locale=es`,
-        pt: `${base}${path}?locale=pt`,
-        fr: `${base}${path}?locale=fr`,
-        id: `${base}${path}?locale=id`,
-        hi: `${base}${path}?locale=hi`,
-        de: `${base}${path}?locale=de`,
-        tr: `${base}${path}?locale=tr`,
-      },
-    },
+    alternates: buildLocaleAlternates(path, locale),
   };
 }
 type Props = {

@@ -4,7 +4,7 @@ import { BlogCtaLink } from '@/components/blog-cta-link';
 import { notFound } from 'next/navigation';
 import { getKeywordArticle, getRelatedKeywordArticles, keywordArticles, type BlogLocale } from '@/lib/blog/keyword-articles';
 import { normalizeLocale } from '@/lib/i18n/ui';
-import { SITE_URL } from '@/lib/site-url';
+import { buildLocaleAlternates } from '@/lib/metadata-helper';
 import { BlogSchema } from '@/components/blog-schema';
 
 type Props = {
@@ -1029,27 +1029,12 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   }
 
   const kw = article.keyword[locale];
-  const base = SITE_URL;
   const path = `/blog/${article.slug}`;
-  const url = `${base}${path}${locale === 'en' ? '' : `?locale=${locale}`}`;
 
   return {
     title: `${kw} | ClipKeep`,
     description: buildIntro(kw, locale),
-    alternates: {
-      canonical: url,
-      languages: {
-        en: `${base}${path}`,
-        ja: `${base}${path}?locale=ja`,
-        es: `${base}${path}?locale=es`,
-        ar: `${base}${path}?locale=ar`,
-        pt: `${base}${path}?locale=pt`,
-        fr: `${base}${path}?locale=fr`,
-        de: `${base}${path}?locale=de`,
-        tr: `${base}${path}?locale=tr`,
-        'x-default': `${base}${path}`,
-      },
-    },
+    alternates: buildLocaleAlternates(path, locale),
   };
 }
 
