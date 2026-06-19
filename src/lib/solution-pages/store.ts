@@ -656,9 +656,9 @@ export const pages: SolutionPage[] = [
     locale,
     title: tiktokWorkingGuide[locale].title,
     sections: [
-      { id: "s1", heading: "Step 1", body: tiktokWorkingGuide[locale].s1 },
-      { id: "s2", heading: "Step 2", body: tiktokWorkingGuide[locale].s2 },
-      { id: "s3", heading: "Step 3", body: tiktokWorkingGuide[locale].s3 },
+      { id: "s1", heading: locale === "ja" ? "URL形式を確認する" : locale === "pt" ? "Verifique o formato da URL" : locale === "ar" ? "تحقق من تنسيق الرابط" : "Check the URL format", body: tiktokWorkingGuide[locale].s1 },
+      { id: "s2", heading: locale === "ja" ? "キャッシュを消して再試行" : locale === "pt" ? "Limpe o cache e tente de novo" : locale === "ar" ? "امسح ذاكرة التخزين المؤقت وأعد المحاولة" : "Clear cache and retry", body: tiktokWorkingGuide[locale].s2 },
+      { id: "s3", heading: locale === "ja" ? "公開動画のみ対応" : locale === "pt" ? "Apenas vídeos públicos" : locale === "ar" ? "الفيديوهات العامة فقط" : "Public videos only", body: tiktokWorkingGuide[locale].s3 },
     ],
     cta: { label: tiktokWorkingGuide[locale].cta, href: "/download-tiktok-video" },
   })),

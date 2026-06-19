@@ -61,6 +61,22 @@ export default async function Page({ params, searchParams }: Props) {
   const description = page.sections[0]?.body || dict.metaDescription || 'ClipKeep solution guide.';
   const related = getRelatedSolutions(slug, locale);
 
+  // Localized breadcrumb labels — the structured-data breadcrumb must match the
+  // page locale (ja/pt/ar previously fell back to English "Home"/"Solutions").
+  const breadcrumbLabels: Record<Locale, { home: string; solutions: string }> = {
+    en: { home: 'Home', solutions: 'Solutions' },
+    ja: { home: 'ホーム', solutions: '解決策' },
+    ar: { home: 'الرئيسية', solutions: 'الحلول' },
+    es: { home: 'Inicio', solutions: 'Soluciones' },
+    pt: { home: 'Início', solutions: 'Soluções' },
+    fr: { home: 'Accueil', solutions: 'Solutions' },
+    id: { home: 'Beranda', solutions: 'Solusi' },
+    hi: { home: 'होम', solutions: 'समाधान' },
+    de: { home: 'Startseite', solutions: 'Lösungen' },
+    tr: { home: 'Ana Sayfa', solutions: 'Çözümler' },
+  };
+  const crumbs = breadcrumbLabels[locale] || breadcrumbLabels.en;
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -76,13 +92,13 @@ export default async function Page({ params, searchParams }: Props) {
           {
             '@type': 'ListItem',
             position: 1,
-            name: locale === 'ja' ? 'ホーム' : 'Home',
+            name: crumbs.home,
             item: getLocalizedUrl('/', locale),
           },
           {
             '@type': 'ListItem',
             position: 2,
-            name: locale === 'ja' ? '解決策' : 'Solutions',
+            name: crumbs.solutions,
             item: getLocalizedUrl('/faq', locale),
           },
           {
@@ -107,16 +123,17 @@ export default async function Page({ params, searchParams }: Props) {
       },
       {
         '@type': 'FAQPage',
-        mainEntity: [
-          {
-            '@type': 'Question',
-            name: page.title,
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: page.sections.map(s => s.body).join(' '),
-            },
+        // One Q&A per section (localized heading -> question, body -> answer)
+        // so ja/pt/ar pages emit a complete multilingual FAQ instead of a
+        // single concatenated answer.
+        mainEntity: page.sections.map(section => ({
+          '@type': 'Question',
+          name: section.heading,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: section.body,
           },
-        ],
+        })),
       },
     ],
   };
