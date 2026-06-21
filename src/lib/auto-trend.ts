@@ -1,9 +1,29 @@
 import puppeteer from "@cloudflare/puppeteer";
 import { createJob, getJob, recordAccess } from "./extract/store";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { recordTopicLinks, recordRunMeta, type TopicLink } from "./trends/topic-store";
 
 type TrendPlatform = "twitter" | "tiktok";
 const TARGET_PER_PLATFORM = 3;
+
+/** A discovered candidate with the trend label (keyword/hashtag) it came from. */
+type TrendItem = { url: string; topic: string | null };
+
+function dedupeByUrl(items: TrendItem[]): TrendItem[] {
+  const seen = new Set<string>();
+  const out: TrendItem[] = [];
+  for (const item of items) {
+    if (seen.has(item.url)) continue;
+    seen.add(item.url);
+    out.push(item);
+  }
+  return out;
+}
+
+async function getTrendKv(): Promise<KVNamespace | null> {
+  const env = (await getCloudflareContext()).env as { TREND_KV?: KVNamespace };
+  return env.TREND_KV ?? null;
+}
 
 function normalizeTwitterUrl(url: string): string | null {
   try {
@@ -102,12 +122,12 @@ async function getFallbackCandidate(platform: TrendPlatform): Promise<string | n
 /**
  * Discovers trending URLs from X (Twitter) and TikTok using Puppeteer.
  */
-async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }> {
+async function discoverTrends(): Promise<{ twitter: TrendItem[]; tiktok: TrendItem[] }> {
   const context = await getCloudflareContext();
   const env = context.env as { clipkeep_db: D1Database; browser_rendering: Fetcher };
 
-  const twitterUrls: string[] = [];
-  const tiktokUrls: string[] = [];
+  const twitterItems: TrendItem[] = [];
+  const tiktokItems: TrendItem[] = [];
   const [recentTwitterUrls, recentTikTokUrls] = await Promise.all([
     getRecentlySeenUrls("twitter"),
     getRecentlySeenUrls("tiktok"),
@@ -138,7 +158,8 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
         .filter((value): value is string => Boolean(value))
         .filter((url) => !recentTikTokUrls.has(url))
         .slice(0, 6);
-      tiktokUrls.push(...ttLinks);
+      // TikTok explore does not expose a reliable per-URL topic label yet (Phase 0).
+      tiktokItems.push(...ttLinks.map((url) => ({ url, topic: null as string | null })));
     } catch (e) {
       console.warn("[AutoTrend] TikTok scrape failed:", e);
     }
@@ -154,7 +175,7 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
       });
 
       for (const keyword of xKeywords) {
-        if (twitterUrls.length >= TARGET_PER_PLATFORM) break;
+        if (twitterItems.length >= TARGET_PER_PLATFORM) break;
         try {
           await xPage.goto(`https://search.yahoo.co.jp/realtime/search?p=${encodeURIComponent(keyword)}&ei=UTF-8`, { waitUntil: "networkidle2", timeout: 15000 });
           const tweetCandidates = await xPage.evaluate(() => {
@@ -173,7 +194,7 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
               normalizeTwitterUrl
             ),
           ].filter((url, index, array) => array.indexOf(url) === index && !recentTwitterUrls.has(url));
-          if (tweetLinks.length > 0) twitterUrls.push(tweetLinks[0]);
+          if (tweetLinks.length > 0) twitterItems.push({ url: tweetLinks[0], topic: keyword });
         } catch (e) {
           console.warn(`[AutoTrend] Failed tweet find for ${keyword}:`, e);
         }
@@ -187,8 +208,8 @@ async function discoverTrends(): Promise<{ twitter: string[]; tiktok: string[] }
   }
 
   return {
-    twitter: [...new Set(twitterUrls)].slice(0, TARGET_PER_PLATFORM),
-    tiktok: [...new Set(tiktokUrls)].slice(0, TARGET_PER_PLATFORM),
+    twitter: dedupeByUrl(twitterItems).slice(0, TARGET_PER_PLATFORM),
+    tiktok: dedupeByUrl(tiktokItems).slice(0, TARGET_PER_PLATFORM),
   };
 }
 
@@ -216,9 +237,9 @@ export async function runAutoTrendUpdate() {
     const { twitter, tiktok } = await discoverTrends();
     console.log(`[AutoTrend] Discovered ${twitter.length} X and ${tiktok.length} TikTok URLs`);
 
-    const allItems: Array<{ url: string; platform: "twitter" | "tiktok" }> = [];
-    if (twitter[0]) allItems.push({ url: twitter[0], platform: "twitter" });
-    if (tiktok[0]) allItems.push({ url: tiktok[0], platform: "tiktok" });
+    const allItems: Array<{ url: string; platform: "twitter" | "tiktok"; topic: string | null }> = [];
+    if (twitter[0]) allItems.push({ url: twitter[0].url, platform: "twitter", topic: twitter[0].topic });
+    if (tiktok[0]) allItems.push({ url: tiktok[0].url, platform: "tiktok", topic: tiktok[0].topic });
 
     if (allItems.length === 0) {
       console.warn("[AutoTrend] No fresh candidates discovered. Falling back to existing public items.");
@@ -226,12 +247,22 @@ export async function runAutoTrendUpdate() {
         getFallbackCandidate("twitter"),
         getFallbackCandidate("tiktok"),
       ]);
-      if (fallbackTwitter) allItems.push({ url: fallbackTwitter, platform: "twitter" });
-      if (fallbackTikTok) allItems.push({ url: fallbackTikTok, platform: "tiktok" });
+      // Fallback items have no trend topic.
+      if (fallbackTwitter) allItems.push({ url: fallbackTwitter, platform: "twitter", topic: null });
+      if (fallbackTikTok) allItems.push({ url: fallbackTikTok, platform: "tiktok", topic: null });
     }
 
     if (allItems.length === 0) {
       console.warn("[AutoTrend] No fallback candidates available. Skipping this cycle.");
+      // Heartbeat so an empty cycle is still observable in KV.
+      const kv = await getTrendKv();
+      if (kv) {
+        await recordRunMeta(kv, {
+          discovered: { twitter: twitter.length, tiktok: tiktok.length },
+          topicsWritten: 0,
+          jobsLinked: 0,
+        }).catch((e) => console.error("[AutoTrend] Run-meta persistence failed:", e));
+      }
       return { status: "success", processed: 0, skipped: true, reason: "no_candidates" };
     }
 
@@ -288,6 +319,35 @@ export async function runAutoTrendUpdate() {
     });
 
     await Promise.allSettled(followUps);
+
+    // ── Persist trend topic -> jobIds map (柱2 Phase 0, KV) ──────────────────
+    const kv = await getTrendKv();
+    if (kv) {
+      try {
+        const topicLinks: TopicLink[] = [];
+        for (const result of createdJobs) {
+          if (result.status !== "fulfilled") continue;
+          const { item, job } = result.value;
+          if (!item.topic) continue;
+          topicLinks.push({ topic: item.topic, platform: item.platform, jobId: job.id, sourceUrl: item.url });
+        }
+
+        const { topicsWritten, jobsLinked } = topicLinks.length
+          ? await recordTopicLinks(kv, topicLinks, "ja")
+          : { topicsWritten: 0, jobsLinked: 0 };
+
+        await recordRunMeta(kv, {
+          discovered: { twitter: twitter.length, tiktok: tiktok.length },
+          topicsWritten,
+          jobsLinked,
+        });
+        console.log(`[AutoTrend] KV topics written=${topicsWritten} jobsLinked=${jobsLinked}`);
+      } catch (e) {
+        console.error("[AutoTrend] Topic persistence failed:", e);
+      }
+    } else {
+      console.warn("[AutoTrend] TREND_KV binding missing; skipped topic persistence.");
+    }
 
     return { status: "success", processed: allItems.length };
   } catch (error) {
