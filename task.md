@@ -20,7 +20,7 @@
 9. [ ] 柱1: id/hi/tr のロングテールキーワードマップ作成（次の言語展開準備。検索需要・競合弱さ・広告収益性・実装リスクで優先度付け）
 
 ### 柱2 Phase 0 実装（2026-06-21 ユーザー承認済み。設計正本: `docs/strategy/trend-freshness-pages-design.md`。日次ループの1デプロイ単位）
-- 10. [ ] **P0-1 トピック捕捉＋格納配管**: `src/lib/auto-trend.ts` で破棄しているトレンドキーワード/ハッシュタグを捕捉し、トピック→jobIds マップを **KV（新規バインディング `TREND_KV`）** に永続化（D1 非依存）。※調査で既存 KV 無し＆ビルド時 JSON はランタイム発見を書込めず不適合と判明→KV 確定。`wrangler.production.toml`/`wrangler.test.toml` 双方に宣言。この単位ではページは作らない（配管のみ）。検証は admin auto-trend エンドポイント手動トリガ→KV 反映確認。
+- 10. [~] **P0-1 トピック捕捉＋格納配管**（実装・デプロイ済み／**本番KV書込みの検証が未達**, 2026-06-22, ver `fae4dfe5`）: `src/lib/auto-trend.ts` で破棄していたトレンド keyword を捕捉し `src/lib/trends/topic-store.ts` 経由でトピック→jobIds を **KV `TREND_KV`**（prod ns `ab21329d…`）へ書く実装を本番デプロイ。typecheck/lint/build PASS、release gate PASS=29/0/1、バインド確認済み。**ただし本番 KV が空のまま**: D1 last_run=2026-06-21T15:00:16Z（=デプロイ14:49Zの後）で新コード cron は resolve したのに KV 未書込み。仮説(A)cron コンテキストで TREND_KV が env に無い／(B)kv.put が握り潰し例外。**要ログ確認**（次cron tail or 手動トリガ or D1ブレッドクラム小デプロイ）。詳細 docs/ops/daily/2026-06-22.md。
 - 11. [ ] **P0-2 `/trend/[slug]` ルート骨組み**: `app/trend/[slug]/page.tsx`（`/solution/[slug]` を手本に SSR）。ja のみ、複数クリップギャラリー（各 `/result/[jobId]` へ実 `<a>`）＋導入文＋FAQ、`buildLocaleAlternates` で canonical/hreflang、CollectionPage/ItemList/BreadcrumbList/FAQPage JSON-LD。slug は安定ID `t-<hash>`。
 - 12. [ ] **P0-3 品質ゲート＋sitemap 条件付き収録＋内部リンク**: `MIN_CLIPS=3`/`MAX_LIVE_TOPICS=10〜20` を満たすトピックのみ公開・`app/sitemap.ts` に動的収録。`/trending`・`/trending/[platform]` から該当トピックへ実アンカーで内部リンク（孤立防止）。
 - 13. [ ] **P0-4 鮮度減衰＋個別撤去導線**: `STALE_AFTER=30日` 超過で sitemap 除外＋noindex/410。同機構を流用し**問題トピックを手動で即時撤去**できる導線を用意（判断3の事後対応路）。
