@@ -25,6 +25,40 @@ async function getTrendKv(): Promise<KVNamespace | null> {
   return env.TREND_KV ?? null;
 }
 
+/**
+ * P0-1 diagnostic (TEMPORARY): record KV-binding visibility and put outcome into
+ * D1 admin_meta (a channel we know works in the cron context), so we can tell
+ * "binding absent from env" (A) from "kv.put threw" (B). Remove once P0-1 is green.
+ */
+async function writeTrendDiag(payload: Record<string, unknown>): Promise<void> {
+  try {
+    const env = (await getCloudflareContext()).env as Record<string, unknown>;
+    let envKeys: string[] = [];
+    try {
+      envKeys = Object.keys(env);
+    } catch {
+      envKeys = ["<keys-unavailable>"];
+    }
+    const db = env.clipkeep_db as D1Database | undefined;
+    if (!db) return;
+    const value = JSON.stringify({
+      at: new Date().toISOString(),
+      kvType: typeof env.TREND_KV,
+      envKeys,
+      ...payload,
+    }).slice(0, 1900);
+    await db
+      .prepare(
+        `INSERT INTO admin_meta (key, value) VALUES ('trend_kv_diag', ?1)
+         ON CONFLICT(key) DO UPDATE SET value = excluded.value`
+      )
+      .bind(value)
+      .run();
+  } catch (e) {
+    console.error("[AutoTrend] writeTrendDiag failed:", e);
+  }
+}
+
 function normalizeTwitterUrl(url: string): string | null {
   try {
     const parsed = new URL(url.trim());
@@ -255,14 +289,23 @@ export async function runAutoTrendUpdate() {
     if (allItems.length === 0) {
       console.warn("[AutoTrend] No fallback candidates available. Skipping this cycle.");
       // Heartbeat so an empty cycle is still observable in KV.
-      const kv = await getTrendKv();
-      if (kv) {
-        await recordRunMeta(kv, {
-          discovered: { twitter: twitter.length, tiktok: tiktok.length },
-          topicsWritten: 0,
-          jobsLinked: 0,
-        }).catch((e) => console.error("[AutoTrend] Run-meta persistence failed:", e));
+      let putOk = false;
+      let putError: string | null = null;
+      try {
+        const kv = await getTrendKv();
+        if (kv) {
+          await recordRunMeta(kv, {
+            discovered: { twitter: twitter.length, tiktok: tiktok.length },
+            topicsWritten: 0,
+            jobsLinked: 0,
+          });
+          putOk = true;
+        }
+      } catch (e) {
+        putError = e instanceof Error ? `${e.message} | ${e.stack ?? ""}` : String(e);
+        console.error("[AutoTrend] Run-meta persistence failed:", e);
       }
+      await writeTrendDiag({ path: "skip", putOk, putError, processed: 0 });
       return { status: "success", processed: 0, skipped: true, reason: "no_candidates" };
     }
 
@@ -321,9 +364,11 @@ export async function runAutoTrendUpdate() {
     await Promise.allSettled(followUps);
 
     // ── Persist trend topic -> jobIds map (柱2 Phase 0, KV) ──────────────────
-    const kv = await getTrendKv();
-    if (kv) {
-      try {
+    let putOk = false;
+    let putError: string | null = null;
+    try {
+      const kv = await getTrendKv();
+      if (kv) {
         const topicLinks: TopicLink[] = [];
         for (const result of createdJobs) {
           if (result.status !== "fulfilled") continue;
@@ -341,13 +386,18 @@ export async function runAutoTrendUpdate() {
           topicsWritten,
           jobsLinked,
         });
+        putOk = true;
         console.log(`[AutoTrend] KV topics written=${topicsWritten} jobsLinked=${jobsLinked}`);
-      } catch (e) {
-        console.error("[AutoTrend] Topic persistence failed:", e);
+      } else {
+        console.warn("[AutoTrend] TREND_KV binding missing; skipped topic persistence.");
       }
-    } else {
-      console.warn("[AutoTrend] TREND_KV binding missing; skipped topic persistence.");
+    } catch (e) {
+      putError = e instanceof Error ? `${e.message} | ${e.stack ?? ""}` : String(e);
+      console.error("[AutoTrend] Topic persistence failed:", e);
     }
+
+    // P0-1 diagnostic (temporary): records env keys + kvType + put outcome to D1.
+    await writeTrendDiag({ path: "main", putOk, putError, processed: allItems.length });
 
     return { status: "success", processed: allItems.length };
   } catch (error) {
