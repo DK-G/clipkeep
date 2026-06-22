@@ -145,3 +145,18 @@ export async function recordRunMeta(kv: KVNamespace, meta: Omit<RunMeta, "at">):
   const record: RunMeta = { at: new Date().toISOString(), ...meta };
   await kv.put(META_KEY, JSON.stringify(record));
 }
+
+/**
+ * slug（t-<hash>）からトピックレコードを引く。
+ * slug は正規化キーから決定的に派生する（slugifyTopic(key)）ため、index を1回読めば
+ * 各トピックを総当たりせずに対象キーを特定でき、KV read は index + 対象1件の2回で済む。
+ * `/trend/[slug]` ページの SSR リーダー（Phase 0 P0-2）。
+ */
+export async function getTopicBySlug(kv: KVNamespace, slug: string): Promise<TopicRecord | null> {
+  const idxRaw = await kv.get(INDEX_KEY);
+  const keys = idxRaw ? safeParse<string[]>(idxRaw) ?? [] : [];
+  const matchKey = keys.find((k) => slugifyTopic(k) === slug);
+  if (!matchKey) return null;
+  const raw = await kv.get(TOPIC_PREFIX + matchKey);
+  return raw ? safeParse<TopicRecord>(raw) : null;
+}
