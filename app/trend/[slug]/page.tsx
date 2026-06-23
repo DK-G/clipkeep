@@ -4,6 +4,7 @@ import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { normalizeLocale, localeDir, type Locale } from '@/lib/i18n/ui';
 import { buildLocaleAlternates, getLocalizedUrl } from '@/lib/metadata-helper';
 import { getTopicBySlug, type TopicRecord, type TopicJob } from '@/lib/trends/topic-store';
+import { isSlugLive } from '@/lib/trends/live';
 
 // Topics are written to KV by the hourly cron at runtime, so this page must
 // execute per request (no static optimization / caching of the KV read).
@@ -165,14 +166,19 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const title = `${topic.displayName}${c.titleSuffix}`;
   const description = c.intro(topic.displayName);
 
+  // P0-3: indexability is gated. A topic is indexed only once it passes the
+  // quality gate (MIN_CLIPS deduped public clips, within MAX_LIVE_TOPICS) — the
+  // same gate that controls sitemap inclusion, so index ⇔ sitemap stay in sync.
+  // Below the gate the page stays noindex (follow) to avoid thin auto pages.
+  const live = await isSlugLive(slug);
+
   return {
     title: `${title} | ClipKeep`,
     description,
     alternates: buildLocaleAlternates(path, locale),
-    // Phase 0 P0-2: the page is intentionally noindex. Indexability is decided by
-    // the quality gate (MIN_CLIPS / dedup / freshness) introduced in P0-3 — until
-    // then we must not let thin auto-built trend pages enter the index.
-    robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+    robots: live
+      ? undefined
+      : { index: false, follow: true, googleBot: { index: false, follow: true } },
     openGraph: { title, description, url: getLocalizedUrl(path, locale), type: 'article' },
     twitter: { card: 'summary_large_image', title, description },
   };

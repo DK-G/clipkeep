@@ -1,6 +1,8 @@
 ﻿import { normalizeLocale, homeText } from '@/lib/i18n/ui';
 import { getGalleryMetadata, getRangeDescription, normalizeGalleryRange } from '@/lib/metadata-helper';
 import { GalleryPageContent, type GalleryPlatform } from '@/components/gallery-page-content';
+import { TrendTopicsNav } from '@/components/trend-topics-nav';
+import { loadLiveTopicsForPlatform } from '@/lib/trends/live';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
@@ -12,13 +14,14 @@ const SUPPORTED_PLATFORMS = [
 ];
 const DEFAULT_TRENDING_RANGE = 'week';
 
+// P0-3: the live-trend-topic nav reads TREND_KV at runtime, so this page must
+// render per request rather than being prerendered as static HTML (otherwise the
+// nav would be baked empty at build and never reflect cron-captured topics).
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: Promise<{ platform: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
-
-export async function generateStaticParams() {
-  return SUPPORTED_PLATFORMS.map((platform) => ({ platform }));
 }
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
@@ -46,6 +49,7 @@ export default async function Page({ params, searchParams }: Props) {
   const description = getRangeDescription(locale, 'trending', range);
   const platformLabel = platform.charAt(0).toUpperCase() + platform.slice(1);
   const url = `${SITE_URL}/trending/${platform}${locale !== 'en' ? `?locale=${locale}` : ''}`;
+  const liveTopics = await loadLiveTopicsForPlatform(platform);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -85,6 +89,7 @@ export default async function Page({ params, searchParams }: Props) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <TrendTopicsNav topics={liveTopics} locale={locale} />
       <Suspense fallback={<div className="p-20 text-center text-gray-400">{t.initialMessage}...</div>}>
         <GalleryPageContent platform={platform as GalleryPlatform} locale={locale} type="trending" range={range} />
       </Suspense>

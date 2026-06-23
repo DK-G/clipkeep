@@ -3,6 +3,11 @@ import { keywordArticles } from "@/lib/blog/keyword-articles";
 import { buildLocaleAlternates, getLocalizedUrl } from "@/lib/metadata-helper";
 import type { Locale } from "@/lib/i18n/ui";
 import { pages } from "@/lib/solution-pages/store";
+import { loadLiveTopics } from "@/lib/trends/live";
+
+// Live trend topics are written to KV at runtime by the hourly cron, so the
+// sitemap must execute per request (no static cache of the KV-sourced section).
+export const dynamic = "force-dynamic";
 
 // Only list URLs that are canonical for themselves: the English page plus the
 // /ja /pt /ar path versions. Query-param locale views canonicalize to the
@@ -55,7 +60,7 @@ function makeEntries(
   }));
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   // ── Home ──────────────────────────────────────────────────────────────────
@@ -101,6 +106,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // ── Solution pages (primary locales) ─────────────────────────────────────
   for (const slug of SOLUTION_SLUGS) {
     entries.push(...makeEntries(`/solution/${slug}`, PRIMARY_LOCALES, 0.6, "monthly"));
+  }
+
+  // ── Trend topic hubs (柱2 P0-3) ──────────────────────────────────────────
+  // Only gate-passing live topics enter the sitemap; thin/below-gate/decayed
+  // topics are withheld. loadLiveTopics() is empty-safe (KV miss → no entries),
+  // so this section is a no-op until the cron has captured qualifying topics.
+  const liveTopics = await loadLiveTopics();
+  for (const topic of liveTopics) {
+    const path = `/trend/${topic.slug}`;
+    const lastModified = new Date(topic.lastTrendedAt);
+    const lastMod = Number.isNaN(lastModified.getTime()) ? new Date() : lastModified;
+    entries.push(...makeEntries(path, ALL_LOCALES, 0.6, "daily", lastMod));
   }
 
   return entries;

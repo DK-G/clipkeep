@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { HubAnalytics } from '@/components/analytics/hub-analytics';
 import { TrendingPageClient } from '@/components/trending-page-client';
+import { TrendTopicsNav } from '@/components/trend-topics-nav';
+import { loadLiveTopics } from '@/lib/trends/live';
 import { normalizeLocale, homeText } from '@/lib/i18n/ui';
 import {
   buildLocaleAlternates,
@@ -43,6 +45,7 @@ export default async function TrendingPage({ searchParams }: TrendingPageProps) 
   const description = getRangeDescription(locale, 'trending', range);
   const guard = getGalleryQueryGuard(sp, 'trending');
   const url = getLocalizedUrl(guard.canonicalPath, locale);
+  const liveTopics = await loadLiveTopics();
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
@@ -55,6 +58,7 @@ export default async function TrendingPage({ searchParams }: TrendingPageProps) 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <HubAnalytics type="trending" />
+      <TrendTopicsNav topics={liveTopics} locale={locale} />
       <TrendingPageClient />
     </>
   );

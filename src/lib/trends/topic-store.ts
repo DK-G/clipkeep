@@ -44,6 +44,34 @@ export const INDEX_KEY = "topics:index";
 export const META_KEY = "meta:last_run";
 const MAX_JOBS_PER_TOPIC = 20;
 
+// 品質ゲート（設計 §5.3 / §9-1, 2026-06-21 ユーザー確定）。
+// 保守的に開始し、週次の indexed/impression 実測で1ダイヤルずつ緩める。
+/** 公開（index 対象）に必要な dedup 後の最小クリップ数。 */
+export const MIN_CLIPS = 3;
+/** 同時公開トピックの上限（量産防止＝ドアウェイ回避）。10〜20 の下限から開始。 */
+export const MAX_LIVE_TOPICS = 12;
+/** index 走査の安全上限（KV read 暴走の防止。Phase 0 のトピック数は極小）。 */
+const LIVE_SCAN_CAP = 200;
+
+/** sitemap/内部リンク/index 判定で共有する live トピックの軽量ビュー。 */
+export type LiveTopic = {
+  slug: string;
+  displayName: string;
+  platform: string;
+  locale: Locale;
+  clipCount: number;
+  lastTrendedAt: string;
+};
+
+/** 同一動画の再投稿を排除した実クリップ数（sourceUrl 優先・無ければ jobId）。 */
+export function dedupedClipCount(jobs: TopicJob[]): number {
+  const seen = new Set<string>();
+  for (const j of jobs) {
+    seen.add((j.sourceUrl || j.jobId).trim().toLowerCase());
+  }
+  return seen.size;
+}
+
 /** トレンド表示名を KV キー用に正規化する（小文字・先頭 # 除去・空白圧縮）。 */
 export function normalizeTopicKey(name: string): string {
   return name
@@ -159,4 +187,35 @@ export async function getTopicBySlug(kv: KVNamespace, slug: string): Promise<Top
   if (!matchKey) return null;
   const raw = await kv.get(TOPIC_PREFIX + matchKey);
   return raw ? safeParse<TopicRecord>(raw) : null;
+}
+
+/**
+ * 品質ゲートを通過した「公開（live）」トピックのみを新しい順で返す（P0-3）。
+ * ゲート: dedup 後クリップ数 >= MIN_CLIPS。lastTrendedAt 降順で MAX_LIVE_TOPICS 件に制限。
+ * sitemap 動的収録・/trending 内部リンク・/trend/[slug] の index 可否の単一正本。
+ * 鮮度減衰（STALE_AFTER で除外）は P0-4 で本関数に追加予定。
+ */
+export async function listLiveTopics(kv: KVNamespace): Promise<LiveTopic[]> {
+  const idxRaw = await kv.get(INDEX_KEY);
+  const keys = (idxRaw ? safeParse<string[]>(idxRaw) ?? [] : []).slice(0, LIVE_SCAN_CAP);
+
+  const live: LiveTopic[] = [];
+  for (const key of keys) {
+    const raw = await kv.get(TOPIC_PREFIX + key);
+    const rec = raw ? safeParse<TopicRecord>(raw) : null;
+    if (!rec) continue;
+    const clipCount = dedupedClipCount(rec.jobs);
+    if (clipCount < MIN_CLIPS) continue;
+    live.push({
+      slug: rec.slug,
+      displayName: rec.displayName,
+      platform: rec.platform,
+      locale: rec.locale,
+      clipCount,
+      lastTrendedAt: rec.lastTrendedAt,
+    });
+  }
+
+  live.sort((a, b) => (a.lastTrendedAt < b.lastTrendedAt ? 1 : a.lastTrendedAt > b.lastTrendedAt ? -1 : 0));
+  return live.slice(0, MAX_LIVE_TOPICS);
 }
