@@ -4,10 +4,27 @@
 
 正本: `docs/strategy/growth-strategy.md`（北極星: Monetag タグロード数/日）
 
-> 2026-06-15 週次レビュー（#002）で並べ替え。律速結論: ボトルネックは「コンテンツ不足」ではなく
-> **インデックス/クロール反映の遅延**（sitemap 508 URL に対し impression 発生は実質2正規ページ、
-> 06-13/06-14 充足の新規ページは impression=0）。よって先頭を「計測整備 → インデックス促進」に再配置。
-> 詳細: `docs/ops/weekly_review_2026-06-15.md`。
+> **2026-06-24 週次レビュー（#003）で並べ替え。律速＝「計測ブロック」**: GA4/GSC OAuth トークンが
+> 失効（`invalid_grant`/revoke）し `growth:review` 全失敗→今週の数値は全て取得不能。本番は健全
+> （health 200 / sitemap 508 / `/trend/`=0＝ゲート正常）。06-16〜06-24 にインデックス促進策
+> （内部リンク・canonical・Schema・sitemap 再送信）と柱2 Phase 0（P0-1〜P0-3）を出荷済みだが、
+> 効果は OAuth 復旧まで測定不能。よって先頭を「**計測復旧 → 効果測定**」に再配置。
+> 詳細: `docs/ops/weekly_review_2026-06-24.md`。前回: `docs/ops/weekly_review_2026-06-15.md`。
+
+### 翌週 戦略バックログ（#003, 2026-06-24 並べ替え。日次ループはここの先頭から1件）
+
+| 優先 | タスク | 柱/種別 | 成功指標 |
+|---|---|---|---|
+| 1 | **計測復旧＋失効耐性**: ユーザーが `npm run analytics:ga4:login` 再ログイン（手動・要ブラウザ）。自律側は「トークン失効検知→daily log/週次に WARN 出力」実装＋サービスアカウント化（`.secrets/ga4-service-account.json`）の調査・準備 | 計測/最優先 | `growth:review` が再び実データ取得・失効時に WARN |
+| 2 | #13 P0-4 鮮度減衰＋個別撤去導線（`listLiveTopics` に STALE_AFTER=30日 フィルタ接続＋手動即時撤去路） | 柱2 | STALE 超過で sitemap 除外＋noindex/410・手動撤去が機能 |
+| 3 | ホーム `<title>` から未対応 TikTok 表記を除去し実態一致（OPS-1 残） | OPS/柱1 | ホーム title が実稼働プラットフォームと一致・本番200 |
+| 4 | workers.dev 配信の重複対策（canonical が clipkeep.net を指すことを本番確認） | OPS/柱1 | workers.dev 経由でも canonical=clipkeep.net |
+| 5 | id/hi/tr ロングテールキーワードマップ作成（需要・競合弱さ・広告収益性・実装リスクで優先度付け） | 柱1 | キーワードマップ文書を docs/strategy/ に出力 |
+| 6 | 柱1: 高意図 not-working クラスタの es/fr/de 等への横展開（ja/pt/ar 同等の s1-s3 充足） | 柱1 | 対象 locale ページ充足・本番200 |
+| 7 | 柱2: cron が実トピック捕捉時の `/trend/[slug]` populated-render 本番検証（P0-1〜P0-3 積み残し検証） | 柱2/検証 | 実トピックで index/sitemap 収録・本番200 確認 |
+| 8 | 柱1: Schema/内部リンクの効果を OAuth 復旧後に GSC で測定し横展開判断 | 柱1/測定 | indexed/impression 推移を週次記録 |
+
+> 上記が最新の優先順位（≥7件維持）。下の番号付きリスト #1-#13 は実装履歴（完了アーカイブ）。
 
 1. [x] 計測/北極星: `scripts/growth-summary.mjs` に `ad_script_load`（zone 10760541 / 10969428 別）の**28日**集計を追加し growth:review に表示 ← **完了（2026-06-15, ver f43be6bd）**。GA4にカスタムディメンション未登録＋OAuth read-onlyのため `customEvent:ad_zone` 不可と判明。代替として ad-diagnostics で zone内包 companion イベント（`ad_script_load_z<zone>`）を併発し、eventName ブレークダウンで zone別取得する方式に切替。growth:review に NORTH STAR ブロック新設（7d=4/28d=18 集約を可視化、zone別はデプロイ後蓄積）。詳細 docs/ops/daily/2026-06-15.md
 2. [~] 計測/柱1: GSC カバレッジ取得（indexed 実数化）。`growth:review` に URL Inspection 由来の indexed カウント＋除外理由を追加 ← **計測部分は完了（2026-06-16, ローカル計測ツール）**。**フェーズゲート indexed≥50 は GSC 正本 172 でクリア済み**（Phase L 継続は impressions(28d)=15«1,000 のみ）。律速は新パス URL（ja/pt/ar 約375本が 100% 近く Google 未発見＝孤立疑い）の**発見/移行**。スイープの indexed=20/500 は「新 URL 発見率」でゲート指標と混同しないこと。**sitemap 再送信＝2026-06-16 ユーザーが GSC UI で手動完了。当日再読込・ステータス成功・検出508（送信直後の旧値127→508に更新＝発見ギャップ即解消）**。ただし検出(discovered)≠index、実インデックス化は数日〜2週間→次回週次で新パスの登録済み件数増を監視。残る自律タスクは #3 内部リンク強化。詳細 docs/ops/daily/2026-06-16.md
@@ -72,6 +89,7 @@
 - [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
 
 ## 更新メモ
+- 2026-06-24: **週次戦略レビュー #003 実施**（`docs/ops/weekly_review_2026-06-24.md`）。**今週は計測ブロック**: GA4/GSC OAuth トークンが失効（`invalid_grant`/revoke）し `growth:review`・`analytics:ga4`・`analytics:gsc` 全失敗→セッション/impressions/indexed/ad_script_load すべて**取得不能（OAuth失効）**。復旧は `npm run analytics:ga4:login` 再ログインが必要だが**ブラウザ対話＝無人実行不可・ユーザー手動必須**。本番は健全（health 200・db/extractor ok・degraded=false／sitemap 200・loc=508・`?locale=`=0・`/trend/`=0＝P0-3 ゲートが gate-passing 不在を正しく withhold／trending 200／未存在 trend slug 404）。律速が一時的に「インデックス遅延」→「計測ブロック」へ移行。06-16〜06-24 の出荷（柱1 内部リンク/canonical/Schema＋柱2 P0-1〜P0-3）は本番反映済みだが効果は OAuth 復旧まで測定不能。撤退基準は**測定不能週＝カウンタ非加算**で非該当（判定保留）。KPI 履歴表に取得不能行を追記。バックログを「計測復旧→効果測定」優先に並べ替え（翌週 8件、≥7 維持）。outreach 第2版を `docs/ops/outreach/2026-06-24.md` に生成（Threads/de 追加、投稿はユーザー）。戦略変更提案3件（①計測認証の失効耐性＝サービスアカウント化/失効WARN、②施策追加より効果測定優先、③柱2 Phase 1 据え置き）はレビュー文書に記載（growth-strategy.md 本文は KPI 履歴行のみ追記、他節は不変更）。
 - 2026-06-24: 日次ループ。**バックログ #12（P0-3 品質ゲート＋sitemap 条件付き収録＋内部リンク）完了**（ver `116eedaa`）。P0-2 で骨組みだけだった `/trend/[slug]`（全件 noindex・sitemap 未収録）に設計 §5.3 の品質ゲートを入れ「ゲート通過 live のみ公開（index＋sitemap＋内部リンク）」化。`topic-store` に `MIN_CLIPS=3`/`MAX_LIVE_TOPICS=12`/`dedupedClipCount`/`listLiveTopics`（dedup 後 ≥MIN_CLIPS を lastTrendedAt 降順で MAX_LIVE_TOPICS 件・`LIVE_SCAN_CAP=200` で read 暴走防止＝**sitemap/内部リンク/index の単一正本**）。`src/lib/trends/live.ts` 新設で `getCloudflareContext` 隔離＋空フォールバック。`app/sitemap.ts` を `force-dynamic` 化し live のみ条件付き収録。`/trend/[slug]` の robots を `isSlugLive` でゲート連動（sitemap 収録 ⇔ index を同期）。`/trending`・`/trending/[platform]` に live トピックへの実 `<a>` nav（`trend-topics-nav.tsx`、孤立防止）を SSR 追加、`[platform]` は KV ランタイム読みのため `generateStaticParams` 撤去＋`force-dynamic` で SSG→動的化（ギャラリーは client fetch のため影響軽微）。typecheck/lint/build PASS（4ルートとも ƒ 化）、リリースゲートは外部 Telegram 上流の一過性 FAIL を経て再実行 **PASS=29/0/1**。**ゲートロジック単体検証 10/10 PASS**（esbuild transpile＋モック KV: dedup/MIN_CLIPS 除外/上限/降順ソート）。本番で sitemap 200・有効 XML・`<loc>`508・**`/trend/` エントリ=0**（gate-passing 未存在＝薄ページを正しく withhold）・`/trending`・`/trending/threads`・`/trending/twitter` 200・未存在 slug 404 を確認。**本番 populated-render のみ未検証**（本番 KV に qualifying トピック未生成。偽トピック seed は本番 index/sitemap への偽薄ページ注入＝ガードレール #1 抵触のため意図的に回避→ゲート単体検証＋P0-2 実証済み getTopicBySlug 同経路で担保、cron が実トピック捕捉した最初の週次で被検証）。push/deploy/gate 成功済みで task-blocked ではない。D1/bindings 変更なし。次は #13 P0-4（鮮度減衰＋個別撤去導線、`listLiveTopics` に減衰フィルタ接続）。詳細 docs/ops/daily/2026-06-24.md。
 - 2026-06-23: 日次ループ。**バックログ #11（P0-2 `/trend/[slug]` ルート骨組み）完了**（ver `cb955f8d`）。`/solution/[slug]` を手本に SSR トピックハブを新設し、`getTopicBySlug`（topic-store に追加・index+1件の2read・**書込配管は不変**で P0-1 検証済みパイプラインを保全）で `TREND_KV` を読む。構成: H1＋導入文／関連クリップギャラリー（各 `/result/[jobId]` へ**実 `<a>`**＝孤立回避）／手順／FAQ／内部リンク nav、JSON-LD（CollectionPage/ItemList/BreadcrumbList/FAQPage）、`buildLocaleAlternates` で canonical/hreflang、ja-first（chrome 文言 ja/en/pt/ar）、`force-dynamic`。**`robots:noindex` を意図的に付与**（薄い自動トレンドページを P0-3 の品質ゲート未実装の段階で index させない＝ガードレール #1 回避。sitemap も未収録）。typecheck/lint/build PASS、リリースゲート **PASS=29/0/1**・D1 PASS。本番で未存在 slug の **404** を確認＝`getCloudflareContext`＋`TREND_KV` read＋`getTopicBySlug` が本番で実行され notFound する経路をライブ実証。**本番 populated-render のみ未検証**（①本番 KV に実トピック未生成＝cron が当日トレンド 0 件、②検証用シードは本番共有 `topics:index`（cron 所有）上書きをセーフティ分類器が拒否＝本番 KV 無変更を確認、③ローカル KV シードは環境の wrangler CLI バグで不成立）→ render 分岐は typecheck/build＋solution ページ同型性で担保し、P0-3 の sitemap 収録時に実トピックで被検証予定。push/deploy/gate 成功済みで **task-blocked ではない**。D1/bindings 変更なし・sitemap 不変。詳細 docs/ops/daily/2026-06-23.md。
 - 2026-06-21: **設計 §9 の全判断をユーザー承認**（設計文書ステータス DRAFT→承認済み・Phase 0 着手可）。確定: ①しきい値 MIN_CLIPS=3/MAX_LIVE_TOPICS=10〜20/STALE_AFTER=30日（保守開始→週次実測で緩和）、②Phase 1 の D1 スキーマは Phase 0 効果検証後に別途承認、③ブロックリスト/人手承認は Phase 0 では設けず最大限自由に公開（現状トピック数ほぼゼロ）＋問題トピックの即時個別撤去導線のみ確保、④slug は安定ID `t-<hash>`、⑤Phase 0 格納は (b) KV/ビルド時 JSON（D1 非依存）。Phase 0 をバックログ #10〜#13（P0-1〜P0-4）として日次1デプロイ単位に分割。
