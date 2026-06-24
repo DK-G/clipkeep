@@ -2,6 +2,14 @@ import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import {
+  AnalyticsAuthError,
+  buildAuthError,
+  printAuthWarn,
+  recordAuthStatus,
+} from "./lib/analytics-auth.mjs";
+
+const AUTH_SCOPE = "ga4";
 
 const ROOT = process.cwd();
 const ENV_PATH = path.join(ROOT, ".env.analytics.local");
@@ -126,14 +134,20 @@ async function getOAuthAccessToken() {
 }
 
 async function getAccessToken(credentialsPath) {
+  let oauthError = null;
   try {
     const oauthToken = await getOAuthAccessToken();
     if (oauthToken) return oauthToken;
   } catch (error) {
+    oauthError = error;
     console.warn(`[analytics] OAuth token unavailable, trying service account: ${error.message}`);
   }
 
-  return getServiceAccountAccessToken(credentialsPath);
+  try {
+    return await getServiceAccountAccessToken(credentialsPath);
+  } catch (fallbackError) {
+    throw buildAuthError(oauthError, fallbackError, credentialsPath);
+  }
 }
 
 async function getServiceAccountAccessToken(credentialsPath) {
@@ -399,9 +413,16 @@ async function main() {
 
   console.log(`GA4 reports exported to ${path.relative(ROOT, OUT_DIR)}`);
   console.log(`Pages: ${pageRows.length}, events: ${eventRows.length}, north-star rows: ${northStarRows.length}, acquisition rows: ${acquisitionRows.length}, realtime events: ${realtimeEventRows.length}`);
+
+  await recordAuthStatus({ scope: AUTH_SCOPE, ok: true });
 }
 
-main().catch((error) => {
-  console.error(error.message);
+main().catch(async (error) => {
+  if (error instanceof AnalyticsAuthError) {
+    printAuthWarn(AUTH_SCOPE, error);
+    await recordAuthStatus({ scope: AUTH_SCOPE, ok: false, error });
+  } else {
+    console.error(error.message);
+  }
   process.exitCode = 1;
 });

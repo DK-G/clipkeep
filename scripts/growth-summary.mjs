@@ -12,6 +12,7 @@ const ACQUISITION_CSV = path.join(ANALYTICS_DIR, "latest-ga4-acquisition.csv");
 const GSC_LOCALE_SUMMARY_CSV = path.join(ANALYTICS_DIR, "latest-gsc-locale-summary.csv");
 const GSC_OPPORTUNITIES_CSV = path.join(ANALYTICS_DIR, "latest-gsc-opportunities.csv");
 const GSC_INDEX_COVERAGE_JSON = path.join(ANALYTICS_DIR, "latest-gsc-index-coverage-summary.json");
+const AUTH_STATUS_JSON = path.join(ANALYTICS_DIR, "auth-status.json");
 
 function toTimestampSlug(value) {
   return new Date(value).toISOString().replace(/[:.]/g, "-");
@@ -178,10 +179,34 @@ function printNorthStar(byRange) {
   }
 }
 
+// Surface analytics auth health at the top of the review. When the OAuth token
+// is expired/revoked the exporters write a blocked status to auth-status.json;
+// echoing it here means the daily/weekly reader sees that the numbers below are
+// cached, not fresh, without scrolling back through the export WARN lines.
+async function printAuthStatusBanner() {
+  const status = await readJsonIfExists(AUTH_STATUS_JSON);
+  if (!status) return;
+  console.log("\n🔐 ANALYTICS AUTH");
+  console.log("-".repeat(40));
+  if (!status.blocked) {
+    console.log("- OK (analytics credentials valid as of last export).");
+    return;
+  }
+  const blockedScopes = Object.entries(status.scopes || {}).filter(([, s]) => s && s.ok === false);
+  console.log("⚠️  BLOCKED — fresh metrics could not be fetched; figures below are CACHED.");
+  for (const [scope, s] of blockedScopes) {
+    console.log(`   ${scope}: ${s.summary || s.kind} (checked ${s.checkedAt || "?"})`);
+  }
+  const remediation = blockedScopes[0]?.[1]?.remediation;
+  if (remediation) console.log(`   → ${remediation}`);
+}
+
 async function main() {
   console.log("\n" + "=".repeat(50));
   console.log("🚀 CLIPKEEP GROWTH INSIGHTS");
   console.log("=".repeat(50));
+
+  await printAuthStatusBanner();
 
   let summaryData;
   try {
