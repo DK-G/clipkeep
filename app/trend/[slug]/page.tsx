@@ -4,7 +4,7 @@ import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { normalizeLocale, localeDir, type Locale } from '@/lib/i18n/ui';
 import { buildLocaleAlternates, getLocalizedUrl } from '@/lib/metadata-helper';
 import { getTopicBySlug, type TopicRecord, type TopicJob } from '@/lib/trends/topic-store';
-import { isSlugLive } from '@/lib/trends/live';
+import { isSlugLive, isSlugRemoved } from '@/lib/trends/live';
 
 // Topics are written to KV by the hourly cron at runtime, so this page must
 // execute per request (no static optimization / caching of the KV read).
@@ -159,7 +159,9 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const locale = trendLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
 
   const topic = await loadTopic(slug);
-  if (!topic) return {};
+  // P0-4 §5.4: a manually-removed problem topic is gone — the page 404s, so emit
+  // no indexable metadata for it.
+  if (!topic || (await isSlugRemoved(slug))) return {};
 
   const c = chromeFor(locale);
   const path = `/trend/${slug}`;
@@ -190,7 +192,10 @@ export default async function TrendPage({ params, searchParams }: Props) {
   const locale = trendLocale(typeof sp.locale === 'string' ? sp.locale : undefined);
 
   const topic = await loadTopic(slug);
-  if (!topic) {
+  // P0-4 §5.4 manual removal (事後対応路): a removed problem topic is taken down
+  // entirely (404), not merely de-indexed — natural decay (STALE_AFTER) instead
+  // keeps the page at 200 but drops it from sitemap/index via the live gate.
+  if (!topic || (await isSlugRemoved(slug))) {
     notFound();
   }
 

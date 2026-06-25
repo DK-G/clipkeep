@@ -3,7 +3,7 @@
 // sitemap / trending 内部リンク / trend ページの index 判定から共通利用する。
 // ビルド時の静的生成や bindings 未注入では throw しうるため、すべて空フォールバックで握り潰す。
 import { getCloudflareContext } from '@opennextjs/cloudflare';
-import { listLiveTopics, type LiveTopic } from '@/lib/trends/topic-store';
+import { listLiveTopics, listRemovedSlugs, type LiveTopic } from '@/lib/trends/topic-store';
 
 async function getTrendKv(): Promise<KVNamespace | null> {
   try {
@@ -36,4 +36,19 @@ export async function loadLiveTopicsForPlatform(platform: string): Promise<LiveT
 export async function isSlugLive(slug: string): Promise<boolean> {
   const topics = await loadLiveTopics();
   return topics.some((t) => t.slug === slug);
+}
+
+/**
+ * slug が手動撤去済みか（P0-4 §5.4 個別撤去導線）。trend ページが撤去トピックを
+ * 404（コンテンツ消去）にするか判定する。KV 不在・読み取り失敗時は false（誤って消さない）。
+ */
+export async function isSlugRemoved(slug: string): Promise<boolean> {
+  const kv = await getTrendKv();
+  if (!kv) return false;
+  try {
+    const removed = await listRemovedSlugs(kv);
+    return removed.has(slug);
+  } catch {
+    return false;
+  }
 }

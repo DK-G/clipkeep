@@ -42,6 +42,12 @@ export type RunMeta = {
 export const TOPIC_PREFIX = "topic:";
 export const INDEX_KEY = "topics:index";
 export const META_KEY = "meta:last_run";
+/**
+ * 手動・個別撤去リスト（P0-4 §5.4 事後対応路）。撤去 slug の配列を保持する。
+ * cron の upsert が触れる topic:* / topics:index / meta:* とは別キーのため、
+ * 撤去状態は同一トピックが再トレンドしても保持される（誤って復活しない）。
+ */
+export const REMOVED_KEY = "topics:removed";
 const MAX_JOBS_PER_TOPIC = 20;
 
 // 品質ゲート（設計 §5.3 / §9-1, 2026-06-21 ユーザー確定）。
@@ -52,6 +58,49 @@ export const MIN_CLIPS = 3;
 export const MAX_LIVE_TOPICS = 12;
 /** index 走査の安全上限（KV read 暴走の防止。Phase 0 のトピック数は極小）。 */
 const LIVE_SCAN_CAP = 200;
+
+// 鮮度減衰（設計 §5.4 / 判断1, P0-4）。
+/** 最終トレンド更新からこの日数を超えたトピックは「腐った」とみなし sitemap/index から外す。 */
+export const STALE_AFTER_DAYS = 30;
+const STALE_AFTER_MS = STALE_AFTER_DAYS * 24 * 60 * 60 * 1000;
+
+/**
+ * lastTrendedAt が STALE_AFTER を超過していれば true（＝鮮度減衰で非公開化）。
+ * パース不能な lastTrendedAt は安全側（stale 扱い＝非公開）に倒す。
+ */
+export function isStale(lastTrendedAt: string, now: number): boolean {
+  const t = Date.parse(lastTrendedAt);
+  if (Number.isNaN(t)) return true;
+  return now - t > STALE_AFTER_MS;
+}
+
+/** 手動撤去済み slug の集合を読む（未設定・読み取り失敗は空集合）。 */
+export async function listRemovedSlugs(kv: KVNamespace): Promise<Set<string>> {
+  const raw = await kv.get(REMOVED_KEY);
+  const arr = raw ? safeParse<string[]>(raw) ?? [] : [];
+  return new Set(arr);
+}
+
+/**
+ * slug を手動撤去リストへ追加する（即時 noindex/404＋sitemap 除外）。冪等。
+ * 問題トピックの事後対応（§5.4 の個別撤去導線）。@returns 更新後の撤去リスト。
+ */
+export async function markTopicRemoved(kv: KVNamespace, slug: string): Promise<string[]> {
+  const set = await listRemovedSlugs(kv);
+  set.add(slug);
+  const next = [...set].sort();
+  await kv.put(REMOVED_KEY, JSON.stringify(next));
+  return next;
+}
+
+/** 撤去を取り消す（誤撤去の復帰）。冪等。@returns 更新後の撤去リスト。 */
+export async function unmarkTopicRemoved(kv: KVNamespace, slug: string): Promise<string[]> {
+  const set = await listRemovedSlugs(kv);
+  set.delete(slug);
+  const next = [...set].sort();
+  await kv.put(REMOVED_KEY, JSON.stringify(next));
+  return next;
+}
 
 /** sitemap/内部リンク/index 判定で共有する live トピックの軽量ビュー。 */
 export type LiveTopic = {
@@ -190,20 +239,24 @@ export async function getTopicBySlug(kv: KVNamespace, slug: string): Promise<Top
 }
 
 /**
- * 品質ゲートを通過した「公開（live）」トピックのみを新しい順で返す（P0-3）。
- * ゲート: dedup 後クリップ数 >= MIN_CLIPS。lastTrendedAt 降順で MAX_LIVE_TOPICS 件に制限。
+ * 品質ゲートを通過した「公開（live）」トピックのみを新しい順で返す（P0-3 + P0-4）。
+ * ゲート: ①手動撤去されていない（§5.4 個別撤去）②鮮度内（STALE_AFTER 以内, P0-4 §5.4 減衰）
+ * ③dedup 後クリップ数 >= MIN_CLIPS。lastTrendedAt 降順で MAX_LIVE_TOPICS 件に制限。
  * sitemap 動的収録・/trending 内部リンク・/trend/[slug] の index 可否の単一正本。
- * 鮮度減衰（STALE_AFTER で除外）は P0-4 で本関数に追加予定。
+ * @param now 鮮度判定の基準時刻（テスト容易性のため注入可能。既定は現在時刻）。
  */
-export async function listLiveTopics(kv: KVNamespace): Promise<LiveTopic[]> {
+export async function listLiveTopics(kv: KVNamespace, now: number = Date.now()): Promise<LiveTopic[]> {
   const idxRaw = await kv.get(INDEX_KEY);
   const keys = (idxRaw ? safeParse<string[]>(idxRaw) ?? [] : []).slice(0, LIVE_SCAN_CAP);
+  const removed = await listRemovedSlugs(kv);
 
   const live: LiveTopic[] = [];
   for (const key of keys) {
     const raw = await kv.get(TOPIC_PREFIX + key);
     const rec = raw ? safeParse<TopicRecord>(raw) : null;
     if (!rec) continue;
+    if (removed.has(rec.slug)) continue; // 手動撤去（P0-4 §5.4 事後対応路）
+    if (isStale(rec.lastTrendedAt, now)) continue; // 鮮度減衰（P0-4 §5.4）
     const clipCount = dedupedClipCount(rec.jobs);
     if (clipCount < MIN_CLIPS) continue;
     live.push({
