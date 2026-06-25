@@ -19,6 +19,9 @@
 // slug は /trend/<slug> の <slug>（例: t-abc123）。本番健全性は --remote 読み取りで
 // 必ず本番 ns を見る（2026-06-22 の --remote 付け忘れ誤診断の教訓）。
 import { spawnSync } from 'node:child_process';
+import { writeFileSync, rmSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const REMOVED_KEY = 'topics:removed';
 const BINDING = 'TREND_KV';
@@ -70,19 +73,33 @@ function readRemoved() {
   if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (Array.isArray(parsed)) return parsed.map(String);
+    console.warn(`warning: ${REMOVED_KEY} held a non-array value; treating as empty (it will be rewritten on the next remove/restore). raw=${raw}`);
+    return [];
   } catch {
-    console.error(`unexpected non-array value at ${REMOVED_KEY}: ${raw}`);
-    process.exit(1);
+    // Self-heal: the app reads this key with safeParse (malformed -> empty), so a
+    // bad value never breaks the site; the next write replaces it with valid JSON.
+    console.warn(`warning: ${REMOVED_KEY} held a malformed value; treating as empty (it will be rewritten on the next remove/restore). raw=${raw}`);
+    return [];
   }
 }
 
 function writeRemoved(list) {
-  const value = JSON.stringify([...new Set(list)].sort());
-  const res = wrangler(['kv', 'key', 'put', REMOVED_KEY, value]);
-  if (res.status !== 0) {
-    console.error(res.stderr || res.stdout || 'kv put failed');
-    process.exit(1);
+  const value = JSON.stringify([...new Set(list.map(String))].sort());
+  // Pass the value via --path (a temp file), NOT as an inline arg: on Windows the
+  // spawn runs through the shell, which strips the JSON's double-quotes and would
+  // store an invalid value. A file is immune to shell quoting.
+  const dir = mkdtempSync(join(tmpdir(), 'trend-removed-'));
+  const valuePath = join(dir, 'value.json');
+  try {
+    writeFileSync(valuePath, value);
+    const res = wrangler(['kv', 'key', 'put', REMOVED_KEY, '--path', valuePath]);
+    if (res.status !== 0) {
+      console.error(res.stderr || res.stdout || 'kv put failed');
+      process.exit(1);
+    }
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
   }
 }
 
