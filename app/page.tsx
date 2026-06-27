@@ -6,7 +6,7 @@ import { HistorySection } from '@/components/history-section';
 import { ExtractorForm } from '@/components/extractor-form';
 import { TrendingHubSection } from '@/components/trending-hub-section';
 import { SITE_URL } from '@/lib/site-url';
-import { buildLocaleAlternates, getLocalizedUrl } from '@/lib/metadata-helper';
+import { buildLocaleAlternates, getLocalizedUrl, getLocalizedPath } from '@/lib/metadata-helper';
 import Link from 'next/link';
 import {
   TiktokIcon, TwitterXIcon, TelegramIcon, RedditIcon,
@@ -585,7 +585,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
           ].map(({ id, Icon, bg, glow }) => (
             <Link
               key={id}
-              href={`/download-${id}-video${locale !== 'en' ? `?locale=${locale}` : ''}`}
+              href={getLocalizedPath(`/download-${id}-video`, locale)}
               title={id.charAt(0).toUpperCase() + id.slice(1)}
               className="group relative"
             >
