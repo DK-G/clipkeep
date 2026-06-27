@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Locale, localeNativeLabels, menuText } from '@/lib/i18n/ui';
 import { SITE_URL } from '@/lib/site-url';
+import { getLocalizedPath } from '@/lib/metadata-helper';
 
 interface SideMenuProps {
   isOpen: boolean;
@@ -95,16 +96,16 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale }: SideMenuProps)
       id: 'downloads',
       title: t.downloads,
       items: [
-        { label: t.bilibili, href: `/download-bilibili-video?locale=${locale}` },
-        { label: t.bluesky, href: `/download-bluesky-video?locale=${locale}` },
-        { label: t.discord, href: `/download-discord-video?locale=${locale}` },
-        { label: t.facebook, href: `/download-facebook-video?locale=${locale}` },
-        { label: t.lemon8, href: `/download-lemon8-video?locale=${locale}` },
-        { label: t.pinterest, href: `/download-pinterest-video?locale=${locale}` },
-        { label: t.reddit, href: `/download-reddit-video?locale=${locale}` },
-        { label: t.threads, href: `/download-threads-video?locale=${locale}` },
-        { label: t.tiktok, href: `/download-tiktok-video?locale=${locale}` },
-        { label: t.twitter, href: `/download-twitter-video?locale=${locale}` },
+        { label: t.bilibili, href: getLocalizedPath('/download-bilibili-video', locale) },
+        { label: t.bluesky, href: getLocalizedPath('/download-bluesky-video', locale) },
+        { label: t.discord, href: getLocalizedPath('/download-discord-video', locale) },
+        { label: t.facebook, href: getLocalizedPath('/download-facebook-video', locale) },
+        { label: t.lemon8, href: getLocalizedPath('/download-lemon8-video', locale) },
+        { label: t.pinterest, href: getLocalizedPath('/download-pinterest-video', locale) },
+        { label: t.reddit, href: getLocalizedPath('/download-reddit-video', locale) },
+        { label: t.threads, href: getLocalizedPath('/download-threads-video', locale) },
+        { label: t.tiktok, href: getLocalizedPath('/download-tiktok-video', locale) },
+        { label: t.twitter, href: getLocalizedPath('/download-twitter-video', locale) },
       ],
     },
     {
