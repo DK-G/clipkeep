@@ -1,6 +1,13 @@
 # Analytics Auth Recovery & Expiry Resilience
 
-最終更新: 2026-06-25
+最終更新: 2026-06-28
+
+> **2026-06-28 復旧完了（恒久対策＝サービスアカウント化を適用）**: §4 の手順で SA
+> `clipkeep-ga4-reader@clipkeep-495214.iam.gserviceaccount.com` の鍵を
+> `.secrets/ga4-service-account.json` に配置。GA4 Data / GSC Search Analytics /
+> URL Inspection の3系統とも SA で fresh 取得確認（`auth-status.json` = `blocked:false`）。
+> 失効した `ga4-oauth-token.json` は `.json.expired-2026-06-28` に退避し SA を主経路化。
+> 以降は無人ルーティンでも失効しない。再失効時の即時手順は §3、SA 詳細は §4。
 
 このドキュメントは ClipKeep の計測パイプライン（GA4 / Search Console / URL Inspection）の
 **認証失効への対処**と、無人運用を可能にする**サービスアカウント化の調査・準備**をまとめる。
@@ -114,8 +121,8 @@ OAuth トークンを取得するフォールバックを実装済み（`getServ
 
 ## 5. チェックリスト（復旧オペレーション）
 
-- [ ] `docs/analytics/auth-status.json` の `blocked` を確認
+- [x] `docs/analytics/auth-status.json` の `blocked` を確認（2026-06-28: `false`）
 - [ ] ブロックなら daily log を `status: blocked` ＋ 原因＋手順で記録
-- [ ] 即時復旧: `npm run analytics:ga4:login`（手動・ブラウザ）
-- [ ] 恒久対策: §4 の SA キーを `.secrets/ga4-service-account.json` に配置
-- [ ] `npm run growth:review` 再実行 → 🔐 ANALYTICS AUTH = OK を確認
+- [ ] 即時復旧: `npm run analytics:ga4:login`（手動・ブラウザ）※今回は SA 化で不要
+- [x] 恒久対策: §4 の SA キーを `.secrets/ga4-service-account.json` に配置（2026-06-28 完了）
+- [x] `npm run growth:review` 再実行 → 🔐 ANALYTICS AUTH = OK を確認（2026-06-28: GA4/GSC/coverage 個別検証で OK）
