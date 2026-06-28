@@ -682,7 +682,7 @@ export default async function HomePage({ searchParams }: HomeProps) {
           ].map((guide) => (
             <Link 
               key={guide.slug}
-              href={`/solution/${guide.slug}${locale !== 'en' ? `?locale=${locale}` : ''}`}
+              href={getLocalizedPath(`/solution/${guide.slug}`, locale)}
               className="glass-panel p-5 rounded-2xl hover:border-indigo-500/50 transition-all group block"
             >
               <h3 className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 text-sm sm:text-base">

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { footerText, normalizeLocale } from '@/lib/i18n/ui';
+import { getLocalizedPath } from '@/lib/metadata-helper';
 import { Suspense } from 'react';
 
 function FooterContent() {
@@ -10,9 +11,10 @@ function FooterContent() {
   const locale = normalizeLocale(searchParams.get('locale'));
   const t = footerText[locale];
 
-  const buildUrl = (path: string) => {
-    return `${path}?locale=${locale}`;
-  };
+  // Path-based for ja/pt/ar (/ja/about, /ja/solution/...) so this global footer's
+  // links match each target's canonical/sitemap; query-form links left the
+  // path-canonical targets (incl. the solution guide) undiscovered by crawlers.
+  const buildUrl = (path: string) => getLocalizedPath(path, locale);
 
   return (
     <footer className="max-w-2xl mx-auto mt-8 mb-12 px-4 text-xs text-slate-400 border-t border-slate-50 dark:border-slate-800/50 pt-6">
