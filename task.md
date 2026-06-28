@@ -4,25 +4,29 @@
 
 正本: `docs/strategy/growth-strategy.md`（北極星: Monetag タグロード数/日）
 
-> **2026-06-24 週次レビュー（#003）で並べ替え。律速＝「計測ブロック」**: GA4/GSC OAuth トークンが
-> 失効（`invalid_grant`/revoke）し `growth:review` 全失敗→今週の数値は全て取得不能。本番は健全
-> （health 200 / sitemap 508 / `/trend/`=0＝ゲート正常）。06-16〜06-24 にインデックス促進策
-> （内部リンク・canonical・Schema・sitemap 再送信）と柱2 Phase 0（P0-1〜P0-3）を出荷済みだが、
-> 効果は OAuth 復旧まで測定不能。よって先頭を「**計測復旧 → 効果測定**」に再配置。
-> 詳細: `docs/ops/weekly_review_2026-06-24.md`。前回: `docs/ops/weekly_review_2026-06-15.md`。
+> **2026-06-29 週次レビュー（#004）で並べ替え。計測復旧済み（SA化）＝律速は「発見/インデックス遅延」へ復帰**:
+> `growth:review` 成功（GA4/GSC/URL Inspection 3系統とも SA で fresh 取得、auth-status `blocked:false`）。本番健全
+> （health 200 / sitemap 508 / `?locale=`=0 / `/trend/`=0＝ゲート正常 / trending 200 / 未存在 slug 404）。
+> 実測: ad_script_load/28d=12（前回18）、セッション=1（前回2）＝**いずれも母数1〜2でノイズ域**。
+> **GSC impressions/28d=3（前回15・減）＝旧 `?locale=` URL 全廃＋301 の移行ディップ**（旧URLの index 資産が消え、新パスは
+> URL Inspection で **72/100 が「Google 未発見」**＝発見が律速）。同時に**初の実クリック1（en, pos 23.3）**。
+> 06-28 に発見の根本対策（内部リンクの `?locale=`→path 形式統一, ver `bd876607`/`eb7e1c02`）を出荷済み。
+> よって先頭を「**path 形式統一の効果測定＋残る内部リンク欠落の解消**」と「**柱2 cron 捕捉ゼロの調査**」に再配置。
+> 撤退基準: impressions 非成長で連続2（#003 は測定不能で非加算）・8週母数に未到達＝**非該当**だが、新パスが index 化しなければ
+> impressions は回復しない＝発見対策が時計を握る（要監視）。詳細: `docs/ops/weekly_review_2026-06-29.md`。前回実測: `#002 2026-06-15`。
 
-### 翌週 戦略バックログ（#003, 2026-06-24 並べ替え。日次ループはここの先頭から1件）
+### 翌週 戦略バックログ（#004, 2026-06-29 並べ替え。日次ループはここの先頭から1件）
 
 | 優先 | タスク | 柱/種別 | 成功指標 |
 |---|---|---|---|
-| 1 | ~~計測復旧~~ ✅**完了 2026-06-28（サービスアカウント化で恒久復旧）**: SA `clipkeep-ga4-reader@clipkeep-495214` の鍵を `.secrets/ga4-service-account.json` に配置、失効 OAuth トークンは退避。GA4 Data / GSC Search Analytics / URL Inspection の**3系統とも SA で fresh 取得確認**（auth-status.json `blocked:false`）。無人ルーティンでも失効しない | 計測/最優先 | `growth:review` 実データ取得・auth-status `blocked:false`（達成） |
-| 2 | ~~#13 P0-4 鮮度減衰＋個別撤去導線~~ ✅**完了 2026-06-26 (ver `ccb250ef`)**。柱2 Phase 0 全完了 | 柱2 | STALE 超過で sitemap 除外＋noindex、手動撤去で 404・KV `topics:removed` 機能（単体18/18・本番ラウンドトリップ実証） |
-| 3 | ~~ホーム `<title>` から未対応 TikTok 表記を除去~~ ❌**不採用 2026-06-27**: 前提陳腐化（TikTok は 2026-06-15 存続承認済み＝実稼働、title の TikTok/X/Reddit は全て実 extractor 有→既に実態一致） | OPS/柱1 | （成功指標は既達） |
-| 4 | ~~workers.dev 配信の重複対策~~ ✅**完了 2026-06-27 (ver `1c84eac0`)**: middleware で非正規 `*.workers.dev` ホストのページ要求を canonical origin へ 301（test は SITE_URL=自身のため不影響）。本番で workers.dev→clipkeep.net 301・clipkeep.net 200 実証 | OPS/柱1 | workers.dev 経由は 301 で複製消去（canonical 依存を上回る達成） |
-| 5 | id/hi/tr ロングテールキーワードマップ作成（需要・競合弱さ・広告収益性・実装リスクで優先度付け） | 柱1 | キーワードマップ文書を docs/strategy/ に出力 |
-| 6 | 柱1: 高意図 not-working クラスタの es/fr/de 等への横展開（ja/pt/ar 同等の s1-s3 充足） | 柱1 | 対象 locale ページ充足・本番200 |
-| 7 | 柱2: cron が実トピック捕捉時の `/trend/[slug]` populated-render 本番検証（P0-1〜P0-3 積み残し検証） | 柱2/検証 | 実トピックで index/sitemap 収録・本番200 確認 |
-| 8 | 柱1: Schema/内部リンクの効果を OAuth 復旧後に GSC で測定し横展開判断 | 柱1/測定 | indexed/impression 推移を週次記録 |
+| 1 | 06-28 path 形式統一の効果測定＋**残る内部リンク欠落の解消**（side-menu の telegram/instagram 欠落追加・solution 本文関連リンクの `?locale=` → path 形式化）。URL Inspection で「Google 未発見」比率の低下を測る | 柱1/発見・測定 | 「未発見」サンプル比率が 72% から低下、欠落リンク補填・本番200 |
+| 2 | **柱2 cron トレンド捕捉の実態調査**（cron 実行有無／トレンド source 戻り値が空か／`MIN_CLIPS=3` ゲートで全件落ちていないか の切り分け。Phase 0 完成済みなのに公開トピック0＝産出ゼロの真因特定） | 柱2/調査 | 捕捉0の真因を特定し是正方針 or 1トピックの公開を確認 |
+| 3 | #5 id/hi/tr ロングテールキーワードマップ作成（需要・競合弱さ・広告収益性・実装リスクで優先度付け） | 柱1 | キーワードマップ文書を docs/strategy/ に出力 |
+| 4 | 柱1: 高意図 not-working クラスタの es/fr/de 等への横展開（ja/pt/ar 同等の s1-s3 充足） | 柱1 | 対象 locale ページ充足・本番200 |
+| 5 | 柱1: 新パス ja/pt/ar の indexed/impression 推移を週次記録し、Schema/canonical/内部リンクの効果を帰属・横展開判断 | 柱1/測定 | indexed/impression 推移を週次記録・効いた施策を特定 |
+| 6 | HC-2 未使用 export 5件の棚卸し（SA移行・i18n・trend 削除の未配線 API を配線 or 除去。knip 偽陽性 `growth-summary.mjs` は除外） | 健全性 | 各 export を配線 or 除去・テスト green |
+| 7 | 柱2: cron が実トピック捕捉時の `/trend/[slug]` populated-render 本番検証（P0-1〜P0-4 積み残し検証） | 柱2/検証 | 実トピックで index/sitemap 収録・本番200 確認 |
+| 8 | 柱4: outreach 第3版の登録（AlternativeTo/SaaSHub 等）をユーザー実施→投稿後 Referral を GA4 acquisition で測定 | 柱4/測定 | Referral チャネルの初計上を確認 |
 
 > 上記が最新の優先順位（≥7件維持）。下の番号付きリスト #1-#13 は実装履歴（完了アーカイブ）。
 
@@ -99,6 +103,7 @@
 - [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
 
 ## 更新メモ
+- 2026-06-29: **週次戦略レビュー #004 実施**（`docs/ops/weekly_review_2026-06-29.md`）。**計測復旧後の初の実測**（#003 は OAuth 失効で取得不能、最後の実測は #002 06-15）。SA 化（06-28）で `growth:review` 成功・auth-status `blocked:false`（GA4/GSC/URL Inspection 3系統 fresh）。**律速が #003 の「計測ブロック」から本来の「発見/インデックス遅延」へ復帰**。実測28d: ad_script_load=12（前回18）・セッション=1（前回2）＝**母数1〜2でノイズ域**。**GSC impressions=3（前回15・減）** だが、これは旧 `?locale=` URL を sitemap 全廃＋301 で畳んだ**移行のディップ**（旧URLの index 資産が消え、新パスは URL Inspection で **72/100 が「Google 未発見」**＝発見が律速）。**同時に指名外で初の実クリック1（en, pos 23.3, CTR 33.3%）**。本番健全（health 200・db/extractor ok・degraded=false／sitemap 200・loc=508・`?locale=`=0・`/trend/`=0＝ゲート正常／trending 200／未存在 slug 404）。撤退基準: impressions 非成長で実測連続2（#003 は測定不能で非加算）・8週母数に未到達＝**非該当**だが、新パスが index 化しなければ impressions は回復しない＝06-28 出荷の発見対策が効くかが時計を握る（要監視）。**柱2 Phase 0（P0-1〜P0-4）は完成済みだが本番 KV に qualifying トピック0＝産出ゼロ**（cron がトレンド未捕捉）を潜在ブロッカーとして明示、調査を翌週優先2に積む。バックログを「発見対策の効果測定→残る内部リンク欠落の解消／柱2 cron 調査」優先に並べ替え（8件、≥7維持）。KPI 履歴表に実測行追記（growth-strategy.md 他節は不変更）。outreach 第3版を `docs/ops/outreach/2026-06-29.md` に生成（Bluesky 追加、投稿はユーザー）。戦略変更提案: ①失効耐性は SA 化で解決済み（クローズ）、②柱2 cron 捕捉ゼロの調査、③「Google 未発見%」を発見の先行指標に格上げ（charter 本文は不変更・週次運用）。
 - 2026-06-28: **発見促進（柱1）= locale download ページの内部リンクを path 形式へ統一**（ver `bd876607`＋`eb7e1c02`）。復旧した計測の URL Inspection で「unknown to Google」32件がほぼ全て `/download-{platform}-video` の locale 接頭辞付き（ja/pt/ar）と判明。**根本原因＝内部リンク（`?locale=` クエリ形式）と sitemap/canonical（path 形式 `/ja/download-x-video`）の URL 不一致**で、index 対象 URL にクローラー追跡可能な `<a href>` が皆無＝sitemap 経由のみで滞留。修正: 正本 `getLocalizedPath` に統一し、①ホーム platform グリッド `app/page.tsx`（12 platform）、②**全ページ SSR のサイドメニュー `side-menu.tsx`（download 10 項目）＝全 locale ページ→全 locale download ページの内部リンクハブ**を path 形式化（言語スイッチャー/utility は不変更）。各デプロイで typecheck/lint/build PASS・リリースゲート PASS=29/0/1・D1 PASS。本番で `/ja`・`/pt` ホームのグリッド path 形式出力、非ホーム（`/ja/download-reddit-video`・`/ja/trending`・`/pt/download-telegram-video`）でサイドメニュー path 形式 download 10本を確認、en は素 path で回帰なし。効果（発見→index 昇格）は数日〜2週間 lag、次回週次で unknown 比率減と新パス indexed/impression 増を監視。残課題（サイドメニュー telegram/instagram 欠・本文関連リンクの `?locale=` 残）は次候補。D1/bindings 変更なし・sitemap 不変。詳細 docs/ops/daily/2026-06-28.md。
 - 2026-06-28: **計測復旧（バックログ優先1）をサービスアカウント化で恒久解決**（ユーザー操作＋配線）。律速だった OAuth `invalid_grant` 失効を解消。手順: ①GA4 Data API / Search Console API は既に有効化済み、②既存 SA `clipkeep-ga4-reader@clipkeep-495214.iam.gserviceaccount.com`（GA4 閲覧者＋GSC フル権限を保持済み）の鍵 JSON を `.secrets/ga4-service-account.json` に配置（コードは OAuth 失敗時にこのパスへ自動フォールバック・追加実装不要）、③失効した `ga4-oauth-token.json` を `.json.expired-2026-06-28` に退避して **SA をクリーンな主経路化**（毎回の `invalid_grant` ノイズ＋無駄なネットワーク往復を除去）。検証: `analytics:ga4`（Pages47/events19/north-star6）・`analytics:gsc`（Query3/pages2）・`analytics:gsc:coverage`（inspected2/2・errors0＝URL Inspection も可）すべて SA で fresh 取得、`docs/analytics/auth-status.json` = `blocked:false`（ga4/gsc ok）。**無人の日次/週次ルーティンでも失効しない**。site/worker/D1 変更なし・`.secrets/` は gitignore のため commit なし。次は復旧した計測で 06-16〜06-27 出荷分（柱1 内部リンク/canonical/Schema＋柱2 P0-1〜P0-4＋workers.dev 301）の効果測定（indexed/impressions/ad_script_load 推移を週次記録）。詳細手順は `docs/ops/analytics-auth-recovery.md`。
 - 2026-06-27: 日次ループ。**バックログ #4 / OPS-1残（workers.dev 配信の重複対策）完了**（ver `1c84eac0`）。先頭走査で優先1（計測復旧）は要ユーザー手動・自律側 06-25 完了済でスキップ、優先2（P0-4）は 06-26 完了でスキップ、**優先3（ホーム title の未対応 TikTok 除去）は前提陳腐化のため不採用**: 当該項目は 2026-06-12 OPS-1 診断時（TikTok=無期限延期・extractor 撤去候補）の文面だが、**2026-06-15 にユーザーが TikTok extractor 存続を承認**（`tiktok.ts` 稼働中）。本番 title `…(TikTok, X, Reddit)` の3者は全て `supportedPlatforms`＋実 extractor 有＝**既に実態一致**で成功指標既達、除去は 06-15 決定に反するため不採用。→ 優先4 採用。**実装**: `middleware.ts` に canonical-host 強制を追加し、リクエスト Host が canonical ホスト（`NEXT_PUBLIC_SITE_URL` から導出）と不一致かつ `*.workers.dev` のページ要求を canonical origin へ **301**（path+query 保持）。canonical ホストはデプロイ自身の SITE_URL 由来のため **test デプロイ（SITE_URL=自身の workers.dev）は Host===canonical で不影響**＝test を壊さない。matcher は従来どおり api/_next/favicon/manifest/robots/sitemap を除外＝リダイレクト対象は HTML ページ（インデックス対象の複製）のみ、API は直叩きデバッグ可。typecheck/lint/build PASS（Middleware 32.6 kB）、リリースゲートは外部 Telegram 上流の一過性 FAIL を経て再実行 **PASS=29/0/1**・D1 remote PASS。本番ライブ検証（HttpClient, no-auto-redirect）で workers.dev の root/`?query`/solution path/locale を **301→clipkeep.net**（path・query 保持）、clipkeep.net は **200**（回帰なし）、workers.dev の `/api/v1/health`・`/sitemap.xml` は matcher 除外で **200** 直叩き可を確認。着手前 canonical は既に clipkeep.net を指していたが、クロスドメイン canonical はヒント止まりで無視され得るため **301 で複製そのものを消去**＝成功指標を上回る達成。D1/bindings 変更なし・sitemap 不変（508）・戦略文書不変更。次は #9 id/hi/tr ロングテールキーワードマップ、または計測復旧後の効果測定。詳細 docs/ops/daily/2026-06-27.md。
