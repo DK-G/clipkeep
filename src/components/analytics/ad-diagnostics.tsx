@@ -3,54 +3,21 @@
 import { useEffect, useRef } from "react";
 import Script from "next/script";
 import { trackEvent } from "@/lib/analytics/gtag";
-
-type AdScript = {
-  id: string;
-  src: string;
-  provider: "monetag";
-  format: "in_page_push" | "push_notification";
-  zone: string;
-  extraProps?: Record<string, string>;
-};
-
-const AD_SCRIPTS: AdScript[] = [
-  {
-    id: "monetag-in-page-push",
-    src: "https://nap5k.com/tag.min.js",
-    provider: "monetag",
-    format: "in_page_push",
-    zone: "10760541",
-    extraProps: { "data-zone": "10760541" },
-  },
-  {
-    id: "monetag-push-notification",
-    src: "https://3nbf4.com/pfe/current/tag.min.js?z=10969428",
-    provider: "monetag",
-    format: "push_notification",
-    zone: "10969428",
-  },
-];
-
-function looksLikeBot(userAgent: string): boolean {
-  return /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegrambot|twitterbot|linkedinbot/i.test(userAgent);
-}
+import {
+  AD_SCRIPTS,
+  type AdScript,
+  adZoneEventName,
+  buildAdEventPayload,
+  looksLikeBot,
+} from "@/lib/analytics/ad-config";
 
 function trackAdEvent(name: string, script: AdScript, params: Record<string, unknown> = {}) {
-  const payload = {
-    provider: script.provider,
-    ad_format: script.format,
-    ad_zone: script.zone,
-    script_id: script.id,
-    ...params,
-  };
+  const payload = buildAdEventPayload(script, params);
   trackEvent(name, payload);
-  // Zone-scoped companion event (e.g. `ad_script_load_z10760541`). GA4 has no
-  // registered custom dimension for the `ad_zone` parameter, so the north-star
-  // (Monetag tag loads/day) cannot be split by zone via the Data API. Encoding
-  // the zone in the event name lets the existing eventName breakdown attribute
-  // loads/errors/timeouts per zone without GA4 Admin changes. The aggregate
-  // `ad_script_load` event is still emitted above for backward compatibility.
-  trackEvent(`${name}_z${script.zone}`, payload);
+  // Aggregate `ad_script_load` is emitted above for backward compatibility; the
+  // zone-scoped companion event lets the GA4 eventName breakdown attribute
+  // loads/errors/timeouts per zone without a registered `ad_zone` dimension.
+  trackEvent(adZoneEventName(name, script.zone), payload);
 }
 
 export function AdDiagnostics() {

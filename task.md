@@ -51,9 +51,9 @@
 
 > health-check（土曜）が積む層C項目。自動適用はしない。各項目: 何を/なぜ/影響/規模。
 
-- [ ] HC-1: **未配線の完成機能 `src/components/share-button.tsx` を統合 or 削除**（何を: 10言語i18n＋analytics（share_click/share_native_success/share_copy_link）まで作り込まれた ShareButton がどのページからも import されていない＝完成済みだが未配線。なぜ: 死蔵 or 意図的な未統合か判断が必要、自動削除は完成機能の破壊リスクのため保留。影響: result/clip ページに統合なら UI追加＋共有イベント計測増、削除なら -1ファイル。規模: 小。**要ユーザー判断: 配線するか削除するか**）
+- [x] HC-1: ~~未配線の完成機能 `src/components/share-button.tsx`~~ → **削除**（2026-06-28、ユーザー判断）。理由: 共有後の遷移先・導線などのUX設計が未着手で、コンポーネント単体を残しても使えないため。再導入時は git 履歴から復元可。
 - [ ] HC-2: **未使用 export 5件の棚卸し**（`hasServiceAccount`・`STATUS_FILE_PATH`（scripts/lib/analytics-auth.mjs）、`SUPPORTED_LOCALES`（src/lib/metadata-helper.ts）、`markTopicRemoved`・`unmarkTopicRemoved`（src/lib/trends/topic-store.ts）。なぜ: SA移行・i18n・trend削除機能の未配線APIの可能性があり、自動削除せず個別判断。影響: 各々 配線 or export 除去で小。規模: 小。注: knip は `scripts/growth-summary.mjs` も未使用と誤検出するが run-growth-review.mjs が spawn で使用＝偽陽性、削除禁止）
-- [ ] HC-3: **クリティカルパスのテスト導入（現状テストファイル 0 件）**（何を: 北極星イベント `ad_script_load`（src/components/analytics/ad-diagnostics.tsx）と `middleware.ts`（認証・レート制限）に最小テスト。なぜ: 収益直結パスが無防備、回帰検知できない。影響: 中（テスト基盤＝runner/CI 選定も伴う）。規模: 中。**要ユーザー判断: テスト基盤の方針**）
+- [x] HC-3: **クリティカルパスのテスト導入完了**（2026-06-28）。テスト基盤＝**Vitest 4**（node env、`npm test`=`vitest run`）。北極星のイベント生成ロジックを `src/lib/analytics/ad-config.ts` に挙動非変更で抽出（`AD_SCRIPTS`/`looksLikeBot`/`buildAdEventPayload`/`adZoneEventName`）し `ad-config.test.ts` で検証、`middleware.ts`（ロケール rewrite ja/pt/ar＋canonical host 301）を `middleware.test.ts` で検証。計33 tests green。今後の新規ロジックは同パターンでテストを足す。
 - [ ] HC-4: **依存更新の段階バッチ**（何を: next/eslint-config-next 15→16・typescript 5.7→6.0・wrangler 4.34→4.86・@types/node 22→26 等の major 含む更新。なぜ: 放置でセキュリティ/互換負債が蓄積。影響: 大（OpenNext/Cloudflare ビルド設定が敏感、要本番検証）。規模: 大。自動更新禁止＝専用の検証付きバッチで段階適用）
 - [ ] HC-5: **npm audit 22件（high 12/moderate 8/low 2）の切り分け**（何を: 大半が build-tool 系 transitive（wrangler/miniflare/yaml/esbuild チェーン）。runtime 出荷依存に該当するものを優先し `npm audit fix` を検証付きで適用、majorを要する `--force` 分は HC-4 と合流。なぜ: high 12件は放置不可だが大半は出荷バンドル外の可能性。影響: 中。規模: 中）
 
