@@ -103,6 +103,7 @@ export function SideMenu({ isOpen, onClose, triggerRef, locale }: SideMenuProps)
         { label: t.lemon8, href: getLocalizedPath('/download-lemon8-video', locale) },
         { label: t.pinterest, href: getLocalizedPath('/download-pinterest-video', locale) },
         { label: t.reddit, href: getLocalizedPath('/download-reddit-video', locale) },
+        { label: t.telegram, href: getLocalizedPath('/download-telegram-video', locale) },
         { label: t.threads, href: getLocalizedPath('/download-threads-video', locale) },
         { label: t.tiktok, href: getLocalizedPath('/download-tiktok-video', locale) },
         { label: t.twitter, href: getLocalizedPath('/download-twitter-video', locale) },

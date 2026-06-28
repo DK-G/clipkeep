@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { solutionText, localeDir, type Locale } from '@/lib/i18n/ui';
+import { getLocalizedPath } from '@/lib/metadata-helper';
 import type { SolutionPage as PageData, RelatedSolution } from '@/lib/solution-pages/store';
 
 interface Props {
@@ -15,9 +16,9 @@ export function SolutionContentClient({ data, locale, related = [] }: Props) {
 
   // Real anchors (not router.push) so crawlers can follow them — the previous
   // onClick buttons were invisible to Googlebot and left these pages orphaned.
-  const buildUrlWithLocale = (path: string) => {
-    return locale === 'en' ? path : `${path}?locale=${locale}`;
-  };
+  // Use getLocalizedPath so ja/pt/ar emit path-based URLs (/ja/...) matching the
+  // page's canonical/sitemap; query-form links left these targets undiscovered.
+  const buildUrlWithLocale = (path: string) => getLocalizedPath(path, locale);
 
   return (
     <div dir={dir} className="max-w-4xl mx-auto p-4 sm:p-8">
