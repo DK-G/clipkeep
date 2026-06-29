@@ -25,9 +25,9 @@
 | 3 | 柱1: downloader help リンク（sns/telegram/tiktok/twitter 4本）＋ extractor-form/result-client の status 連動 help リンクの `?locale=` → path 形式化（06-29 積み残し・低クロール価値） | 柱1/発見 | 残る solution help リンクの path 形式化・本番200 |
 | 4 | 柱1: 高意図 not-working クラスタの es/fr/de 等への横展開（ja/pt/ar 同等の s1-s3 充足） | 柱1 | 対象 locale ページ充足・本番200 |
 | 5 | 柱1: 新パス ja/pt/ar の indexed/impression 推移を週次記録し、Schema/canonical/内部リンクの効果を帰属・横展開判断 | 柱1/測定 | indexed/impression 推移を週次記録・効いた施策を特定 |
-| 6 | HC-2 未使用 export 5件の棚卸し（SA移行・i18n・trend 削除の未配線 API を配線 or 除去。knip 偽陽性 `growth-summary.mjs` は除外） | 健全性 | 各 export を配線 or 除去・テスト green |
-| 7 | 柱2: cron が実トピック捕捉時の `/trend/[slug]` populated-render 本番検証（P0-1〜P0-4 積み残し検証） | 柱2/検証 | 実トピックで index/sitemap 収録・本番200 確認 |
-| 8 | 柱4: outreach 第3版の登録（AlternativeTo/SaaSHub 等）をユーザー実施→投稿後 Referral を GA4 acquisition で測定 | 柱4/測定 | Referral チャネルの初計上を確認 |
+| ~~6~~ | ~~HC-2 未使用 export 5件の棚卸し~~ ← **完了（2026-06-29, 層B+ 消化, ver `0bc6a5a7`）**。配線1（SUPPORTED_LOCALES→layout JSON-LD）・除去4。knip 未使用 export 5→0。下「健全性バックログ」HC-2 参照 | 健全性 | 達成（export 0・テスト33 green・本番200） |
+| 6 | 柱2: cron が実トピック捕捉時の `/trend/[slug]` populated-render 本番検証（P0-1〜P0-4 積み残し検証） | 柱2/検証 | 実トピックで index/sitemap 収録・本番200 確認 |
+| 7 | 柱4: outreach 第3版の登録（AlternativeTo/SaaSHub 等）をユーザー実施→投稿後 Referral を GA4 acquisition で測定 | 柱4/測定 | Referral チャネルの初計上を確認 |
 
 > 上記が最新の優先順位（≥7件維持）。下の番号付きリスト #1-#13 は実装履歴（完了アーカイブ）。
 
@@ -59,7 +59,7 @@
 > **消化ルール（層B+, 2026-06-29 追加）**: 週次 health-check は、ここから **承認マーカー `（承認済み・消化可）` が付き・規模:小・D1/bindings 非依存・ガードレール非抵触** の項目を**週1件だけ**自動で消化（実装→DoD フルデプロイ→`[x]`）する。承認マーカーを付けるのはユーザーのみ。マーカーの無い項目は積まれたまま手を付けない。「中/大」「要人間判断」項目（HC-4/HC-5 等）は対象外で、消化したい場合は規模を「小」に分割するか個別に daily で実施する。
 
 - [x] HC-1: ~~未配線の完成機能 `src/components/share-button.tsx`~~ → **削除**（2026-06-28、ユーザー判断）。理由: 共有後の遷移先・導線などのUX設計が未着手で、コンポーネント単体を残しても使えないため。再導入時は git 履歴から復元可。
-- [ ] HC-2: **未使用 export 5件の棚卸し**（`hasServiceAccount`・`STATUS_FILE_PATH`（scripts/lib/analytics-auth.mjs）、`SUPPORTED_LOCALES`（src/lib/metadata-helper.ts）、`markTopicRemoved`・`unmarkTopicRemoved`（src/lib/trends/topic-store.ts）。なぜ: SA移行・i18n・trend削除機能の未配線APIの可能性があり、自動削除せず個別判断。影響: 各々 配線 or export 除去で小。規模: 小。注: knip は `scripts/growth-summary.mjs` も未使用と誤検出するが run-growth-review.mjs が spawn で使用＝偽陽性、削除禁止）**（承認済み・消化可）**
+- [x] HC-2: **未使用 export 5件の棚卸し** ← **完了（2026-06-29, 層B+ 消化, ver `0bc6a5a7`）**。個別判断＝配線1・除去4。配線: `SUPPORTED_LOCALES`（metadata-helper.ts）→ `app/layout.tsx` の JSON-LD `inLanguage` にハードコードされていた同一10ロケール配列を置換（DRY 単一化・本番で同値確認）。除去（in-app 呼び出し・配線先なし）: `hasServiceAccount`・`STATUS_FILE_PATH`（analytics-auth.mjs＝SAフォールバック/statusファイルは既存関数で完結）、`markTopicRemoved`・`unmarkTopicRemoved`（topic-store.ts＝撤去の書き込みは運用ツール trend-remove-topic.mjs が wrangler CLI 経由で実施、サイトは listRemovedSlugs の読み取りのみ）。knip 未使用 export **5→0**（残 `growth-summary.mjs` ファイルは spawn 起動の偽陽性・削除禁止で不変）。typecheck/lint/build PASS・vitest 33/33・リリースゲート PASS=29/0/1。runbook も書き込み=CLI 一本化に更新。
 - [x] HC-3: **クリティカルパスのテスト導入完了**（2026-06-28）。テスト基盤＝**Vitest 4**（node env、`npm test`=`vitest run`）。北極星のイベント生成ロジックを `src/lib/analytics/ad-config.ts` に挙動非変更で抽出（`AD_SCRIPTS`/`looksLikeBot`/`buildAdEventPayload`/`adZoneEventName`）し `ad-config.test.ts` で検証、`middleware.ts`（ロケール rewrite ja/pt/ar＋canonical host 301）を `middleware.test.ts` で検証。計33 tests green。今後の新規ロジックは同パターンでテストを足す。
 - [ ] HC-4: **依存更新の段階バッチ**（何を: next/eslint-config-next 15→16・typescript 5.7→6.0・wrangler 4.34→4.86・@types/node 22→26 等の major 含む更新。なぜ: 放置でセキュリティ/互換負債が蓄積。影響: 大（OpenNext/Cloudflare ビルド設定が敏感、要本番検証）。規模: 大。自動更新禁止＝専用の検証付きバッチで段階適用）
 - [ ] HC-5: **npm audit 22件（high 12/moderate 8/low 2）の切り分け**（何を: 大半が build-tool 系 transitive（wrangler/miniflare/yaml/esbuild チェーン）。runtime 出荷依存に該当するものを優先し `npm audit fix` を検証付きで適用、majorを要する `--force` 分は HC-4 と合流。なぜ: high 12件は放置不可だが大半は出荷バンドル外の可能性。影響: 中。規模: 中）
