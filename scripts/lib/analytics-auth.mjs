@@ -74,15 +74,6 @@ export function buildAuthError(oauthError, fallbackError, credentialsPath = SERV
   return fallbackError ?? oauthError ?? new Error("Unknown analytics auth failure.");
 }
 
-export async function hasServiceAccount() {
-  try {
-    await fs.access(SERVICE_ACCOUNT_PATH);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 // Print a consistent, grep-able WARN banner. `[analytics][WARN]` is the marker
 // the daily-log and weekly-review steps look for.
 export function printAuthWarn(scope, error) {
@@ -131,5 +122,3 @@ export async function readAuthStatus() {
     return null;
   }
 }
-
-export const STATUS_FILE_PATH = STATUS_PATH;

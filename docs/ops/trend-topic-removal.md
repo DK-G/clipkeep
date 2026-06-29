@@ -1,9 +1,12 @@
 # トレンドトピックの鮮度減衰・個別撤去 運用メモ（柱2 P0-4）
 
 設計正本: `docs/strategy/trend-freshness-pages-design.md` §5.4。
-対象コード: `src/lib/trends/topic-store.ts`（`isStale` / `listLiveTopics` / `listRemovedSlugs` /
-`markTopicRemoved` / `unmarkTopicRemoved`）、`src/lib/trends/live.ts`（`isSlugRemoved`）、
-`app/trend/[slug]/page.tsx`、`app/sitemap.ts`。
+対象コード: `src/lib/trends/topic-store.ts`（`isStale` / `listLiveTopics` / `listRemovedSlugs`
+＝撤去リストの**読み取り**のみ）、`src/lib/trends/live.ts`（`isSlugRemoved`）、
+`app/trend/[slug]/page.tsx`、`app/sitemap.ts`。撤去リストへの**書き込み**（add/remove）は
+サイト本体には持たず、運用ツール `scripts/trend-remove-topic.mjs`（`npm run trend:topic`）が
+wrangler CLI 経由で本番 KV の `topics:removed` を直接更新する（2026-06-29 HC-2 で未配線の
+`markTopicRemoved`/`unmarkTopicRemoved` を topic-store から除去・書き込みは CLI に一本化）。
 
 ## 2系統の「下げ方」
 

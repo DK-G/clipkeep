@@ -8,6 +8,7 @@ import { AnalyticsPageView } from '@/components/analytics-page-view';
 import { AdDiagnostics } from '@/components/analytics/ad-diagnostics';
 import { GrowthLoopTracker } from '@/components/analytics/growth-loop-tracker';
 import { SITE_URL } from '@/lib/site-url';
+import { SUPPORTED_LOCALES } from '@/lib/metadata-helper';
 
 import './globals.css';
  
@@ -60,7 +61,7 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: 'ClipKeep',
   url: siteUrl,
-  inLanguage: ['en', 'ar', 'ja', 'es', 'pt', 'fr', 'id', 'hi', 'de', 'tr'],
+  inLanguage: [...SUPPORTED_LOCALES],
   potentialAction: {
     '@type': 'SearchAction',
     target: {

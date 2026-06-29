@@ -81,26 +81,10 @@ export async function listRemovedSlugs(kv: KVNamespace): Promise<Set<string>> {
   return new Set(arr);
 }
 
-/**
- * slug を手動撤去リストへ追加する（即時 noindex/404＋sitemap 除外）。冪等。
- * 問題トピックの事後対応（§5.4 の個別撤去導線）。@returns 更新後の撤去リスト。
- */
-export async function markTopicRemoved(kv: KVNamespace, slug: string): Promise<string[]> {
-  const set = await listRemovedSlugs(kv);
-  set.add(slug);
-  const next = [...set].sort();
-  await kv.put(REMOVED_KEY, JSON.stringify(next));
-  return next;
-}
-
-/** 撤去を取り消す（誤撤去の復帰）。冪等。@returns 更新後の撤去リスト。 */
-export async function unmarkTopicRemoved(kv: KVNamespace, slug: string): Promise<string[]> {
-  const set = await listRemovedSlugs(kv);
-  set.delete(slug);
-  const next = [...set].sort();
-  await kv.put(REMOVED_KEY, JSON.stringify(next));
-  return next;
-}
+// 撤去リストへの書き込み（add/remove）はサイト本体には存在しない。手動撤去は
+// 独立した運用ツール `scripts/trend-remove-topic.mjs`（`npm run trend:topic`）が
+// wrangler CLI 経由で `topics:removed`(REMOVED_KEY) を直接 put する。サイト側は
+// この listRemovedSlugs による「読み取り」だけを担う（live.ts の isSlugRemoved）。
 
 /** sitemap/内部リンク/index 判定で共有する live トピックの軽量ビュー。 */
 export type LiveTopic = {
