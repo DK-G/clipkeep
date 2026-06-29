@@ -55,6 +55,8 @@
 ## 健全性バックログ（要承認リファクタ — health-check 層C。ユーザー承認後のみ daily 等で実装）
 
 > health-check（土曜）が積む層C項目。自動適用はしない。各項目: 何を/なぜ/影響/規模。
+>
+> **消化ルール（層B+, 2026-06-29 追加）**: 週次 health-check は、ここから **承認マーカー `（承認済み・消化可）` が付き・規模:小・D1/bindings 非依存・ガードレール非抵触** の項目を**週1件だけ**自動で消化（実装→DoD フルデプロイ→`[x]`）する。承認マーカーを付けるのはユーザーのみ。マーカーの無い項目は積まれたまま手を付けない。「中/大」「要人間判断」項目（HC-4/HC-5 等）は対象外で、消化したい場合は規模を「小」に分割するか個別に daily で実施する。
 
 - [x] HC-1: ~~未配線の完成機能 `src/components/share-button.tsx`~~ → **削除**（2026-06-28、ユーザー判断）。理由: 共有後の遷移先・導線などのUX設計が未着手で、コンポーネント単体を残しても使えないため。再導入時は git 履歴から復元可。
 - [ ] HC-2: **未使用 export 5件の棚卸し**（`hasServiceAccount`・`STATUS_FILE_PATH`（scripts/lib/analytics-auth.mjs）、`SUPPORTED_LOCALES`（src/lib/metadata-helper.ts）、`markTopicRemoved`・`unmarkTopicRemoved`（src/lib/trends/topic-store.ts）。なぜ: SA移行・i18n・trend削除機能の未配線APIの可能性があり、自動削除せず個別判断。影響: 各々 配線 or export 除去で小。規模: 小。注: knip は `scripts/growth-summary.mjs` も未使用と誤検出するが run-growth-review.mjs が spawn で使用＝偽陽性、削除禁止）
