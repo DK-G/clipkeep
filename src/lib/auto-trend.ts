@@ -1,7 +1,7 @@
 import puppeteer from "@cloudflare/puppeteer";
 import { createJob, getJob, recordAccess } from "./extract/store";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { recordTopicLinks, recordRunMeta, type TopicLink } from "./trends/topic-store";
+import { recordTopicLinks, recordRunMeta, type TopicLink, type DiscoveryDiag } from "./trends/topic-store";
 
 type TrendPlatform = "twitter" | "tiktok";
 const TARGET_PER_PLATFORM = 3;
@@ -122,12 +122,22 @@ async function getFallbackCandidate(platform: TrendPlatform): Promise<string | n
 /**
  * Discovers trending URLs from X (Twitter) and TikTok using Puppeteer.
  */
-async function discoverTrends(): Promise<{ twitter: TrendItem[]; tiktok: TrendItem[] }> {
+async function discoverTrends(): Promise<{ twitter: TrendItem[]; tiktok: TrendItem[]; diag: DiscoveryDiag }> {
   const context = await getCloudflareContext();
   const env = context.env as { clipkeep_db: D1Database; browser_rendering: Fetcher };
 
   const twitterItems: TrendItem[] = [];
   const tiktokItems: TrendItem[] = [];
+  // 段階別診断（柱2 捕捉ゼロの真因切り分け用）。fallbackUsed は呼び出し側で確定する。
+  const diag: DiscoveryDiag = {
+    browserLaunched: false,
+    tiktokRaw: 0,
+    tiktokKept: 0,
+    twittrendKeywords: 0,
+    twitterKept: 0,
+    fallbackUsed: false,
+    stageErrors: [],
+  };
   const [recentTwitterUrls, recentTikTokUrls] = await Promise.all([
     getRecentlySeenUrls("twitter"),
     getRecentlySeenUrls("tiktok"),
@@ -136,9 +146,11 @@ async function discoverTrends(): Promise<{ twitter: TrendItem[]; tiktok: TrendIt
   let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
   try {
     browser = await puppeteer.launch(env.browser_rendering);
+    diag.browserLaunched = true;
   } catch (error) {
     console.error("[AutoTrend] Browser launch failed:", error);
-    return { twitter: [], tiktok: [] };
+    diag.stageErrors.push("browser_launch");
+    return { twitter: [], tiktok: [], diag };
   }
   try {
     console.log("[AutoTrend] Scraping TikTok Explore...");
@@ -153,15 +165,18 @@ async function discoverTrends(): Promise<{ twitter: TrendItem[]; tiktok: TrendIt
         const inline = html.match(regex) ?? [];
         return [...new Set([...hrefs, ...inline])];
       });
+      diag.tiktokRaw = ttCandidates.length;
       const ttLinks = ttCandidates
         .map((url) => normalizeTikTokUrl(url))
         .filter((value): value is string => Boolean(value))
         .filter((url) => !recentTikTokUrls.has(url))
         .slice(0, 6);
+      diag.tiktokKept = ttLinks.length;
       // TikTok explore does not expose a reliable per-URL topic label yet (Phase 0).
       tiktokItems.push(...ttLinks.map((url) => ({ url, topic: null as string | null })));
     } catch (e) {
       console.warn("[AutoTrend] TikTok scrape failed:", e);
+      diag.stageErrors.push("tiktok_scrape");
     }
     await ttPage.close();
 
@@ -173,6 +188,7 @@ async function discoverTrends(): Promise<{ twitter: TrendItem[]; tiktok: TrendIt
         const items = Array.from(document.querySelectorAll(".trend a")) as HTMLAnchorElement[];
         return items.map((a) => a.innerText.trim()).filter((t) => t.length > 0).slice(0, 10);
       });
+      diag.twittrendKeywords = xKeywords.length;
 
       for (const keyword of xKeywords) {
         if (twitterItems.length >= TARGET_PER_PLATFORM) break;
@@ -197,19 +213,24 @@ async function discoverTrends(): Promise<{ twitter: TrendItem[]; tiktok: TrendIt
           if (tweetLinks.length > 0) twitterItems.push({ url: tweetLinks[0], topic: keyword });
         } catch (e) {
           console.warn(`[AutoTrend] Failed tweet find for ${keyword}:`, e);
+          diag.stageErrors.push("yahoo_realtime");
         }
       }
     } catch (e) {
       console.warn("[AutoTrend] X scrape failed:", e);
+      diag.stageErrors.push("twittrend_scrape");
     }
     await xPage.close();
   } finally {
     await browser.close();
   }
 
+  const twitter = dedupeByUrl(twitterItems).slice(0, TARGET_PER_PLATFORM);
+  diag.twitterKept = twitter.length;
   return {
-    twitter: dedupeByUrl(twitterItems).slice(0, TARGET_PER_PLATFORM),
+    twitter,
     tiktok: dedupeByUrl(tiktokItems).slice(0, TARGET_PER_PLATFORM),
+    diag,
   };
 }
 
@@ -234,7 +255,7 @@ export async function runAutoTrendUpdate() {
   console.log("[AutoTrend] Starting hourly trend update...");
 
   try {
-    const { twitter, tiktok } = await discoverTrends();
+    const { twitter, tiktok, diag } = await discoverTrends();
     console.log(`[AutoTrend] Discovered ${twitter.length} X and ${tiktok.length} TikTok URLs`);
 
     const allItems: Array<{ url: string; platform: "twitter" | "tiktok"; topic: string | null }> = [];
@@ -250,6 +271,7 @@ export async function runAutoTrendUpdate() {
       // Fallback items have no trend topic.
       if (fallbackTwitter) allItems.push({ url: fallbackTwitter, platform: "twitter", topic: null });
       if (fallbackTikTok) allItems.push({ url: fallbackTikTok, platform: "tiktok", topic: null });
+      diag.fallbackUsed = allItems.length > 0;
     }
 
     if (allItems.length === 0) {
@@ -262,6 +284,7 @@ export async function runAutoTrendUpdate() {
             discovered: { twitter: twitter.length, tiktok: tiktok.length },
             topicsWritten: 0,
             jobsLinked: 0,
+            diag,
           });
         }
       } catch (e) {
@@ -344,6 +367,7 @@ export async function runAutoTrendUpdate() {
           discovered: { twitter: twitter.length, tiktok: tiktok.length },
           topicsWritten,
           jobsLinked,
+          diag,
         });
         console.log(`[AutoTrend] KV topics written=${topicsWritten} jobsLinked=${jobsLinked}`);
       } else {

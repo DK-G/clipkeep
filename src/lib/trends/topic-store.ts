@@ -32,11 +32,37 @@ export type TopicLink = {
   sourceUrl: string;
 };
 
+/**
+ * 発見（discover）パイプラインの段階別診断（柱2/調査, 2026-06-30）。
+ * `discovered: {twitter:0, tiktok:0}` だけでは「どの段階で 0 になったか」が分からないため、
+ * ブラウザ起動・各スクレイプ段階の生件数/採用件数・段階エラーを heartbeat に残す。
+ * これにより次回の是正で「browser binding か / TikTok explore か / twittrend か / yahoo realtime か」を
+ * 本番ログ無しに切り分けできる。全フィールドは任意（後方互換のため）。
+ */
+export type DiscoveryDiag = {
+  /** browser_rendering で puppeteer の起動に成功したか。false なら以降は全段スキップ。 */
+  browserLaunched: boolean;
+  /** TikTok explore で正規化前に見つけた候補数。 */
+  tiktokRaw: number;
+  /** TikTok 候補のうち正規化＋直近重複除外後に残った数。 */
+  tiktokKept: number;
+  /** twittrend.jp から取得したトレンドキーワード数（topic ラベルの供給源）。 */
+  twittrendKeywords: number;
+  /** Yahoo リアルタイム検索経由で確定した twitter 候補数（topic 付き）。 */
+  twitterKept: number;
+  /** 候補ゼロで D1 フォールバック（topic なし）に落ちたか。 */
+  fallbackUsed: boolean;
+  /** 段階エラーの短いタグ（例: "browser_launch","tiktok_scrape","twittrend_scrape"）。 */
+  stageErrors: string[];
+};
+
 export type RunMeta = {
   at: string;
   discovered: { twitter: number; tiktok: number };
   topicsWritten: number;
   jobsLinked: number;
+  /** 発見段階の診断（任意）。柱2 捕捉ゼロの真因切り分け用。 */
+  diag?: DiscoveryDiag;
 };
 
 export const TOPIC_PREFIX = "topic:";
