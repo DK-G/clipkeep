@@ -20,6 +20,21 @@ function dedupeByUrl(items: TrendItem[]): TrendItem[] {
   return out;
 }
 
+/**
+ * エラーを heartbeat 用の短い1行（`name: message`、最大 300 文字）に要約する。
+ * KV 肥大化を避けつつ、起動失敗の実原因（plan/quota/binding/版）を本番ログ無しに読めるようにする。
+ */
+function summarizeError(error: unknown): string {
+  let text: string;
+  if (error instanceof Error) {
+    text = error.name ? `${error.name}: ${error.message}` : error.message;
+  } else {
+    text = String(error);
+  }
+  text = text.replace(/\s+/g, " ").trim();
+  return text.length > 300 ? text.slice(0, 297) + "..." : text;
+}
+
 async function getTrendKv(): Promise<KVNamespace | null> {
   const env = (await getCloudflareContext()).env as { TREND_KV?: KVNamespace };
   return env.TREND_KV ?? null;
@@ -150,6 +165,8 @@ async function discoverTrends(): Promise<{ twitter: TrendItem[]; tiktok: TrendIt
   } catch (error) {
     console.error("[AutoTrend] Browser launch failed:", error);
     diag.stageErrors.push("browser_launch");
+    // 実エラーを heartbeat に残し、次回是正で binding/プラン/クォータ/版を切り分ける。
+    diag.browserLaunchError = summarizeError(error);
     return { twitter: [], tiktok: [], diag };
   }
   try {

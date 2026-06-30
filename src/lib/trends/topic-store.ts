@@ -54,6 +54,13 @@ export type DiscoveryDiag = {
   fallbackUsed: boolean;
   /** 段階エラーの短いタグ（例: "browser_launch","tiktok_scrape","twittrend_scrape"）。 */
   stageErrors: string[];
+  /**
+   * `puppeteer.launch` が投げた実エラーの要約（name: message、最大 300 文字）。
+   * `browserLaunched:false` のときの真因切り分け用（binding 欠落 / プラン未有効 /
+   * 日次クォータ超過 / @cloudflare/puppeteer 版不整合 のどれかを本番ログ無しに判別する）。
+   * 起動成功時・非該当時は undefined（後方互換のため任意）。
+   */
+  browserLaunchError?: string;
 };
 
 export type RunMeta = {
