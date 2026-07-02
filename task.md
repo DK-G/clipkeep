@@ -29,7 +29,7 @@
 | 5 | 柱1: 新パス ja/pt/ar の indexed/impression 推移を週次記録し、Schema/canonical/内部リンクの効果を帰属・横展開判断 | 柱1/測定 | indexed/impression 推移を週次記録・効いた施策を特定 |
 | ~~6~~ | ~~HC-2 未使用 export 5件の棚卸し~~ ← **完了（2026-06-29, 層B+ 消化, ver `0bc6a5a7`）**。配線1（SUPPORTED_LOCALES→layout JSON-LD）・除去4。knip 未使用 export 5→0。下「健全性バックログ」HC-2 参照 | 健全性 | 達成（export 0・テスト33 green・本番200） |
 | 6 | 柱2: cron が実トピック捕捉時の `/trend/[slug]` populated-render 本番検証（P0-1〜P0-4 積み残し検証） | 柱2/検証 | 実トピックで index/sitemap 収録・本番200 確認 |
-| 7 | 柱4: outreach 第3版の登録（AlternativeTo/SaaSHub 等）をユーザー実施→投稿後 Referral を GA4 acquisition で測定 | 柱4/測定 | Referral チャネルの初計上を確認 |
+| ~~7~~ | ~~柱4: outreach 登録~~ ← **廃止（2026-07-03 ユーザー判断）**。純粋自然流入方針に伴い外部リンク/outreach は行わない。獲得は柱1＋柱2に集約。`docs/ops/outreach/` はアーカイブ（新規生成なし） | — | 廃止 |
 
 > 上記が最新の優先順位（≥7件維持）。下の番号付きリスト #1-#13 は実装履歴（完了アーカイブ）。
 
