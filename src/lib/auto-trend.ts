@@ -158,6 +158,25 @@ async function discoverTrends(): Promise<{ twitter: TrendItem[]; tiktok: TrendIt
     getRecentlySeenUrls("tiktok"),
   ]);
 
+  // 起動前に Browser Rendering の現在の上限を採取（429 の真因＝同時上限 vs 取得レート/日次予算 の判別）。
+  try {
+    const lim = await puppeteer.limits(env.browser_rendering);
+    diag.maxConcurrentSessions = lim.maxConcurrentSessions;
+    diag.activeSessionCount = lim.activeSessions.length;
+    diag.allowedBrowserAcquisitions = lim.allowedBrowserAcquisitions;
+    diag.timeUntilNextAcquisitionMs = lim.timeUntilNextAllowedBrowserAcquisition;
+  } catch (e) {
+    console.warn("[AutoTrend] limits() probe failed:", e);
+    diag.stageErrors.push("limits_probe");
+  }
+
+  // 取得予算がゼロなら launch せず今回はスキップ（429 の無駄打ちを避け、次の許可窓まで待つ）。
+  // これで日次クォータ枯渇後に毎回 429 を踏む挙動を止め、telemetry だけ残す。
+  if (diag.allowedBrowserAcquisitions !== undefined && diag.allowedBrowserAcquisitions < 1) {
+    diag.acquisitionBudgetZero = true;
+    return { twitter: [], tiktok: [], diag };
+  }
+
   let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
   try {
     browser = await puppeteer.launch(env.browser_rendering);

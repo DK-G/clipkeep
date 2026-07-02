@@ -61,6 +61,17 @@ export type DiscoveryDiag = {
    * 起動成功時・非該当時は undefined（後方互換のため任意）。
    */
   browserLaunchError?: string;
+  /**
+   * `puppeteer.limits()` のスナップショット（起動前採取）。429「Unable to create new browser」の
+   * 真因が「同時セッション上限」か「取得レート/日次予算」かを本番ログ無しに判別する。
+   * 採取失敗時は undefined。
+   */
+  maxConcurrentSessions?: number;
+  activeSessionCount?: number;
+  allowedBrowserAcquisitions?: number;
+  timeUntilNextAcquisitionMs?: number;
+  /** 取得予算ゼロのため launch せず今回をスキップしたか（429 の無駄打ち回避）。 */
+  acquisitionBudgetZero?: boolean;
 };
 
 export type RunMeta = {

@@ -32,4 +32,7 @@ NEXT_PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAACvkzgdZA8KipZXs"
 # CRON_SECRET is stored as a Cloudflare Secret (not a plain var)
 
 [triggers]
-crons = ["0 * * * *"] # Every hour
+# 2026-07-03: 毎時→6時間毎に低頻度化。Browser Rendering 無料枠の日次ブラウザ時間（~10分/日）を
+# 毎時24回の起動で早期枯渇させ、以降 429「Unable to create new browser」を踏んでいた真因への是正。
+# 4回/日×~90秒 ≈ 6分/日 で日次クォータ内に収める。上限採取(diag.limits)で真因確認後、再調整可。
+crons = ["0 */6 * * *"] # Every 6 hours (free-tier browser quota safe)
