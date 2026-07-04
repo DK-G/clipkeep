@@ -4,32 +4,34 @@
 
 正本: `docs/strategy/growth-strategy.md`（北極星: Monetag タグロード数/日）
 
-> **2026-06-29 週次レビュー（#004）で並べ替え。計測復旧済み（SA化）＝律速は「発見/インデックス遅延」へ復帰**:
-> `growth:review` 成功（GA4/GSC/URL Inspection 3系統とも SA で fresh 取得、auth-status `blocked:false`）。本番健全
+> **2026-07-05 週次レビュー（#005）で並べ替え。計測は健全（SA化, `blocked:false`）＝律速は依然「発見/インデックス遅延」**:
+> `growth:review` 成功（GA4/GSC/URL Inspection 3系統 fresh, as of 2026-07-05）。本番健全
 > （health 200 / sitemap 508 / `?locale=`=0 / `/trend/`=0＝ゲート正常 / trending 200 / 未存在 slug 404）。
-> 実測: ad_script_load/28d=12（前回18）、セッション=1（前回2）＝**いずれも母数1〜2でノイズ域**。
-> **GSC impressions/28d=3（前回15・減）＝旧 `?locale=` URL 全廃＋301 の移行ディップ**（旧URLの index 資産が消え、新パスは
-> URL Inspection で **72/100 が「Google 未発見」**＝発見が律速）。同時に**初の実クリック1（en, pos 23.3）**。
-> 06-28 に発見の根本対策（内部リンクの `?locale=`→path 形式統一, ver `bd876607`/`eb7e1c02`）を出荷済み。
-> よって先頭を「**path 形式統一の効果測定＋残る内部リンク欠落の解消**」と「**柱2 cron 捕捉ゼロの調査**」に再配置。
-> 撤退基準: impressions 非成長で連続2（#003 は測定不能で非加算）・8週母数に未到達＝**非該当**だが、新パスが index 化しなければ
-> impressions は回復しない＝発見対策が時計を握る（要監視）。詳細: `docs/ops/weekly_review_2026-06-29.md`。前回実測: `#002 2026-06-15`。
+> 実測 28d: ad_script_load=13（前回12）、セッション=3（前回1）、GSC impressions=**4（前回3・微増）**＝**いずれも母数1〜3でノイズ域**。
+> **最重要: URL Inspection「Google 未発見」= 72/100 で #004 から横ばい**＝06-28/29 の内部リンク path 形式統一の効果がサンプル上まだ出ていない（lag 窓内だが来週 #006 が判定週）。
+> 撤退基準: impressions 3→4 微増で**機械的に連続非成長カウントをリセット（=0）・非該当**。ただしノイズ域の微増で発見本質は未改善（要監視）。
+> **柱2**: 07-03 の 6h cron 化で 429 は直近窓（07-04 18:00Z）で解消＝**「全窓429」は反証**したが、失敗が **セッション再利用の protocolTimeout**（`Unable to connect to existing session … Browser.getVersion timed out`）へ移行し産出ゼロ継続。
+> よって先頭を「**柱2 セッション再利用 protocolTimeout の是正**」「**柱1 keyword-map 制作順の本文充足（indexable 在庫増）**」「**発見%の週次判定**」に再配置。
+> 詳細: `docs/ops/weekly_review_2026-07-05.md`。前回: `#004 2026-06-29`。
 
-### 翌週 戦略バックログ（#004, 2026-06-29 並べ替え。日次ループはここの先頭から1件）
+### 翌週 戦略バックログ（#005, 2026-07-05 並べ替え。日次ループはここの先頭から1件）
 
 | 優先 | タスク | 柱/種別 | 成功指標 |
 |---|---|---|---|
 | ~~1~~ | ~~06-28 path 形式統一の積み残し＝**残る内部リンク欠落の解消**~~ ← **完了（2026-06-29, ver `054cf49e`＋`7c6cc36b`）**。side-menu に telegram 追加（instagram は noindex 維持で意図的除外）・solution 本文関連リンク／グローバル footer／ホーム guides grid の `?locale=` → path 形式化。本番で `/ja` ホーム＋solution の solution 残置 `?locale=`=0・全リンク path 形式を確認。効果測定（未発見%低下）は次回週次。詳細 docs/ops/daily/2026-06-29.md | 柱1/発見・測定 | 達成（欠落補填・本番200・残置0） |
 | ~~1~~ | ~~**柱2 cron トレンド捕捉の実態調査**~~ ← **完了（2026-06-30, ver `eabfe6bb`）**。真因確定: cron は実行中（heartbeat fresh 22:00Z）、`MIN_CLIPS` ゲートは未到達（`topics:index` 404＝topic 0 件で書込ゼロ）、律速は **discover が毎回 0 候補**。段階別診断を heartbeat に計装した結果 **`browserLaunched:false` / `stageErrors:["browser_launch"]`＝`browser_rendering` の puppeteer 起動失敗が単一最深の真因**（selector/anti-bot ではない）。是正方針提示済み。詳細 docs/ops/daily/2026-06-30.md | 柱2/調査 | 達成（真因＝browser_launch 失敗を確定・是正方針提示） |
 | ~~1~~ | ~~**柱2 browser_rendering 429 の是正**~~ ← **step ② 自律実装・デプロイ済み（2026-07-03, ver `a51db595`）**。新方針（危害以外は自律）に基づき無課金の option (b) を選択（有料プラン=金銭=危害①は選ばず）。真因仮説＝毎時24回×60〜120秒でBrowser Rendering 無料枠の**日次ブラウザ時間(~10分/日)を早期枯渇→以降429**。実装: ①cron `0 * * * *`→**`0 */6 * * *`**（4回/日 ≈6分/日で日次枠内）、②起動前 `puppeteer.limits()` を `DiscoveryDiag` に計装（同時上限 vs 日次予算 を次 cron で確定）、③取得予算0なら launch せず graceful skip（429無駄打ち停止）。typecheck/lint/build PASS・release gate PASS=29/0/1。**効果検証済み（2026-07-03 2回目ループ, docs-only）**: デプロイ後初の 6h cron（heartbeat `2026-07-02T18:00:40Z`）で `activeSessionCount:0`＋`allowedBrowserAcquisitions:1`/`timeUntilNextAcquisitionMs:0` にもかかわらず launch は **429**＝**leak も取得予算枯渇も反証**。真因は `puppeteer.limits()` が露出しない**アカウ/プラン水準クォータ**へ更新。graceful-skip は limits=1 で未発火。→ 次の自律枠は【観測継続=翌日4窓の非429有無】＋【小: 連続429 circuit-breaker 計数】、無料枠が確定不可なら【有料 or 非ブラウザ取得＝要ユーザー判断（危害①金銭）】。詳細 docs/ops/daily/2026-07-03.md §C | 柱2/修復 | step①②達成・効果検証済（真因更新／完全解消は無料枠可否の観測後に分岐） |
-| 1 | **柱2 429: 無料枠可否の確定＋ガード強化**（分岐1+2, 自律・無課金）← 翌日 00/06/12/18Z の heartbeat を確認し1窓でも非429が出るか判定／連続 launch-429 を circuit-breaker として計数し heartbeat に記録（無駄打ち削減）。全窓429なら無料枠不可を確定し分岐3（有料/非ブラウザ取得）をユーザー上申 | 柱2/修復 | 非429窓の有無を確定・429計数を計装 |
+| ~~1~~ | ~~**柱2 429: 無料枠可否の確定＋ガード強化**~~ ← **判定完了（2026-07-05 週次 #005）**。本番 KV heartbeat（直近 cron `2026-07-04T18:03Z`）が `allowedBrowserAcquisitions:1`／`timeUntilNextAcquisitionMs:0` で**非429**＝**「全窓429」は反証**（6h cron 化で取得予算は空く）。ただし失敗は **セッション再利用の protocolTimeout**（`Unable to connect to existing session … Browser.getVersion timed out`）へ移行し産出ゼロ継続。→ 次の柱2 律速として下記優先1へ引継ぎ | 柱2/修復 | 達成（非429窓を確認・次律速を特定） |
+| 1 | **柱2 セッション再利用 protocolTimeout の是正**（自律・無課金）← `puppeteer.sessions()`+`connect` が stale/未 ready session（例 `5579fd29…`）へ connect し `Browser.getVersion` が timeout。①`protocolTimeout` 引き上げ ②connect 失敗時に既存セッション破棄→`puppeteer.launch` フォールバック ③接続前 session 生存確認 | 柱2/修復 | 次 cron 窓 heartbeat で `browserLaunched:true` or 別エラーへ前進（protocolTimeout 消失） |
 | ~~2~~ | ~~#5 id/hi/tr ロングテールキーワードマップ作成~~ ← **完了（2026-07-02, docs-only `docs/strategy/keyword-map-id-hi-tr.md`）**。2026 市場実測（出典付き）で3市場確定: id=TikTok/X/FB/Telegram（tier-3・量最大）、hi=**Telegram 突出**/FB/X（**TikTok は印 BAN＝除外**・tier-3）、tr=**X 突出**/FB/TikTok（tier-2〜3・CPM 最良）。4軸スコア（需要/競合弱さ/収益/実装容易）＋**推奨制作順10件**（既存 stub 充足 1–7 を先行, en fallback の facebook 系 8–10 は基盤整備後）。手法は有償KWツール未接続のため相対スコア=方向性推定と明記。deploy 非該当（docs-only）・release gate PASS=29/0/1 で prod 健全確認。詳細 docs/ops/daily/2026-07-02.md | 柱1 | 達成（文書出力・制作順発注書） |
-| 2 | **柱1: id/hi/tr not-working 本文充足（keyword-map 制作順 1–7, 1言語×1PF/日）** ← 2026-07-02 `keyword-map-id-hi-tr.md` §4 が発注書。次順 ①tr-twitter ②hi-telegram ③id-tiktok …（既存 stub を ja/pt/ar 同等 s1/s2/s3 へ充足） | 柱1/発見 | 対象 locale/PF ページ充足・本番200 |
-| 3 | 柱1: downloader help リンク（sns/telegram/tiktok/twitter 4本）＋ extractor-form/result-client の status 連動 help リンクの `?locale=` → path 形式化（06-29 積み残し・低クロール価値） | 柱1/発見 | 残る solution help リンクの path 形式化・本番200 |
-| 4 | 柱1: 高意図 not-working クラスタの es/fr/de 等への横展開（ja/pt/ar 同等の s1-s3 充足） | 柱1 | 対象 locale ページ充足・本番200 |
-| 5 | 柱1: 新パス ja/pt/ar の indexed/impression 推移を週次記録し、Schema/canonical/内部リンクの効果を帰属・横展開判断 | 柱1/測定 | indexed/impression 推移を週次記録・効いた施策を特定 |
+| 2 | **柱1: id/hi/tr not-working 本文充足（keyword-map 制作順 1–7, 1言語×1PF/日）** ← 2026-07-02 `keyword-map-id-hi-tr.md` §4 が発注書。次順 ①tr-twitter ②hi-telegram ③id-tiktok …（既存 stub を ja/pt/ar 同等 s1/s2/s3 へ充足＝**発見された時に順位化できる indexable 在庫を増やす**） | 柱1/発見 | 対象 locale/PF ページ充足・本番200 |
+| 3 | **柱1: 発見%の週次判定と横ばい時の分岐**（URL Inspection「未発見」比率を記録。#006 で 72% 横ばいなら §7 提案1＝**crawl budget 集中/sitemap 剪定**＝低意図 URL を sitemap から外し高意図コアへクロールを集中する設計に着手） | 柱1/測定・判断 | 未発見%を記録し横ばい/低下を判定・低下せずなら剪定設計を起票 |
+| 4 | 柱1: downloader help リンク（sns/telegram/tiktok/twitter 4本）＋ extractor-form/result-client の status 連動 help リンクの `?locale=` → path 形式化（06-29 積み残し・低クロール価値） | 柱1/発見 | 残る solution help リンクの path 形式化・本番200 |
+| 5 | 柱1: 高意図 not-working クラスタの es/fr/de 等への横展開（ja/pt/ar 同等の s1-s3 充足） | 柱1 | 対象 locale ページ充足・本番200 |
+| 6 | 柱1: 新パス ja/pt/ar の indexed/impression 推移を週次記録し、Schema/canonical/内部リンクの効果を帰属・横展開判断 | 柱1/測定 | indexed/impression 推移を週次記録・効いた施策を特定 |
 | ~~6~~ | ~~HC-2 未使用 export 5件の棚卸し~~ ← **完了（2026-06-29, 層B+ 消化, ver `0bc6a5a7`）**。配線1（SUPPORTED_LOCALES→layout JSON-LD）・除去4。knip 未使用 export 5→0。下「健全性バックログ」HC-2 参照 | 健全性 | 達成（export 0・テスト33 green・本番200） |
-| 6 | 柱2: cron が実トピック捕捉時の `/trend/[slug]` populated-render 本番検証（P0-1〜P0-4 積み残し検証） | 柱2/検証 | 実トピックで index/sitemap 収録・本番200 確認 |
+| 7 | 柱2: cron が実トピック捕捉時の `/trend/[slug]` populated-render 本番検証（P0-1〜P0-4 積み残し検証。優先1 の browser 修復が前提） | 柱2/検証 | 実トピックで index/sitemap 収録・本番200 確認 |
+| 8 | 健全性: HC-5 の yaml 2.0–2.8.2 moderate を非 `--force` の `npm audit fix` で semver 内修正（**要ユーザーの承認マーカー `（承認済み・消化可）`。未付与なら据え置き**） | 健全性 | 承認済みなら層B+ で1件消化・テスト green |
 | ~~7~~ | ~~柱4: outreach 登録~~ ← **廃止（2026-07-03 ユーザー判断）**。純粋自然流入方針に伴い外部リンク/outreach は行わない。獲得は柱1＋柱2に集約。`docs/ops/outreach/` はアーカイブ（新規生成なし） | — | 廃止 |
 
 > 上記が最新の優先順位（≥7件維持）。下の番号付きリスト #1-#13 は実装履歴（完了アーカイブ）。
@@ -109,6 +111,7 @@
 - [x] P2-25: OpenNextデプロイ設定修正（`cf:build` / `wrangler.toml`）
 
 ## 更新メモ
+- 2026-07-05: **週次戦略レビュー #005 実施**（`docs/ops/weekly_review_2026-07-05.md`）。計測健全（SA化, `blocked:false`, as of 2026-07-05）。実測28d: ad_script_load=13（前回12）・セッション=3（前回1）・**GSC impressions=4（前回3・微増）**＝**いずれも母数1〜3でノイズ域**。本番健全（health 200／sitemap 200・loc=508・`?locale=`=0・`/trend/`=0＝ゲート正常／trending 200／未存在 slug 404）。**最重要=URL Inspection「Google 未発見」72/100 が #004 から横ばい**＝06-28/29 内部リンク path 形式統一の効果がサンプル上まだ未反映（lag 窓内・来週 #006 が判定週）。**撤退基準: impressions 3→4 微増で機械的に連続非成長カウントをリセット（=0）・非該当**（ただしノイズ域の微増で発見本質は未改善＝要監視）。**柱2**: 07-03 の 6h cron 化で 429 は直近窓（07-04 18:00Z）で解消＝**「全窓429」を反証**したが、失敗が **セッション再利用の protocolTimeout**（`Unable to connect to existing session … Browser.getVersion timed out`, `allowedBrowserAcquisitions:1`＝取得予算は空・graceful-skip 未発火）へ移行し産出ゼロ継続。バックログ先頭を「**柱2 セッション再利用 protocolTimeout の是正**／**柱1 keyword-map 制作順の本文充足（indexable 在庫増）**／**発見%の週次判定**」に並べ替え（8件、≥7維持）。KPI 履歴表に実測行追記（growth-strategy.md 他節は不変更）。戦略変更提案: ①**発見律速に対する crawl budget 集中/sitemap 剪定**（#006 で未発見72%横ばいなら発火・判断材料1週分不足のため今回は提案留め）、②柱2 の次律速＝protocolTimeout、③発見%の先行指標化（継続）。**柱4 outreach は廃止済みのため下書き生成せず**（旧・週次手順7を恒久除外）。
 - 2026-07-03: **方針転換2件（ユーザー判断）＋柱2 429 自律是正**。①**柱4（外部リンク/outreach）廃止＝純自然流入のみ**（獲得は柱1＋柱2に集約, commit `aac6c22`）、②**「危害が及ぶ選択以外は Claude 自律で全て進めてよい」**（戦略確定のユーザー承認ゲートを緩和・柱再編/戦略文書更新も自律確定可、監査ログ必須。例外＝一度きり認可で以降自律運用できるもの=許容。危害の定義＝金銭/法務・規約・ドメイン評価/不可逆な資産破壊/セキュリティ。growth-strategy.md 決定事項5-7 に明文化）。この新方針に基づき**柱2 429 の残 step ②（従来 要人間判断）を無課金 option (b) で自律実装・デプロイ**（ver `a51db595`）: cron 毎時→6h毎（日次ブラウザ枠~10分/日 の枯渇是正）＋`puppeteer.limits()` 計装＋取得予算0で graceful skip。typecheck/lint/build PASS・release gate PASS=29/0/1・prod健全（health 200/sitemap 200）。**429 是正の効果は次 cron 窓(18:00Z〜)で被検証**（telemetry 計装済み）。有料プラン(a)は金銭=危害①のため選ばず、必要時のみ後日認可依頼。詳細 docs/ops/daily/2026-07-03.md。
 - 2026-07-02: 日次ループ。**優先2（#5 id/hi/tr ロングテールキーワードマップ）完了**（docs-only `docs/strategy/keyword-map-id-hi-tr.md`）。優先1（柱2 browser_rendering 429 是正 step ②）は**要人間判断（Cloudflare クォータ/プラン確認）**でスキップ。市場実測（2026・出典付き）で3市場を確定: **id**=TikTok(広告リーチ最大)/X(3位)/Facebook/Telegram（tier-3・ボリューム最大）、**hi**=**Telegram 突出（世界1位DL国 3.84億）**/Facebook/X（**TikTok は印 BAN＝制作除外**・tier-3）、**tr**=**X 突出（2位・歴史的に強い）**/Facebook(浸透91.7%)/TikTok(5位成長中)（tier-2〜3＝CPM 最良で前倒し）。4軸スコア（需要/競合弱さ/収益/実装容易）＋**推奨制作順10件**（既存 stub 充足 1–7 を先行、en fallback の facebook 系 8–10 は多言語 pages 化＝基盤整備後）。有償KWツール未接続のため需要は方向性推定＝相対スコアと明記（実測で継続改訂）。ガードレール反映（Instagram noindex 対象外・hi-TikTok 非制作・薄ページ禁止・path 化は別タスク）。バックログ優先2 を「id/hi/tr not-working 本文充足（制作順に従う）」へ差し替え。**deploy:prod 非該当（docs-only・Worker バンドルに docs 非含・サイト surface 不変）**、リリースゲート **PASS=29/0/1**・D1 remote PASS で prod 健全確認（health 200・sitemap 200=357,865B, PowerShell）。D1/bindings/戦略文書 不変更。詳細 docs/ops/daily/2026-07-02.md。
 - 2026-07-01: 日次ループ。**優先1 step ①（browser_rendering 起動失敗の実エラー採取）完了**（ver `d50ebcfc`, commit `bc90594`）。06-30 で「browser_launch 失敗」までは確定したが実エラー文字列が未取得だったため、`discoverTrends()` の `browser_launch` catch に `summarizeError()`（name: message・最大300字）を足し `diag.browserLaunchError` として heartbeat（KV `meta:last_run`）へ残す計装を出荷（挙動非変更・D1/bindings/sitemap/戦略文書 不変）。typecheck/lint/build PASS・vitest 33/33・リリースゲート **PASS=29/0/1**・D1 PASS。本番健全（health 200・db/extractor ok・degraded=false／sitemap 200=357,865 bytes、※当環境 curl は libcurl バグで 000＝PowerShell で確認）。**デプロイ後初の cron `2026-06-30T22:00:20Z` が新コードで実エラーを採取**: **`Error: Unable to create new browser: code: 429: message: Rate limit exceeded`**。切り分け＝binding 欠落（deploy で `env.browser_rendering→Browser` 付与済）でもプラン未有効でも `@cloudflare/puppeteer` 版不整合でもなく、**Cloudflare Browser Rendering のブラウザ作成レート制限(429)** が単一真因（毎時 `browserLaunched:false`＝1 つも起動できていない）。**残 step ②＝要人間判断**: ダッシュボードで Browser Rendering の同時/日次/作成レート上限を確認し、(a)プラン引き上げ (b)cron 頻度低下 or 1ブラウザ再利用化(`puppeteer.sessions()`+`connect`) のいずれかを決定（人間確認後にデプロイ単位で実装）。それまで柱2 の topic 産出はゼロ＝柱1 が律速。次の自律デプロイ候補は優先2（id/hi/tr ロングテール）。詳細 docs/ops/daily/2026-07-01.md。
