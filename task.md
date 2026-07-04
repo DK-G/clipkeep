@@ -22,7 +22,7 @@
 | ~~1~~ | ~~06-28 path 形式統一の積み残し＝**残る内部リンク欠落の解消**~~ ← **完了（2026-06-29, ver `054cf49e`＋`7c6cc36b`）**。side-menu に telegram 追加（instagram は noindex 維持で意図的除外）・solution 本文関連リンク／グローバル footer／ホーム guides grid の `?locale=` → path 形式化。本番で `/ja` ホーム＋solution の solution 残置 `?locale=`=0・全リンク path 形式を確認。効果測定（未発見%低下）は次回週次。詳細 docs/ops/daily/2026-06-29.md | 柱1/発見・測定 | 達成（欠落補填・本番200・残置0） |
 | ~~1~~ | ~~**柱2 cron トレンド捕捉の実態調査**~~ ← **完了（2026-06-30, ver `eabfe6bb`）**。真因確定: cron は実行中（heartbeat fresh 22:00Z）、`MIN_CLIPS` ゲートは未到達（`topics:index` 404＝topic 0 件で書込ゼロ）、律速は **discover が毎回 0 候補**。段階別診断を heartbeat に計装した結果 **`browserLaunched:false` / `stageErrors:["browser_launch"]`＝`browser_rendering` の puppeteer 起動失敗が単一最深の真因**（selector/anti-bot ではない）。是正方針提示済み。詳細 docs/ops/daily/2026-06-30.md | 柱2/調査 | 達成（真因＝browser_launch 失敗を確定・是正方針提示） |
 | ~~1~~ | ~~**柱2 browser_rendering 429 の是正**~~ ← **step ② 自律実装・デプロイ済み（2026-07-03, ver `a51db595`）**。新方針（危害以外は自律）に基づき無課金の option (b) を選択（有料プラン=金銭=危害①は選ばず）。真因仮説＝毎時24回×60〜120秒でBrowser Rendering 無料枠の**日次ブラウザ時間(~10分/日)を早期枯渇→以降429**。実装: ①cron `0 * * * *`→**`0 */6 * * *`**（4回/日 ≈6分/日で日次枠内）、②起動前 `puppeteer.limits()` を `DiscoveryDiag` に計装（同時上限 vs 日次予算 を次 cron で確定）、③取得予算0なら launch せず graceful skip（429無駄打ち停止）。typecheck/lint/build PASS・release gate PASS=29/0/1。**効果検証済み（2026-07-03 2回目ループ, docs-only）**: デプロイ後初の 6h cron（heartbeat `2026-07-02T18:00:40Z`）で `activeSessionCount:0`＋`allowedBrowserAcquisitions:1`/`timeUntilNextAcquisitionMs:0` にもかかわらず launch は **429**＝**leak も取得予算枯渇も反証**。真因は `puppeteer.limits()` が露出しない**アカウ/プラン水準クォータ**へ更新。graceful-skip は limits=1 で未発火。→ 次の自律枠は【観測継続=翌日4窓の非429有無】＋【小: 連続429 circuit-breaker 計数】、無料枠が確定不可なら【有料 or 非ブラウザ取得＝要ユーザー判断（危害①金銭）】。詳細 docs/ops/daily/2026-07-03.md §C | 柱2/修復 | step①②達成・効果検証済（真因更新／完全解消は無料枠可否の観測後に分岐） |
-| 1 | **柱2 429: 無料枠可否の確定＋ガード強化**（分岐1+2, 自律・無課金）← 翌日 00/06/12/18Z の heartbeat を確認し1窓でも非429が出るか判定／連続 launch-429 を circuit-breaker として計数し heartbeat に記録（無駄打ち削減）。全窓429なら無料枠不可を確定し分岐3（有料/非ブラウザ取得）をユーザー上申。**サーキットブレーカー適用（2026-07-04, growth-strategy.md §7.1）: これが本ブロッカーへの試行2回目（1回目=07-03 cron 6h + graceful skip、効果検証済みだが解消せず）。この観測で全窓429が確定した場合、3回目以降のコード変更を伴う自律是正は行わない＝直ちに下記「要ユーザー判断キュー」へ移し、次点タスクへ日次ループを進める** | 柱2/修復 | 非429窓の有無を確定・429計数を計装（非4290件なら即エスカレーション・追加試行なし） |
+| 1 | **柱2 429: 無料枠可否の確定＋ガード強化**（分岐1+2, 自律・無課金）← 翌日 00/06/12/18Z の heartbeat を確認し1窓でも非429が出るか判定／連続 launch-429 を circuit-breaker として計数し heartbeat に記録（無駄打ち削減）。**サーキットブレーカー適用（2026-07-04改訂, growth-strategy.md §7.1）**: 前回試行（07-03 cron 6h + graceful skip）とは異なる仮説（回転式/一過性レートか恒常ブロックかの切り分け）＝続行条件を満たす。全窓429が確定しても**即エスカレーションしない**——「非ブラウザ取得方式への切替」（`twittrend.jp`/Yahoo realtime の素の fetch 化など）が未試行かつ危害①〜④非該当の別仮説として残っているため、次はそちらを試す。**要ユーザー判断キューへ送るのは「残る手が有料プラン（危害①金銭）しかなくなった時」のみ** | 柱2/修復 | 非429窓の有無を確定・429計数を計装。全429確定時は次アクション＝非ブラウザ取得方式の実装着手（エスカレーションではない） |
 | ~~2~~ | ~~#5 id/hi/tr ロングテールキーワードマップ作成~~ ← **完了（2026-07-02, docs-only `docs/strategy/keyword-map-id-hi-tr.md`）**。2026 市場実測（出典付き）で3市場確定: id=TikTok/X/FB/Telegram（tier-3・量最大）、hi=**Telegram 突出**/FB/X（**TikTok は印 BAN＝除外**・tier-3）、tr=**X 突出**/FB/TikTok（tier-2〜3・CPM 最良）。4軸スコア（需要/競合弱さ/収益/実装容易）＋**推奨制作順10件**（既存 stub 充足 1–7 を先行, en fallback の facebook 系 8–10 は基盤整備後）。手法は有償KWツール未接続のため相対スコア=方向性推定と明記。deploy 非該当（docs-only）・release gate PASS=29/0/1 で prod 健全確認。詳細 docs/ops/daily/2026-07-02.md | 柱1 | 達成（文書出力・制作順発注書） |
 | 2 | **柱1: id/hi/tr not-working 本文充足（keyword-map 制作順 1–7, 1言語×1PF/日）** ← 2026-07-02 `keyword-map-id-hi-tr.md` §4 が発注書。次順 ①tr-twitter ②hi-telegram ③id-tiktok …（既存 stub を ja/pt/ar 同等 s1/s2/s3 へ充足） | 柱1/発見 | 対象 locale/PF ページ充足・本番200 |
 | 3 | 柱1: downloader help リンク（sns/telegram/tiktok/twitter 4本）＋ extractor-form/result-client の status 連動 help リンクの `?locale=` → path 形式化（06-29 積み残し・低クロール価値） | 柱1/発見 | 残る solution help リンクの path 形式化・本番200 |
@@ -46,9 +46,12 @@
 
 ## 要ユーザー判断キュー（サーキットブレーカーでエスカレーション, growth-strategy.md §7.1）
 
-> ここに入るのは「同一ブロッカーへの自律是正試行が2回に達しても改善シグナルなし」で打ち止めになった項目。
-> 日次ループは自律再開しない（バックログの通常優先順位には戻さない）。ユーザーの新方針/承認、または
-> ブロッカー前提の外部変化があるまで、ここに滞留させる。
+> ここに入るのは「①残る選択肢が危害①〜④（金銭・法務規約・不可逆破壊・セキュリティ）のいずれかを
+> 跨がないと実行できない、または②直近の試行が新しい情報を何も生まなかった（同じ仮説の焼き直し）」
+> で打ち止めになった項目。固定回数での機械的な打ち切りではない——危害に該当しない未試行の仮説が
+> 残っている限り、日次ループは自律で試行を続ける（決定事項7＝収益最大化に資する施策は危害以外
+> 無制限に自律実行可）。日次ループは自律再開しない（バックログの通常優先順位には戻さない）。
+> ユーザーの新方針/承認、またはブロッカー前提の外部変化があるまで、ここに滞留させる。
 
 *(現時点で確定エスカレーション項目なし。柱2 429 は上記バックログ#1が試行2回目＝結果次第でここに移動見込み)*
 
