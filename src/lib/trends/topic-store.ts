@@ -72,6 +72,12 @@ export type DiscoveryDiag = {
   timeUntilNextAcquisitionMs?: number;
   /** 取得予算ゼロのため launch せず今回をスキップしたか（429 の無駄打ち回避）。 */
   acquisitionBudgetZero?: boolean;
+  /**
+   * ブラウザ確保に要した試行回数（1 = 一発成功）。stale/hung セッションに acquire→connect した際、
+   * connect 内の `Browser.getVersion` が既定 protocolTimeout(180s) までハングして産出ゼロになる問題への
+   * 対策として、各試行を短時間でバウンドし新規 acquire で再試行する（2026-07-06）。失敗確定時は上限値。
+   */
+  launchAttempts?: number;
 };
 
 export type RunMeta = {

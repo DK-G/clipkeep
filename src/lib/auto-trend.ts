@@ -35,6 +35,80 @@ function summarizeError(error: unknown): string {
   return text.length > 300 ? text.slice(0, 297) + "..." : text;
 }
 
+// ── ブラウザ確保のバウンド付きリトライ（柱2 セッション再利用 protocolTimeout の是正, 2026-07-06）──
+// `puppeteer.launch()` は内部で acquire()（新 sessionId 取得）→ connect(sessionId) を行う。
+// プールが stale/hung なセッションを返すと connect 内の `Browser.getVersion` が既定の
+// protocolTimeout(180s) までハングし、その1本だけで cron が産出ゼロのまま終わる（2026-07-04 観測:
+// `Unable to connect to existing session … Browser.getVersion timed out`）。既定が既に 180s のため
+// 「protocolTimeout 引き上げ」は逆効果（さらに長くハングするだけ）。よって各試行を短時間でバウンドして
+// 速やかに fail-fast し、新規 acquire で別セッションに張り直す（②）＋確保直後に生存確認（③）する。
+const LAUNCH_TIMEOUT_MS = 30_000;
+const LIVENESS_TIMEOUT_MS = 10_000;
+const MAX_LAUNCH_ATTEMPTS = 3;
+
+/** promise を ms でバウンドし、超過時は reject（元 promise は解決しても呼び出し側で後始末する）。 */
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} exceeded ${ms}ms`)), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
+}
+
+/**
+ * Browser Rendering セッションを堅牢に確保する。stale/hung セッションを掴んだ試行は
+ * LAUNCH_TIMEOUT_MS で打ち切り、新規 acquire でやり直す。成功時は生存確認済みの browser を返す。
+ * 全試行が失敗したら diag に真因を残して null を返す（呼び出し側は今回をスキップ）。
+ */
+async function launchBrowserWithRetry(
+  binding: Fetcher,
+  diag: DiscoveryDiag
+): Promise<Awaited<ReturnType<typeof puppeteer.launch>> | null> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= MAX_LAUNCH_ATTEMPTS; attempt++) {
+    let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
+    let abandoned = false;
+    const launchPromise = puppeteer.launch(binding);
+    // 打ち切り後に遅れて解決したセッションを放置するとリークするため、自己 close させる。
+    launchPromise.then(
+      (late) => {
+        if (abandoned) late.close().catch(() => {});
+      },
+      () => {}
+    );
+    try {
+      browser = await withTimeout(launchPromise, LAUNCH_TIMEOUT_MS, "browser_launch");
+      // ③ 使用前に軽い CDP ラウンドトリップで生存確認（hung セッションはここで速やかに落ちる）。
+      await withTimeout(browser.version(), LIVENESS_TIMEOUT_MS, "browser_liveness");
+      diag.launchAttempts = attempt;
+      return browser;
+    } catch (error) {
+      lastError = error;
+      abandoned = true;
+      diag.stageErrors.push(attempt === 1 ? "browser_launch" : `browser_launch_retry_${attempt}`);
+      // ② half-open なセッションを破棄してから次の新規 acquire に進む。
+      if (browser) {
+        try {
+          await browser.close();
+        } catch {
+          /* すでに死んでいる可能性が高い。無視して再試行。 */
+        }
+      }
+    }
+  }
+  diag.launchAttempts = MAX_LAUNCH_ATTEMPTS;
+  diag.browserLaunchError = summarizeError(lastError);
+  return null;
+}
+
 async function getTrendKv(): Promise<KVNamespace | null> {
   const env = (await getCloudflareContext()).env as { TREND_KV?: KVNamespace };
   return env.TREND_KV ?? null;
@@ -177,17 +251,14 @@ async function discoverTrends(): Promise<{ twitter: TrendItem[]; tiktok: TrendIt
     return { twitter: [], tiktok: [], diag };
   }
 
-  let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
-  try {
-    browser = await puppeteer.launch(env.browser_rendering);
-    diag.browserLaunched = true;
-  } catch (error) {
-    console.error("[AutoTrend] Browser launch failed:", error);
-    diag.stageErrors.push("browser_launch");
-    // 実エラーを heartbeat に残し、次回是正で binding/プラン/クォータ/版を切り分ける。
-    diag.browserLaunchError = summarizeError(error);
+  // stale/hung セッションで 180s ハングして産出ゼロになる問題への対策（2026-07-06）。
+  // launch を短時間でバウンドし、失敗時は新規 acquire で再試行する（helper 内で診断を記録）。
+  const browser = await launchBrowserWithRetry(env.browser_rendering, diag);
+  if (!browser) {
+    console.error("[AutoTrend] Browser launch failed after retries:", diag.browserLaunchError);
     return { twitter: [], tiktok: [], diag };
   }
+  diag.browserLaunched = true;
   try {
     console.log("[AutoTrend] Scraping TikTok Explore...");
     const ttPage = await browser.newPage();
