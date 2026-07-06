@@ -42,7 +42,7 @@ const twitterGuide: Record<Locale, { title: string; s1: string; s2: string; s3?:
   id: { title: "Pengunduh Twitter tidak berfungsi", s1: "Posting privat atau terbatas tidak dapat diproses.", s2: "Gunakan URL tweet langsung tanpa parameter pelacakan.", cta: "Coba pengunduh Twitter" },
   hi: { title: "Twitter downloader kaam nahi kar raha", s1: "Private ya restricted posts process nahi ho sakte.", s2: "Tracking parameter ke bina direct tweet URL ka upyog karein.", cta: "Twitter downloader azmayein" },
   de: { title: "Twitter-Downloader funktioniert nicht", s1: "Private oder eingeschrankte Beitrage konnen nicht verarbeitet werden.", s2: "Verwenden Sie die direkte Tweet-URL ohne Tracking-Parameter.", cta: "Twitter-Downloader testen" },
-  tr: { title: "Twitter indirici calismiyor", s1: "Ozel veya kisitli gonderiler islenemez.", s2: "Takip parametresi olmadan dogrudan tweet URLsi kullanin.", cta: "Twitter indiriciyi dene" },
+  tr: { title: "Twitter (X) videosu indirilemiyor", s1: "Twitter (X) videosu indirilemiyor sorununun en yaygın nedeni, gönderinin gizli bir hesaptan olması, yaş sınırı bulunması veya hassas içerik olarak işaretlenmesidir. Kilitli hesaplardan gelen tweet'ler ve kısıtlı gönderiler, X'in kuralları gereği hiçbir harici araçla alınamaz. Önce bağlantının herkese açık bir tweet'e ait olduğundan emin olun.", s2: "Tweet'i açın ve Paylaş → Bağlantıyı kopyala ile URL'yi alıp yapıştırın. `https://x.com/kullaniciadi/status/numara` veya `https://twitter.com/...` biçimi en güvenilirdir. Arama sonuçlarından ya da profil sayfasından kopyalanan bağlantılar veya `?s=20` gibi takip parametreleri içeren adresler başarısız olabilir; bu yüzden Twitter videosunu indirmeden önce gereksiz parametreleri silin. 'Twitter video nasıl indirilir' diye ararken en sık yapılan hata, doğrudan tweet bağlantısı yerine liste veya bildirim bağlantısını yapıştırmaktır.", s3: "Araç, normal videoları ve hareketli GIF'leri destekler ve mevcut en yüksek kalitede, filigransız (logosuz) MP4 olarak kaydeder. Buna karşın gömülü YouTube videoları, Spaces kayıtları ve devam eden canlı yayınlar desteklenmez. Video görünmüyor veya 'yükleniyor' durumunda takılı kalıyorsa birkaç dakika sonra tekrar deneyin ya da aracın çalıştığını doğrulamak için başka bir herkese açık tweet ile test edin. İndirilen MP4 dosyası; iPhone, Android ve bilgisayarda dönüştürme gerektirmeden oynatılıp düzenlenebilir.", cta: "Twitter video indiriciyi dene" },
 };
 
 const degradedGuide: Record<Locale, { title: string; s1: string; cta: string }> = {
@@ -645,9 +645,9 @@ export const pages: SolutionPage[] = [
     locale,
     title: twitterGuide[locale].title,
     sections: [
-      { id: "s1", heading: locale === "ja" ? "非公開・制限付き投稿について" : locale === "pt" ? "Posts privados e restritos" : locale === "ar" ? "حول المنشورات الخاصة والمقيّدة" : "Step 1", body: twitterGuide[locale].s1 },
-      { id: "s2", heading: locale === "ja" ? "正しいURLの貼り付け方" : locale === "pt" ? "Como colar a URL correta" : locale === "ar" ? "كيفية لصق الرابط الصحيح" : "Step 2", body: twitterGuide[locale].s2 },
-      ...(twitterGuide[locale].s3 ? [{ id: "s3", heading: locale === "ja" ? "GIF・動画の画質と対応範囲" : locale === "pt" ? "Qualidade e formatos suportados" : locale === "ar" ? "الجودة والمحتوى المدعوم" : "Step 3", body: twitterGuide[locale].s3 as string }] : []),
+      { id: "s1", heading: locale === "ja" ? "非公開・制限付き投稿について" : locale === "pt" ? "Posts privados e restritos" : locale === "ar" ? "حول المنشورات الخاصة والمقيّدة" : locale === "tr" ? "Gizli ve kısıtlı gönderiler hakkında" : "Step 1", body: twitterGuide[locale].s1 },
+      { id: "s2", heading: locale === "ja" ? "正しいURLの貼り付け方" : locale === "pt" ? "Como colar a URL correta" : locale === "ar" ? "كيفية لصق الرابط الصحيح" : locale === "tr" ? "Doğru URL nasıl yapıştırılır" : "Step 2", body: twitterGuide[locale].s2 },
+      ...(twitterGuide[locale].s3 ? [{ id: "s3", heading: locale === "ja" ? "GIF・動画の画質と対応範囲" : locale === "pt" ? "Qualidade e formatos suportados" : locale === "ar" ? "الجودة والمحتوى المدعوم" : locale === "tr" ? "GIF, kalite ve desteklenen içerik" : "Step 3", body: twitterGuide[locale].s3 as string }] : []),
     ],
     cta: { label: twitterGuide[locale].cta, href: "/download-twitter-video" },
   })),
