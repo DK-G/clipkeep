@@ -173,6 +173,83 @@ export function overallStatus(results: ProbeResult[]): ProbeStatus {
   return 'operational';
 }
 
+// ── A-v1: rolling uptime history ────────────────────────────────────────────
+// The 6h cron calls probeAndRecord() (via /api/admin/status-probe), appending a
+// compact sample so the page can show real uptime over the last N checks.
+const HISTORY_KEY = 'platform-status:history';
+const HISTORY_MAX = 56; // ~14 days at 4 samples/day
+
+export interface HistorySample {
+  at: string;
+  perPlatform: Record<string, ProbeStatus>;
+}
+
+export interface UptimeStat {
+  total: number;
+  operational: number;
+  pct: number | null; // null when no samples yet
+}
+
+/** Rolling history samples (oldest→newest). Empty-safe. */
+export async function getStatusHistory(): Promise<HistorySample[]> {
+  const kv = await getKv();
+  if (!kv) return [];
+  try {
+    const raw = await kv.get(HISTORY_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as HistorySample[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Per-platform uptime% (operational / samples) over the given history. */
+export function computeUptime(history: HistorySample[]): Record<string, UptimeStat> {
+  const out: Record<string, UptimeStat> = {};
+  for (const t of TARGETS) {
+    let total = 0;
+    let operational = 0;
+    for (const s of history) {
+      const st = s.perPlatform?.[t.platform];
+      if (!st) continue;
+      total += 1;
+      if (st === 'operational') operational += 1;
+    }
+    out[t.platform] = { total, operational, pct: total ? Math.round((operational / total) * 100) : null };
+  }
+  return out;
+}
+
+/**
+ * Cron entry: probe fresh (bypassing the read cache), refresh the cache, and
+ * append one sample to the rolling history. Never throws.
+ */
+export async function probeAndRecord(): Promise<StatusSnapshot> {
+  const snapshot = await runProbes();
+  const kv = await getKv();
+  if (!kv) return snapshot;
+
+  try {
+    await kv.put(KV_KEY, JSON.stringify(snapshot), { expirationTtl: CACHE_TTL_SECONDS });
+  } catch {
+    // best-effort cache
+  }
+  try {
+    const raw = await kv.get(HISTORY_KEY);
+    const prev: HistorySample[] = raw ? (JSON.parse(raw) as HistorySample[]) : [];
+    const sample: HistorySample = {
+      at: snapshot.checkedAt,
+      perPlatform: Object.fromEntries(snapshot.results.map((r) => [r.platform, r.status])),
+    };
+    const next = [...(Array.isArray(prev) ? prev : []), sample].slice(-HISTORY_MAX);
+    await kv.put(HISTORY_KEY, JSON.stringify(next));
+  } catch {
+    // best-effort history
+  }
+  return snapshot;
+}
+
 /** Platforms ClipKeep supports but that do not yet have a live upstream probe. */
 export const ALSO_SUPPORTED = [
   'TikTok', 'Pinterest', 'Facebook', 'Bluesky', 'Lemon8', 'Bilibili', 'Discord',

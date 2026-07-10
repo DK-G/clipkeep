@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { SITE_URL } from '@/lib/site-url';
 import {
   getPlatformStatuses,
+  getStatusHistory,
+  computeUptime,
   overallStatus,
   ALSO_SUPPORTED,
   type ProbeStatus,
@@ -62,8 +64,9 @@ function StatusPill({ status }: { status: ProbeStatus }) {
 }
 
 export default async function PlatformStatusPage() {
-  const snapshot = await getPlatformStatuses();
+  const [snapshot, history] = await Promise.all([getPlatformStatuses(), getStatusHistory()]);
   const overall = overallStatus(snapshot.results);
+  const uptime = computeUptime(history);
   const checkedAt = new Date(snapshot.checkedAt);
   const checkedAtLabel = Number.isNaN(checkedAt.getTime()) ? 'unknown' : checkedAt.toUTCString();
 
@@ -112,25 +115,35 @@ export default async function PlatformStatusPage() {
                 <th className="py-2 pr-4 font-medium">Platform</th>
                 <th className="py-2 pr-4 font-medium">Upstream</th>
                 <th className="py-2 pr-4 font-medium">Status</th>
+                <th className="py-2 pr-4 font-medium">Uptime</th>
                 <th className="py-2 pr-4 font-medium">HTTP</th>
                 <th className="py-2 font-medium">Latency</th>
               </tr>
             </thead>
             <tbody>
-              {snapshot.results.map((r) => (
-                <tr key={r.platform} className="border-b">
-                  <td className="py-3 pr-4 font-medium">{r.label}</td>
-                  <td className="py-3 pr-4 opacity-70">{r.upstream}</td>
-                  <td className="py-3 pr-4"><StatusPill status={r.status} /></td>
-                  <td className="py-3 pr-4 tabular-nums opacity-70">{r.httpStatus ?? '—'}</td>
-                  <td className="py-3 tabular-nums opacity-70">{r.latencyMs != null ? `${r.latencyMs} ms` : '—'}</td>
-                </tr>
-              ))}
+              {snapshot.results.map((r) => {
+                const u = uptime[r.platform];
+                return (
+                  <tr key={r.platform} className="border-b">
+                    <td className="py-3 pr-4 font-medium">{r.label}</td>
+                    <td className="py-3 pr-4 opacity-70">{r.upstream}</td>
+                    <td className="py-3 pr-4"><StatusPill status={r.status} /></td>
+                    <td className="py-3 pr-4 tabular-nums opacity-70">{u && u.pct != null ? `${u.pct}%` : '—'}</td>
+                    <td className="py-3 pr-4 tabular-nums opacity-70">{r.httpStatus ?? '—'}</td>
+                    <td className="py-3 tabular-nums opacity-70">{r.latencyMs != null ? `${r.latencyMs} ms` : '—'}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
 
-        <p className="mt-4 text-xs opacity-60">
+        <p className="mt-3 text-xs opacity-60">
+          {history.length > 0
+            ? `Uptime = operational share of the last ${history.length} automated check${history.length === 1 ? '' : 's'} (every ~6h).`
+            : 'Uptime history is being collected — the first automated checks appear here within a day.'}
+        </p>
+        <p className="mt-1 text-xs opacity-60">
           Also supported (live probes expanding): {ALSO_SUPPORTED.join(', ')}.
         </p>
 

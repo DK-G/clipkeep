@@ -40,6 +40,27 @@ const worker = {
       });
 
     ctx.waitUntil(promise);
+
+    // Track A-v1: append a platform-status sample (HTTP-only, independent of the
+    // browser/auto-trend pipeline). Failures here must not affect auto-trend.
+    const statusUrl = new URL(`${protocol}//${host}/api/admin/status-probe?secret=${secret}`);
+    const statusReq = new Request(statusUrl.toString(), {
+      method: "GET",
+      headers: { "User-Agent": "Cloudflare-Workers-Scheduled-Event" },
+    });
+    const statusPromise = openNextWorker.fetch(statusReq, env, ctx)
+      .then(async (res: Response) => {
+        if (!res.ok) {
+          console.error(`[Worker] Status-probe API failed with status ${res.status}`);
+        } else {
+          console.log("[Worker] Status-probe API completed successfully.");
+        }
+      })
+      .catch((e: unknown) => {
+        console.error("[Worker] Exception calling status-probe API:", e);
+      });
+
+    ctx.waitUntil(statusPromise);
   },
 };
 
