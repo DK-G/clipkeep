@@ -86,6 +86,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entries.push(...makeEntries(path, ALL_LOCALES, 0.5, "monthly"));
   }
 
+  // ── Platform status (Track A linkable asset, English-only data page) ──────
+  entries.push({
+    url: getLocalizedUrl("/platform-status", "en"),
+    lastModified: new Date(),
+    changeFrequency: "hourly",
+    priority: 0.6,
+  });
+
   // ── Legal pages (primary locales only) ───────────────────────────────────
   for (const path of LEGAL_PATHS) {
     entries.push(...makeEntries(path, PRIMARY_LOCALES, 0.3, "yearly"));
