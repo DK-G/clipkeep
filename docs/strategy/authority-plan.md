@@ -25,24 +25,38 @@
   の要約を定期生成し、公開ページ化（記事が引用しやすい形＝被引用性）。
 - [ ] **構造化**: `schema.org/Dataset` 等で asset を機械可読化（引用・データポータルからの発見性）。
 
-## B-2. ユーザー一度きり操作分（＝下記チェックリストをコピペで実行するだけ）
+## B-2. ユーザー一度きり操作分（＝下記をコピペで実行するだけ・貼付文面確定版）
 
-> **すべて無料・ホワイトハット・一度きり**。関連性のある（＝downloader/ツールとして自然な）場所のみ。
-> スパム的な大量登録はしない（§6）。各項目に貼り付け文面を用意済み。
+> **すべて無料・ホワイトハット・一度きり**。関連性のある場所のみ。スパム的な大量登録はしない（§6）。
+> 資産 URL は公開済み: **https://clipkeep.net/platform-status** ／ サイト: **https://clipkeep.net**
+> ／ 埋め込みバッジ: **https://clipkeep.net/platform-status/badge**
+> 正直性: HN/Reddit/PH のリンクは多くが nofollow。狙いは**初速の露出→ブログ/README からの editorial 被リンク
+> ・バッジ埋め込み（dofollow）**を誘発すること。直リンクの SEO 値そのものではない。
 
-- [ ] **AlternativeTo** にツール登録（無料）: ClipKeep を「video downloader」カテゴリで登録。
-  文面: 「ClipKeep — free multi-platform video downloader (TikTok, X, Telegram, Reddit…), no login, with a public live platform-status page.」
-- [ ] **GitHub "awesome" リストへ PR**（例: awesome-selfhosted 系ではなく awesome-video / downloader 系の
-  関連リストが妥当なら）: 1–2 件、関連性が高いものだけに PR。無関係リストへの押し込みはしない。
-- [ ] **関連 subreddit のツール Wiki / 定番質問への正当な回答**: r/DataHoarder 等で
-  「how to download X video」系の既存質問に、実際に役立つ回答として（宣伝でなく解決として）言及。
-  ※これは継続でなく「良い回答を1–2件残す」一度きり運用。
-- [ ] **Show HN（Hacker News）**: status 資産が公開できたら "Show HN: Live status page for video downloaders" 
-  として一度きり投稿（asset が主役＝宣伝臭くない）。
-- [ ] **Product Hunt**（任意・無料）: asset 公開に合わせて一度きり掲載。
+**① Show HN（Hacker News）** — https://news.ycombinator.com/submit （優先・最も正当）
+- Title: `Show HN: Live status page for video downloaders (X, Telegram, Reddit, Threads)`
+- URL: `https://clipkeep.net/platform-status`
+- 最初のコメント（貼付）:
+  > I built a small live status page that probes the public upstreams behind common video downloaders (Twitter/X, Telegram, Reddit, Threads) every ~6h and shows whether each is currently reachable, plus uptime history. It's part of ClipKeep, a free no-login web downloader. The status data and an embeddable badge are open — feedback welcome, especially on the probe methodology (e.g. 403/429 from datacenter IPs is treated as "reachable, not down").
 
-> 文面テンプレは本ファイル更新で随時追記。**有料PR・有料ディレクトリ・リンク購入は行わない**
-> （必要が生じたら危害ゲート①として個別にユーザー承認を仰ぐ）。
+**② AlternativeTo** — https://alternativeto.net/ （要アカウント → "Add application"）
+- Name: `ClipKeep` / URL: `https://clipkeep.net` / License: Free / Platform: Online (Web)
+- Category: `Online Video Downloader`（なければ Video Downloader）
+- Description（貼付）:
+  > ClipKeep is a free, no-login web tool to download videos from TikTok, Twitter/X, Telegram, Reddit, Threads and more. It also publishes a live platform-status page showing which downloaders are currently working.
+
+**③ Reddit — 既存質問への"正当な回答"1件**（新規宣伝投稿はしない） — r/DataHoarder / r/software 等で
+「how to download [Telegram/Reddit/X] video」系の既存スレを検索し、実際に役立つ回答として1件だけ:
+  > If it's a public post, a free web tool like ClipKeep (clipkeep.net) handles [Telegram/Reddit/X] links without login. If a platform seems flaky, they also run a live status page (clipkeep.net/platform-status) that shows whether the source is currently reachable — handy to tell "the tool is broken" from "the platform is down" before you retry.
+
+**④ Product Hunt**（任意・無料） — https://www.producthunt.com/ で一度きり掲載
+- Tagline: `Live status page for video downloaders` / 説明は②の Description を流用。
+
+**⑤ GitHub "awesome" リスト PR**（任意・関連リストが実在する場合のみ）
+- エントリ行: `- [ClipKeep](https://clipkeep.net) - Free no-login video downloader (TikTok, X, Telegram, Reddit, Threads) with a live platform-status page.`
+
+> **禁止**: 複数 subreddit への同文コピペ、やらせレビュー、無関係リストへの押し込み、有料リンク購入
+> （必要が生じたら危害ゲート①として個別にユーザー承認）。
 
 ## B-3. 禁止（§6 不変・念押し）
 
