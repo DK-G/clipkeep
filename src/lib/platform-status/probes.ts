@@ -29,6 +29,10 @@ interface ProbeTarget {
   platform: string;
   label: string;
   upstream: string;
+  candidates: ProbeCandidate[];
+}
+
+interface ProbeCandidate {
   url: string;
   method: 'GET' | 'HEAD';
   // Statuses that mean "reachable / healthy" (mirrors release gate ExpectedList).
@@ -36,41 +40,50 @@ interface ProbeTarget {
 }
 
 // Upstreams mirror scripts/prod_release_check.ps1 so status semantics match the
-// release gate exactly. 403/429 are accepted for Reddit/Threads because those
-// are the normal responses to datacenter IPs and do NOT mean the user-facing
-// downloader is broken (see methodology note on the page).
+// release gate exactly. 403/429 are accepted for Reddit/Threads because those are
+// the normal responses to datacenter IPs and do NOT mean the user-facing
+// downloader is broken (see methodology note on the page). TikTok has no single
+// official endpoint (it relies on third-party fixers with fallback), so it is
+// probed against multiple fixers and reported operational if ANY is reachable.
 const TARGETS: ProbeTarget[] = [
   {
     platform: 'twitter',
     label: 'Twitter / X',
     upstream: 'fxTwitter API',
-    url: 'https://api.fxtwitter.com/i/status/20',
-    method: 'GET',
-    operational: [200, 400, 404],
+    candidates: [{ url: 'https://api.fxtwitter.com/i/status/20', method: 'GET', operational: [200, 400, 404] }],
   },
   {
     platform: 'telegram',
     label: 'Telegram',
     upstream: 't.me embed',
-    url: 'https://t.me/durov/1?embed=1',
-    method: 'GET',
-    operational: [200, 301, 302, 307, 308, 400, 404],
+    candidates: [{ url: 'https://t.me/durov/1?embed=1', method: 'GET', operational: [200, 301, 302, 307, 308, 400, 404] }],
   },
   {
     platform: 'reddit',
     label: 'Reddit',
     upstream: 'reddit.com JSON',
-    url: 'https://www.reddit.com/r/popular/.json?limit=1',
-    method: 'GET',
-    operational: [200, 301, 302, 307, 308, 400, 401, 403, 404, 429],
+    candidates: [{ url: 'https://www.reddit.com/r/popular/.json?limit=1', method: 'GET', operational: [200, 301, 302, 307, 308, 400, 401, 403, 404, 429] }],
   },
   {
     platform: 'threads',
     label: 'Threads',
     upstream: 'threads.com',
-    url: 'https://www.threads.com/@zuck/post/CuPoFQ7L0r5',
-    method: 'GET',
-    operational: [200, 301, 302, 307, 308, 400, 401, 403, 404, 429],
+    candidates: [{ url: 'https://www.threads.com/@zuck/post/CuPoFQ7L0r5', method: 'GET', operational: [200, 301, 302, 307, 308, 400, 401, 403, 404, 429] }],
+  },
+  {
+    platform: 'bluesky',
+    label: 'Bluesky',
+    upstream: 'bsky public API',
+    candidates: [{ url: 'https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=bsky.app', method: 'GET', operational: [200, 400, 404] }],
+  },
+  {
+    platform: 'tiktok',
+    label: 'TikTok',
+    upstream: 'TikWM / Lovetik fixers',
+    candidates: [
+      { url: 'https://www.tikwm.com/', method: 'GET', operational: [200, 301, 302, 307, 308, 400, 403, 404] },
+      { url: 'https://lovetik.com/', method: 'GET', operational: [200, 301, 302, 307, 308, 400, 403, 404] },
+    ],
   },
 ];
 
@@ -78,41 +91,53 @@ const KV_KEY = 'platform-status:v1';
 const CACHE_TTL_SECONDS = 600; // 10 min
 const PROBE_TIMEOUT_MS = 6000;
 
-function classify(target: ProbeTarget, httpStatus: number): ProbeStatus {
-  if (target.operational.includes(httpStatus)) return 'operational';
+const STATUS_RANK: Record<ProbeStatus, number> = { operational: 3, limited: 2, down: 1 };
+
+function classify(candidate: ProbeCandidate, httpStatus: number): ProbeStatus {
+  if (candidate.operational.includes(httpStatus)) return 'operational';
   if (httpStatus >= 500) return 'down';
   return 'limited';
 }
 
-async function probeOne(target: ProbeTarget): Promise<ProbeResult> {
+interface CandidateOutcome {
+  status: ProbeStatus;
+  httpStatus: number | null;
+  latencyMs: number;
+}
+
+async function probeCandidate(candidate: ProbeCandidate): Promise<CandidateOutcome> {
   const started = Date.now();
   try {
-    const res = await fetchWithTimeout(target.url, {
-      method: target.method,
+    const res = await fetchWithTimeout(candidate.url, {
+      method: candidate.method,
       redirect: 'manual',
       cache: 'no-store',
       timeoutMs: PROBE_TIMEOUT_MS,
     });
-    const latencyMs = Date.now() - started;
-    return {
-      platform: target.platform,
-      label: target.label,
-      upstream: target.upstream,
-      status: classify(target, res.status),
-      httpStatus: res.status,
-      latencyMs,
-    };
+    return { status: classify(candidate, res.status), httpStatus: res.status, latencyMs: Date.now() - started };
   } catch {
     // Network error or timeout — treat as down.
-    return {
-      platform: target.platform,
-      label: target.label,
-      upstream: target.upstream,
-      status: 'down',
-      httpStatus: null,
-      latencyMs: Date.now() - started,
-    };
+    return { status: 'down', httpStatus: null, latencyMs: Date.now() - started };
   }
+}
+
+// Probe every candidate upstream and report the best outcome (operational beats
+// limited beats down): a platform with fixer fallback is "operational" when at
+// least one fixer is reachable.
+async function probeOne(target: ProbeTarget): Promise<ProbeResult> {
+  const outcomes = await Promise.all(target.candidates.map(probeCandidate));
+  let best = outcomes[0];
+  for (const o of outcomes) {
+    if (STATUS_RANK[o.status] > STATUS_RANK[best.status]) best = o;
+  }
+  return {
+    platform: target.platform,
+    label: target.label,
+    upstream: target.upstream,
+    status: best.status,
+    httpStatus: best.httpStatus,
+    latencyMs: best.latencyMs,
+  };
 }
 
 async function runProbes(): Promise<StatusSnapshot> {
@@ -252,5 +277,5 @@ export async function probeAndRecord(): Promise<StatusSnapshot> {
 
 /** Platforms ClipKeep supports but that do not yet have a live upstream probe. */
 export const ALSO_SUPPORTED = [
-  'TikTok', 'Pinterest', 'Facebook', 'Bluesky', 'Lemon8', 'Bilibili', 'Discord',
+  'Pinterest', 'Facebook', 'Bilibili', 'Discord', 'Lemon8',
 ];

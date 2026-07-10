@@ -155,8 +155,9 @@ export default async function PlatformStatusPage() {
             our servers and record the HTTP status and latency. <strong>Operational</strong> means the
             upstream is reachable and responding as expected. Note that some platforms (Reddit, Threads)
             routinely return 403/429 to datacenter IP addresses — that is expected and does not by itself
-            mean a real download will fail. This page reflects upstream reachability, not a guarantee for
-            any specific video.
+            mean a real download will fail. TikTok has no single official endpoint, so we check the
+            third-party fixers ClipKeep uses and mark it operational if any is reachable. This page
+            reflects upstream reachability, not a guarantee for any specific video.
           </p>
         </section>
 
