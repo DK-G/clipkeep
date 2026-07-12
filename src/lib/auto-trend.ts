@@ -42,7 +42,14 @@ function summarizeError(error: unknown): string {
 // `Unable to connect to existing session … Browser.getVersion timed out`）。既定が既に 180s のため
 // 「protocolTimeout 引き上げ」は逆効果（さらに長くハングするだけ）。よって各試行を短時間でバウンドして
 // 速やかに fail-fast し、新規 acquire で別セッションに張り直す（②）＋確保直後に生存確認（③）する。
-const LAUNCH_TIMEOUT_MS = 30_000;
+//
+// ── 起動タイムアウトの緩和 30s→60s（柱2, 2026-07-13）──
+// 上記 fail-fast で 180s ハング（protocolTimeout）は除去できたが、律速が
+// `browser_launch exceeded 30000ms`（3試行とも 30s 超過・非429・取得予算は空き）へ移行した
+// （2026-07-12 heartbeat `browserLaunched:false`／`launchAttempts:3`）。ハングは既に解消済みで
+// 429 でもなく予算も空いているため、真因はコールドローンチのレイテンシが 30s バウンドを超えていること。
+// もはや 30s の厳格化は過剰なので各試行のバウンドを 60s へ緩め、正常起動に十分な時間を与える。
+const LAUNCH_TIMEOUT_MS = 60_000;
 const LIVENESS_TIMEOUT_MS = 10_000;
 const MAX_LAUNCH_ATTEMPTS = 3;
 
