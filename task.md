@@ -4,17 +4,38 @@
 
 正本: `docs/strategy/growth-strategy.md`（北極星: Monetag タグロード数/日）
 
-> **2026-07-05 週次レビュー（#005）で並べ替え。計測は健全（SA化, `blocked:false`）＝律速は依然「発見/インデックス遅延」**:
-> `growth:review` 成功（GA4/GSC/URL Inspection 3系統 fresh, as of 2026-07-05）。本番健全
-> （health 200 / sitemap 508 / `?locale=`=0 / `/trend/`=0＝ゲート正常 / trending 200 / 未存在 slug 404）。
-> 実測 28d: ad_script_load=13（前回12）、セッション=3（前回1）、GSC impressions=**4（前回3・微増）**＝**いずれも母数1〜3でノイズ域**。
-> **最重要: URL Inspection「Google 未発見」= 72/100 で #004 から横ばい**＝06-28/29 の内部リンク path 形式統一の効果がサンプル上まだ出ていない（lag 窓内だが来週 #006 が判定週）。
-> 撤退基準: impressions 3→4 微増で**機械的に連続非成長カウントをリセット（=0）・非該当**。ただしノイズ域の微増で発見本質は未改善（要監視）。
-> **柱2**: 07-03 の 6h cron 化で 429 は直近窓（07-04 18:00Z）で解消＝**「全窓429」は反証**したが、失敗が **セッション再利用の protocolTimeout**（`Unable to connect to existing session … Browser.getVersion timed out`）へ移行し産出ゼロ継続。
-> よって先頭を「**柱2 セッション再利用 protocolTimeout の是正**」「**柱1 keyword-map 制作順の本文充足（indexable 在庫増）**」「**発見%の週次判定**」に再配置。
-> 詳細: `docs/ops/weekly_review_2026-07-05.md`。前回: `#004 2026-06-29`。
+> **2026-07-12 週次レビュー（#006）で並べ替え。A+B 転換（07-10）後の初回週次。計測は健全（SA化, fresh）**:
+> `growth:review` 成功（GA4/GSC/URL Inspection 3系統 fresh, as of 2026-07-12）。本番健全
+> （health 200 / sitemap 509 / `?locale=`=0 / `/trend/`=0＝ゲート正常 / **platform-status 200・sitemap 収録** / badge 200 / trending 200）。
+> 実測 28d: ad_script_load=**24**（前回13）、セッション=**9**（前回3）、GSC impressions=**4（前回4・横ばい）**、pos **33.5→54.3 悪化**＝**獲得はノイズ域で停滞**。
+> **最重要（良い兆候）: URL Inspection「Google 未発見」= 66/100（72→68→66 と2週連続改善）・indexed 27→33/100**＝06-28/29 内部リンク統一＋7/7〜7/10 多言語本文充足（tr-twitter/hi-telegram/id-tiktok）の効果 lag が**発見側に出始めた**。#005 の「72 横ばい」懸念は反転。
+> **律速が「発見」→「順位化＝権威」へ移行**（発見改善・impression 横ばい・順位悪化・参照ドメイン0）＝07-10 A+B 転換の前提を実測で追認。
+> 撤退基準: impressions 4→4 横ばい＝**非成長・連続=1**（8週母数未到達・非該当）。ただし「正しいレバー投入直後の被リンク lag 窓内」と区別すること。
+> **柱2**: 07-06 protocolTimeout 是正は機能（fail-fast・180sハング消失・`launchAttempts:3`）も、律速が **`browser_launch exceeded 30000ms`**（非429・予算空き＝コールドローンチ超過）へ移行し産出ゼロ継続。
+> よって先頭を「**柱2 起動タイムアウト 30s→60s 緩和**」「**柱1'/柱4' アセット被引用性の強化（本命・自律）**」「**発見%＋参照ドメイン数の週次判定**」に再配置。
+> 詳細: `docs/ops/weekly_review_2026-07-12.md`。前回: `#005 2026-07-05`。
 
-### 翌週 戦略バックログ（#005, 2026-07-05 並べ替え。日次ループはここの先頭から1件）
+### 翌週 戦略バックログ（#006, 2026-07-12 並べ替え。日次ループはここの先頭から1件）
+
+> **主軸は A+B（07-10 転換・実測で追認）**: 発見は改善したが順位化には**ドメイン権威・被リンク**が要る、と #006 実測が示した。
+> よって **templated stub 量産は停止のまま**、**Track A（linkable asset の被引用性強化）＋ Track B（ホワイトハット被リンク）** を主軸とする。
+> 正本: `docs/strategy/linkable-asset-plan.md` / `docs/strategy/authority-plan.md` / growth-strategy §4 柱1'・柱4'。
+
+| 優先 | タスク | 柱/種別 | 成功指標 |
+|---|---|---|---|
+| 1 | **柱2 起動タイムアウトの緩和（30s→60s）**（07-06 fail-fast で 180s ハングは除去済み＝`browser_launch exceeded 30000ms`／非429・予算空き＝コールドローンチ超過。各試行バウンドを 60s へ。無課金・可逆・自律） | 柱2/修復 | 次 cron 窓 heartbeat で `browserLaunched:true` or 別エラーへ前進（`exceeded` 消失） |
+| 2 | **柱1'/柱4' アセット被引用性の強化（本命・自律）**（uptime 履歴14日窓の充実／「今週落ちていた PF」要約の公開ページ化＝引用しやすい一次データ／OG 画像・`Dataset` 機械可読性向上）。冷たい登録は構造的に不可と実地確認済＝**資産の質で自然リンクを稼ぐ** | 柱1'・柱4'/資産・権威 | 被引用性を高める公開面を1つ追加・本番200／参照ドメイン数を週次追跡 |
+| 3 | **発見%＋参照ドメイン数の週次判定**（未発見比率＝今週66/100・2週連続改善の持続＋GSC リンクレポート参照ドメイン数＝今週0 の 0→数件を追う。A+B 効果の主先行指標） | 柱1/柱4'/測定 | 未発見%と参照ドメイン数を毎週記録・A+B 投入後の推移を判定 |
+| 4 | **柱1' Track A: プローブ・カバレッジ拡大**（Pinterest/Facebook/Bilibili 等を上流の正確性が担保できる範囲で追加＝資産の網羅性＝被引用性向上） | 柱1'/資産 | 対象PF追加・本番200・方法論注記整合 |
+| 5 | 柱1: downloader help リンク（sns/telegram/tiktok/twitter 4本）＋ extractor-form/result-client の status 連動 help リンクの `?locale=`→path 形式化（06-29 積み残し・発見の残掃除） | 柱1/発見 | 残る solution help リンクの path 形式化・本番200 |
+| 6 | 柱1: 新パス ja/pt/ar の indexed/impression 推移を週次記録し、Schema/canonical/内部リンクの効果を帰属・横展開判断（発見が始まったので順位化まで追う） | 柱1/測定 | indexed/impression 推移を週次記録・効いた施策を特定 |
+| 7 | **柱4' B-2（ユーザー一度きり・任意）: 7/17 に AlternativeTo 登録1回**（ClipKeep は掲載適合。文面は `docs/ops/outreach/2026-07-12.md` / authority-plan.md B-2）。※Show HN/awesome は不適合で見送り（07-10 実地） | 柱4'/権威 | 登録1回・被リンク発生（ユーザー実行分） |
+| 8 | 柱2: cron が実トピック捕捉時の `/trend/[slug]` populated-render 本番検証（P0-1〜P0-4 積み残し検証。優先1 の browser 起動修復が前提） | 柱2/検証 | 実トピックで index/sitemap 収録・本番200 確認 |
+| 9 | 健全性: HC-5 の yaml 2.0–2.8.2 moderate を非 `--force` の `npm audit fix` で semver 内修正（**要ユーザーの承認マーカー `（承認済み・消化可）`。未付与なら据え置き**） | 健全性 | 承認済みなら層B+ で1件消化・テスト green |
+
+> 上記が #006 の最新確定バックログ（9件・≥7 維持）。以下の「#005 並べ替え」ブロックは**履歴（アーカイブ）**。
+
+### 【履歴】翌週 戦略バックログ（#005, 2026-07-05 並べ替え）
 
 > **2026-07-10 戦略転換（ユーザー承認 A+B）**: 立ち上がらない真因は crawl budget でなく**ドメイン権威・
 > 被リンクの欠如**と調査で確定（daily 2026-07-10）。よって **templated stub 量産（旧・優先2）を停止**し、
