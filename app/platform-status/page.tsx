@@ -9,6 +9,12 @@ import {
   ALSO_SUPPORTED,
   type ProbeStatus,
 } from '@/lib/platform-status/probes';
+import {
+  buildStatusExport,
+  buildDatasetJsonLd,
+  statusTemporalCoverage,
+  STATUS_DATA_URL,
+} from '@/lib/platform-status/export';
 
 // Live probes run per request (cached in KV ~10 min inside getPlatformStatuses).
 export const dynamic = 'force-dynamic';
@@ -70,18 +76,13 @@ export default async function PlatformStatusPage() {
   const checkedAt = new Date(snapshot.checkedAt);
   const checkedAtLabel = Number.isNaN(checkedAt.getTime()) ? 'unknown' : checkedAt.toUTCString();
 
-  const datasetJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Dataset',
-    name: 'ClipKeep Video Platform Download Status',
-    description: DESCRIPTION,
-    url: CANONICAL,
-    creator: { '@type': 'Organization', name: 'ClipKeep', url: SITE_URL },
-    license: 'https://creativecommons.org/licenses/by/4.0/',
-    isAccessibleForFree: true,
-    dateModified: snapshot.checkedAt,
-    variableMeasured: snapshot.results.map((r) => `${r.label} availability`),
-  };
+  // One builder feeds the human page, the JSON distribution, and this JSON-LD so
+  // Google Dataset Search harvests exactly what /api/v1/platform-status serves.
+  const statusExport = buildStatusExport(snapshot, history);
+  const datasetJsonLd = buildDatasetJsonLd(
+    statusExport,
+    statusTemporalCoverage(history, snapshot.checkedAt),
+  );
 
   const embedHtml = `<a href="${CANONICAL}"><img src="${BADGE_URL}" alt="ClipKeep download status" /></a>`;
   const embedMarkdown = `[![ClipKeep download status](${BADGE_URL})](${CANONICAL})`;
@@ -171,6 +172,11 @@ export default async function PlatformStatusPage() {
           </p>
           <pre className="mt-3 overflow-x-auto rounded-md border p-3 text-xs"><code>{embedHtml}</code></pre>
           <pre className="mt-2 overflow-x-auto rounded-md border p-3 text-xs"><code>{embedMarkdown}</code></pre>
+          <p className="mt-4 text-sm opacity-70">
+            Prefer raw data? This status is published as free, open JSON (CC BY 4.0) you can fetch
+            and cite:{' '}
+            <a href={STATUS_DATA_URL} className="text-blue-600 hover:underline">/api/v1/platform-status</a>.
+          </p>
         </section>
 
         {/* Internal links */}
