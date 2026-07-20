@@ -2,7 +2,7 @@
 
 ## 1. Deploy Worker
 ```powershell
-cd C:\dev\portfolio\web\clipkeep
+cd D:\dev\repos\clipkeep
 npx wrangler deploy -c wrangler.rate-limit.toml
 ```
 

@@ -10,7 +10,7 @@
 - Test worker config: `wrangler.test.toml`
 
 ## 1. Preconditions
-- Repository: `C:\dev\portfolio\web\clipkeep`
+- Repository: `D:\dev\repos\clipkeep`
 - Cloudflare account and Wrangler login are ready
 - Production domain is already connected
 - D1 database `clipkeep-db` exists
@@ -38,7 +38,7 @@ npx wrangler secret put <KEY>
 
 ## 4. Production Migration
 ```powershell
-cd C:\dev\portfolio\web\clipkeep
+cd D:\dev\repos\clipkeep
 npm run d1:migrate:remote
 ```
 
@@ -79,7 +79,7 @@ npm run deploy:test
 3. Update status page if user-facing degradation exists
 
 ## References
-- [docs/infra/deployment_profiles.md](C:\dev\portfolio\web\clipkeep\docs\infra\deployment_profiles.md)
-- [docs/ops/release_flow.md](C:\dev\portfolio\web\clipkeep\docs\ops\release_flow.md)
-- [docs/infra/d1_migration.md](C:\dev\portfolio\web\clipkeep\docs\infra\d1_migration.md)
-- [docs/infra/rate_limit_do_setup.md](C:\dev\portfolio\web\clipkeep\docs\infra\rate_limit_do_setup.md)
+- [docs/infra/deployment_profiles.md](D:\dev\repos\clipkeep\docs\infra\deployment_profiles.md)
+- [docs/ops/release_flow.md](D:\dev\repos\clipkeep\docs\ops\release_flow.md)
+- [docs/infra/d1_migration.md](D:\dev\repos\clipkeep\docs\infra\d1_migration.md)
+- [docs/infra/rate_limit_do_setup.md](D:\dev\repos\clipkeep\docs\infra\rate_limit_do_setup.md)

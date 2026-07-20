@@ -54,7 +54,7 @@ npm run analytics:ga4:login
 Use this prompt for the daily review thread:
 
 ```text
-Run the ClipKeep growth review loop in C:\dev\portfolio\web\clipkeep.
+Run the ClipKeep growth review loop in D:\dev\repos\clipkeep.
 First read C:\Users\52hae\.codex\automations\clipkeep-daily-growth-proposal-loop\memory.md if present.
 Refresh analytics with `node scripts/run-growth-review.mjs`.
 Review latest GA4 summary, pages, events, realtime events, acquisition, and growth history snapshots.
@@ -101,5 +101,5 @@ Variables:
 
 ```env
 GA4_PROPERTY_ID=528376605
-GOOGLE_APPLICATION_CREDENTIALS=C:\dev\portfolio\web\clipkeep\.secrets\ga4-service-account.json
+GOOGLE_APPLICATION_CREDENTIALS=D:\dev\repos\clipkeep\.secrets\ga4-service-account.json
 ```

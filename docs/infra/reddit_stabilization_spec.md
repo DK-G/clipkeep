@@ -16,7 +16,7 @@ Reddit 対応は Telegram のような大規模分離ではなく、現行ロジ
 
 ## 2. Current Path
 
-現行コード: [reddit.ts](C:\dev\portfolio\web\clipkeep\src\lib\extract\reddit.ts)
+現行コード: [reddit.ts](D:\dev\repos\clipkeep\src\lib\extract\reddit.ts)
 
 現在の抽出順:
 

@@ -16,7 +16,7 @@ Discord は一般公開メッセージの取得制約が強いため、安定化
 
 ## 2. Current Path
 
-現行コード: [discord.ts](C:\dev\portfolio\web\clipkeep\src\lib\extract\discord.ts)
+現行コード: [discord.ts](D:\dev\repos\clipkeep\src\lib\extract\discord.ts)
 
 現在の抽出:
 

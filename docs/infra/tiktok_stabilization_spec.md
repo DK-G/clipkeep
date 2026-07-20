@@ -16,7 +16,7 @@ TikTok は現行で外部 fixer / API 依存が強く、安定化の中心は抽
 
 ## 2. Current Path
 
-現行コード: [tiktok.ts](C:\dev\portfolio\web\clipkeep\src\lib\extract\tiktok.ts)
+現行コード: [tiktok.ts](D:\dev\repos\clipkeep\src\lib\extract\tiktok.ts)
 
 現在の抽出:
 

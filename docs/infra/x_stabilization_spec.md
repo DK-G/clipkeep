@@ -33,7 +33,7 @@ X は Telegram のように別 extractor へ大きく分離しない。
 
 ## 3. Current Extraction Path
 
-現行コード: [twitter.ts](C:\dev\portfolio\web\clipkeep\src\lib\extract\twitter.ts)
+現行コード: [twitter.ts](D:\dev\repos\clipkeep\src\lib\extract\twitter.ts)
 
 現在の抽出順:
 

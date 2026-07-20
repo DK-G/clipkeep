@@ -16,7 +16,7 @@ Bluesky は現行の抽出ロジックが軽く、全面改修よりも安定化
 
 ## 2. Current Path
 
-現行コード: [bluesky.ts](C:\dev\portfolio\web\clipkeep\src\lib\extract\bluesky.ts)
+現行コード: [bluesky.ts](D:\dev\repos\clipkeep\src\lib\extract\bluesky.ts)
 
 現在の抽出:
 

@@ -13,6 +13,6 @@
 - The old document assumed manual external steps that no longer match the current deploy model.
 
 ## Replacement
-- [docs/infra/deployment_profiles.md](C:\dev\portfolio\web\clipkeep\docs\infra\deployment_profiles.md)
-- [docs/infra/cloudflare_production_setup.md](C:\dev\portfolio\web\clipkeep\docs\infra\cloudflare_production_setup.md)
-- [docs/ops/release_flow.md](C:\dev\portfolio\web\clipkeep\docs\ops\release_flow.md)
+- [docs/infra/deployment_profiles.md](D:\dev\repos\clipkeep\docs\infra\deployment_profiles.md)
+- [docs/infra/cloudflare_production_setup.md](D:\dev\repos\clipkeep\docs\infra\cloudflare_production_setup.md)
+- [docs/ops/release_flow.md](D:\dev\repos\clipkeep\docs\ops\release_flow.md)
