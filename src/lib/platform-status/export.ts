@@ -22,7 +22,8 @@ export const PROBE_CADENCE_HOURS = 6;
 export const STATUS_DATASET_NAME = 'ClipKeep Video Platform Download Status';
 export const STATUS_DATASET_DESCRIPTION =
   'Server-side availability probes for the video platforms ClipKeep downloads from ' +
-  '(Twitter/X, Telegram, Reddit, Threads, Bluesky, TikTok). Each platform is probed against ' +
+  '(Twitter/X, Telegram, Reddit, Threads, Bluesky, TikTok, Pinterest, Facebook, Bilibili). ' +
+  'Each platform is probed against ' +
   'the same public upstream endpoint its extractor depends on and classified with the same ' +
   'accepted-status sets as ClipKeep’s release gate. Refreshed every ~10 minutes; rolling ' +
   'uptime is sampled every ~6 hours. Free, open data (CC BY 4.0) — cite or embed it.';
@@ -31,7 +32,9 @@ export const STATUS_METHODOLOGY =
   'and latency recorded. "operational" = upstream reachable and responding as expected (using ' +
   'the release gate’s accepted-status sets; 403/429 to datacenter IPs are expected for ' +
   'Reddit/Threads and count as reachable). TikTok is probed against the third-party fixers it ' +
-  'uses and is operational if any is reachable. Reflects upstream reachability, not a guarantee ' +
+  'uses and is operational if any is reachable. For Pinterest, Facebook and Bilibili the opposite ' +
+  'holds: an anti-bot block, login wall or 412 rate-limit does break extraction there, so those ' +
+  'responses are reported as "limited". Reflects upstream reachability, not a guarantee ' +
   'for any specific video.';
 
 export interface PlatformExport {

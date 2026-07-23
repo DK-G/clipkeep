@@ -24,7 +24,7 @@ const CANONICAL = `${SITE_URL}${PATH}`;
 const BADGE_URL = `${SITE_URL}${PATH}/badge`;
 const TITLE = 'ClipKeep Download Status — Live Platform Availability';
 const DESCRIPTION =
-  'Live availability of the video platforms ClipKeep can download from — Twitter/X, Telegram, Reddit, and Threads — probed from our servers and refreshed every ~10 minutes. Free, open data you can cite or embed.';
+  'Live availability of the video platforms ClipKeep can download from — Twitter/X, Telegram, Reddit, Threads, Bluesky, TikTok, Pinterest, Facebook and Bilibili — probed from our servers and refreshed every ~10 minutes. Free, open data you can cite or embed.';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -157,7 +157,10 @@ export default async function PlatformStatusPage() {
             upstream is reachable and responding as expected. Note that some platforms (Reddit, Threads)
             routinely return 403/429 to datacenter IP addresses — that is expected and does not by itself
             mean a real download will fail. TikTok has no single official endpoint, so we check the
-            third-party fixers ClipKeep uses and mark it operational if any is reachable. This page
+            third-party fixers ClipKeep uses and mark it operational if any is reachable. For
+            Pinterest, Facebook and Bilibili the opposite rule applies: an anti-bot block, a login
+            wall or a 412 rate-limit genuinely breaks extraction there, so we report those as
+            <strong> limited</strong> rather than operational. This page
             reflects upstream reachability, not a guarantee for any specific video.
           </p>
         </section>

@@ -37,7 +37,21 @@ interface ProbeCandidate {
   method: 'GET' | 'HEAD';
   // Statuses that mean "reachable / healthy" (mirrors release gate ExpectedList).
   operational: number[];
+  // Sent verbatim so the probe sees what the extractor sees: Pinterest needs its
+  // PWS handler header, Bilibili's API 412s without a browser UA + Referer.
+  headers?: Record<string, string>;
 }
+
+// Same browser UA the extractors send; several upstreams answer differently
+// (or not at all) to a default fetch agent.
+const BROWSER_UA =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
+// Pinterest's PinResource API answers `id=1` with a well-formed "Pin not found"
+// (HTTP 404) — a healthy endpoint without depending on any real pin surviving.
+const PINTEREST_RESOURCE_URL =
+  'https://www.pinterest.com/resource/PinResource/get/?data=' +
+  encodeURIComponent(JSON.stringify({ options: { field_set_key: 'unauth_react_main_pin', id: '1' } }));
 
 // Upstreams mirror scripts/prod_release_check.ps1 so status semantics match the
 // release gate exactly. 403/429 are accepted for Reddit/Threads because those are
@@ -45,6 +59,10 @@ interface ProbeCandidate {
 // downloader is broken (see methodology note on the page). TikTok has no single
 // official endpoint (it relies on third-party fixers with fallback), so it is
 // probed against multiple fixers and reported operational if ANY is reachable.
+//
+// Pinterest/Facebook/Bilibili deliberately do NOT accept 401/403/429: for those
+// extractors an anti-bot block, a login wall or 412 風控 is exactly the failure
+// that breaks a real download, so it must surface as "limited", not operational.
 const TARGETS: ProbeTarget[] = [
   {
     platform: 'twitter',
@@ -85,6 +103,49 @@ const TARGETS: ProbeTarget[] = [
       { url: 'https://lovetik.com/', method: 'GET', operational: [200, 301, 302, 307, 308, 400, 403, 404] },
     ],
   },
+  {
+    platform: 'pinterest',
+    label: 'Pinterest',
+    upstream: 'pinterest.com PinResource API',
+    candidates: [
+      {
+        url: PINTEREST_RESOURCE_URL,
+        method: 'GET',
+        operational: [200, 400, 404],
+        headers: {
+          'X-Pinterest-PWS-Handler': 'www/signup.js',
+          Accept: 'application/json',
+          'User-Agent': BROWSER_UA,
+        },
+      },
+    ],
+  },
+  {
+    platform: 'facebook',
+    label: 'Facebook',
+    upstream: 'facebook.com watch page',
+    candidates: [
+      {
+        url: 'https://www.facebook.com/watch/',
+        method: 'GET',
+        operational: [200],
+        headers: { 'User-Agent': BROWSER_UA },
+      },
+    ],
+  },
+  {
+    platform: 'bilibili',
+    label: 'Bilibili',
+    upstream: 'api.bilibili.com view API',
+    candidates: [
+      {
+        url: 'https://api.bilibili.com/x/web-interface/view?bvid=BV1xx411c7mD',
+        method: 'GET',
+        operational: [200],
+        headers: { 'User-Agent': BROWSER_UA, Referer: 'https://www.bilibili.com/' },
+      },
+    ],
+  },
 ];
 
 const KV_KEY = 'platform-status:v1';
@@ -113,6 +174,7 @@ async function probeCandidate(candidate: ProbeCandidate): Promise<CandidateOutco
       redirect: 'manual',
       cache: 'no-store',
       timeoutMs: PROBE_TIMEOUT_MS,
+      ...(candidate.headers ? { headers: candidate.headers } : {}),
     });
     return { status: classify(candidate, res.status), httpStatus: res.status, latencyMs: Date.now() - started };
   } catch {
@@ -275,7 +337,12 @@ export async function probeAndRecord(): Promise<StatusSnapshot> {
   return snapshot;
 }
 
-/** Platforms ClipKeep supports but that do not yet have a live upstream probe. */
-export const ALSO_SUPPORTED = [
-  'Pinterest', 'Facebook', 'Bilibili', 'Discord', 'Lemon8',
-];
+/**
+ * Platforms ClipKeep supports but that do not yet have a live upstream probe.
+ * Discord and Lemon8 resolve per-post CDN/app URLs with no single stable public
+ * endpoint that a synthetic probe could represent honestly.
+ */
+export const ALSO_SUPPORTED = ['Discord', 'Lemon8'];
+
+/** Platforms with a live probe (stable order — used by tests and docs). */
+export const PROBED_PLATFORMS = TARGETS.map((t) => t.platform);
