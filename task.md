@@ -1,19 +1,22 @@
+<!-- CURRENT-START / ここだけを常に最新に保つ。ここより下は履歴で、読むのは必要時のみ。 -->
+## 現在地（2026-07-24）
+- フェーズ: **リリース済み・グロース**（北極星 = Monetag タグロード数/日）。**主軸は A+B**（07-10 転換）＝templated stub 量産は停止のまま、Track A（linkable asset の被引用性）＋ Track B（ホワイトハット被リンク）。7/15〜7/23 の**9日間はスケジュールタスク登録の消失で日次ループが未発火**（7/23 再登録済・本リポ起因ではない）。
+- 進行中: 07-24 実測 28d = ad_script_load **85**（前回24）／セッション **32**（9）／impressions **5**（4）／clicks 0／平均順位 **37.0**（54.3 から改善）／indexed 34／**未発見 65/100**（72→68→66→65 と改善継続だが鈍化）。判定＝**発見の改善は続くが律速は順位化＝権威**。撤退基準は微増につき**連続カウント 0 にリセット**。※ad_script_load とセッションの急増は impressions 5 と整合せず**検索流入起因ではない**（流入元内訳を次回確認）。
+- 次の一手（バックログ先頭から1日1件）:
+  1. **【最優先】柱1/修復: fxTwitter 401 の切り分けと X 抽出経路の是正** — 本番 `/api/v1/platform-status` で twitter が **56/56 サンプル `http=401`・uptime 0%（約14日）**。ローカル residential IP からは 200 ＝ **fxTwitter が Cloudflare Workers の egress を弾いている**疑い。`src/lib/extract/twitter.ts:187` が同条件で叩いており**主力 X の抽出が本番で恒常劣化している可能性**。
+  2. 柱1' Track A のプローブ拡大（Pinterest/Facebook/Bilibili・6→9 PF）を**デプロイして閉じる**（コードは main 済み `3bd3cb6`）。
+  3. 柱4' 測定: badge の外部 Referer 集計＝被リンク代理指標の自前化（KV 集計で設計）。
+- ★ブロッカー/外部待ち: ①**wrangler が未ログイン**（OAuth が 7/14 以降の未発火9日で失効）＝`npm run deploy:prod` 実行不可。**ユーザーが `npx wrangler login` を1回**実行すれば `npm run deploy:prod && npm run check:release:prod` で閉じる。②**参照ドメイン数は Search Console API に links エンドポイントが無く自動取得不能と確定**（→代理指標へ切替＝上記3）。③柱2 の起動タイムアウトは 30s→60s 緩和済（07-13）だが **429 Rate limit 側には効かない**。次窓で 429 が支配的なら Browser Rendering の有料切替＝**要ユーザー承認**の分岐。
+- 直近の重い判断: **★プロセス上の教訓（07-24）** — 自前の linkable asset（status データ）が異常を14日間出し続けていたのに運用の入力に使えていなかった。**日次ループの健全性チェックに `/api/v1/platform-status` の per-PF uptime 確認を含める**（本日から実施）。
+<!-- CURRENT-END -->
+
 # 作業タスクリスト: ClipKeep
 
 ## 戦略バックログ（日次ループはここの先頭から1件選ぶ。優先順位は週次レビューが管理）
 
 正本: `docs/strategy/growth-strategy.md`（北極星: Monetag タグロード数/日）
+週次レビュー #006（2026-07-12）の記録は本ファイル下方の「週次レビューの記録」節、詳細は [`docs/ops/weekly_review_2026-07-12.md`](docs/ops/weekly_review_2026-07-12.md)。
 
-> **2026-07-12 週次レビュー（#006）で並べ替え。A+B 転換（07-10）後の初回週次。計測は健全（SA化, fresh）**:
-> `growth:review` 成功（GA4/GSC/URL Inspection 3系統 fresh, as of 2026-07-12）。本番健全
-> （health 200 / sitemap 509 / `?locale=`=0 / `/trend/`=0＝ゲート正常 / **platform-status 200・sitemap 収録** / badge 200 / trending 200）。
-> 実測 28d: ad_script_load=**24**（前回13）、セッション=**9**（前回3）、GSC impressions=**4（前回4・横ばい）**、pos **33.5→54.3 悪化**＝**獲得はノイズ域で停滞**。
-> **最重要（良い兆候）: URL Inspection「Google 未発見」= 66/100（72→68→66 と2週連続改善）・indexed 27→33/100**＝06-28/29 内部リンク統一＋7/7〜7/10 多言語本文充足（tr-twitter/hi-telegram/id-tiktok）の効果 lag が**発見側に出始めた**。#005 の「72 横ばい」懸念は反転。
-> **律速が「発見」→「順位化＝権威」へ移行**（発見改善・impression 横ばい・順位悪化・参照ドメイン0）＝07-10 A+B 転換の前提を実測で追認。
-> 撤退基準: impressions 4→4 横ばい＝**非成長・連続=1**（8週母数未到達・非該当）。ただし「正しいレバー投入直後の被リンク lag 窓内」と区別すること。
-> **柱2**: 07-06 protocolTimeout 是正は機能（fail-fast・180sハング消失・`launchAttempts:3`）も、律速が **`browser_launch exceeded 30000ms`**（非429・予算空き＝コールドローンチ超過）へ移行し産出ゼロ継続。
-> よって先頭を「**柱2 起動タイムアウト 30s→60s 緩和**」「**柱1'/柱4' アセット被引用性の強化（本命・自律）**」「**発見%＋参照ドメイン数の週次判定**」に再配置。
-> 詳細: `docs/ops/weekly_review_2026-07-12.md`。前回: `#005 2026-07-05`。
 
 ### 翌週 戦略バックログ（#006, 2026-07-12 並べ替え。日次ループはここの先頭から1件）
 
@@ -74,6 +77,21 @@
     - [x] hreflangタグの実装（`/ja/`, `/pt/`, `/ar/` URLパス対応）
     - [x] Sitemap の hreflang alternates 追加
     - [x] Schema.org（FAQ/HowTo）の多言語実装 ← 完了（2026-06-20, ver `0b329ec7`、本番確認済み。breadcrumb 全10ロケール化＋FAQPage を section 別 Q&A 化）
+
+## 週次レビューの記録
+
+> 先頭を占有していたため CURRENT ブロック導入時（2026-07-25）にここへ移した。**内容は当時のまま・削除していない**。詳細は [`docs/ops/weekly_review_2026-07-12.md`](docs/ops/weekly_review_2026-07-12.md)、前回は `#005 2026-07-05`。
+
+> **2026-07-12 週次レビュー（#006）で並べ替え。A+B 転換（07-10）後の初回週次。計測は健全（SA化, fresh）**:
+> `growth:review` 成功（GA4/GSC/URL Inspection 3系統 fresh, as of 2026-07-12）。本番健全
+> （health 200 / sitemap 509 / `?locale=`=0 / `/trend/`=0＝ゲート正常 / **platform-status 200・sitemap 収録** / badge 200 / trending 200）。
+> 実測 28d: ad_script_load=**24**（前回13）、セッション=**9**（前回3）、GSC impressions=**4（前回4・横ばい）**、pos **33.5→54.3 悪化**＝**獲得はノイズ域で停滞**。
+> **最重要（良い兆候）: URL Inspection「Google 未発見」= 66/100（72→68→66 と2週連続改善）・indexed 27→33/100**＝06-28/29 内部リンク統一＋7/7〜7/10 多言語本文充足（tr-twitter/hi-telegram/id-tiktok）の効果 lag が**発見側に出始めた**。#005 の「72 横ばい」懸念は反転。
+> **律速が「発見」→「順位化＝権威」へ移行**（発見改善・impression 横ばい・順位悪化・参照ドメイン0）＝07-10 A+B 転換の前提を実測で追認。
+> 撤退基準: impressions 4→4 横ばい＝**非成長・連続=1**（8週母数未到達・非該当）。ただし「正しいレバー投入直後の被リンク lag 窓内」と区別すること。
+> **柱2**: 07-06 protocolTimeout 是正は機能（fail-fast・180sハング消失・`launchAttempts:3`）も、律速が **`browser_launch exceeded 30000ms`**（非429・予算空き＝コールドローンチ超過）へ移行し産出ゼロ継続。
+> よって先頭を「**柱2 起動タイムアウト 30s→60s 緩和**」「**柱1'/柱4' アセット被引用性の強化（本命・自律）**」「**発見%＋参照ドメイン数の週次判定**」に再配置。
+> 詳細: `docs/ops/weekly_review_2026-07-12.md`。前回: `#005 2026-07-05`。
 
 ## 完了 (Done) / 更新メモ
 
