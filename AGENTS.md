@@ -81,7 +81,8 @@ Read it before picking any growth task. While below these thresholds:
 ## Project-Specific Notes
 
 - Main stack: Next.js App Router, React 19, TypeScript, OpenNext for Cloudflare, Cloudflare D1, Durable Object rate limiting, Worker Cron.
-- Main commands: `npm run dev`, `npm run build`, `npm run typecheck`, `npm run cf:build`, `npm run check:release:test`, `npm run check:release:prod`, `npm run growth:review`.
+- Main commands: `npm run dev`, `npm run build`, `npm run typecheck`, `npm run cf:build`, `npm run check:loop`, `npm run check:release:test`, `npm run check:release:prod`, `npm run growth:review`.
+- Start every daily loop with `npm run check:loop` (deploy-path auth + prod health + sitemap + per-platform upstream uptime). It exits non-zero on a blocker; a blocker means the day's outcome is `status: blocked`, not "implemented but undeployed".
 - Deployment target: Cloudflare Workers. Test deploy uses `wrangler.test.toml`; production deploy uses `wrangler.production.toml`.
 - Important constraints: keep multilingual support for `en/ja/ar/es/pt/fr/id/hi/de/tr`; preserve API contracts under `docs/api/`; do not change D1 schema or Cloudflare bindings without updating migrations and release checks; keep legal pages reachable (user trust — AdSense review is no longer pursued per `docs/strategy/growth-strategy.md`, monetization is Monetag only).
 - Known risks: OpenNext build/deploy settings are sensitive; rate-limit thresholds affect extraction UX; analytics exports in `docs/analytics/` are review inputs, not automatic product decisions; `.env`, `.env.local`, `.secrets`, `.wrangler`, `.next`, and `.open-next` must remain local artifacts.

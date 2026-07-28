@@ -22,6 +22,7 @@
         "analytics:ga4": "node scripts/fetch-ga4-report.mjs",
         "analytics:gsc": "node scripts/fetch-gsc-report.mjs",
         "analytics:gsc:coverage": "node scripts/fetch-gsc-index-coverage.mjs",
+        "check:loop": "node scripts/loop-health-check.mjs",
         "growth:review": "node scripts/run-growth-review.mjs",
         "growth": "npm run growth:review",
         "trend:topic": "node scripts/trend-remove-topic.mjs",

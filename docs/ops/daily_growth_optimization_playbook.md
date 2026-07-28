@@ -1,6 +1,6 @@
 # Daily Growth Optimization Playbook
 
-Last updated: 2026-06-12
+Last updated: 2026-07-28（Health Check に `npm run check:loop` を導入）
 
 ## Launch-Phase Gate (READ FIRST — overrides the rest of this playbook)
 
@@ -126,7 +126,33 @@ Target time: 15-25 minutes.
 
 ### 1. Health Check
 
-Confirm:
+Run this BEFORE picking the day's task:
+
+```bash
+npm run check:loop
+```
+
+It checks four things and exits non-zero on a blocker (see
+`scripts/loop-health-check.mjs`). Paste its markdown block into the daily log.
+
+| # | Check | Failing means | Action |
+|---|---|---|---|
+| 1 | `npx wrangler whoami` — deploy path is authenticated | Nothing can reach production, whatever you implement | **Stop.** Record `status: blocked` and surface the one-time `npx wrangler login` to the user on the day it is detected |
+| 2 | `/api/v1/health` returns 200 | Production is down | Replace the day's task with repair work |
+| 3 | `/sitemap.xml` returns 200 with a plausible `<loc>` count | Discovery is broken at the source | Replace the day's task with repair work |
+| 4 | `/api/v1/platform-status` per-platform status + rolling uptime | An extractor's upstream is failing in production | If it persists across days, promote it to the backlog — do not let it age |
+
+Checks 1 and 4 were added 2026-07-28 after both failed silently for weeks:
+
+- The wrangler OAuth session is only refreshed **by the loop running**. When the
+  loop stopped for 9 days (2026-07-15..23) the credentials lapsed, and the
+  resulting deploy outage went unnoticed for another 14 days — every commit in
+  that window sat on `main`, undeployed.
+- `/api/v1/platform-status` is our own published dataset. It reported Twitter/X
+  at 0% uptime for ~14 days before anyone read it. Publishing an asset and not
+  wiring it back into operations wastes the asset.
+
+Also confirm, from the analytics pack:
 
 - GA4 realtime shows current activity or recent activity
 - no major drop to zero page views
@@ -135,6 +161,8 @@ Confirm:
 
 Decision:
 
+- If `npm run check:loop` reports a BLOCKER, the day's outcome is `status: blocked`.
+  Do not implement a task that cannot be deployed and call it done.
 - If traffic is normal, continue to growth checks.
 - If traffic is zero or errors spike, stop growth work and investigate release, GA tag, extractor health, or Cloudflare status.
 
@@ -392,6 +420,17 @@ Create a dated note only when a change is made. Use `docs/ops/daily/YYYY-MM-DD.m
 
 ```md
 # Daily Growth Log: YYYY-MM-DD
+
+status: done | blocked（blocked のときは理由と復旧手順を必ず書く）
+
+## 0. Health Check (`npm run check:loop`)
+
+| 対象 | 結果 |
+|---|---|
+| `npx wrangler whoami`（デプロイ経路） | 認証済 / 未ログイン＝デプロイ不能 |
+| `/api/v1/health` | 200 |
+| `/sitemap.xml` | 200（`<loc>` = N） |
+| `/api/v1/platform-status` | N platforms・劣化 M 件 |
 
 ## Data Window
 - GA4 period:
