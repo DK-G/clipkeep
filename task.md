@@ -1,4 +1,21 @@
 <!-- CURRENT-START / ここだけを常に最新に保つ。ここより下は履歴で、読むのは必要時のみ。 -->
+## 現在地（2026-08-02 週次レビュー #008 反映）
+
+- フェーズ: **リリース済み・グロース**（北極星 = Monetag タグロード数/日）。**主軸は A+B**（07-10 転換）＝templated stub 量産は停止のまま、Track A（linkable asset の被引用性）＋ Track B（ホワイトハット被リンク）。
+- 実測 28d（as of 2026-08-02）: ad_script_load **237**（#007 119）／セッション **65**（36）／エンゲージメント率 **55.4%**（72.2%）／impressions **7**（5, query次元）／**33**（page次元・新規）／clicks 0／indexed **36/100**（36）／**未発見 63/100（63→63）**。
+- ★**#008 の発見1: 発見（インデックス）の改善が完全に停止**。未発見% は 72→68→66→65→63→**63** で、改善幅 −6→−2→−1→−2→**0**。sitemap 501 が 3 週間不変＝**Google に渡す新規 URL がゼロ**なので必然。**「発見」はもう伸ばせるレバーではない**。
+- ★**#008 の発見2（計測の穴）: 従来の impressions 系列は GSC 匿名化で実測の約 1/4.7 しか捉えていなかった**。query×page×country×device 次元 = **7** に対し、同じ 28日窓の **page 次元 = 33**。**撤退基準がノイズ駆動になっている**（→ 優先1 で是正）。
+- ★**#008 の発見3: page 次元で見ると pt だけが順位化している**。en 19 / **pt 7（うち 6 件が pos 2〜7）** / ja 4 / es 2 / hi 1、**ar は 0**。柱1「ja/pt/ar 優先」は実測に支持されていない（ただし各行1〜2 impr のノイズ域＝#009 で 2 週分を確認して確定）。
+- ★**Google オーガニックセッション 0（2週連続）・Direct 91%（121/133）**。セッション倍増と同時にエンゲージメント率が 16.8pp 低下＝**非人間トラフィック説を補強**。`ad_script_load` 237 を成果と読まないこと（#007 提案1 の運用継続）。
+- ★**ブロッカー（3週連続・最大）: wrangler 未ログインでデプロイが 19 日間 断絶**。`3bd3cb6`（6→9 PF）は push 済み・**本番未反映 9 日目**。本週の出荷は **0 件**（コミット3件は全て本番面なし）。
+- ★twitter 401 は **直近14日のプローブ 56/56 すべて失敗**（uptime ローリング窓 = `HISTORY_MAX 56` × 6h = 14日／`src/lib/platform-status/probes.ts:267`）。プローブ自体は正常稼働（`checkedAt` fresh）。
+- 次の一手（バックログ先頭から1日1件・**優先1/3/7 はデプロイ不要**なので断絶中でも消化できる）:
+  1. **【ユーザー操作】`npx wrangler login`＋KV namespace 作成**（Cloudflare 作業をまとめて1回）→ `3bd3cb6` 出荷。
+  2. **優先1: page 次元 impressions の計測実装**（`scripts/growth-summary.mjs` のみ・デプロイ不要・新規API呼び出しゼロ）。
+  3. **優先2: `twitter.ts:186-215` の 401 明示分類**（実装・テスト・push はデプロイ非依存で先行可）。
+- ★ユーザー判断待ち（1週間 未回答）: **柱2 を凍結してよいか**（#007 提案2 (b)・#008 提案3 で再提示。60s 緩和は本番20日・約80 cron 窓で `/trend/` 産出ゼロ）。
+- 詳細: [`docs/ops/weekly_review_2026-08-02.md`](docs/ops/weekly_review_2026-08-02.md)
+
 ## 現在地（2026-07-30 日次ループ反映 ／ 週次レビュー #007 ベース）
 
 > **2026-07-30 日次ループ**: `npm run check:loop` が **BLOCKER（wrangler 未ログイン・16日目）** で exit 1 →
@@ -43,7 +60,41 @@
 週次レビュー #007（2026-07-26）の詳細は [`docs/ops/weekly_review_2026-07-26.md`](docs/ops/weekly_review_2026-07-26.md)、前回 #006 は [`docs/ops/weekly_review_2026-07-12.md`](docs/ops/weekly_review_2026-07-12.md)。
 
 
-### 翌週 戦略バックログ（#007, 2026-07-26 並べ替え。日次ループはここの先頭から1件）
+### 翌週 戦略バックログ（**#008, 2026-08-02 並べ替え＝これが現行の正**。日次ループはここの先頭から1件）
+
+> **主軸は A+B のまま（07-10 転換・#006/#007/#008 の実測で 3 度追認）**。#008 で診断が 2 点 強化された:
+> ① **発見（未発見%）の改善が完全停止**（72→68→66→65→63→**63**）＝sitemap 501 が 3 週間不変で新規 URL ゼロ＝**「発見」はもう伸ばせるレバーではない**。
+> ② **page 次元で pt のみ pos 2〜7 に入っている**（en 19 / **pt 7** / ja 4 / es 2 / hi 1・**ar 0**）＝柱1 の仮説自体は棄却されていないが、賭け先は「広く」でなく「pt を深く」の可能性。
+> かつ **従来の impressions 系列は GSC 匿名化で実測の約 1/4.7**（7 vs 33）＝**計器の是正が最優先**（優先1）。
+>
+> **実務上の律速は 3 週連続で戦略ではない**＝**wrangler 未ログインでデプロイが 19 日間 断絶**。
+> ただし #008 では**デプロイ不要で完遂できるタスクを 3 件（優先1・3・7）** 用意した＝「全部ブロック」で日次枠を溶かさないため。
+> 正本: `docs/strategy/linkable-asset-plan.md` / `docs/strategy/authority-plan.md` / growth-strategy §4 柱1'・柱4'。
+
+| 優先 | タスク | 柱/種別 | デプロイ要否 | 成功指標 |
+|---|---|---|---|---|
+| **0** | **【ユーザー操作・全タスクの前提】`npx wrangler login`（または `CLOUDFLARE_API_TOKEN` 設定）でデプロイ経路を復旧** → 直後に `npm run deploy:prod && npm run check:release:prod` で 07-24 push 済みの **`3bd3cb6`（Track A プローブ 6→9 PF）を出荷して閉じる**（コードは main 済み・再実装不要）。★**#008 追記: あわせて優先4 用の KV namespace 作成も同時に依頼**（同じ Cloudflare 作業＝ユーザーの往復を1回で済ませる）。※トークン発行・namespace 作成は Claude 側では行わない（危害ゲート④／bindings 変更は要人間判断） | 運用/blocker | — | `npx wrangler whoami` が認証済／`/api/v1/platform-status` の platforms が 6→**9**・`alsoSupported` 2件（Discord/Lemon8） |
+| **1** | **【新規 #008・自律可・デプロイ不要】計測: `growth:review` に page 次元 impressions（locale 別・position 別）の集計を追加**。理由＝週次レビューが毎回「GSC impressions」として記録してきた値は `dimensions:["query","page","country","device"]` 由来（`scripts/fetch-gsc-report.mjs:348,360`）で、**GSC の匿名化により実測の約 21% しか捉えていない**（7 vs 33）。母数が小さいほど影響が大きく、**撤退基準がノイズで駆動されている**。`latest-gsc-pages.csv`（`dimensions:["page"]`・28d）は**既に毎回取得済み＝新規 API 呼び出しゼロ**なので、`scripts/growth-summary.mjs` の集計とサマリー出力の追加のみ。週次レビュー #008 §7 提案1 | 計測 | **不要** | `npm run growth:review` の出力とスナップショット JSON に page 次元 impressions とロケール別内訳（impressions/平均position）が出る |
+| **2** | **柱1/修復: fxTwitter 401 の明示分類とログ化**（#007 優先1 の最小の一手へ具体化）。`src/lib/extract/twitter.ts:186-215` の fx-api 分岐は **HTTP 401 をどの枝でも分類していない**（403/429→cooldown＋`sawBotChallenge`、404→`POST_NOT_FOUND`、`ok`→解析、**401 はどれにも入らず** `rawMedia` 空のまま黙って次のフォールバックへ）＝**本番が約23日間出し続けている 401 が extractor 自身のログに一切現れない**（`provider_failed` すら出ない）。まず 401 を明示分類してログに出すのが最小の一手。★**実装・ユニットテスト・push はデプロイ非依存で先行できる**（本番検証のみ優先0 の復旧が前提）。本番 status: twitter `http=401`・**直近14日のプローブ 56/56 全滅**（窓 = `HISTORY_MAX 56`×6h、`src/lib/platform-status/probes.ts:267`）。ローカル residential IP からは同 URL が 200＝**fxTwitter が Workers egress を弾いている**疑い。※実地確認は `POST /api/v1/extract/prepare` が `403 TURNSTILE_MISSING` を返すため無人不可（Turnstile は設計通り機能・CAPTCHA 回避は行わない） | 柱1/修復 | 検証のみ要 | 401 が失敗分類に現れる・vitest green／（復旧後）本番 Worker からの X 抽出経路を1つ確定・status の twitter が operational へ |
+| **3** | **【新規 #008・自律可・デプロイ不要】健全性 HC-9: 認証/レート制限レイヤーのユニットテスト**（08-01 health-check 起票）。`src/lib/rate-limit/extract.ts` の `getClientKey`（cf-connecting-ip→x-forwarded-for→'unknown' の優先順位）と in-memory バケットの窓/上限判定＝**純粋に近い部分から**。`verifyTurnstileToken` は `fetch`／`getCloudflareContext` のモックが要るため分割可（規模: 中）。**"fail-closed であること"を契約として固定する**のが目的（Turnstile はリトライ枯渇時 false・レート制限は上限超過で 429）。★health-check 手順5 は「`middleware.ts`（認証/レート制限）」を見るよう指示しているが**実際の `middleware.ts` は locale rewrite と canonical host 301 のみ**で、本当の認証/レート制限経路は検査されていなかった | 健全性/品質 | **不要** | rate-limit の純関数にテストが入り green（production 非改変） |
+| **4** | **柱4' 測定: badge の外部 Referer 集計＝被リンク代理指標の自前化**（`/platform-status/badge` の Referer ホストを Worker 側で KV 集計＝**バッジ被埋め込み＝被リンクの実測**。GSC links API 不在の穴を埋める＝**主軸 A+B の唯一の計器**）。★**2026-07-28 判定＝自律実装 不可**: KV 集計は **Cloudflare bindings（KV namespace）の追加**を伴い、日次ループ規則「D1 schema / bindings 変更は要人間判断」に該当（代案の D1 追記・Analytics Engine もいずれも binding 要で回避不能）。★**#008 で優先度を 3→4 に**（**降格ではない**＝自律不可と確定した以上バックログ上位に置いても日次ループが消費できないため、実際に消費できるタスクを繰り上げた。重要度の評価は不変）。**優先0 と同時にユーザーへ依頼**（同じ Cloudflare 作業） | 柱4'/測定 | 要 | 外部 Referer ホスト数を週次で取得できる状態・本番200（**要ユーザー承認: KV namespace 作成**） |
+| **5** | **柱2: 凍結の可否をユーザーに確認する（#007 提案2 (b)・#008 提案3 で再提示）**。07-13 出荷の起動タイムアウト 60s 緩和は**本番で 20 日・約80 cron 窓 稼働して産出ゼロ**（sitemap `/trend/` 0件・`/trending` 内リンク 0件）＝#006 が予告した分岐条件に到達し、**無償の打ち手は尽きた**。選択肢は (a) **有料 Browser Rendering 切替＝危害ゲート①金銭＝要ユーザー承認**、(b) **凍結して日次枠を柱1'/柱1 へ回す**。**推奨は (b)**（検索流入が実質ゼロの現状ではトレンドページを産出できても順位化しない）。cron 自体は無害・無課金なので停止しない。★(b) も「柱2 を凍結する」＝**戦略文書の書き換え**でガードレール抵触のため**ユーザーの一言（「凍結でよい」）が要る**。★**#008 時点で 1 週間 未回答**。回答が無い間、柱2 は事実上すでに凍結状態（打ち手が無く日次枠も消費していない）＝実害はバックログ上に判定不能項目が居座ることのみ | 柱2/判断 | — | ユーザーの一言を得て task.md に明記し、柱2 起因タスクをバックログから外す（またはユーザー承認を得て有料化） |
+| **6** | **【新規 #008・候補／今週は着手しない】柱1: pt ロケール既存ページの内容深化**。根拠＝page 次元実測で impression を取っているのは **en 19 / pt 7 / ja 4 / es 2 / hi 1** で、**pos 2〜7 の低順位帯に入っているのは pt のみ**（`/pt` pos 2・`/pt/blog/safest-video-downloader-sites` pos 2・`/pt/latest` pos 4・`/pt/blog/twitter-video-download-mp4` pos 7 ほか／**ar は page 次元でも 0**）。柱1 は「ja/pt/ar 優先」と定義されているが**実測は ja と ar を支持していない**。**新規 URL は増やさない**（stub 量産停止方針を維持＝thin/doorway リスク非増）。★**各行 1〜2 impression のノイズ域**のため、**#009 で 2 週分の page 次元データを確認してから確定**する（優先1 の実装が前提） | 柱1/内容 | 要 | pt ページの impressions/position が 2 週連続で改善 |
+| **7** | **【自律可・デプロイ不要】健全性 HC-8 残: `extractTwitter`／`extractTikTok` の I/O モック付きテスト**（07-30 で純関数分は完了＝vitest 44→73。残りは**失敗分類の網羅**でモック設計が要る＝規模:中）。優先2 と同じレイヤーなので連続実施が自然 | 健全性/品質 | **不要** | extract 層の失敗分類にテストが入り green（production 非改変） |
+| **8** | **健全性 HC-6: `next` 15.2.9 → 15.5.22（security・緊急度 高）**。★08-01 health-check で**緊急度を 中→高 に上方修正**＝advisory 全文確認で **middleware redirect SSRF**(GHSA-4342-x723-ch2f) / **rewrites の HTTP request smuggling**(GHSA-ggv3-7p47-pfv8) / **rewrites 経由 SSRF**(GHSA-p9j2-gv94-2wf4) / **App Router の Middleware・Proxy bypass**(GHSA-267c-6grr-h53f, GHSA-26hh-7cqf-hhc6) / **middleware redirect の cache poisoning**(GHSA-3g8h-86w9-wvmq) / **RSC cache poisoning**(GHSA-wfc6-r584-vfw7) / **CSP nonce XSS**(GHSA-ffhc-5mcf-pf4q) / **Server Function endpoint の無認証開示**(GHSA-955p-x3mx-jcvp) が **ClipKeep の構成（App Router＋`middleware.ts` の locale rewrite＋canonical host 301）に直接該当し得る**と判明し、前回の「`/_next/image` が本番404だから低露出」という評価根拠が**不成立**。`postcss` high 3件も同じ更新に紐づく。実体は semver-minor だが `package.json` が `"next": "15.2.9"` 完全固定のため npm は `--force` 表示＝**`package.json` の版指定変更を伴う**ので層B/層B+ 不可。**要ユーザー承認・要本番フル検証**（優先0 の復旧後に早期実施を推奨） | 健全性/security | 要 | `next@15.5.22` で typecheck/lint/build/vitest PASS・本番フル検証 PASS |
+| **9** | **柱1' Track A: A-v2 = `extractor_jobs` の per-PF 実成功率を status 資産へ併記**（合成プローブ＝上流の到達性 と 実ジョブの成功率 は別物。二軸の併記は一次データとしての価値＝被引用性を明確に上げる。優先2 の結果とも接続する。07-14 の残タスクとして記録済み） | 柱1'/資産 | 要 | status page/JSON に per-PF 実成功率が出る・本番200 |
+| **10** | 柱1: downloader help リンク（sns/telegram/tiktok/twitter 4本）＋ extractor-form/result-client の status 連動 help リンクの `?locale=`→path 形式化（06-29 積み残し・発見の残掃除） | 柱1/発見 | 要 | 残る solution help リンクの path 形式化・本番200 |
+| **11** | **柱4' B-2（ユーザー一度きり・任意）: AlternativeTo 登録1回**（7/17 予定分の実施有無が未確認＝**3週連続で未確認**。ClipKeep は掲載適合。文面は `docs/ops/outreach/2026-08-02.md` / authority-plan.md B-2）。※Show HN/awesome は不適合で見送り（07-10 実地）。※**#009 でも未実施かつ KV 承認も無い場合、outreach 下書きの毎週生成を停止**し変更のある週のみ更新する運用へ切り替える（#008 §9） | 柱4'/権威 | — | 登録1回・被リンク発生（ユーザー実行分） |
+
+> **#008 で落としたもの・変えたもの（明示）**:
+> - #007 優先7「ja/pt/ar の indexed/impression 推移を週次記録」は、**優先1（page 次元計測の実装）と週次レビューの定常業務へ分割吸収**した（単独タスクとしては消滅）。
+> - #007 優先3（badge Referer）は **3→4 に移動**。降格ではなく「自律不可と確定した項目を先頭付近に置いても日次ループが消費できない」という運用上の理由（重要度の評価は不変＝主軸の唯一の計器）。
+> - **HC-10（`src/lib/rate-limit/extract.ts:59-60` の env parse に NaN ガードが無く潜在 fail-open）はバックログに積んでいない**。理由: **セキュリティ性質を変える修正であり本番検証なしに出荷すべきでない**＝優先0 の復旧後に HC-9（優先3）とセットで扱うのが正しい。実害は現時点でなし（`wrangler.toml`／`.test`／`.production` の3つとも正常値）。健全性バックログには記載済み。
+> - HC-5（yaml moderate）は**ユーザーの承認マーカーが 4 週連続で未付与**のため据え置き。
+
+---
+
+### （履歴）#007, 2026-07-26 の並び ＝ 完了記録を含むため保存。**現行のバックログは上の #008**
 
 > **主軸は A+B（07-10 転換・#006/#007 の実測で 2 度追認）**: 発見（未発見% ・indexed）は改善を続けるが、
 > impressions は 4→5 で不変、かつ **#007 で Google オーガニック流入 0 が確定**＝順位化には**ドメイン権威・被リンク**が要る。
@@ -124,6 +175,19 @@
 ## 週次レビューの記録
 
 > 先頭を占有していたため CURRENT ブロック導入時（2026-07-25）にここへ移した。**内容は当時のまま・削除していない**。詳細は各レビュー文書を参照。
+
+> **2026-08-02 週次レビュー（#008）で並べ替え。#007 から 7 日＝正常間隔に復帰**。計測は健全（SA・fresh・`blocked:false`・5週連続で無人失効なし）:
+> 実測 28d: ad_script_load=**237**（#007 119）、セッション=**65**（36）、エンゲージメント率=**55.4%**（72.2%）、
+> impressions=**7**（5, query次元）／**33**（page次元・新規計測）、clicks 0、indexed **36/100**（36）、未発見 **63/100（63→63）**。
+> ★**発見1: 発見の改善が完全停止**（72→68→66→65→63→**63**／改善幅 −6→−2→−1→−2→**0**）。sitemap 501 が 3 週間不変＝新規 URL ゼロの必然。**「発見」はもう伸ばせるレバーではない**。
+> ★**発見2（計測の穴）: 従来の impressions 系列は GSC 匿名化で実測の約 1/4.7**（query×page×country×device 次元 7 に対し page 次元 33）。**撤退基準がノイズ駆動**＝優先1 で是正。
+> ★**発見3: page 次元では pt だけが順位化**（en 19 / **pt 7・うち6件が pos 2〜7** / ja 4 / es 2 / hi 1・**ar 0**）。柱1「ja/pt/ar 優先」は実測に支持されず＝賭け先は「広く」でなく「pt を深く」の可能性（#009 で 2 週分確認後に確定）。
+> **Google オーガニックセッション 0（2週連続）・Direct 91%（121/133）**でエンゲージメント率は 16.8pp 低下＝**非人間トラフィック説を補強**。`ad_script_load` 237 を成果と読まない（#007 提案1 継続）。
+> **ブロッカーは 3 週連続で同じ**＝wrangler 未ログインで**デプロイ 19 日間 断絶**・`3bd3cb6` 未反映 9 日目・**本週の出荷 0 件**。
+> twitter 401 は**直近14日のプローブ 56/56 全滅**（窓 = `HISTORY_MAX 56`×6h／`probes.ts:267`）。プローブ自体は正常稼働。
+> 撤退基準: impressions 5→7 の**微増＝成長**につき**連続非成長=0（非該当）**。ただし母数7のノイズであり、かつ**その系列自体が匿名化で 1/4.7 に潰れている**＝カウンタのリセットを改善の証拠と読まないこと。
+> 日次ループの発火率: 月〜金 5 枠のうち daily log が残ったのは **2 枠**（07-28・07-30）のみ＝#008 §7 提案5 で週次レビューが毎回カウントする運用にした。
+> 詳細: `docs/ops/weekly_review_2026-08-02.md`。前回: `#007 2026-07-26`。
 
 > **2026-07-26 週次レビュー（#007）で並べ替え。#006 から 14 日空き**（7/15〜7/23 のタスク登録消失で 07-19 スロットが未実施）。計測は健全（SA・fresh・`blocked:false`）:
 > 実測 28d: ad_script_load=**119**（#006 24）、セッション=**36**（9）、GSC impressions=**5**（4）、clicks 0、pos 37.0、indexed **36/100**、未発見 **63/100**（66→63）。
