@@ -81,7 +81,8 @@ npm run analytics:ga4:login
 ## 4. 恒久対策の調査: サービスアカウント化（unattended-friendly）
 
 目的: ブラウザ対話なしで失効しない資格情報に移行する。コード側は既に
-`.secrets/ga4-service-account.json` があれば JWT 方式（RS256 self-signed）で
+SA キー（既定 `.secrets/ga4-service-account.json`、現在は `.env.analytics.local` で
+`D:\secrets\clipkeep\ga4-service-account.json` を指す）があれば JWT 方式（RS256 self-signed）で
 OAuth トークンを取得するフォールバックを実装済み（`getServiceAccountAccessToken`）。
 **準備が整えば追加実装なしで自動的に使われる。**
 
@@ -103,10 +104,17 @@ OAuth トークンを取得するフォールバックを実装済み（`getServ
 2. そのSAで **JSON キー**を発行（`type: service_account`、`client_email`、`private_key` を含む）。
 3. GA4 管理 → プロパティのアクセス管理 → SA の `client_email` を**閲覧者**で追加。
 4. Search Console → 設定 → ユーザーと権限 → SA の `client_email` を追加。
-5. JSON キーを **`D:\dev\repos\clipkeep\.secrets\ga4-service-account.json`** に置く
-   （`.secrets/` は gitignore 済み・このPCローカルのみ）。
-   - 既定パスを上書きしたい場合は `.env.analytics.local` か環境変数
-     `GOOGLE_APPLICATION_CREDENTIALS` で指定可能（`loadConfig` が解決）。
+5. JSON キーを **`D:\secrets\clipkeep\ga4-service-account.json`**（リポジトリ外の保管庫。
+   ACL はこのユーザーと SYSTEM のみ）に置き、リポジトリ側の gitignore 済み
+   `.env.analytics.local` にパスを書く:
+
+   ```env
+   GOOGLE_APPLICATION_CREDENTIALS=D:\secrets\clipkeep\ga4-service-account.json
+   ```
+
+   - **鍵を `D:\dev` 配下に置かないこと**（`D:\dev\docs\SAFETY_CHECKLIST.md` の Red Lines）。
+     旧 `.secrets/` 配置は 2026-08-05 に保管庫へ退避済みで、リポジトリ内に鍵は無い。
+   - 環境変数 `GOOGLE_APPLICATION_CREDENTIALS` でも上書き可能（`loadConfig` が解決）。
 6. `npm run growth:review` を実行。OAuth が失効していても SA フォールバックで
    fresh データを取得し、🔐 ANALYTICS AUTH が `OK` になることを確認。
 
@@ -116,7 +124,9 @@ OAuth トークンを取得するフォールバックを実装済み（`getServ
 - OAuth 失効時に SA があれば**自動で**取得継続 → 無人運用でもブロックされない。
 - どちらも無い/壊れている場合のみ `no_credentials` ブロックとして WARN を出す。
 
-> セキュリティ: SA キーは強力なので `.secrets/` の外に出さない・コミットしない。
+> セキュリティ: SA キーは強力なので**リポジトリにも `D:\dev` 配下にも置かない**・コミットしない。
+> 保管庫は `D:\secrets\clipkeep\`（継承を切り、このユーザーと SYSTEM のみに ACL を限定）。
+> リポジトリ側に置くのはパスを指す `.env.analytics.local` だけ（gitignore 済み）。
 > 不要になったら Cloud Console でキーを失効させる。最小権限（読み取り専用ロール）を維持。
 
 ## 5. チェックリスト（復旧オペレーション）
@@ -124,5 +134,6 @@ OAuth トークンを取得するフォールバックを実装済み（`getServ
 - [x] `docs/analytics/auth-status.json` の `blocked` を確認（2026-06-28: `false`）
 - [ ] ブロックなら daily log を `status: blocked` ＋ 原因＋手順で記録
 - [ ] 即時復旧: `npm run analytics:ga4:login`（手動・ブラウザ）※今回は SA 化で不要
-- [x] 恒久対策: §4 の SA キーを `.secrets/ga4-service-account.json` に配置（2026-06-28 完了）
+- [x] 恒久対策: §4 の SA キーを配置（2026-06-28 完了。**2026-08-05 に `D:\secrets\clipkeep\` へ退避**し、
+      リポジトリからは `.env.analytics.local` 経由で参照する形に変更）
 - [x] `npm run growth:review` 再実行 → 🔐 ANALYTICS AUTH = OK を確認（2026-06-28: GA4/GSC/coverage 個別検証で OK）

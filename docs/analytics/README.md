@@ -69,11 +69,15 @@ Update the automation memory with the run summary and timestamp.
 Use this when reading GA4 as your own Google account.
 
 1. Download the Google Cloud OAuth desktop client JSON.
-2. Save it as:
+2. Save it OUTSIDE the repo, in the local vault (secrets must not live under `D:\dev` —
+   see `D:\dev\docs\SAFETY_CHECKLIST.md`):
 
 ```text
-.secrets/ga4-oauth-client.json
+D:\secrets\clipkeep\ga4-oauth-client.json
 ```
+
+   The login script still expects it at `.secrets/ga4-oauth-client.json`, so copy it in
+   only for the duration of the interactive login and move it back to the vault after.
 
 3. Run the one-time login:
 
@@ -87,7 +91,9 @@ npm run analytics:ga4:login
 npm run analytics:ga4
 ```
 
-The login command writes `.secrets/ga4-oauth-token.json`. The `.secrets/` directory is ignored by Git.
+The login command writes `.secrets/ga4-oauth-token.json`. The `.secrets/` directory is ignored by
+Git, but it is **not** a permanent home: move the token to `D:\secrets\clipkeep\` when done. The
+unattended path is the service account below, which needs nothing inside the repo.
 
 ## Optional: service account fallback
 
@@ -101,5 +107,5 @@ Variables:
 
 ```env
 GA4_PROPERTY_ID=528376605
-GOOGLE_APPLICATION_CREDENTIALS=D:\dev\repos\clipkeep\.secrets\ga4-service-account.json
+GOOGLE_APPLICATION_CREDENTIALS=D:\secrets\clipkeep\ga4-service-account.json
 ```
