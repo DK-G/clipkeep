@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 const ROOT = process.cwd();
 const ANALYTICS_DIR = path.join(ROOT, "docs", "analytics");
@@ -11,6 +12,8 @@ const PAGES_CSV = path.join(ANALYTICS_DIR, "latest-ga4-pages.csv");
 const ACQUISITION_CSV = path.join(ANALYTICS_DIR, "latest-ga4-acquisition.csv");
 const GSC_LOCALE_SUMMARY_CSV = path.join(ANALYTICS_DIR, "latest-gsc-locale-summary.csv");
 const GSC_OPPORTUNITIES_CSV = path.join(ANALYTICS_DIR, "latest-gsc-opportunities.csv");
+const GSC_QUERY_PAGES_CSV = path.join(ANALYTICS_DIR, "latest-gsc-query-pages.csv");
+const GSC_PAGES_CSV = path.join(ANALYTICS_DIR, "latest-gsc-pages.csv");
 const GSC_INDEX_COVERAGE_JSON = path.join(ANALYTICS_DIR, "latest-gsc-index-coverage-summary.json");
 const AUTH_STATUS_JSON = path.join(ANALYTICS_DIR, "auth-status.json");
 
@@ -201,6 +204,237 @@ async function printAuthStatusBanner() {
   if (remediation) console.log(`   → ${remediation}`);
 }
 
+// ---------------------------------------------------------------------------
+// (i) Brand vs non-brand impressions  (weekly review #010 §7 proposal 1)
+//
+// The GSC query-dimension export has been 100% brand queries ("clipkeep") for
+// weeks. That makes the retreat counter in growth-strategy.md structurally
+// wrong: the acquisition strategy could fail completely and one extra brand
+// search would still reset the counter. Non-brand impressions are the only
+// query-side number that is causally downstream of the long-tail/locale work,
+// so the review has to print it separately, including when it is zero.
+//
+// Brand detection is deliberately dumb and auditable: normalize away spacing
+// and punctuation, then look for the product name. Look-alike queries that do
+// NOT contain the name (e.g. "tubekeep") count as non-brand — they are real
+// non-brand demand even when they look like a misspelling.
+export function normalizeQueryText(query) {
+  return String(query || "").toLowerCase().replace(/[\s._-]+/g, "");
+}
+
+export function isBrandQuery(query) {
+  return normalizeQueryText(query).includes("clipkeep");
+}
+
+function summarizeQueryGroup(rows) {
+  const byQuery = new Map();
+  let impressions = 0;
+  let clicks = 0;
+  let weightedPosition = 0;
+  for (const row of rows) {
+    const imp = Number(row.impressions || 0);
+    const clk = Number(row.clicks || 0);
+    const pos = Number(row.position || 0);
+    impressions += imp;
+    clicks += clk;
+    weightedPosition += pos * imp;
+    const key = String(row.query || "");
+    const entry = byQuery.get(key) || { query: key, impressions: 0, clicks: 0, weightedPosition: 0 };
+    entry.impressions += imp;
+    entry.clicks += clk;
+    entry.weightedPosition += pos * imp;
+    byQuery.set(key, entry);
+  }
+  const topQueries = [...byQuery.values()]
+    .map((e) => ({
+      query: e.query,
+      impressions: e.impressions,
+      clicks: e.clicks,
+      position: e.impressions > 0 ? e.weightedPosition / e.impressions : 0,
+    }))
+    .sort((a, b) => b.impressions - a.impressions)
+    .slice(0, 5);
+  return {
+    impressions,
+    clicks,
+    queryCount: byQuery.size,
+    position: impressions > 0 ? weightedPosition / impressions : 0,
+    topQueries,
+  };
+}
+
+export function computeBrandSplit(queryPageRows) {
+  const brandRows = [];
+  const nonBrandRows = [];
+  for (const row of queryPageRows) {
+    (isBrandQuery(row.query) ? brandRows : nonBrandRows).push(row);
+  }
+  const brand = summarizeQueryGroup(brandRows);
+  const nonBrand = summarizeQueryGroup(nonBrandRows);
+  const total = brand.impressions + nonBrand.impressions;
+  return {
+    brand,
+    nonBrand,
+    totalImpressions: total,
+    nonBrandShare: total > 0 ? nonBrand.impressions / total : 0,
+    hasData: queryPageRows.length > 0,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// (ii) Page-dimension impressions, by locale and by position band
+//
+// The query dimension undercounts: GSC suppresses queries below a privacy
+// threshold, so page-dimension impressions are consistently larger than the
+// query-dimension sum. Reviews that quote only the query number understate
+// reach and cannot see WHICH locale is being served. Position bands answer the
+// separate question "are these impressions close enough to page 1 to be worth
+// deepening?" — the pt-locale decision in #009/#010 rests on exactly that.
+const POSITION_BANDS = [
+  { key: "1-3", test: (p) => p > 0 && p <= 3 },
+  { key: "4-10", test: (p) => p > 3 && p <= 10 },
+  { key: "11-20", test: (p) => p > 10 && p <= 20 },
+  { key: "21+", test: (p) => p > 20 },
+];
+
+export function computePageDimension(pageRows) {
+  const byLocale = new Map();
+  const byPositionBand = Object.fromEntries(
+    POSITION_BANDS.map((b) => [b.key, { impressions: 0, clicks: 0, pageCount: 0 }])
+  );
+  let impressions = 0;
+  let clicks = 0;
+  let weightedPosition = 0;
+
+  for (const row of pageRows) {
+    const imp = Number(row.impressions || 0);
+    const clk = Number(row.clicks || 0);
+    const pos = Number(row.position || 0);
+    const locale = String(row.locale || "(unknown)");
+    impressions += imp;
+    clicks += clk;
+    weightedPosition += pos * imp;
+
+    const entry = byLocale.get(locale) || { locale, impressions: 0, clicks: 0, pageCount: 0, weightedPosition: 0 };
+    entry.impressions += imp;
+    entry.clicks += clk;
+    entry.pageCount += 1;
+    entry.weightedPosition += pos * imp;
+    byLocale.set(locale, entry);
+
+    const band = POSITION_BANDS.find((b) => b.test(pos));
+    if (band) {
+      byPositionBand[band.key].impressions += imp;
+      byPositionBand[band.key].clicks += clk;
+      byPositionBand[band.key].pageCount += 1;
+    }
+  }
+
+  return {
+    impressions,
+    clicks,
+    pageCount: pageRows.length,
+    position: impressions > 0 ? weightedPosition / impressions : 0,
+    byLocale: [...byLocale.values()]
+      .map((e) => ({
+        locale: e.locale,
+        impressions: e.impressions,
+        clicks: e.clicks,
+        pageCount: e.pageCount,
+        position: e.impressions > 0 ? e.weightedPosition / e.impressions : 0,
+      }))
+      .sort((a, b) => b.impressions - a.impressions),
+    byPositionBand,
+    hasData: pageRows.length > 0,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// (iii) session_start vs page_view divergence  (#010 §1.1)
+//
+// GA4 recorded 223 `session_start` against 4 `page_view` (1 user) in the 28-day
+// window that first produced any page_view at all. That is not a measurement
+// gap — measurement works — it means the traffic behind the north star almost
+// never renders a page the way a human would. This ratio is the one number that
+// keeps that fact visible every week instead of being re-discovered.
+const HUMAN_SHAPED_RATIO_FLOOR = 0.1;
+
+export function computeMeasurementDivergence(eventRows) {
+  const find = (name) => eventRows.find((e) => e.eventName === name);
+  const count = (name) => Number(find(name)?.eventCount || 0);
+  const users = (name) => Number(find(name)?.activeUsers || 0);
+
+  const sessionStart = count("session_start");
+  const pageView = count("page_view");
+  const ratio = sessionStart > 0 ? pageView / sessionStart : 0;
+
+  return {
+    sessionStart,
+    sessionStartUsers: users("session_start"),
+    pageView,
+    pageViewUsers: users("page_view"),
+    firstVisit: count("first_visit"),
+    userEngagement: count("user_engagement"),
+    adScriptLoad: count("ad_script_load"),
+    pageViewPerSessionStart: ratio,
+    humanShaped: sessionStart > 0 && ratio >= HUMAN_SHAPED_RATIO_FLOOR,
+    hasData: eventRows.length > 0,
+  };
+}
+
+function printBrandSplit(split) {
+  console.log("\n🏷️  IMPRESSIONS: BRAND vs NON-BRAND (query dimension)");
+  console.log("-".repeat(40));
+  if (!split.hasData) {
+    console.log("- No query-page export. Run 'npm run analytics:gsc' (needs GSC read auth).");
+    return;
+  }
+  const share = (split.nonBrandShare * 100).toFixed(0);
+  console.log(`Non-brand : ${split.nonBrand.impressions} impressions / ${split.nonBrand.clicks} clicks / ${split.nonBrand.queryCount} queries (${share}% of query-dimension impressions)`);
+  console.log(`Brand     : ${split.brand.impressions} impressions / ${split.brand.clicks} clicks / ${split.brand.queryCount} queries`);
+  for (const q of split.nonBrand.topQueries) {
+    console.log(`   non-brand top: "${q.query}" -> ${q.impressions} impressions, pos ${q.position.toFixed(1)}`);
+  }
+  if (split.nonBrand.impressions === 0) {
+    console.log("⚠️  Non-brand impressions are ZERO. Brand-query movement says nothing about the acquisition");
+    console.log("    strategy — do not let it reset the retreat counter (growth-strategy.md §7).");
+  }
+}
+
+function printPageDimension(pageDim) {
+  console.log("\n🗺️  IMPRESSIONS BY PAGE DIMENSION (locale / position band)");
+  console.log("-".repeat(40));
+  if (!pageDim.hasData) {
+    console.log("- No page export. Run 'npm run analytics:gsc' (needs GSC read auth).");
+    return;
+  }
+  console.log(`Total: ${pageDim.impressions} impressions / ${pageDim.clicks} clicks over ${pageDim.pageCount} pages (avg pos ${pageDim.position.toFixed(1)})`);
+  for (const l of pageDim.byLocale.slice(0, 8)) {
+    console.log(`- ${l.locale.padEnd(3)}: ${l.impressions} impressions / ${l.clicks} clicks / ${l.pageCount} pages / pos ${l.position.toFixed(1)}`);
+  }
+  const bands = Object.entries(pageDim.byPositionBand)
+    .map(([band, v]) => `${band}: ${v.impressions}`)
+    .join("   ");
+  console.log(`Position bands (impressions)  ${bands}`);
+}
+
+function printMeasurementDivergence(divergence) {
+  console.log("\n🧍 SESSION vs PAGE_VIEW DIVERGENCE");
+  console.log("-".repeat(40));
+  if (!divergence.hasData) {
+    console.log("- No GA4 event export. Run 'npm run analytics:ga4'.");
+    return;
+  }
+  const ratio = (divergence.pageViewPerSessionStart * 100).toFixed(1);
+  console.log(`session_start: ${divergence.sessionStart} (${divergence.sessionStartUsers} users)`);
+  console.log(`page_view    : ${divergence.pageView} (${divergence.pageViewUsers} users) — ${ratio}% of session_start`);
+  console.log(`ad_script_load (north star): ${divergence.adScriptLoad}`);
+  if (!divergence.humanShaped) {
+    console.log("⚠️  Sessions almost never produce a page_view: the north-star traffic does not have the shape");
+    console.log("    of human browsing. Read tag loads as reach of non-human/near-instant sessions, not as readers.");
+  }
+}
+
 async function main() {
   console.log("\n" + "=".repeat(50));
   console.log("🚀 CLIPKEEP GROWTH INSIGHTS");
@@ -223,6 +457,8 @@ async function main() {
   const acquisition = await readCsv(ACQUISITION_CSV);
   const gscLocaleSummary = await readCsv(GSC_LOCALE_SUMMARY_CSV);
   const gscOpportunities = await readCsv(GSC_OPPORTUNITIES_CSV);
+  const gscQueryPages = await readCsv(GSC_QUERY_PAGES_CSV);
+  const gscPages = await readCsv(GSC_PAGES_CSV);
   const indexCoverage = await readJsonIfExists(GSC_INDEX_COVERAGE_JSON);
   const findEventCount = (name) => {
     const ev = events.find(e => e.eventName === name);
@@ -259,6 +495,12 @@ async function main() {
     invalidUrlPerSubmit: pctNumber(invalidUrl, submit),
   };
 
+  // Weekly-review instruments added 2026-08-31 (#010 §7 proposal 1): all three
+  // are aggregations of data already exported above — no new API calls.
+  const brandSplit = computeBrandSplit(gscQueryPages);
+  const pageDimension = computePageDimension(gscPages);
+  const divergence = computeMeasurementDivergence(events);
+
   const snapshot = {
     generatedAt: summaryData.generatedAt,
     recordedAt: new Date().toISOString(),
@@ -288,13 +530,23 @@ async function main() {
       viralFactor: complete > 0 ? shares / complete : 0,
       adScriptLoad7d: northStar.last7Days?.loadTotal || 0,
       adScriptLoad28d: northStar.last28Days?.loadTotal || 0,
+      nonBrandImpressions: brandSplit.nonBrand.impressions,
+      brandImpressions: brandSplit.brand.impressions,
+      nonBrandShare: brandSplit.nonBrandShare,
+      pageDimensionImpressions: pageDimension.impressions,
+      sessionStart: divergence.sessionStart,
+      pageView: divergence.pageView,
+      pageViewPerSessionStart: divergence.pageViewPerSessionStart,
       ...rates,
     },
     northStar,
     topPages: topRows(pages, 10, "views"),
     topEvents: topRows(events, 20, "eventCount"),
     acquisition: topRows(acquisition, 10, "sessions"),
+    measurementDivergence: divergence,
     searchConsole: {
+      brandSplit,
+      pageDimension,
       localeSummary: topRows(gscLocaleSummary, 10, "impressions"),
       opportunities: topRows(gscOpportunities, 10, "impressions"),
       indexCoverage: indexCoverage
@@ -358,6 +610,8 @@ async function main() {
   const viralFactor = complete > 0 ? (shares / complete).toFixed(2) : "0.00";
   console.log(`\n🔥 Viral Factor (Est): ${viralFactor} (Higher = better viral loop)`);
 
+  printMeasurementDivergence(divergence);
+
   console.log("\n🧪 MEASUREMENT CHECKS");
   console.log("-".repeat(40));
   if (submit === 0 && complete > 0) {
@@ -390,6 +644,9 @@ async function main() {
     }
   }
 
+  printBrandSplit(brandSplit);
+  printPageDimension(pageDimension);
+
   printIndexCoverage(indexCoverage);
 
   if (gscOpportunities.length > 0) {
@@ -407,6 +664,9 @@ async function main() {
     console.log("\n📉 CHANGE VS PREVIOUS GROWTH RUN");
     console.log("-".repeat(40));
     console.log(`Tag Loads (28d)   : ${formatDelta(snapshot.metrics.adScriptLoad28d, prev.adScriptLoad28d)}`);
+    console.log(`Non-brand impr.   : ${formatDelta(snapshot.metrics.nonBrandImpressions, prev.nonBrandImpressions)}`);
+    console.log(`Page-dim impr.    : ${formatDelta(snapshot.metrics.pageDimensionImpressions, prev.pageDimensionImpressions)}`);
+    console.log(`page_view/session : ${formatPctPointDelta(snapshot.metrics.pageViewPerSessionStart, prev.pageViewPerSessionStart)}`);
     console.log(`Sessions          : ${formatDelta(sessions, prev.sessions)}`);
     console.log(`Active Users      : ${formatDelta(l28.activeUsers || 0, prev.activeUsers)}`);
     console.log(`Form Interest     : ${formatDelta(focus, prev.extractFormFocus)} (${formatPctPointDelta(rates.formInterestPerSession, prev.formInterestPerSession)})`);
@@ -452,4 +712,8 @@ async function main() {
   console.log("\n" + "=".repeat(50) + "\n");
 }
 
-main().catch(console.error);
+// Run only as an entry point (run-growth-review.mjs spawns this file); importing
+// it from a test must not fire a full report run.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch(console.error);
+}
