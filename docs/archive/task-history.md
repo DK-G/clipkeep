@@ -335,3 +335,19 @@
 > あわせて **fxTwitter 401（本番56/56・約14日）** を発見し優先0 として先頭に置いた。
 > ★プロセス上の教訓: 自前の linkable asset（status データ）が異常を14日間出し続けていたのに運用の入力に使えていなかった。
 > **日次ループの健全性チェックに `/api/v1/platform-status` の per-PF uptime 確認を含めること**（本日から実施）。
+
+
+---
+
+## 旧・現在地（#010 世代・2026-08-16 → 2026-08-31 に差し替え）
+
+## 現在地（2026-08-16 週次レビュー #010 反映）
+
+- フェーズ: リリース済み・グロース（北極星 = Monetag タグロード数/日）。主軸は A+B（07-10 転換）＝Track A（linkable asset）＋Track B（ホワイトハット被リンク）。stub 量産は停止のまま。
+- 進行中: なし＝日次ループが `enabled:false` のまま2週（11スロット連続未発火・daily log 空白17日）。#009 の13件は1件も未消費・本週の出荷0。
+- 次の一手（最大3件）:
+  1. 【ユーザー操作・3点】(a) 日次ループ再有効化 (b) `npx wrangler login`＋`3bd3cb6` 出荷 (c) KV namespace 作成。
+  2. 優先1: 非ブランド impressions／page次元／`session_start`・`page_view` 乖離の計測実装（デプロイ不要・`scripts/growth-summary.mjs` のみ）。
+  3. 優先2: `twitter.ts:186-215` の 401 明示分類（実装・テスト・push はデプロイ非依存で先行可）。
+- ブロッカー/外部待ち: デプロイ断絶33日（wrangler 未ログイン・`3bd3cb6` 未反映23日目）・twitter 401 約37日。ユーザー判断待ち3件＝①柱2凍結（HC-11 で理由が二重化）②ar を柱1優先ロケールから外すか ③週次レビューへ実装権限1件（#010 提案6）。
+- 直近の重い判断: #010＝GA4 `page_view` 初発火により「28日間で人間らしいセッションは1件のみ」が確定（#007〜#009 の「未計測」説明は誤り）・両 impressions 減で初の非成長カウント（1/8）・pt 優位3週連続。詳細: [`docs/ops/weekly_review_2026-08-16.md`](docs/ops/weekly_review_2026-08-16.md)／実測値と旧版原文: [`docs/archive/task-history.md`](docs/archive/task-history.md)
