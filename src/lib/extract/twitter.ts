@@ -32,6 +32,38 @@ function markProviderBlocked(provider: string): void {
   providerCooldowns.set(provider, Date.now() + PROVIDER_COOLDOWN_MS);
 }
 
+/**
+ * Failure classes for an upstream provider HTTP response.
+ *
+ * Written as a pure function because the previous inline `if` chain silently
+ * dropped every status it did not name -- most importantly 401, which is what
+ * fxTwitter has been returning to our Workers egress since 2026-07. An
+ * unclassified status produced no `provider_failed` log at all, so a total
+ * outage was invisible in the extractor's own logs.
+ */
+export type ProviderStatusClass =
+  | "ok"
+  | "bot_challenged"
+  | "not_found"
+  | "unauthorized"
+  | "http_error";
+
+export interface ProviderStatusVerdict {
+  class: ProviderStatusClass;
+  /** Failure label used in logs and thrown errors; null when the response is usable. */
+  failure: string | null;
+  /** Whether the provider should be put in cooldown before the next attempt. */
+  cooldown: boolean;
+}
+
+export function classifyProviderStatus(status: number): ProviderStatusVerdict {
+  if (status === 401) return { class: "unauthorized", failure: "PROVIDER_UNAUTHORIZED", cooldown: true };
+  if (status === 403 || status === 429) return { class: "bot_challenged", failure: "BOT_CHALLENGED", cooldown: true };
+  if (status === 404) return { class: "not_found", failure: "POST_NOT_FOUND", cooldown: false };
+  if (status >= 200 && status <= 299) return { class: "ok", failure: null, cooldown: false };
+  return { class: "http_error", failure: `PROVIDER_HTTP_${status}`, cooldown: false };
+}
+
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
@@ -131,14 +163,11 @@ async function scrapeFixer(url: string): Promise<ExtractionMedia[]> {
     cache: "no-store",
   });
 
-  if (response.status === 403 || response.status === 429) {
-    throw new Error("BOT_CHALLENGED");
-  }
-  if (response.status === 404) {
-    throw new Error("POST_NOT_FOUND");
-  }
-  if (!response.ok) {
-    return [];
+  const verdict = classifyProviderStatus(response.status);
+  if (verdict.class !== "ok") {
+    // Every non-ok status now carries a label; the caller logs it as
+    // provider_failed and moves on to the next candidate as before.
+    throw new Error(verdict.failure as string);
   }
 
   const html = await response.text();
@@ -185,12 +214,20 @@ export async function extractTwitter(sourceUrl: string): Promise<ExtractionMedia
   // 1. Try FX-API
   if (!isProviderCoolingDown("fx-api")) try {
     const apiRes = await fetchWithTimeout(`https://api.fxtwitter.com/i/status/${statusId}`, { cache: "no-store" });
-    if (apiRes.status === 403 || apiRes.status === 429) {
+    const verdict = classifyProviderStatus(apiRes.status);
+    if (verdict.cooldown) markProviderBlocked("fx-api");
+    if (verdict.class === "bot_challenged") {
       sawBotChallenge = true;
-      markProviderBlocked("fx-api");
-    } else if (apiRes.status === 404) {
+    } else if (verdict.class === "not_found") {
       throw new Error("POST_NOT_FOUND");
-    } else if (apiRes.ok) {
+    } else if (verdict.class !== "ok") {
+      logTwitterEvent("provider_failed", {
+        statusId,
+        provider: "fx-api",
+        error: verdict.failure,
+        httpStatus: apiRes.status,
+      });
+    } else {
       const data = await apiRes.json() as FXTwitterResponse;
       if (data.tweet?.media?.all?.length) {
         rawMedia = data.tweet.media.all.map((media): ExtractionMedia => {
@@ -218,12 +255,20 @@ export async function extractTwitter(sourceUrl: string): Promise<ExtractionMedia
   if (rawMedia.length === 0 && !isProviderCoolingDown("fx-direct")) try {
     const directUrl = `https://d.fxtwitter.com/i/status/${statusId}`;
     const directRes = await fetchWithTimeout(directUrl, { method: "HEAD", redirect: "follow" });
-    if (directRes.status === 403 || directRes.status === 429) {
+    const verdict = classifyProviderStatus(directRes.status);
+    if (verdict.cooldown) markProviderBlocked("fx-direct");
+    if (verdict.class === "bot_challenged") {
       sawBotChallenge = true;
-      markProviderBlocked("fx-direct");
-    } else if (directRes.status === 404) {
+    } else if (verdict.class === "not_found") {
       throw new Error("POST_NOT_FOUND");
-    } else if (directRes.ok && /twimg\.com/.test(directRes.url)) {
+    } else if (verdict.class !== "ok") {
+      logTwitterEvent("provider_failed", {
+        statusId,
+        provider: "fx-direct",
+        error: verdict.failure,
+        httpStatus: directRes.status,
+      });
+    } else if (/twimg\.com/.test(directRes.url)) {
       rawMedia = [{ type: "video", url: directRes.url, sourcePath: "direct" }];
     }
   } catch (error: unknown) {
