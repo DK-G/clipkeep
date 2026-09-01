@@ -1,25 +1,51 @@
 <!-- CURRENT-START / ここだけを常に最新に保つ。ここより下は履歴で、読むのは必要時のみ。
      日次・週次ループへ: 「現在地」セクションはこのブロック内に**常に1つだけ**。更新は追記ではなく
      差し替えで行い、前回分はブロックの外（下の履歴側）へ送ること（D:\dev\AGENTS.md「CURRENT ブロック」）。 -->
-## 現在地（2026-09-01 日次ループ・twitter 401 の「無言の失敗」を塞いだ）
+## 現在地（2026-09-02 日次ループ・レート制限層の fail-closed を契約として固定）
 
 - フェーズ: リリース済み・グロース（北極星 = Monetag タグロード数/日）。主軸は A+B（07-10 転換）＝Track A（linkable asset）＋Track B（ホワイトハット被リンク）。stub 量産は停止のまま。
-- ★**デプロイ経路は 2 日連続で健全**（本日 ver `0e4e77ce`・release gate PASS=29/0/1）。08-31 に解消した 38 日の断絶は再発していない。
-- 進行中: なし（本日分は完了）。本日の出荷＝**優先2 の 401 明示分類**（`9448001`・vitest 84→90）。
-- ★**優先2 は「前半のみ達成」**＝401 が失敗分類とログに現れるようになった（診断可能性の修復）が、
-  **twitter が operational へ戻るのは未達**。根因は fxTwitter が Workers egress を弾いている疑いで、
-  分岐追加では動かない（ローカル residential IP からは同 URL が 200）。次は代替プロバイダ／egress の検討。
+- ★**デプロイ経路は 3 日連続で健全**（本日 ver `5346fe66`・release gate PASS=29/0/1）。08-31 に解消した 38 日の断絶は再発していない。
+- 進行中: なし（本日分は完了）。本日の出荷＝**優先3 / HC-9 のレート制限層テスト**（`596e1e7`・**production 非改変**・vitest 90→111）。
+- ★**「緑」だけで終わらせず検出力を実測した**＝ミューテーション3件（上限の off-by-one／ヘッダ優先順位の入替／DO 失敗の fail-open 化）で
+  それぞれ 7件・1件・1件 が落ちることを確認。テストは書いた時点では「効いている」ことの証拠にならない。
+- ★**本番実測で 2 つ確定**（推測ではない）: ①本番のレート制限は **`do` 経路**で動いている（`source: do` を本番応答で確認）
+  ＝今回固めた in-memory 側は「DO が落ちた時の縮退先」としての価値。②**HC-10 の実害は現時点で無い**
+  （本番 bindings が `RATE_LIMIT_LIMIT "30"` / `RATE_LIMIT_WINDOW_MS "60000"`＝正常な数値）。HC-10 は修正せず characterisation test で記録に留めた。
 - 次の一手（最大3件）:
-  1. 優先4: pt ロケール既存ページの内容深化（デプロイ経路が健全＝本番反映まで自律実行可）。
+  1. 優先4: pt ロケール既存ページの内容深化（**KPI ゲート下では獲得のみが優先**＝健全性枠を 2 日続けるより獲得側へ戻す）。
   2. 優先6: 柱2 の凍結を自律実行し growth-strategy へ明記（HC-11 の puppeteer high も構造的に消える）。
-  3. 優先3 または 7: rate-limit / extract 層のテスト（デプロイ不要枠）。
+  3. 優先7: `extractTwitter`／`extractTikTok` の I/O モック付きテスト（本日と同レイヤーで連続実施が自然）。
 - ブロッカー/外部待ち: **(c) 優先9 用 KV** は本日も `env.TREND_KV`（`ab21329da7a143a29cf34e2d9621d1b3`）が
-  本番 bindings に既存であることを 2 日連続で確認＝新規 namespace 不要の公算が高く、次の週次で再判定。
+  本番 bindings に既存であることを **3 日連続で確認**＝新規 namespace 不要の公算が高く、次の週次で再判定。
   ユーザー判断待ちは①ar を柱1優先ロケールから外すか ②週次レビューへ実装権限1件 ③優先8（`next@15.5.23`・security）の承認。
 - 直近の重い判断: 計測3指標（08-31 から常時可視化）＝**非ブランド impressions 1（実質0）／page 次元 26 は query 次元 7 の 3.7 倍／`page_view`/`session_start` = 1.8%**。
-  詳細: [`docs/ops/daily/2026-09-01.md`](docs/ops/daily/2026-09-01.md)／前日: [`docs/ops/daily/2026-08-31.md`](docs/ops/daily/2026-08-31.md)／前回の週次: [`docs/ops/weekly_review_2026-08-16.md`](docs/ops/weekly_review_2026-08-16.md)
+  詳細: [`docs/ops/daily/2026-09-02.md`](docs/ops/daily/2026-09-02.md)／前日: [`docs/ops/daily/2026-09-01.md`](docs/ops/daily/2026-09-01.md)／前回の週次: [`docs/ops/weekly_review_2026-08-16.md`](docs/ops/weekly_review_2026-08-16.md)
 
 <!-- CURRENT-END -->
+
+> 旧・現在地の世代（2026-09-01 分）:
+>
+> <details><summary>2026-09-01 日次ループ・twitter 401 の「無言の失敗」を塞いだ</summary>
+>
+> ## 現在地（2026-09-01 日次ループ・twitter 401 の「無言の失敗」を塞いだ）
+>
+> - フェーズ: リリース済み・グロース（北極星 = Monetag タグロード数/日）。主軸は A+B（07-10 転換）＝Track A（linkable asset）＋Track B（ホワイトハット被リンク）。stub 量産は停止のまま。
+> - ★**デプロイ経路は 2 日連続で健全**（本日 ver `0e4e77ce`・release gate PASS=29/0/1）。08-31 に解消した 38 日の断絶は再発していない。
+> - 進行中: なし（本日分は完了）。本日の出荷＝**優先2 の 401 明示分類**（`9448001`・vitest 84→90）。
+> - ★**優先2 は「前半のみ達成」**＝401 が失敗分類とログに現れるようになった（診断可能性の修復）が、
+>   **twitter が operational へ戻るのは未達**。根因は fxTwitter が Workers egress を弾いている疑いで、
+>   分岐追加では動かない（ローカル residential IP からは同 URL が 200）。次は代替プロバイダ／egress の検討。
+> - 次の一手（最大3件）:
+>   1. 優先4: pt ロケール既存ページの内容深化（デプロイ経路が健全＝本番反映まで自律実行可）。
+>   2. 優先6: 柱2 の凍結を自律実行し growth-strategy へ明記（HC-11 の puppeteer high も構造的に消える）。
+>   3. 優先3 または 7: rate-limit / extract 層のテスト（デプロイ不要枠）。
+> - ブロッカー/外部待ち: **(c) 優先9 用 KV** は本日も `env.TREND_KV`（`ab21329da7a143a29cf34e2d9621d1b3`）が
+>   本番 bindings に既存であることを 2 日連続で確認＝新規 namespace 不要の公算が高く、次の週次で再判定。
+>   ユーザー判断待ちは①ar を柱1優先ロケールから外すか ②週次レビューへ実装権限1件 ③優先8（`next@15.5.23`・security）の承認。
+> - 直近の重い判断: 計測3指標（08-31 から常時可視化）＝**非ブランド impressions 1（実質0）／page 次元 26 は query 次元 7 の 3.7 倍／`page_view`/`session_start` = 1.8%**。
+>   詳細: [`docs/ops/daily/2026-09-01.md`](docs/ops/daily/2026-09-01.md)／前日: [`docs/ops/daily/2026-08-31.md`](docs/ops/daily/2026-08-31.md)／前回の週次: [`docs/ops/weekly_review_2026-08-16.md`](docs/ops/weekly_review_2026-08-16.md)
+>
+> </details>
 
 > 旧・現在地の世代（2026-08-31 分）:
 >
@@ -75,7 +101,7 @@
 | **0** | ✅**(b) は 2026-08-31 完了**（wrangler 認証が回復していたため日次ループが `npm run deploy:prod` を実行＝**ver `15b8725c`**・`3bd3cb6` 本番到達・platforms **6→9**・`alsoSupported` 2件を本番確認・release gate PASS=29/0/1）。**残るは (a) と (c)**。★(c) は本番 bindings に `env.TREND_KV`（`ab21329da7a143a29cf34e2d9621d1b3`）が既存であることが同デプロイ出力で判明したため、**新規 namespace 作成が本当に要るかを次の週次で再判定**する。以下は起票時の記述。**【ユーザー操作・全タスクの前提／3点まとめて】** ★**(a) 日次ループの再有効化**＝スケジュールタスク `clipkeep-daily-growth-loop` が **2 週連続で `enabled: false`**（**11 スロット連続 未発火・daily log 空白 17 日**・#010 §4.1）。**これを戻さない限り以下のどのタスクも実行主体が存在しない。** ※再有効化は Claude 側では行わない（スケジューラの永続設定＝ユーザーの領分）。★**(b) `npx wrangler login`**（または `CLOUDFLARE_API_TOKEN` 設定）でデプロイ経路を復旧 → 直後に `npm run deploy:prod && npm run check:release:prod` で 07-24 push 済みの **`3bd3cb6`（Track A プローブ 6→9 PF）を出荷して閉じる**（コードは main 済み・再実装不要／**33 日間 断絶・未反映 23 日目**）。★**(c) 優先9 用の KV namespace 作成**（同じ Cloudflare 作業なのでユーザーの往復を1回で済ませる）。※トークン発行・namespace 作成は Claude 側では行わない（危害ゲート④／bindings 変更は要人間判断） | 運用/blocker | — | (a) `enabled: true` かつ翌営業日に daily log が生成される／(b) `npx wrangler whoami` が認証済・`/api/v1/platform-status` の platforms が 6→**9**・`alsoSupported` 2件（Discord/Lemon8）／(c) namespace 作成済み |
 | **1** | ✅**完了（2026-08-31 日次ループ・`41c6038`）**。3指標とも出力＋snapshot JSON に出ることを確認。実測＝非ブランド **1 impression**（`tubekeep` pos56）／ブランド 6＝非ブランド比 14%、page 次元 **26**（query 次元 7 の **3.7倍**・en15/pt6 pos4.2/ja3/es1/hi1・position帯 1-3:3 / 4-10:13 / 11-20:9 / 21+:1）、`page_view`/`session_start` = **1.8%**（4/223・1ユーザー）で `humanShaped:false` 警告。純集計関数を単体テスト可能にし **vitest 73→84**。詳細: [`docs/ops/daily/2026-08-31.md`](docs/ops/daily/2026-08-31.md)。以下は起票時の記述。**【自律可・デプロイ不要／3週連続で優先1・未着手】計測: `growth:review` に (i) 非ブランド impressions (ii) page 次元 impressions（locale 別・position 別） (iii) ★`session_start` と `page_view` の乖離 を追加**。理由＝(i)(ii) は #008/#009 と同じ（query 次元は**全件ブランドクエリ**で戦略の成否と因果的に無関係＝**戦略が完全に失敗していてもブランド検索が1件増えれば撤退カウンタがリセットされる**）。★**(iii) は #010 の新規**＝`session_start` 223 に対し `page_view` 4（1ユーザー）という乖離が、**「北極星が人間の閲覧をほぼ含まない」ことを毎週自動で可視化する**唯一の指標だから（§1.1）。実装は `latest-gsc-query-pages.csv` / `latest-gsc-pages.csv` / GA4 events の**既に取得済みデータの集計のみ＝新規 API 呼び出しゼロ**＝`scripts/growth-summary.mjs` の集計とサマリー出力の追加のみ。週次レビュー #010 §7 提案1 | 計測 | **不要** | `npm run growth:review` の出力とスナップショット JSON に「非ブランド impressions」「page 次元ロケール別内訳」「session_start/page_view 乖離」が出る |
 | **2** | ✅**完了（2026-09-01 日次ループ・`9448001`・ver `0e4e77ce`）**。`classifyProviderStatus()` を純関数として切り出し、fx-api / fx-direct / `scrapeFixer` の**3か所すべて**で全ステータスを分類（401=`PROVIDER_UNAUTHORIZED`+cooldown／403,429=`BOT_CHALLENGED`／404=`POST_NOT_FOUND`／2xx=ok／その他=`PROVIDER_HTTP_<code>`）。非 ok は `httpStatus` 付きで `provider_failed` に出力。**ユーザー可視の最終エラーは非変更**（401 は `sawBotChallenge` を立てないため従来どおり `MEDIA_NOT_FOUND`）。**vitest 84→90**。★★**成功指標の後半「status の twitter が operational へ」は未達**＝本変更は**診断可能性の修復であって 401 の修復ではない**（根因は fxTwitter が Workers egress を弾いている疑いで、分岐追加では動かない）。**次の一手は代替プロバイダ／egress の見直しであって `twitter.ts` の分岐追加ではない**。★本番でのログ行そのものは未確認（extract 経路は Turnstile 保護＝無人不可・platform-status のプローブは `probes.ts` の合成プローブで `extractTwitter` を通らない）。詳細: [`docs/ops/daily/2026-09-01.md`](docs/ops/daily/2026-09-01.md)。以下は起票時の記述。**柱1/修復: fxTwitter 401 の明示分類とログ化**。`src/lib/extract/twitter.ts:186-215` の fx-api 分岐は **HTTP 401 をどの枝でも分類していない**（403/429→cooldown＋`sawBotChallenge`、404→`POST_NOT_FOUND`、`ok`→解析、**401 はどれにも入らず** `rawMedia` 空のまま黙って次のフォールバックへ）＝**本番が約37日間 出し続けている 401 が extractor 自身のログに一切現れない**（`provider_failed` すら出ない）。まず 401 を明示分類してログに出すのが最小の一手。★**実装・ユニットテスト・push はデプロイ非依存で先行できる**（本番検証のみ優先0(b) の復旧が前提）。本番 status: twitter `http=401`・**uptime 0% n=56 が約37日継続**。ローカル residential IP からは同 URL が 200＝**fxTwitter が Workers egress を弾いている**疑い。※実地確認は `POST /api/v1/extract/prepare` が `403 TURNSTILE_MISSING` を返すため無人不可（Turnstile は設計通り機能・CAPTCHA 回避は行わない） | 柱1/修復 | 検証のみ要 | 401 が失敗分類に現れる・vitest green／（復旧後）status の twitter が operational へ |
-| **3** | **【自律可・デプロイ不要】健全性 HC-9: 認証/レート制限レイヤーのユニットテスト**。`src/lib/rate-limit/extract.ts` の `getClientKey`（cf-connecting-ip→x-forwarded-for→'unknown' の優先順位）と in-memory バケットの窓/上限判定＝**純粋に近い部分から**。`verifyTurnstileToken` は `fetch`／`getCloudflareContext` のモックが要るため分割可。**"fail-closed であること"を契約として固定する**のが目的。★**08-15 health-check が「前半だけ切り出せば規模:小・bindings 非依存・production 非改変」と再確認**（テスト0本の状態が2週目） | 健全性/品質 | **不要** | rate-limit の純関数にテストが入り green（production 非改変） |
+| **3** | ✅**完了（2026-09-02 日次ループ・`596e1e7`・ver `5346fe66`）**。`src/lib/rate-limit/extract.test.ts` を新規追加＝**production 非改変**（`extract.ts` は 1 バイトも触っていない）。`checkInMemory` は module-private のため **公開 API `checkExtractRateLimit` 越しの黒箱テスト**にし、時刻は fake timers ではなく `Date.now` の spy で制御（`checkViaEndpoint` の `AbortSignal.timeout(5000)` が fake clock に捕まるため）。固定した契約 21 件＝`getClientKey` のヘッダ優先順位/trim/`unknown` 集約・窓のスライド・retry-after の減算と**窓長を超えない上限**・キー分離・**拒否時に予算を二重消費しない**・DO 応答の採用と payload 転送・★**DO 劣化 5 通り（非2xx/パース不能/`limited` 非boolean/`limited` 欠落/fetch throw）すべてで in-memory へ落ち、落ちた先でも上限を適用し続ける＝fail-closed**。**vitest 90→111**。★**ミューテーション3件で検出力を実測**（上限の off-by-one→7件落・ヘッダ優先順位の入替→1件落・DO 失敗の fail-open 化→1件落／実測後に production ファイルを復元し `git diff` 空を確認）。★**本番実測**: `POST /api/v1/extract/prepare` はレート制限を Turnstile より前に評価するため CAPTCHA 非回避で計測可能＝1〜31 件目 403（Turnstile で停止）→ 32 件目 **429** `RATE_LIMITED`・`x-rate-limit-source: do`・`limit: 30`・`windowMs: 60000`・`retryAfterSec: 54`。**本番で走っているのは `do` 経路**＝今回固めた in-memory 側は「DO 縮退時の受け皿」としての価値。※429 は 31 件目でなく 32 件目＝**分散カウンタ側の境界**であり、固定したクライアント側の境界とは別物（「本番はちょうど 30 で切れる」とは言えない）。★**HC-10 は直さず characterisation test 2 件で現状記録に留めた**（#010 の但し書き＝セキュリティ性質の変更は本番検証とセット）。実害が無いことは推測でなく**本番 bindings の実値**で確認（`RATE_LIMIT_LIMIT "30"` / `RATE_LIMIT_WINDOW_MS "60000"`）＝HC-10 は「潜在的 fail-open」であって「現在 fail-open している」ではない。詳細: [`docs/ops/daily/2026-09-02.md`](docs/ops/daily/2026-09-02.md)。以下は起票時の記述。**【自律可・デプロイ不要】健全性 HC-9: 認証/レート制限レイヤーのユニットテスト**。`src/lib/rate-limit/extract.ts` の `getClientKey`（cf-connecting-ip→x-forwarded-for→'unknown' の優先順位）と in-memory バケットの窓/上限判定＝**純粋に近い部分から**。`verifyTurnstileToken` は `fetch`／`getCloudflareContext` のモックが要るため分割可。**"fail-closed であること"を契約として固定する**のが目的。★**08-15 health-check が「前半だけ切り出せば規模:小・bindings 非依存・production 非改変」と再確認**（テスト0本の状態が2週目） | 健全性/品質 | **不要** | rate-limit の純関数にテストが入り green（production 非改変） |
 | **4** | **柱1: pt ロケール既存ページの内容深化**。データゲートは #009 で通過済＋**#010 で 3 週連続再現**＝pt は **6 impressions 中 6 件すべてが pos 2〜7**（平均4.2・対象URLの顔ぶれも #009 と完全一致）、対して en は 19→**15**（`/` が 12→8）、ja 3／es 1／hi 1、**ar は 3 週連続 0**。対象候補: `/pt`(pos2)／`/pt/blog/safest-video-downloader-sites`(pos2)／`/pt/latest`(pos4)／`/pt/blog/twitter-video-download-mp4`(pos7)／`blog/how-to-download-twitter-videos?locale=pt`(pos4)。**新規 URL は増やさない**（stub 量産停止方針を維持＝thin/doorway リスク非増）。★**#010 の変更: 実装・push はデプロイ非依存で先行できる**ことを明記（本番反映のみ優先0(b) 待ち）。※但し書き: 各行 1〜2 impression のノイズ域であり「3週連続の再現」は**偶然ではないの根拠**にはなるが「pt は上位表示できている」の根拠にはならない | 柱1/内容 | 本番反映のみ要 | pt ページの impressions/position が 2 週連続で改善 |
 | **5** | **【自律可・デプロイ不要】健全性 HC-7: `knip.json` の `ignoreBinaries: ["powershell"]` を削除**（knip の Configuration hint "Remove from ignoreBinaries" に従う設定の陳腐化除去。影響: 極小＝dev ツール設定のみ・アプリ挙動非変更）。★**#009 の優先10 から繰り上げ**＝重要度ではなく、**デプロイ断絶5週・日次ループ停止3週のためデプロイ不要枠を上位へ集める**運用判断。※**注意**: `powershell` は `package.json` の `check:prod`/`check:release`/`check:test`/`check:release:prod`/`check:release:test` で**実使用中**。Windows ローカル前提なら削除して問題ないが、非 Windows 環境（CI 等）で knip を回すと再発する＝「常に Windows で実行する」前提の明示とセットで実施すること | 健全性/品質 | **不要** | knip PASS・`npm run check:*` が従来どおり動作（production 非改変） |
 | **6** | **柱2: 凍結の可否をユーザーに確認する（#007 提案2(b)・#008/#009/#010 で再提示）**。07-13 出荷の起動タイムアウト 60s 緩和は**本番で 34 日・約136 cron 窓 稼働して産出ゼロ**（sitemap `/trend/` 0件・`/trending` 内リンク 0件）＝**無償の打ち手は尽きた**（4週連続で同一結論）。★★**#010 で判断材料が増えた**＝08-15 health-check の **HC-11** で `@cloudflare/puppeteer`（**DIRECT high**）は**最新 1.3.0 も同じ脆弱版を固定＝版上げでは直らない**ことが確定した。**柱2 を凍結すれば `src/lib/auto-trend.ts` / `src/lib/extract/browser.ts` の puppeteer 依存ごと落とせ、この high が構造的に消える**。選択肢は (a) **有料 Browser Rendering 切替＝危害ゲート①金銭＝要ユーザー承認**、(b) **凍結して日次枠を柱1'/柱1 へ回す**。**推奨は (b)**（産出ゼロ＋high 1件解消の二重の理由）。cron 自体は無害・無課金なので停止しない。★★**2026-08-16 でブロッカー解消**: 「(b) も戦略文書の書き換えだからガードレール抵触＝要ユーザー承認」は**決定事項7 の誤読**だった（ユーザー再確認「自律で可」・growth-strategy §5 決定事項7 に明記）。承認が要るのは危害①〜④に触れる選択だけで、文書の種類ではない。よって **(b) は日次ループが自律で実行してよい**（(a) は金銭＝危害①なので従来どおり要承認）。3週間の待ちは不要だった | 柱2/判断 | — | 日次ループが (b) を自律実行し、growth-strategy に凍結を明記して柱2 起因タスクと puppeteer 依存（HC-11）の扱いを同時に確定する |
