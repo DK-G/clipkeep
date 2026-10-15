@@ -73,12 +73,7 @@ export default async function TwitterDownloaderPage({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'Fast X/Twitter video extraction, GIF support, High-quality MP4',
-        'description': t.subtitle,
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '4.9',
-          'ratingCount': '850'
-        }
+        'description': t.subtitle
       },
       {
         '@type': 'HowTo',

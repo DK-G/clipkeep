@@ -73,12 +73,7 @@ export default async function Page({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'Fast Lemon8 video extraction, High-quality MP4',
-        'description': t.subtitle,
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '4.4',
-          'ratingCount': '120'
-        }
+        'description': t.subtitle
       },
       {
         '@type': 'HowTo',

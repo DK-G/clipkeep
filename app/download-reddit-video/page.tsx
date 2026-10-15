@@ -73,12 +73,7 @@ export default async function Page({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'Fast Reddit video extraction, High-quality MP4',
-        'description': t.subtitle,
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '4.7',
-          'ratingCount': '420'
-        }
+        'description': t.subtitle
       },
       {
         '@type': 'HowTo',

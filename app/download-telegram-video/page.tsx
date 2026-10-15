@@ -73,12 +73,7 @@ export default async function TelegramDownloaderPage({ searchParams }: Props) {
           priceCurrency: 'USD'
         },
         featureList: 'Fast Telegram media extraction, Public channel support, Secure downloads',
-        description: t.subtitle,
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '4.8',
-          ratingCount: '420'
-        }
+        description: t.subtitle
       },
       {
         '@type': 'HowTo',

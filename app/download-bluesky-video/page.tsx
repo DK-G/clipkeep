@@ -73,12 +73,7 @@ export default async function Page({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'Fast Bluesky video extraction, High-quality MP4',
-        'description': t.subtitle,
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '4.8',
-          'ratingCount': '390'
-        }
+        'description': t.subtitle
       },
       {
         '@type': 'HowTo',

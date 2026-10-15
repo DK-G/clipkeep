@@ -73,12 +73,7 @@ export default async function TikTokDownloaderPage({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'High-quality TikTok video extraction, No watermark option, Fast processing',
-        'description': t.subtitle,
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '4.8',
-          'ratingCount': '1240'
-        }
+        'description': t.subtitle
       },
       {
         '@type': 'HowTo',

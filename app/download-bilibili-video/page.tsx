@@ -73,12 +73,7 @@ export default async function Page({ searchParams }: Props) {
           'priceCurrency': 'USD'
         },
         'featureList': 'Fast Bilibili video extraction, High-quality MP4',
-        'description': t.subtitle,
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '4.5',
-          'ratingCount': '310'
-        }
+        'description': t.subtitle
       },
       {
         '@type': 'HowTo',

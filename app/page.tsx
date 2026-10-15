@@ -471,11 +471,6 @@ export default async function HomePage({ searchParams }: HomeProps) {
           '@type': 'Offer',
           'price': '0',
           'priceCurrency': 'USD'
-        },
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '4.8',
-          'ratingCount': '2500'
         }
       },
       {
